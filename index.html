@@ -121,18 +121,23 @@
   .plate .s img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
   .plate-cap{color:#666;font-size:14px;margin:6px 0 26px;max-width:640px}
   .rollwrap{position:relative}
-  .plate.roll{grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 22px}
-  .plate.roll .s{transition:opacity .7s ease}
-  .rollwrap.running .plate.roll .s{opacity:.2}
-  .rollwrap.running .plate.roll .s.lit{opacity:1}
+  .plate.roll{grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 14px}
+  .plate.roll .s{transition:opacity .6s ease, filter .6s ease, transform .6s cubic-bezier(.3,0,.2,1);
+    position:relative}
+  .plate.roll .s::after{content:"";position:absolute;inset:0;border:2px solid var(--pc,#FF3E00);
+    opacity:0;transition:opacity .45s ease;pointer-events:none}
+  .rollwrap.running .plate.roll .s{opacity:.45;filter:grayscale(1) contrast(.85)}
+  .rollwrap.running .plate.roll .s.lit{opacity:1;filter:none;transform:scale(1.04);z-index:2}
+  .rollwrap.running .plate.roll .s.lit::after{opacity:1}
   .link{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;overflow:visible}
-  .link line{stroke:#FF3E00;stroke-width:1.5;stroke-dasharray:5 4;opacity:0;transition:opacity .5s ease}
-  .link circle{fill:#FF3E00;opacity:0;transition:opacity .5s ease}
-  .link.show line,.link.show circle{opacity:1}
-  .pairnote{position:absolute;z-index:4;margin:0;font-size:13px;line-height:1.35;color:#FF3E00;
-    background:#fff;padding:3px 8px;transform:translate(-50%,-50%);max-width:210px;text-align:center;
-    opacity:0;transition:opacity .5s ease;pointer-events:none}
-  .pairnote.show{opacity:1}
+  .link path{fill:none;stroke:var(--pc,#FF3E00);stroke-width:2;stroke-linecap:round}
+  .link circle{fill:var(--pc,#FF3E00)}
+
+  .pairnote{display:flex;align-items:baseline;gap:14px;min-height:58px;margin:0 0 26px;
+    opacity:0;transform:translateY(5px);transition:opacity .45s ease, transform .45s ease}
+  .pairnote.show{opacity:1;transform:none}
+  .pairnote .ix{font-size:11px;letter-spacing:.14em;color:#aaa;flex:none;padding-top:5px}
+  .pairnote .txt{font-size:21px;line-height:1.25;color:var(--pc,#FF3E00);max-width:22em}
   .plate.roll img{aspect-ratio:1;object-fit:cover}
   .spotify{margin:18px 0 26px;max-width:300px}
   .spotify img{width:100%;display:block}
@@ -275,7 +280,6 @@
 
   <div class="rollwrap">
   <svg class="link" aria-hidden="true"></svg>
-  <p class="pairnote"></p>
   <div class="plate roll">
     <div class="s"><img src="images/roll-01.jpg" alt=""></div>
     <div class="s"><img src="images/roll-02.jpg" alt=""></div>
@@ -295,6 +299,7 @@
     <div class="s"><img src="images/roll-16.jpg" alt=""></div>
   </div>
   </div>
+  <p class="pairnote"><span class="ix"></span><span class="txt"></span></p>
 
   <p>Four things keep coming back. Written as instructions, because that is the form they have to end up in.</p>
   <div class="dots">
@@ -645,46 +650,55 @@ SILHOUETTE
     if (!wrap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var cells = [].slice.call(wrap.querySelectorAll('.plate.roll .s'));
     var svg   = wrap.querySelector('.link');
-    var note  = wrap.querySelector('.pairnote');
+    var note  = wrap.parentNode.querySelector('.pairnote');
     var pairs = [
-      [4, 10, 'The subject set inside a yellow field'],
-      [0,  5, 'The whole sky taken as one colour'],
-      [1,  9, 'Surface at close range, no scene'],
-      [7,  8, 'A painting set on a ground I made'],
-      [12,15, 'Found in low light, nothing lit for the camera'],
-      [2, 11, 'Colour used as the container, not the subject'],
-      [6, 13, 'Water and sky with no horizon between them'],
-      [3, 14, 'Made things and photographed things, same frame']
+      [4, 10, 'Colour the ground, never the subject',        '#FF3E00'],
+      [0,  5, 'One colour takes the whole frame',            '#D0402F'],
+      [1,  9, 'Crop until the scene disappears',             '#8EA066'],
+      [7,  8, 'Build the surface before anything goes on it','#151DE0'],
+      [12,15, 'Use the light that is already there',         '#833405'],
+      [2, 11, 'The border is a panel, not a margin',         '#9D70C0'],
+      [6, 13, 'Take the horizon out',                        '#404C25'],
+      [3, 14, 'Drawing and photograph at equal weight',      '#151DE0']
     ];
     var i = -1, timer;
+    var ix = note.querySelector('.ix'), txt = note.querySelector('.txt');
 
     function centre(el){
       var r = el.getBoundingClientRect(), w = wrap.getBoundingClientRect();
       return { x: r.left - w.left + r.width/2, y: r.top - w.top + r.height/2 };
+    }
+    function curve(a, b){
+      var mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+      var dx = b.x-a.x, dy = b.y-a.y, len = Math.hypot(dx,dy) || 1;
+      var off = Math.min(len*0.18, 46);
+      return 'M'+a.x+','+a.y+' Q'+(mx - dy/len*off)+','+(my + dx/len*off)+' '+b.x+','+b.y;
     }
     function step(){
       i = (i + 1) % pairs.length;
       var p = pairs[i], a = cells[p[0]], b = cells[p[1]];
       if (!a || !b) return;
       cells.forEach(function(c){ c.classList.remove('lit'); });
-      svg.classList.remove('show'); note.classList.remove('show');
+      note.classList.remove('show');
+      svg.innerHTML = '';
       setTimeout(function(){
+        wrap.style.setProperty('--pc', p[3]);
         a.classList.add('lit'); b.classList.add('lit');
-        var ca = centre(a), cb = centre(b);
+        var ca = centre(a), cb = centre(b), d = curve(ca, cb);
         svg.innerHTML =
-          '<line x1="'+ca.x+'" y1="'+ca.y+'" x2="'+cb.x+'" y2="'+cb.y+'"/>' +
-          '<circle cx="'+ca.x+'" cy="'+ca.y+'" r="3.5"/>' +
-          '<circle cx="'+cb.x+'" cy="'+cb.y+'" r="3.5"/>';
-        note.textContent = p[2];
-        note.style.left = ((ca.x + cb.x)/2) + 'px';
-        note.style.top  = ((ca.y + cb.y)/2) + 'px';
-        svg.classList.add('show'); note.classList.add('show');
-      }, 520);
+          '<path d="'+d+'" stroke-dasharray="1000" stroke-dashoffset="1000">'+
+          '<animate attributeName="stroke-dashoffset" from="1000" to="0" dur="0.75s" fill="freeze"/></path>'+
+          '<circle cx="'+ca.x+'" cy="'+ca.y+'" r="4"/>'+
+          '<circle cx="'+cb.x+'" cy="'+cb.y+'" r="4"/>';
+        ix.textContent  = String(i+1).padStart(2,'0') + ' / ' + String(pairs.length).padStart(2,'0');
+        txt.textContent = p[2];
+        note.classList.add('show');
+      }, 480);
     }
-    function start(){ if (timer) return; wrap.classList.add('running'); step(); timer = setInterval(step, 4200); }
+    function start(){ if (timer) return; wrap.classList.add('running'); step(); timer = setInterval(step, 4600); }
     function stop(){ clearInterval(timer); timer = null; wrap.classList.remove('running');
       cells.forEach(function(c){ c.classList.remove('lit'); });
-      svg.classList.remove('show'); note.classList.remove('show'); }
+      svg.innerHTML = ''; note.classList.remove('show'); }
 
     new IntersectionObserver(function(es){
       es[0].isIntersecting ? start() : stop();
