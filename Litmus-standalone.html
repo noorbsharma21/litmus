@@ -7,7 +7,7 @@
 <meta name="description" content="A taste layer for AI. Written by one person instead of averaged from everyone.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Nunito:wght@300;400;600;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Nunito:wght@300;400;600;700&family=Inter:wght@400;500;600;800;900&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box}
   body{background:#fff;color:#000;
@@ -239,26 +239,44 @@
     .flow .step,.flow .arw{animation:none;opacity:1}
   }
 
-  /* one loud moment, in ink */
-  .shoujo{position:relative;text-align:center;margin:46px 0 50px;padding:52px 10px 56px;
-    overflow:hidden}
-  .shoujo .tone{position:absolute;inset:0;
-    background-image:radial-gradient(circle,#000 1.05px,transparent 1.35px);
-    background-size:5px 5px;opacity:.4;
-    -webkit-mask-image:radial-gradient(ellipse 62% 74% at 50% 50%,#000 6%,transparent 68%);
-    mask-image:radial-gradient(ellipse 62% 74% at 50% 50%,#000 6%,transparent 68%)}
-  .shoujo .rays{position:absolute;inset:0;width:100%;height:100%}
-  .shoujo .rays line{stroke:#14130F;stroke-width:.9}
-  .shoujo p{position:relative;font-family:"Shippori Mincho",serif;font-weight:800;
-    font-size:clamp(26px,4.1vw,40px);line-height:1.22;color:#14130F;margin:0 auto;
-    max-width:13em;letter-spacing:-.005em}
-  .shoujo .sk{position:absolute;fill:#14130F;animation:twinkle 2.6s ease-in-out infinite}
-  .shoujo .sk.b{fill:#14130F}
-  @keyframes twinkle{
-    0%,100%{opacity:.2;transform:scale(.7) rotate(0deg)}
-    50%{opacity:1;transform:scale(1) rotate(24deg)}
-  }
-  @media (prefers-reduced-motion:reduce){.shoujo .sk{animation:none;opacity:.8}}
+  /* the slop section, on purpose */
+  .slopbox{position:relative;margin:46px 0 50px;padding:64px 26px 70px;overflow:hidden;
+    border-radius:24px;background:#fff;text-align:center;
+    font-family:Inter,system-ui,sans-serif;isolation:isolate}
+  .slopbox .aur{position:absolute;border-radius:50%;filter:blur(72px);z-index:-2}
+  .slopbox .a1{width:340px;height:300px;left:-6%;top:-28%;background:#A855F7;opacity:.42}
+  .slopbox .a2{width:300px;height:280px;right:-4%;top:-16%;background:#6366F1;opacity:.40}
+  .slopbox .a3{width:320px;height:260px;left:38%;bottom:-32%;background:#EC4899;opacity:.30}
+  .slopbox .grid{position:absolute;inset:0;z-index:-1;
+    background-image:radial-gradient(circle,#6366F1 1px,transparent 1.2px);
+    background-size:22px 22px;opacity:.22;
+    -webkit-mask-image:radial-gradient(ellipse 70% 80% at 50% 50%,#000 10%,transparent 72%);
+    mask-image:radial-gradient(ellipse 70% 80% at 50% 50%,#000 10%,transparent 72%)}
+  .slopbox .glass{position:relative;max-width:560px;margin:0 auto;padding:34px 26px 32px;
+    border-radius:20px;background:rgba(255,255,255,.62);backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.85);
+    box-shadow:0 18px 48px rgba(99,102,241,.22),0 2px 8px rgba(99,102,241,.12)}
+  .slopbox .badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.02em;
+    padding:6px 14px;border-radius:999px;color:#4F46E5;background:#EEF2FF;
+    border:1px solid #E0E7FF;margin-bottom:18px}
+  .slopbox h4{font-size:clamp(26px,4.4vw,42px);line-height:1.12;font-weight:800;
+    letter-spacing:-.035em;margin:0 0 14px;
+    background:linear-gradient(95deg,#6366F1 0%,#A855F7 52%,#EC4899 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .slopbox .sub{font-size:14px;line-height:1.65;color:#6B7280;margin:0 auto 22px;max-width:30em}
+  .slopbox .cta{display:inline-block;font-size:13px;font-weight:600;color:#fff;
+    padding:11px 26px;border-radius:12px;
+    background:linear-gradient(95deg,#6366F1,#A855F7);
+    box-shadow:0 8px 22px rgba(99,102,241,.42)}
+  .slopbox .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px auto 0;max-width:560px}
+  .slopbox .card{border-radius:14px;padding:16px 12px;background:rgba(255,255,255,.7);
+    border:1px solid #EEF0F5;box-shadow:0 2px 10px rgba(17,24,39,.05)}
+  .slopbox .dot{width:26px;height:26px;border-radius:9px;margin:0 auto 10px;
+    background:linear-gradient(135deg,#EEF2FF,#F5E8FF)}
+  .slopbox .ct{font-size:12px;font-weight:600;color:#111827;margin:0 0 4px}
+  .slopbox .cb{font-size:10.5px;line-height:1.55;color:#9CA3AF;margin:0}
+  .slopnote{font-size:13px;color:#666;margin:-34px 0 44px;text-align:center}
+  @media (max-width:40rem){.slopbox .cards{grid-template-columns:1fr}}
 
   figure{margin:20px 0 26px}
   figcaption{color:#666;font-size:14px;margin-top:8px;max-width:640px}
@@ -402,17 +420,22 @@
   </div>
   <p class="plate-cap">Three saved states of this page. The versions before these are gone: a parchment one set in a serif, a grunge one, an antique one. Each lasted about ten minutes.</p>
 
-  <div class="shoujo">
-    <div class="tone"></div>
-    <svg class="rays" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="89.0" y1="50.0" x2="143.0" y2="50.0" opacity="0.10"/><line x1="96.0" y1="54.4" x2="151.0" y2="59.6" opacity="0.17"/><line x1="101.8" y1="60.1" x2="156.6" y2="70.7" opacity="0.24"/><line x1="108.0" y1="63.5" x2="163.3" y2="76.4" opacity="0.31"/><line x1="111.3" y1="71.2" x2="164.5" y2="89.6" opacity="0.10"/><line x1="81.7" y1="65.1" x2="162.3" y2="103.5" opacity="0.17"/><line x1="86.4" y1="69.3" x2="164.9" y2="111.1" opacity="0.24"/><line x1="87.0" y1="76.2" x2="113.8" y2="95.1" opacity="0.31"/><line x1="85.4" y1="83.5" x2="108.8" y2="105.6" opacity="0.10"/><line x1="86.7" y1="88.9" x2="109.1" y2="112.7" opacity="0.17"/><line x1="65.9" y1="73.7" x2="98.8" y2="123.1" opacity="0.24"/><line x1="62.7" y1="79.8" x2="85.3" y2="132.7" opacity="0.31"/><line x1="62.0" y1="85.1" x2="80.7" y2="139.7" opacity="0.10"/><line x1="55.1" y1="90.9" x2="62.1" y2="147.7" opacity="0.17"/><line x1="45.9" y1="95.9" x2="44.5" y2="111.9" opacity="0.24"/><line x1="45.6" y1="75.8" x2="38.6" y2="117.6" opacity="0.31"/><line x1="38.3" y1="80.0" x2="22.1" y2="121.6" opacity="0.10"/><line x1="29.2" y1="83.2" x2="3.7" y2="123.8" opacity="0.17"/><line x1="23.3" y1="86.9" x2="-6.0" y2="127.5" opacity="0.24"/><line x1="11.6" y1="88.2" x2="-26.9" y2="126.4" opacity="0.31"/><line x1="23.9" y1="69.3" x2="-48.3" y2="122.9" opacity="0.10"/><line x1="17.1" y1="71.9" x2="-15.8" y2="93.8" opacity="0.17"/><line x1="6.8" y1="71.6" x2="-31.6" y2="90.8" opacity="0.24"/><line x1="-3.9" y1="69.7" x2="-47.3" y2="85.6" opacity="0.31"/><line x1="-12.2" y1="70.0" x2="-58.1" y2="84.7" opacity="0.10"/><line x1="12.8" y1="57.9" x2="-73.0" y2="76.0" opacity="0.17"/><line x1="4.1" y1="55.1" x2="-86.1" y2="65.1" opacity="0.24"/><line x1="-3.7" y1="54.0" x2="-96.1" y2="61.0" opacity="0.31"/><line x1="-11.5" y1="48.8" x2="-43.0" y2="48.2" opacity="0.10"/><line x1="-18.0" y1="42.1" x2="-50.5" y2="38.4" opacity="0.17"/><line x1="12.0" y1="44.2" x2="-58.2" y2="33.5" opacity="0.24"/><line x1="6.6" y1="38.9" x2="-62.0" y2="21.3" opacity="0.31"/><line x1="2.8" y1="32.5" x2="-62.7" y2="8.2" opacity="0.10"/><line x1="-2.1" y1="28.2" x2="-66.8" y2="1.1" opacity="0.17"/><line x1="-2.6" y1="20.3" x2="-62.2" y2="-13.3" opacity="0.24"/><line x1="24.1" y1="30.6" x2="-11.7" y2="3.6" opacity="0.31"/><line x1="21.0" y1="25.8" x2="-13.6" y2="-3.2" opacity="0.10"/><line x1="22.6" y1="19.0" x2="-6.2" y2="-13.8" opacity="0.17"/><line x1="26.6" y1="12.1" x2="4.4" y2="-24.0" opacity="0.24"/><line x1="27.2" y1="6.6" x2="7.4" y2="-31.2" opacity="0.31"/><line x1="42.5" y1="24.5" x2="23.3" y2="-40.3" opacity="0.10"/><line x1="47.5" y1="19.0" x2="42.2" y2="-47.9" opacity="0.17"/><line x1="50.0" y1="14.0" x2="50.0" y2="-12.0" opacity="0.24"/><line x1="58.7" y1="9.4" x2="64.4" y2="-17.3" opacity="0.31"/><line x1="69.3" y1="5.8" x2="81.1" y2="-21.0" opacity="0.10"/><line x1="62.9" y1="25.5" x2="89.6" y2="-25.5" opacity="0.17"/><line x1="71.4" y1="22.5" x2="109.4" y2="-26.3" opacity="0.24"/><line x1="81.4" y1="20.7" x2="130.2" y2="-24.9" opacity="0.31"/><line x1="88.3" y1="17.9" x2="141.7" y2="-26.6" opacity="0.10"/><line x1="100.2" y1="18.5" x2="117.7" y2="7.5" opacity="0.17"/><line x1="81.9" y1="35.0" x2="133.4" y2="10.8" opacity="0.24"/><line x1="89.4" y1="33.5" x2="144.0" y2="10.6" opacity="0.31"/><line x1="99.3" y1="35.3" x2="159.6" y2="17.4" opacity="0.10"/><line x1="109.2" y1="38.8" x2="174.1" y2="26.5" opacity="0.17"/><line x1="117.3" y1="39.8" x2="184.5" y2="29.5" opacity="0.24"/><line x1="88.9" y1="47.9" x2="196.5" y2="41.9" opacity="0.31"/></svg>
-    <svg class="sk" style="left:7%;top:14%;width:12px;height:12px;animation-delay:0ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
-    <svg class="sk b" style="left:19%;top:72%;width:8px;height:8px;animation-delay:700ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
-    <svg class="sk" style="left:33%;top:7%;width:9px;height:9px;animation-delay:1300ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
-    <svg class="sk b" style="left:63%;top:80%;width:11px;height:11px;animation-delay:400ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
-    <svg class="sk" style="left:76%;top:12%;width:8px;height:8px;animation-delay:1000ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
-    <svg class="sk b" style="left:89%;top:62%;width:13px;height:13px;animation-delay:1800ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
-    <p>That is why we need curatorial intelligence</p>
+  <div class="slopbox">
+    <span class="aur a1"></span><span class="aur a2"></span><span class="aur a3"></span>
+    <span class="grid"></span>
+    <div class="glass">
+      <span class="badge">&#10024; Introducing Curatorial Intelligence</span>
+      <h4>That is why we need curatorial intelligence</h4>
+      <p class="sub">Unlock the full potential of your creative workflow with cutting-edge AI that seamlessly empowers you to effortlessly ship beautiful, on-brand experiences at scale.</p>
+      <span class="cta">Get started free &#8594;</span>
+      <div class="cards">
+        <div class="card"><div class="dot"></div><p class="ct">Lightning fast</p><p class="cb">Generate stunning results in seconds.</p></div>
+        <div class="card"><div class="dot"></div><p class="ct">Fully automated</p><p class="cb">No design experience required.</p></div>
+        <div class="card"><div class="dot"></div><p class="ct">Infinitely scalable</p><p class="cb">From one page to ten thousand.</p></div>
+      </div>
+    </div>
   </div>
+  <p class="slopnote">Every single thing in that box is on the never list. That is the point.</p>
 
   <h2>What is taste</h2>
   <p>Robert Zajonc ran an experiment in 1968. He showed people shapes they had never seen before, some once, some a dozen times. They liked the ones they had seen most. Later work found it holds even when people cannot remember seeing the image at all.</p>
