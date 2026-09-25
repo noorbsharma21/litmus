@@ -7,7 +7,7 @@
 <meta name="description" content="A taste layer for AI. Written by one person instead of averaged from everyone.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Nunito:wght@300;400;600;700&family=Sacramento&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box}
   body{background:#fff;color:#000;
@@ -239,6 +239,18 @@
     .flow .step,.flow .arw{animation:none;opacity:1}
   }
 
+  /* one loud moment */
+  .shoujo{position:relative;text-align:center;margin:40px 0 44px;padding:30px 10px 34px}
+  .shoujo p{font-family:Sacramento,cursive;font-size:clamp(34px,5.4vw,52px);line-height:1.12;
+    color:#9D70C0;margin:0 auto;max-width:11em;letter-spacing:.01em}
+  .shoujo .sk{position:absolute;fill:#C9A6E0;animation:twinkle 2.6s ease-in-out infinite}
+  .shoujo .sk.b{fill:#9D70C0}
+  @keyframes twinkle{
+    0%,100%{opacity:.25;transform:scale(.72) rotate(0deg)}
+    50%{opacity:1;transform:scale(1) rotate(22deg)}
+  }
+  @media (prefers-reduced-motion:reduce){.shoujo .sk{animation:none;opacity:.7}}
+
   figure{margin:20px 0 26px}
   figcaption{color:#666;font-size:14px;margin-top:8px;max-width:640px}
   svg{display:block;max-width:100%;height:auto}
@@ -380,6 +392,18 @@
     </figure>
   </div>
   <p class="plate-cap">Three saved states of this page. The versions before these are gone: a parchment one set in a serif, a grunge one, an antique one. Each lasted about ten minutes.</p>
+
+  <div class="shoujo">
+    <svg class="sk" style="left:6%;top:18%;width:13px;height:13px;animation-delay:0ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <svg class="sk b" style="left:16%;top:66%;width:9px;height:9px;animation-delay:700ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <svg class="sk" style="left:31%;top:6%;width:10px;height:10px;animation-delay:1300ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <svg class="sk b" style="left:52%;top:78%;width:12px;height:12px;animation-delay:400ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <svg class="sk" style="left:69%;top:14%;width:9px;height:9px;animation-delay:1000ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <svg class="sk b" style="left:83%;top:58%;width:14px;height:14px;animation-delay:1800ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <svg class="sk" style="left:92%;top:26%;width:8px;height:8px;animation-delay:2200ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <svg class="sk b" style="left:44%;top:4%;width:7px;height:7px;animation-delay:1600ms" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,0 C9,5 11,7 16,8 C11,9 9,11 8,16 C7,11 5,9 0,8 C5,7 7,5 8,0 Z"/></svg>
+    <p>That is why we need curatorial intelligence</p>
+  </div>
 
   <h2>What is taste</h2>
   <p>Robert Zajonc ran an experiment in 1968. He showed people shapes they had never seen before, some once, some a dozen times. They liked the ones they had seen most. Later work found it holds even when people cannot remember seeing the image at all.</p>
