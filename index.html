@@ -63,7 +63,7 @@
 
   /* opening sequence */
   .intro{position:fixed;inset:0;background:#fff;z-index:200;overflow:hidden;
-    display:grid;place-items:center;animation:introOut .8s ease 6.1s forwards}
+    display:grid;place-items:center;cursor:pointer}
   .intro .fly{position:absolute;inset:0}
   .intro .fly i{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;
     background-size:cover;background-position:center;display:block;
@@ -86,7 +86,32 @@
     82%{transform:scale(1);background:#151DE0}
     100%{opacity:1;transform:scale(1);background:#151DE0}
   }
+  .intro.out{animation:introOut .7s ease forwards}
   @keyframes introOut{to{opacity:0;visibility:hidden}}
+  .enter{position:absolute;left:50%;top:50%;transform:translate(-50%,42px);
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#14130F;
+    opacity:0;animation:enterIn .7s ease 5.9s forwards;white-space:nowrap}
+  .enter span{border-bottom:1px solid #14130F;padding-bottom:3px}
+  @keyframes enterIn{to{opacity:1}}
+  .ring .c{opacity:0}
+  .ring.show .c{animation:cardin .6s cubic-bezier(.3,0,.2,1) forwards}
+  @keyframes cardin{from{opacity:0}to{opacity:1}}
+  .ring.show .c:nth-child(1){animation-delay:0ms}
+  .ring.show .c:nth-child(2){animation-delay:45ms}
+  .ring.show .c:nth-child(3){animation-delay:90ms}
+  .ring.show .c:nth-child(4){animation-delay:135ms}
+  .ring.show .c:nth-child(5){animation-delay:180ms}
+  .ring.show .c:nth-child(6){animation-delay:225ms}
+  .ring.show .c:nth-child(7){animation-delay:270ms}
+  .ring.show .c:nth-child(8){animation-delay:315ms}
+  .ring.show .c:nth-child(9){animation-delay:360ms}
+  .ring.show .c:nth-child(10){animation-delay:405ms}
+  .ring.show .c:nth-child(11){animation-delay:450ms}
+  .ring.show .c:nth-child(12){animation-delay:495ms}
+  .ring.show .c:nth-child(13){animation-delay:540ms}
+  .ring.show .c:nth-child(14){animation-delay:585ms}
+  .ring.show .c:nth-child(15){animation-delay:630ms}
+  .ring.show .c:nth-child(16){animation-delay:675ms}
   .intro.done{display:none}
   body.intro-on{overflow:hidden}
   @media (prefers-reduced-motion:reduce){.intro{display:none}}
@@ -268,6 +293,7 @@
       <i style="--x:-50vw;--y:26vh;--r:-10deg;background-image:url(images/disco-explore.png)"></i>
     </div>
     <div class="pip"></div>
+    <p class="enter"><span>Enter</span></p>
   </div>
 
 <div class="page">
@@ -329,6 +355,27 @@
     </div>
   </div>
 
+  <h2>The problem</h2>
+  <p>Last semester I built a lot of interfaces with Claude. Each one started with forty minutes of corrections before it made anything I would keep: no purple gradient, no centred heading, no rounded corners. By the fifth project I was pasting the same paragraph into an empty chat.</p>
+  <p>The building was never the problem. Ask for six versions and you get six, all usable, and it has no view on which one is worth keeping. That comes back to you every time.</p>
+  <p>If you do not supply the view, you get the middle of everything. People call that slop.</p>
+
+  <div class="vers">
+    <figure>
+      <img src="images/v-8ca5cf3.jpg" alt="An early version of this page">
+      <figcaption><b>First version</b>All Calibri, no colour, numbered sections, a byline under the title. It reads like a document because I had just thrown out four louder directions and overcorrected.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/v-0b1c108.jpg" alt="A later version of this page">
+      <figcaption><b>After the rewrite</b>Camera roll replaced the artwork, the wordmark went to Archivo Black, and the line in the middle still claimed a right hemisphere, which is pop neuroscience and came out later.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/v-eab9b13.jpg" alt="A recent version of this page">
+      <figcaption><b>Set in Nunito</b>Colour arrived on the headers and the lists. Nothing moved yet: no opening sequence, no pairs on the grid, nobody taking a hammer to the title.</figcaption>
+    </figure>
+  </div>
+  <p class="plate-cap">Three saved states of this page. The versions before these are gone: a parchment one set in a serif, a grunge one, an antique one. Each lasted about ten minutes.</p>
+
   <h2>What is taste</h2>
   <p>Robert Zajonc ran an experiment in 1968. He showed people shapes they had never seen before, some once, some a dozen times. They liked the ones they had seen most. Later work found it holds even when people cannot remember seeing the image at all.</p>
   <p>You like what you have already been looking at. My camera roll is a record of what has been around me.</p>
@@ -385,27 +432,6 @@
   </figure>
 
   <p>Here the counting is already done. 40,811 minutes.</p>
-
-  <h2>The problem</h2>
-  <p>Last semester I built a lot of interfaces with Claude. Each one started with forty minutes of corrections before it made anything I would keep: no purple gradient, no centred heading, no rounded corners. By the fifth project I was pasting the same paragraph into an empty chat.</p>
-  <p>The building was never the problem. Ask for six versions and you get six, all usable, and it has no view on which one is worth keeping. That comes back to you every time.</p>
-  <p>If you do not supply the view, you get the middle of everything. People call that slop.</p>
-
-  <div class="vers">
-    <figure>
-      <img src="images/v-8ca5cf3.jpg" alt="An early version of this page">
-      <figcaption><b>First version</b>All Calibri, no colour, numbered sections, a byline under the title. It reads like a document because I had just thrown out four louder directions and overcorrected.</figcaption>
-    </figure>
-    <figure>
-      <img src="images/v-0b1c108.jpg" alt="A later version of this page">
-      <figcaption><b>After the rewrite</b>Camera roll replaced the artwork, the wordmark went to Archivo Black, and the line in the middle still claimed a right hemisphere, which is pop neuroscience and came out later.</figcaption>
-    </figure>
-    <figure>
-      <img src="images/v-eab9b13.jpg" alt="A recent version of this page">
-      <figcaption><b>Set in Nunito</b>Colour arrived on the headers and the lists. Nothing moved yet: no opening sequence, no pairs on the grid, nobody taking a hammer to the title.</figcaption>
-    </figure>
-  </div>
-  <p class="plate-cap">Three saved states of this page. The versions before these are gone: a parchment one set in a serif, a grunge one, an antique one. Each lasted about ten minutes.</p>
 
   <h2>The idea</h2>
   <p>Taste works like a limit. What makes work yours is the long list of things you will not do. That list never gets written anywhere, so it never reaches the prompt.</p>
@@ -879,14 +905,20 @@ SILHOUETTE
   (function(){
     var el = document.getElementById('intro');
     if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){ el.remove(); return; }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){ el.remove(); var r=document.querySelector('.ring'); if(r) r.classList.add('show'); return; }
     document.body.classList.add('intro-on');
+    var ring = document.querySelector('.ring'), gone = false;
     function finish(){
-      el.classList.add('done');
+      if (gone) return; gone = true;
+      el.classList.add('out');
       document.body.classList.remove('intro-on');
+      if (ring) ring.classList.add('show');
+      setTimeout(function(){ el.classList.add('done'); }, 800);
     }
     el.addEventListener('click', finish);
-    setTimeout(finish, 7100);
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') finish();
+    });
   })();
 
   var tabs = document.querySelectorAll('.tab');
