@@ -158,6 +158,12 @@
   .dots .o{width:22px;height:22px;border-radius:50%;flex:none}
   .dots .dh b{font-weight:400;font-size:19px;line-height:1.2}
   .dots p{font-size:14px;line-height:1.5;color:#555;margin:0;max-width:none}
+  .fig{width:100%;max-width:292px;height:auto;display:block;margin:14px 0 0;overflow:visible}
+  .fig text{font-size:9px;fill:#999;font-family:Nunito,Arial,sans-serif;letter-spacing:.04em}
+  .fig .s{stroke:var(--fc);stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .fig .g{stroke:#ccc;stroke-width:1.2;fill:none}
+  .fig .f{fill:var(--fc)}
+  .fig .fg{fill:#d5d5d5}
 
   /* the flow steps through itself */
   .flow text{font-family:Nunito,Arial,sans-serif;fill:#000}
@@ -476,18 +482,76 @@
     <div class="d">
       <div class="dh"><span class="o" style="background:#FF3E00"></span><b>Asking why works</b></div>
       <p><a href="https://link.springer.com/chapter/10.1007/978-3-031-72904-1_23">ViPer</a> has people comment on a handful of images saying what they like and dislike, then a model turns that into a structured list of liked and disliked attributes. Close to what I am doing, and it holds up.</p>
+  <svg class="fig" viewBox="0 0 292 104" style="--fc:#FF3E00" role="img" aria-label="Three images, a person explaining, and two lists: liked attributes and disliked attributes.">
+    <rect class="g" x="2" y="18" width="20" height="20"/><rect class="g" x="26" y="18" width="20" height="20"/>
+    <rect class="g" x="50" y="18" width="20" height="20"/>
+    <rect class="g" x="2" y="46" width="20" height="20"/><rect class="g" x="26" y="46" width="20" height="20"/>
+    <rect class="g" x="50" y="46" width="20" height="20"/>
+    <text x="2" y="80">a handful of images</text>
+    <circle class="s" cx="112" cy="30" r="6"/>
+    <path class="s" d="M112,36 L112,54 M104,43 L120,43 M112,54 L106,66 M112,54 L118,66"/>
+    <path class="s" d="M124,20 h30 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-22 l-6,6 v-6 h-2 a4,4 0 0 1 -4,-4 v-10 a4,4 0 0 1 4,-4 z"/>
+    <text x="130" y="31">why</text>
+    <path class="s" d="M76,42 h22 M92,38 l6,4 -6,4"/>
+    <path class="s" d="M166,42 h22 M182,38 l6,4 -6,4"/>
+    <path class="s" d="M198,16 l4,4 6,-8"/>
+    <path class="g" d="M212,18 h76 M212,28 h60 M212,38 h70"/>
+    <path class="s" d="M198,26 l4,4 6,-8" opacity=".55"/>
+    <path class="s" d="M198,36 l4,4 6,-8" opacity=".55"/>
+    <path class="s" d="M198,58 l8,8 M206,58 l-8,8"/>
+    <path class="g" d="M212,62 h66 M212,72 h74 M212,82 h54"/>
+    <path class="s" d="M198,68 l8,8 M206,68 l-8,8" opacity=".55"/>
+    <path class="s" d="M198,78 l8,8 M206,78 l-8,8" opacity=".55"/>
+    <text x="212" y="98">a structured list, both halves</text>
+  </svg>
     </div>
     <div class="d">
       <div class="dh"><span class="o" style="background:#8EA066"></span><b>A few examples are enough</b></div>
       <p><a href="https://openaccess.thecvf.com/content/CVPR2025/papers/Dang_Personalized_Preference_Fine-tuning_of_Diffusion_Models_CVPR_2025_paper.pdf">Personalized Preference Fine-tuning of Diffusion Models</a> personalises from a few ranked pairs and wins 76% of the time against the baseline. I do not need thousands of judgments.</p>
+  <svg class="fig" viewBox="0 0 292 104" style="--fc:#8EA066" role="img" aria-label="Three ranked pairs of images produce a model that wins 76 percent of comparisons.">
+    <rect class="s" x="2" y="10" width="18" height="18"/><text x="25" y="23">&gt;</text><rect class="g" x="34" y="10" width="18" height="18"/>
+    <rect class="g" x="2" y="34" width="18" height="18"/><text x="25" y="47">&lt;</text><rect class="s" x="34" y="34" width="18" height="18"/>
+    <rect class="s" x="2" y="58" width="18" height="18"/><text x="25" y="71">&gt;</text><rect class="g" x="34" y="58" width="18" height="18"/>
+    <text x="2" y="92">a few ranked pairs</text>
+    <path class="s" d="M62,43 h24 M80,39 l6,4 -6,4"/>
+    <rect class="g" x="96" y="28" width="190" height="16"/>
+    <rect class="f" x="96" y="28" width="144" height="16"/>
+    <text x="96" y="58" style="font-size:13px" class="f">76%</text>
+    <text x="130" y="58">of head to heads against the baseline</text>
+  </svg>
     </div>
     <div class="d">
       <div class="dh"><span class="o" style="background:#151DE0"></span><b>The gap is predictable</b></div>
       <p><a href="https://arxiv.org/abs/2604.07427">PAMELA</a> collected 70,000 ratings on 5,000 images, fifteen people each, and found how far one person sits from generic aesthetics can be modelled. That is exactly step 02: throw away what every designer would say and keep the gap.</p>
+  <svg class="fig" viewBox="0 0 292 104" style="--fc:#151DE0" role="img" aria-label="A cluster of ratings representing general taste, one person sitting apart from it, and the measurable distance between them.">
+    <path class="g" d="M2,62 h286"/>
+    <circle class="fg" cx="58" cy="44" r="4"/><circle class="fg" cx="72" cy="52" r="4"/>
+    <circle class="fg" cx="86" cy="40" r="4"/><circle class="fg" cx="92" cy="54" r="4"/>
+    <circle class="fg" cx="66" cy="34" r="4"/><circle class="fg" cx="102" cy="46" r="4"/>
+    <circle class="fg" cx="78" cy="44" r="4"/>
+    <path class="g" d="M80,62 v8" /><text x="44" y="82">what everyone agrees on</text>
+    <circle class="f" cx="232" cy="44" r="6"/>
+    <path class="s" d="M232,62 v8"/><text x="220" y="82">you</text>
+    <path class="s" d="M88,20 h136 M96,16 l-8,4 8,4 M216,16 l8,4 -8,4"/>
+    <text x="130" y="12" class="f" style="font-size:10px">the gap, and it can be modelled</text>
+  </svg>
     </div>
     <div class="d">
       <div class="dh"><span class="o" style="background:#9D70C0"></span><b>Dislikes set the boundary</b></div>
       <p><a href="https://arxiv.org/abs/1812.11422">Work on negative preference in recommenders</a> shows what someone rejects constrains the answer in a way likes cannot. This is why the never list comes first in the file.</p>
+  <svg class="fig" viewBox="0 0 292 104" style="--fc:#9D70C0" role="img" aria-label="Likes give scattered points. Refusals draw a closed boundary around the answer.">
+    <rect class="g" x="2" y="8" width="120" height="70"/>
+    <circle class="f" cx="38" cy="32" r="4"/><circle class="f" cx="76" cy="26" r="4"/>
+    <circle class="f" cx="58" cy="56" r="4"/><circle class="f" cx="94" cy="58" r="4"/>
+    <text x="2" y="94">likes give you points</text>
+    <path class="s" d="M136,43 h18 M148,39 l6,4 -6,4"/>
+    <path class="s" d="M198,10 C232,6 268,20 272,42 C276,64 252,78 224,76 C196,74 176,58 178,38 C180,22 186,12 198,10 Z" stroke-dasharray="5 4"/>
+    <circle class="fg" cx="224" cy="42" r="4"/><circle class="fg" cx="242" cy="54" r="4"/>
+    <path class="s" d="M194,14 l7,7 M201,14 l-7,7"/>
+    <path class="s" d="M268,36 l7,7 M275,36 l-7,7"/>
+    <path class="s" d="M220,72 l7,7 M227,72 l-7,7"/>
+    <text x="178" y="94">refusals give you an edge</text>
+  </svg>
     </div>
   </div>
   <p>The gap in all of it: these systems learn a preference and keep it inside the model. None of them hand you a file you can read, argue with and carry to another tool.</p>
