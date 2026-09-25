@@ -60,6 +60,37 @@
   td:nth-child(3),th:nth-child(3){white-space:nowrap;padding-right:0;width:1%}
   td:nth-child(3){color:#666}
 
+
+  /* opening sequence */
+  .intro{position:fixed;inset:0;background:#fff;z-index:200;overflow:hidden;
+    display:grid;place-items:center;animation:introOut .55s ease 3.25s forwards}
+  .intro .fly{position:absolute;inset:0}
+  .intro .fly i{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;
+    background-size:cover;background-position:center;display:block;
+    transform:translate(var(--x),var(--y)) rotate(var(--r));
+    animation:converge 1.15s cubic-bezier(.65,0,.28,1) .2s forwards}
+  @keyframes converge{
+    60%{opacity:1}
+    100%{transform:translate(0,0) rotate(0deg) scale(.05);opacity:0}
+  }
+  .intro .pip{width:14px;height:14px;border-radius:50%;background:#FF3E00;opacity:0;
+    animation:pip 1.7s ease 1.25s forwards}
+  @keyframes pip{
+    0%{opacity:0;transform:scale(0);background:#FF3E00}
+    7%{opacity:1;transform:scale(1)}
+    18%{transform:scale(2.6);background:#FF3E00}
+    30%{transform:scale(1);background:#8EA066}
+    43%{transform:scale(2.6);background:#8EA066}
+    55%{transform:scale(1);background:#151DE0}
+    68%{transform:scale(2.6);background:#151DE0}
+    82%{transform:scale(1);background:#151DE0}
+    100%{opacity:1;transform:scale(1);background:#151DE0}
+  }
+  @keyframes introOut{to{opacity:0;visibility:hidden}}
+  .intro.done{display:none}
+  body.intro-on{overflow:hidden}
+  @media (prefers-reduced-motion:reduce){.intro{display:none}}
+
   /* rotating ring of work */
   .ring{position:relative;height:660px;margin:10px 0 18px;--r:288px}
   .spin{position:absolute;inset:0;animation:turn 48s linear infinite}
@@ -164,6 +195,26 @@
 </style>
 </head>
 <body>
+<div class="intro" id="intro">
+    <div class="fly">
+      <i style="--x:-40vw;--y:-34vh;--r:-9deg;background-image:url(images/art-01.jpg)"></i>
+      <i style="--x:-16vw;--y:-38vh;--r:6deg;background-image:url(images/art-05.jpg)"></i>
+      <i style="--x:12vw;--y:-36vh;--r:-5deg;background-image:url(images/art-09.jpg)"></i>
+      <i style="--x:38vw;--y:-30vh;--r:8deg;background-image:url(images/art-13.jpg)"></i>
+      <i style="--x:-44vw;--y:-8vh;--r:5deg;background-image:url(images/art-17.jpg)"></i>
+      <i style="--x:44vw;--y:-6vh;--r:-7deg;background-image:url(images/art-21.jpg)"></i>
+      <i style="--x:-36vw;--y:16vh;--r:-8deg;background-image:url(images/roll-01.jpg)"></i>
+      <i style="--x:-12vw;--y:22vh;--r:4deg;background-image:url(images/roll-04.jpg)"></i>
+      <i style="--x:14vw;--y:20vh;--r:-6deg;background-image:url(images/roll-07.jpg)"></i>
+      <i style="--x:40vw;--y:14vh;--r:9deg;background-image:url(images/roll-10.jpg)"></i>
+      <i style="--x:-28vw;--y:36vh;--r:7deg;background-image:url(images/roll-13.jpg)"></i>
+      <i style="--x:4vw;--y:40vh;--r:-4deg;background-image:url(images/roll-16.jpg)"></i>
+      <i style="--x:30vw;--y:38vh;--r:6deg;background-image:url(images/disco.png)"></i>
+      <i style="--x:-50vw;--y:26vh;--r:-10deg;background-image:url(images/disco-explore.png)"></i>
+    </div>
+    <div class="pip"></div>
+  </div>
+
 <div class="page">
 
 <h1>Litmus</h1>
@@ -573,6 +624,19 @@ SILHOUETTE
 </div>
 
 <script>
+  (function(){
+    var el = document.getElementById('intro');
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){ el.remove(); return; }
+    document.body.classList.add('intro-on');
+    function finish(){
+      el.classList.add('done');
+      document.body.classList.remove('intro-on');
+    }
+    el.addEventListener('click', finish);
+    setTimeout(finish, 3900);
+  })();
+
   var tabs = document.querySelectorAll('.tab');
   function show(id){
     tabs.forEach(function(t){
