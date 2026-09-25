@@ -108,37 +108,61 @@
   .smash{position:absolute;left:0;top:0;width:238px;opacity:0;
     overflow:visible;pointer-events:none;z-index:3;transition:opacity .3s ease}
   .smash.set{opacity:1}
-  .smash .ln{stroke:#14130F;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .smash .ln{stroke:#14130F;stroke-width:1.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .smash .hd{fill:#14130F}
-  .smash .arm{transform-box:view-box;transform-origin:236px 44px;
-    animation:swing 1.4s cubic-bezier(.4,0,.5,1) infinite}
+  .smash .arm{transform-box:view-box;transform-origin:236px 36px;
+    animation:swing 1.15s cubic-bezier(.4,0,.5,1) infinite}
   @keyframes swing{
     0%,34%{transform:rotate(-62deg)}
     46%{transform:rotate(8deg)}
     52%{transform:rotate(2deg)}
     64%,100%{transform:rotate(-62deg)}
   }
-  .smash .crk{stroke:#14130F;stroke-width:1.5;fill:none;stroke-linecap:round;
-    stroke-dasharray:240;stroke-dashoffset:240;animation:crack 7s linear infinite}
-  .smash .c2{animation-delay:1.4s}
-  .smash .c3{animation-delay:2.8s}
-  .smash .c4{animation-delay:4.2s}
-  @keyframes crack{
-    0%{stroke-dashoffset:240;opacity:1}
-    4%{stroke-dashoffset:0;opacity:1}
-    76%{stroke-dashoffset:0;opacity:1}
-    86%{opacity:0}
-    100%{stroke-dashoffset:0;opacity:0}
-  }
-  .bust{display:inline-block;animation:drop 7s cubic-bezier(.5,0,.75,1) infinite}
-  @keyframes drop{
-    0%,74%{transform:none;opacity:1}
-    78%{transform:translateY(3px) rotate(3deg)}
-    92%{transform:translateY(96px) rotate(22deg);opacity:0}
-    92.5%,97%{transform:none;opacity:0}
+
+  .bust i{display:inline-block;font-style:normal}
+  .bust .l1{animation:f1 7s cubic-bezier(.45,0,.75,1) infinite}
+  @keyframes f1{
+    0%,18%{transform:none;opacity:1}
+    31%{transform:translate(-6px,120px) rotate(-28deg);opacity:0}
+    31.1%,96%{transform:none;opacity:0}
     100%{transform:none;opacity:1}
   }
-  @media (prefers-reduced-motion:reduce){.bust{animation:none}}
+  .bust .l2{animation:f2 7s cubic-bezier(.45,0,.75,1) infinite}
+  @keyframes f2{
+    0%,30%{transform:none;opacity:1}
+    43%{transform:translate(8px,132px) rotate(34deg);opacity:0}
+    43.1%,96%{transform:none;opacity:0}
+    100%{transform:none;opacity:1}
+  }
+  .bust .l3{animation:f3 7s cubic-bezier(.45,0,.75,1) infinite}
+  @keyframes f3{
+    0%,38.6%{transform:none;opacity:1}
+    51.4%{transform:translate(-2px,116px) rotate(-14deg);opacity:0}
+    51.5%,96%{transform:none;opacity:0}
+    100%{transform:none;opacity:1}
+  }
+  .bust .l4{animation:f4 7s cubic-bezier(.45,0,.75,1) infinite}
+  @keyframes f4{
+    0%,51.4%{transform:none;opacity:1}
+    64.3%{transform:translate(12px,140px) rotate(48deg);opacity:0}
+    64.39999999999999%,96%{transform:none;opacity:0}
+    100%{transform:none;opacity:1}
+  }
+  .bust .l5{animation:f5 7s cubic-bezier(.45,0,.75,1) infinite}
+  @keyframes f5{
+    0%,60%{transform:none;opacity:1}
+    72.9%{transform:translate(-10px,124px) rotate(-40deg);opacity:0}
+    73.0%,96%{transform:none;opacity:0}
+    100%{transform:none;opacity:1}
+  }
+  .bust .l6{animation:f6 7s cubic-bezier(.45,0,.75,1) infinite}
+  @keyframes f6{
+    0%,72.9%{transform:none;opacity:1}
+    85.7%{transform:translate(6px,136px) rotate(22deg);opacity:0}
+    85.8%,96%{transform:none;opacity:0}
+    100%{transform:none;opacity:1}
+  }
+  @media (prefers-reduced-motion:reduce){.bust i{animation:none}}
   @media (prefers-reduced-motion:reduce){.smash{display:none}}
   @media (max-width:46rem){.smash{display:none}}
   .ring-core h2{font-size:26px;line-height:1.25;margin:0 0 10px;max-width:330px}
@@ -309,22 +333,18 @@
       <div class="c" style="--a:337.5"><div class="cc"><img src="images/roll-16.jpg" alt=""></div></div>
     </div>
     <svg class="smash" viewBox="0 0 340 120" aria-hidden="true">
-      <path class="crk"    d="M236,78 L212,86 L220,97 L192,106"/>
-      <path class="crk c2" d="M236,78 L204,74 L190,85 L156,81"/>
-      <path class="crk c3" d="M236,78 L228,94 L240,102 L232,118"/>
-      <path class="crk c4" d="M236,78 L254,88 L246,98 L266,108"/>
       <g class="ln">
-        <circle cx="236" cy="30" r="6"/>
-        <path d="M236,36 L236,58 M236,58 L228,76 M236,58 L244,76"/>
+        <circle cx="236" cy="24" r="4.5"/>
+        <path d="M236,28.5 L236,54"/>
+        <path d="M236,54 L229,76 M236,54 L244,76"/>
         <g class="arm">
-          <path d="M236,44 L252,52"/>
-          <path d="M252,52 L266,60"/>
-          <path class="hd" d="M262,52 h12 v12 h-12 z" stroke="none"/>
+          <path d="M236,36 L251,44 L264,53"/>
+          <path class="hd" d="M259,46 h11 v11 h-11 z" stroke="none"/>
         </g>
       </g>
     </svg>
     <div class="ring-core">
-      <h2>Creating a slop <span class="bust">buster</span>.</h2>
+      <h2>Creating a slop <span class="bust"><i class="l1">b</i><i class="l2">u</i><i class="l3">s</i><i class="l4">t</i><i class="l5">e</i><i class="l6">r</i></span>.</h2>
       <p>Everything I know but never wrote down, so a model can match my taste.</p>
     </div>
   </div>
@@ -769,7 +789,7 @@ SILHOUETTE
       var k = svg.getBoundingClientRect().width / 340;   // viewBox units to px
       // viewBox point (236,76) is the figure's feet; land it at the word's top right
       svg.style.left = (w.right - c.left - 6 - 236*k) + 'px';
-      svg.style.top  = (w.top   - c.top  - 76*k) + 'px';
+      svg.style.top  = (w.top   - c.top  - 74*k) + 'px';
       svg.classList.add('set');
     }
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(place); else place();
