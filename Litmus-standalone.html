@@ -63,18 +63,18 @@
 
   /* opening sequence */
   .intro{position:fixed;inset:0;background:#fff;z-index:200;overflow:hidden;
-    display:grid;place-items:center;animation:introOut .55s ease 3.25s forwards}
+    display:grid;place-items:center;animation:introOut .8s ease 6.1s forwards}
   .intro .fly{position:absolute;inset:0}
   .intro .fly i{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;
     background-size:cover;background-position:center;display:block;
     transform:translate(var(--x),var(--y)) rotate(var(--r));
-    animation:converge 1.15s cubic-bezier(.65,0,.28,1) .2s forwards}
+    animation:converge 2.1s cubic-bezier(.55,0,.3,1) 1.1s forwards}
   @keyframes converge{
     60%{opacity:1}
     100%{transform:translate(0,0) rotate(0deg) scale(.05);opacity:0}
   }
   .intro .pip{width:14px;height:14px;border-radius:50%;background:#FF3E00;opacity:0;
-    animation:pip 1.7s ease 1.25s forwards}
+    animation:pip 3.1s ease 2.9s forwards}
   @keyframes pip{
     0%{opacity:0;transform:scale(0);background:#FF3E00}
     7%{opacity:1;transform:scale(1)}
@@ -634,7 +634,7 @@ SILHOUETTE
       document.body.classList.remove('intro-on');
     }
     el.addEventListener('click', finish);
-    setTimeout(finish, 3900);
+    setTimeout(finish, 7100);
   })();
 
   var tabs = document.querySelectorAll('.tab');
