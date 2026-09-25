@@ -120,7 +120,19 @@
   .plate .s .n{font-size:10px;color:#666;display:block;margin-bottom:5px;letter-spacing:.06em}
   .plate .s img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
   .plate-cap{color:#666;font-size:14px;margin:6px 0 26px;max-width:640px}
+  .rollwrap{position:relative}
   .plate.roll{grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 22px}
+  .plate.roll .s{transition:opacity .7s ease}
+  .rollwrap.running .plate.roll .s{opacity:.2}
+  .rollwrap.running .plate.roll .s.lit{opacity:1}
+  .link{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;overflow:visible}
+  .link line{stroke:#FF3E00;stroke-width:1.5;stroke-dasharray:5 4;opacity:0;transition:opacity .5s ease}
+  .link circle{fill:#FF3E00;opacity:0;transition:opacity .5s ease}
+  .link.show line,.link.show circle{opacity:1}
+  .pairnote{position:absolute;z-index:4;margin:0;font-size:13px;line-height:1.35;color:#FF3E00;
+    background:#fff;padding:3px 8px;transform:translate(-50%,-50%);max-width:210px;text-align:center;
+    opacity:0;transition:opacity .5s ease;pointer-events:none}
+  .pairnote.show{opacity:1}
   .plate.roll img{aspect-ratio:1;object-fit:cover}
   .spotify{margin:18px 0 26px;max-width:300px}
   .spotify img{width:100%;display:block}
@@ -261,6 +273,9 @@
   <p>You like what you have already been looking at. My camera roll is a record of what has been around me.</p>
   <p>Here is mine.</p>
 
+  <div class="rollwrap">
+  <svg class="link" aria-hidden="true"></svg>
+  <p class="pairnote"></p>
   <div class="plate roll">
     <div class="s"><img src="images/roll-01.jpg" alt=""></div>
     <div class="s"><img src="images/roll-02.jpg" alt=""></div>
@@ -278,6 +293,7 @@
     <div class="s"><img src="images/roll-14.jpg" alt=""></div>
     <div class="s"><img src="images/roll-15.jpg" alt=""></div>
     <div class="s"><img src="images/roll-16.jpg" alt=""></div>
+  </div>
   </div>
 
   <p>Four things keep coming back. Written as instructions, because that is the form they have to end up in.</p>
@@ -624,6 +640,59 @@ SILHOUETTE
 </div>
 
 <script>
+  (function(){
+    var wrap = document.querySelector('.rollwrap');
+    if (!wrap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var cells = [].slice.call(wrap.querySelectorAll('.plate.roll .s'));
+    var svg   = wrap.querySelector('.link');
+    var note  = wrap.querySelector('.pairnote');
+    var pairs = [
+      [4, 10, 'The subject set inside a yellow field'],
+      [0,  5, 'The whole sky taken as one colour'],
+      [1,  9, 'Surface at close range, no scene'],
+      [7,  8, 'A painting set on a ground I made'],
+      [12,15, 'Found in low light, nothing lit for the camera'],
+      [2, 11, 'Colour used as the container, not the subject'],
+      [6, 13, 'Water and sky with no horizon between them'],
+      [3, 14, 'Made things and photographed things, same frame']
+    ];
+    var i = -1, timer;
+
+    function centre(el){
+      var r = el.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+      return { x: r.left - w.left + r.width/2, y: r.top - w.top + r.height/2 };
+    }
+    function step(){
+      i = (i + 1) % pairs.length;
+      var p = pairs[i], a = cells[p[0]], b = cells[p[1]];
+      if (!a || !b) return;
+      cells.forEach(function(c){ c.classList.remove('lit'); });
+      svg.classList.remove('show'); note.classList.remove('show');
+      setTimeout(function(){
+        a.classList.add('lit'); b.classList.add('lit');
+        var ca = centre(a), cb = centre(b);
+        svg.innerHTML =
+          '<line x1="'+ca.x+'" y1="'+ca.y+'" x2="'+cb.x+'" y2="'+cb.y+'"/>' +
+          '<circle cx="'+ca.x+'" cy="'+ca.y+'" r="3.5"/>' +
+          '<circle cx="'+cb.x+'" cy="'+cb.y+'" r="3.5"/>';
+        note.textContent = p[2];
+        note.style.left = ((ca.x + cb.x)/2) + 'px';
+        note.style.top  = ((ca.y + cb.y)/2) + 'px';
+        svg.classList.add('show'); note.classList.add('show');
+      }, 520);
+    }
+    function start(){ if (timer) return; wrap.classList.add('running'); step(); timer = setInterval(step, 4200); }
+    function stop(){ clearInterval(timer); timer = null; wrap.classList.remove('running');
+      cells.forEach(function(c){ c.classList.remove('lit'); });
+      svg.classList.remove('show'); note.classList.remove('show'); }
+
+    new IntersectionObserver(function(es){
+      es[0].isIntersecting ? start() : stop();
+    }, { threshold: 0.25 }).observe(wrap);
+
+    window.addEventListener('resize', function(){ if (timer) { i--; step(); } });
+  })();
+
   (function(){
     var el = document.getElementById('intro');
     if (!el) return;
