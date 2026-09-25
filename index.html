@@ -146,6 +146,12 @@
   .plate .s .n{font-size:10px;color:#666;display:block;margin-bottom:5px;letter-spacing:.06em}
   .plate .s img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
   .plate-cap{color:#666;font-size:14px;margin:6px 0 26px;max-width:640px}
+  .vers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0 8px}
+  .vers figure{margin:0}
+  .vers img{width:100%;display:block;border:1px solid #e2e2e2}
+  .vers figcaption{font-size:12.5px;line-height:1.4;color:#666;margin-top:7px}
+  .vers b{display:block;color:#000;font-weight:600;font-size:12.5px;letter-spacing:.02em}
+  @media (max-width:40rem){.vers{grid-template-columns:1fr}}
   .rollwrap{position:relative}
   .plate.roll{grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 14px}
   .plate.roll .s{transition:opacity .6s ease, filter .6s ease, transform .6s cubic-bezier(.3,0,.2,1);
@@ -385,6 +391,22 @@
   <p>Last semester I built a lot of interfaces with Claude. Each one started with forty minutes of corrections before it made anything I would keep: no purple gradient, no centred heading, no rounded corners. By the fifth project I was pasting the same paragraph into an empty chat.</p>
   <p>The building was never the problem. Ask for six versions and you get six, all usable, and it has no view on which one is worth keeping. That comes back to you every time.</p>
   <p>If you do not supply the view, you get the middle of everything. People call that slop.</p>
+
+  <div class="vers">
+    <figure>
+      <img src="images/v-8ca5cf3.jpg" alt="An early version of this page">
+      <figcaption><b>First version</b>All Calibri, no colour, numbered sections, a byline under the title. It reads like a document because I had just thrown out four louder directions and overcorrected.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/v-0b1c108.jpg" alt="A later version of this page">
+      <figcaption><b>After the rewrite</b>Camera roll replaced the artwork, the wordmark went to Archivo Black, and the line in the middle still claimed a right hemisphere, which is pop neuroscience and came out later.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/v-eab9b13.jpg" alt="A recent version of this page">
+      <figcaption><b>Set in Nunito</b>Colour arrived on the headers and the lists. Nothing moved yet: no opening sequence, no pairs on the grid, nobody taking a hammer to the title.</figcaption>
+    </figure>
+  </div>
+  <p class="plate-cap">Three saved states of this page. The versions before these are gone: a parchment one set in a serif, a grunge one, an antique one. Each lasted about ten minutes.</p>
 
   <h2>The idea</h2>
   <p>Taste works like a limit. What makes work yours is the long list of things you will not do. That list never gets written anywhere, so it never reaches the prompt.</p>
