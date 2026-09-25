@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Litmus</title>
+<meta name="description" content="A taste layer for AI. Written by one person instead of averaged from everyone.">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  body{background:#fff;color:#000;
+    font-family:Calibri,Arial,Helvetica,sans-serif;
+    font-size:16px;line-height:1.5;margin:0;padding:44px 28px 120px}
+  .page{max-width:720px;margin:0 auto}
+
+  h1{font-size:22px;font-weight:bold;margin:0 0 4px}
+  .sub{margin:0 0 4px;max-width:640px}
+  .meta{color:#666;margin:0}
+
+  .tabs{margin:28px 0 0;border-bottom:1px solid #ccc;display:flex;flex-wrap:wrap;gap:22px}
+  .tab{background:none;border:none;padding:0 0 8px;margin:0 0 -1px;cursor:pointer;
+    font-family:inherit;font-size:16px;color:#666;border-bottom:2px solid transparent}
+  .tab:hover{color:#000}
+  .tab[aria-selected="true"]{color:#000;font-weight:bold;border-bottom-color:#000}
+  .panel{padding-top:28px}
+  .panel[hidden]{display:none}
+
+  h2{font-size:16px;font-weight:bold;margin:30px 0 10px}
+  h2:first-child{margin-top:0}
+  h3{font-size:16px;font-weight:normal;color:#666;margin:26px 0 8px}
+  p{margin:0 0 14px;max-width:640px}
+  ol,ul{margin:0 0 14px;padding-left:22px;max-width:640px}
+  li{margin:0 0 8px}
+  hr{border:none;border-top:1px solid #ccc;margin:34px 0}
+  .lead{font-size:19px;line-height:1.4;margin:0 0 8px;max-width:620px}
+  .lead:last-of-type{margin-bottom:24px}
+
+  pre{font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.5;
+    white-space:pre-wrap;margin:0 0 14px}
+
+  table{border-collapse:collapse;width:100%;margin:6px 0 14px;font-size:15px}
+  th,td{text-align:left;vertical-align:top;padding:9px 14px 9px 0;border-bottom:1px solid #ccc}
+  th{font-weight:bold;border-bottom:1px solid #000;padding-top:0}
+  td:nth-child(2){color:#666}
+  td:nth-child(3),th:nth-child(3){white-space:nowrap;padding-right:0;width:1%}
+  td:nth-child(3){color:#666}
+
+  /* rotating ring of work */
+  .ring{position:relative;height:660px;margin:10px 0 18px;--r:288px}
+  .spin{position:absolute;inset:0;animation:turn 48s linear infinite}
+  @keyframes turn{to{transform:rotate(360deg)}}
+  .ring .c{position:absolute;left:50%;top:50%;width:110px;height:110px;
+    margin:-55px 0 0 -55px;
+    transform:rotate(calc(var(--a) * 1deg)) translateY(calc(var(--r) * -1))
+              rotate(calc(var(--a) * -1deg))}
+  .ring .cc{width:100%;height:100%;animation:turnback 48s linear infinite}
+  @keyframes turnback{to{transform:rotate(-360deg)}}
+  .ring .c img{width:100%;height:100%;object-fit:cover;object-position:center;
+    display:block;background:#fff;border:1px solid #e4e4e4}
+  .ring-core{position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;z-index:2;pointer-events:none}
+  .ring-core h2{font-size:26px;line-height:1.25;margin:0 0 10px;max-width:330px}
+  .ring-core p{font-size:14px;color:#666;margin:0;max-width:300px}
+  @media (prefers-reduced-motion:reduce){.spin,.ring .cc{animation:none}}
+  @media (max-width:46rem){
+    .ring{height:430px;--r:180px}
+    .ring .c{width:70px;height:70px;margin:-35px 0 0 -35px}
+    .ring-core h2{font-size:19px;max-width:230px}
+    .ring-core p{font-size:12px;max-width:210px}
+  }
+
+  /* numbered specimen grid */
+  .plate{display:grid;grid-template-columns:repeat(6,1fr);gap:18px 14px;margin:22px 0 10px}
+  .plate .s .n{font-size:10px;color:#666;display:block;margin-bottom:5px;letter-spacing:.06em}
+  .plate .s img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+  .plate-cap{color:#666;font-size:14px;margin:6px 0 26px;max-width:640px}
+
+  /* evidence row */
+  .ev{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin:20px 0 8px}
+  .ev figure{margin:0}
+  .ev img{width:100%;aspect-ratio:1;object-fit:cover;display:block;margin-bottom:6px}
+  .ev p{font-size:13px;line-height:1.4;color:#666;margin:0}
+
+  /* vertical rule of type, from the shop window */
+  .edge{position:fixed;left:16px;top:50%;transform:translateY(-50%) rotate(180deg);
+    writing-mode:vertical-rl;white-space:nowrap;font-size:10px;letter-spacing:.34em;
+    text-transform:uppercase;color:#bbb;pointer-events:none;z-index:5}
+
+  figure{margin:20px 0 26px}
+  figcaption{color:#666;font-size:14px;margin-top:8px;max-width:640px}
+  svg{display:block;max-width:100%;height:auto}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0 8px}
+  .cap{font-size:14px;margin:0 0 6px}
+  .frame{border:1px solid #ccc;height:340px;overflow:hidden;position:relative;background:#fff}
+  .frame img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+  .frame .drop{font-size:13px;color:#666;text-align:center;padding:130px 20px 0;margin:0;line-height:1.7}
+
+  .slop{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    height:100%;padding:18px 14px;text-align:center}
+  .slop .badge{display:inline-block;font-size:8px;padding:4px 9px;border-radius:999px;
+    background:#EEF2FF;color:#4F46E5;margin-bottom:12px}
+  .slop h4{font-size:19px;line-height:1.15;margin:0 0 8px;font-weight:800;letter-spacing:-.02em;
+    background:linear-gradient(90deg,#6366F1,#A855F7);-webkit-background-clip:text;
+    background-clip:text;color:transparent}
+  .slop p{font-size:9px;color:#6B7280;margin:0 auto 12px;max-width:80%;line-height:1.6}
+  .slop .btn{display:inline-block;font-size:9px;color:#fff;background:#6366F1;
+    padding:7px 16px;border-radius:8px;margin-bottom:16px;box-shadow:0 4px 14px rgba(99,102,241,.35)}
+  .slop .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .slop .card{border:1px solid #E5E7EB;border-radius:12px;padding:10px 8px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .slop .dot{width:18px;height:18px;border-radius:8px;background:#EEF2FF;margin:0 auto 7px}
+  .slop .ct{font-size:8px;font-weight:600;margin:0 0 4px;color:#111827}
+  .slop .cb{font-size:7px;color:#9CA3AF;line-height:1.5;margin:0}
+
+  @media (max-width:60rem){.edge{display:none}}
+  @media (max-width:40rem){.plate{grid-template-columns:repeat(3,1fr)}
+    .ev{grid-template-columns:repeat(2,1fr)}
+    .compare{grid-template-columns:1fr}.tabs{gap:14px}.tab{font-size:15px}
+    table{font-size:14px}th:nth-child(2),td:nth-child(2){display:none}}
+</style>
+</head>
+<body>
+<div class="edge">Litmus · a taste layer for AI</div>
+<div class="page">
+
+<h1>Litmus</h1>
+<p class="sub">A taste layer for AI. Written by one person instead of averaged from everyone.</p>
+<p class="meta">Noor Sharma. Version one. Draft, 25 September 2026.</p>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true"  data-p="p1">Overview</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="p2">How it is built</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="p3">My taste so far</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="p4">What you leave with</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="p5">Open questions</button>
+</div>
+
+<!-- 1 -->
+<div class="panel" id="p1" role="tabpanel">
+  <div class="ring">
+    <div class="spin">
+      <div class="c" style="--a:0.0"><div class="cc"><img src="images/disco.png" alt="discoverdisco.com"></div></div>
+      <div class="c" style="--a:24.0"><div class="cc"><img src="images/art-01.jpg" alt=""></div></div>
+      <div class="c" style="--a:48.0"><div class="cc"><img src="images/art-02.jpg" alt=""></div></div>
+      <div class="c" style="--a:72.0"><div class="cc"><img src="images/art-03.jpg" alt=""></div></div>
+      <div class="c" style="--a:96.0"><div class="cc"><img src="images/disco-explore.png" alt="discoverdisco.com explore"></div></div>
+      <div class="c" style="--a:120.0"><div class="cc"><img src="images/art-04.jpg" alt=""></div></div>
+      <div class="c" style="--a:144.0"><div class="cc"><img src="images/art-05.jpg" alt=""></div></div>
+      <div class="c" style="--a:168.0"><div class="cc"><img src="images/art-06.jpg" alt=""></div></div>
+      <div class="c" style="--a:192.0"><div class="cc"><img src="images/disco-about.png" alt="discoverdisco.com about"></div></div>
+      <div class="c" style="--a:216.0"><div class="cc"><img src="images/art-07.jpg" alt=""></div></div>
+      <div class="c" style="--a:240.0"><div class="cc"><img src="images/art-08.jpg" alt=""></div></div>
+      <div class="c" style="--a:264.0"><div class="cc"><img src="images/art-09.jpg" alt=""></div></div>
+      <div class="c" style="--a:288.0"><div class="cc"><img src="images/art-10.jpg" alt=""></div></div>
+      <div class="c" style="--a:312.0"><div class="cc"><img src="images/art-11.jpg" alt=""></div></div>
+      <div class="c" style="--a:336.0"><div class="cc"><img src="images/art-12.jpg" alt=""></div></div>
+    </div>
+    <div class="ring-core">
+      <h2>AI made it easy to make anything.</h2>
+      <p>Knowing what is worth keeping is the part it cannot do.</p>
+    </div>
+  </div>
+
+  <p class="lead">Litmus is a second brain for taste. Mine, written down, so a model can use it. You describe what you want and leave with a prompt and a skill that produce work in my taste rather than nobody's.</p>
+
+  <h2>1. The problem</h2>
+  <p>A model can build almost anything you describe. What it cannot do is choose. Show it six versions and it will make all six equally well and hand the decision back to you. If you do not decide, it settles on the average of everything it has ever seen.</p>
+  <p>That average is what people mean by slop. It is not bad work. It is work with nobody behind it.</p>
+  <p>I built a lot of interfaces with Claude last semester. The results were fine. Getting there took the same forty minutes every time: the same corrections, the same preferences typed out again, the same things ruled out. By the fifth project I was pasting the same instructions into an empty chat over and over.</p>
+
+  <h2>2. The idea</h2>
+  <p>Taste is not a style. It is a limit. What makes someone's work recognisable is not what they reach for. It is the very long list of things they will not do.</p>
+  <p>That list takes years to build and nobody ever writes it down, which is why it never makes it into a prompt.</p>
+  <p>Litmus writes it down. You say what you are making. Everything else is already decided.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 132" width="700" height="132" role="img" aria-label="You give one line. Litmus gives the rules. Together they make a brief. Claude builds it. The result is checked against the rules.">
+      <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+        <path d="M0,0 L7,3 L0,6" fill="none" stroke="#000" stroke-width="1"/></marker></defs>
+      <g stroke="#000" stroke-width="1" fill="none">
+        <line x1="0"   y1="14" x2="142" y2="14"/>
+        <line x1="186" y1="14" x2="328" y2="14"/>
+        <line x1="372" y1="14" x2="514" y2="14"/>
+        <line x1="558" y1="14" x2="700" y2="14"/>
+        <line x1="150" y1="34" x2="178" y2="34" marker-end="url(#a1)"/>
+        <line x1="336" y1="34" x2="364" y2="34" marker-end="url(#a1)"/>
+        <line x1="522" y1="34" x2="550" y2="34" marker-end="url(#a1)"/>
+        <path d="M629,66 L629,94 L71,94 L71,66" marker-end="url(#a1)" stroke-dasharray="3 3"/>
+      </g>
+      <g font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#000">
+        <text x="0"   y="34">You</text>
+        <text x="186" y="34">Litmus</text>
+        <text x="372" y="34">One page of rules</text>
+        <text x="558" y="34">Claude</text>
+      </g>
+      <g font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#666">
+        <text x="0"   y="52">what you are making</text>
+        <text x="186" y="52">every other decision</text>
+        <text x="372" y="52">plus your one line</text>
+        <text x="558" y="52">builds it</text>
+        <text x="216" y="112">the result is checked back against the rules</text>
+      </g>
+    </svg>
+    <figcaption>Figure 1. You are responsible for one line.</figcaption>
+  </figure>
+
+  <h2>3. Why one line is enough</h2>
+  <p>You already give ChatGPT one line. That is not why the answer comes back generic. It comes back generic because the model has nothing of its own to fill the other ninety percent with.</p>
+  <p>One line and no opinions gives you slop. One line and strong opinions gives you a style.</p>
+  <p>The limit is the point. Inside a short list of allowed choices there is still plenty of range, and nothing in it is bad, because nothing bad was allowed in.</p>
+</div>
+
+<!-- 2 -->
+<div class="panel" id="p2" role="tabpanel" hidden>
+  <h2>4. How I am building it</h2>
+  <p>I am not writing my taste down from memory. I am making things and recording what I decide while I make them.</p>
+  <p>Five or six pieces to start: a couple of websites, an image, a poster. Each one is built in the open, with every choice logged, including the ones I threw out. Those decisions are the material. The rejected ones teach it more than the kept ones.</p>
+
+  <div class="plate">
+    <div class="s"><span class="n">01</span><img src="images/art-13.jpg" alt=""></div>
+    <div class="s"><span class="n">02</span><img src="images/art-14.jpg" alt=""></div>
+    <div class="s"><span class="n">03</span><img src="images/art-15.jpg" alt=""></div>
+    <div class="s"><span class="n">04</span><img src="images/art-16.jpg" alt=""></div>
+    <div class="s"><span class="n">05</span><img src="images/art-17.jpg" alt=""></div>
+    <div class="s"><span class="n">06</span><img src="images/art-18.jpg" alt=""></div>
+    <div class="s"><span class="n">07</span><img src="images/art-19.jpg" alt=""></div>
+    <div class="s"><span class="n">08</span><img src="images/art-20.jpg" alt=""></div>
+    <div class="s"><span class="n">09</span><img src="images/art-21.jpg" alt=""></div>
+    <div class="s"><span class="n">10</span><img src="images/art-22.jpg" alt=""></div>
+    <div class="s"><span class="n">11</span><img src="images/art-23.jpg" alt=""></div>
+    <div class="s"><span class="n">12</span><img src="images/art-24.jpg" alt=""></div>
+  </div>
+  <p class="plate-cap">Twelve of the fifty-three pieces in my art portfolio. Everything here was drawn by hand before any of this started, which makes it the cleanest record of what I do when nothing is instructing me.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 276" width="700" height="276" role="img" aria-label="Collect forty pieces, subtract what everyone does, write rules that can be wrong, correct them, write the file, test it blind, then back to writing rules.">
+      <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+        <path d="M0,0 L7,3 L0,6" fill="none" stroke="#000" stroke-width="1"/></marker></defs>
+      <g stroke="#000" stroke-width="1" fill="none">
+        <line x1="0" y1="8"   x2="460" y2="8"/>
+        <line x1="0" y1="50"  x2="460" y2="50"/>
+        <line x1="0" y1="92"  x2="460" y2="92"/>
+        <line x1="0" y1="134" x2="460" y2="134"/>
+        <line x1="0" y1="176" x2="460" y2="176"/>
+        <line x1="0" y1="218" x2="460" y2="218"/>
+        <line x1="0" y1="260" x2="460" y2="260"/>
+        <path d="M460,240 L520,240 L520,114 L464,114" marker-end="url(#a2)" stroke-dasharray="3 3"/>
+      </g>
+      <g font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#000">
+        <text x="34" y="32">Design 5 or 6 things myself</text>
+        <text x="34" y="74">Log every decision, kept and thrown out</text>
+        <text x="34" y="116">Write the never list and the always list</text>
+        <text x="34" y="158">Feed it back and mark what it got wrong</text>
+        <text x="34" y="200">Write the file</text>
+        <text x="34" y="242">Test it on something new</text>
+      </g>
+      <g font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#999">
+        <text x="0" y="32">01</text><text x="0" y="74">02</text><text x="0" y="116">03</text>
+        <text x="0" y="158">04</text><text x="0" y="200">05</text><text x="0" y="242">06</text>
+      </g>
+      <g font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#666">
+        <text x="532" y="170">if nobody can see</text><text x="532" y="185">the difference,</text>
+        <text x="532" y="200">go back to 03</text>
+      </g>
+    </svg>
+    <figcaption>Figure 2. Steps 3 to 6 repeat.</figcaption>
+  </figure>
+
+  <ol>
+    <li><strong>Design 5 or 6 things myself.</strong> Two websites, an image, a poster, an email. Real pieces, finished properly, not exercises.</li>
+    <li><strong>Log every decision, kept and thrown out.</strong> Not just the final file. The four versions of the headline that died, the colour I tried for ten minutes and hated, the layout I abandoned. A finished piece only shows the winners. The losers are where the limit actually lives.</li>
+    <li><strong>Write the never list and the always list.</strong> Said outright, not inferred. Never a purple gradient. Never a centred headline. Always left aligned. Always one loud thing at most. The never list does more work than the always list, because a model will happily do anything you have not forbidden.</li>
+    <li><strong>Feed it back and mark what it got wrong.</strong> It reads the decisions and the two lists and tells me what it thinks my taste is. I go through and correct it. The corrections are the most valuable thing in the whole process.</li>
+    <li><strong>Write the file.</strong> One page. Never list first, then the rules, then exact sizes and colours, then a short test it can run on its own work.</li>
+    <li><strong>Test it on something new.</strong> A brief it has never seen, built twice, with the file and without. If I cannot tell which is which, it has not learned anything yet and I go back to step three.</li>
+  </ol>
+  <p>Forty saved references sit underneath all this as background, but they are the weaker source. What I made, and what I killed while making it, says more than what I admire.</p>
+</div>
+
+<!-- 3 -->
+<div class="panel" id="p3" role="tabpanel" hidden>
+  <h2>5. My taste so far</h2>
+  <p>This is what came out of running the process on the left, once. It is my taste after somebody wrote it down.</p>
+  <p>Nine rules, taken from five things I picked and four directions I turned down. Each one is a guess, and each one is followed by the thing that made me think it. These nine are what get written into the file in the next tab.</p>
+
+  <table>
+    <tr><th>Rule</th><th>What made me think it</th><th>How sure</th></tr>
+    <tr><td>Plain background. No tint for the sake of mood.</td><td>I called the soft colour washes AI design and cut them.</td><td>Sure</td></tr>
+    <tr><td>Ordinary type doing ordinary work. One loud thing per page at most.</td><td>Three loud typefaces on one page was too much. One was fine.</td><td>Sure</td></tr>
+    <tr><td>Text small and packed tight, with space around it instead of inside it.</td><td>The drinks poster and the shop window both set text tiny.</td><td>Fairly</td></tr>
+    <tr><td>Count things out loud. Numbers are part of the layout.</td><td>Three of the five things I picked number their contents.</td><td>Fairly</td></tr>
+    <tr><td>Nothing in a box. No cards, no borders, no shadows.</td><td>True of every single thing I picked.</td><td>Sure</td></tr>
+    <tr><td>Texture has to be real. No filters laid over the top.</td><td>Real paper creases in the references. Grain filter rejected on sight.</td><td>Sure</td></tr>
+    <tr><td>No dressing up. Not grunge, not antique, not laboratory.</td><td>Grunge was too much. Old-fashioned script was too grand.</td><td>Sure</td></tr>
+    <tr><td>Everything to the left. Centred pages look like templates.</td><td>True across all five, though I never said it out loud.</td><td>Untested</td></tr>
+    <tr><td>If something is only there to look nice, take it out.</td><td>The reason underneath every rejection above.</td><td>Fairly</td></tr>
+  </table>
+
+  <div class="ev">
+    <figure><img src="images/art-04.jpg" alt=""><p>01. Plain ground. The paper is the paper.</p></figure>
+    <figure><img src="images/art-07.jpg" alt=""><p>02. One loud thing. Everything else quiet.</p></figure>
+    <figure><img src="images/art-02.jpg" alt=""><p>05. Nothing in a box, no shadow.</p></figure>
+    <figure><img src="images/art-09.jpg" alt=""><p>06. Texture from the material, not a filter.</p></figure>
+    <figure><img src="images/art-11.jpg" alt=""><p>09. Nothing there only to look nice.</p></figure>
+  </div>
+  <p class="plate-cap">The same rules, found in drawings made years before I thought about any of this.</p>
+
+  <h3>What the first version got wrong</h3>
+  <p>The first attempt said my backgrounds are always off-white and my type should be distinctive. Both were wrong. I said so, they were rewritten, and this is the second version.</p>
+  <p>That is the method working, not the method failing. The first read of anyone's taste is a description of good design in general. It only becomes theirs once they say what it got wrong.</p>
+</div>
+
+<!-- 4 -->
+<div class="panel" id="p4" role="tabpanel" hidden>
+  <h2>6. What you get</h2>
+  <p>Two things, and you choose which you want.</p>
+  <p><strong>A prompt.</strong> Copy it, paste it, use it once. Good for a single piece.</p>
+  <p><strong>A skill.</strong> One page of instructions you drop into a project folder. Every chat about that project then starts with your taste already loaded, and you never type the setup again. This is the one I use.</p>
+  <p>The skill is printed below. It is short on purpose: a model skims anything longer.</p>
+<pre>My taste, version two. Noor Sharma.
+
+NEVER  no exceptions
+  No rounded corners past 2px.
+  No centred headline. Everything left.
+  No gradients, no glow, no frosted glass, no blur.
+  No drop shadows.
+  No texture laid over the top. Real material or nothing.
+  Nothing moves when the page scrolls.
+  Never write: supercharge, effortlessly, introducing, seamless.
+
+TYPE
+  One typeface, used at many sizes. Never three typefaces.
+  Body text 16px. Do not make it bigger.
+  One loud element per page, at most.
+
+COLOUR
+  Background plain. Black text, full strength, not grey.
+  One accent colour, used three times at most.
+  Colour comes from the photographs, or not at all.
+
+LAYOUT
+  Left aligned. One column. Numbered sections.
+  Lines and rules hold the page together. Nothing floats.
+  Pack it tight. Put real words on the page.</pre>
+
+  <h2>7. Before and after</h2>
+  <p>Left: a page built from a brief alone. Right: <a href="https://discoverdisco.com">discoverdisco.com</a>, which I designed and built. The right side is where this is meant to end up.</p>
+
+  <div class="compare">
+    <div>
+      <p class="cap"><strong>Without the file</strong></p>
+      <div class="frame">
+        <div class="slop">
+          <span class="badge">Introducing DiscoverApp</span>
+          <h4>Supercharge your city exploration</h4>
+          <p>The all-in-one platform empowering you to discover, save and share the best places effortlessly.</p>
+          <span class="btn">Get started free</span>
+          <div class="cards">
+            <div class="card"><div class="dot"></div><p class="ct">Discover</p><p class="cb">Find hidden spots near you instantly.</p></div>
+            <div class="card"><div class="dot"></div><p class="ct">Save</p><p class="cb">Build lists and never lose a place.</p></div>
+            <div class="card"><div class="dot"></div><p class="ct">Share</p><p class="cb">Send picks to friends in one tap.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="cap"><strong>With the file</strong></p>
+      <div class="frame">
+        <img src="images/disco.png" alt="discoverdisco.com home page"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <p class="drop" style="display:none">Save a screenshot of discoverdisco.com as images/disco.png in this folder.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>What changed</h3>
+  <ul>
+    <li>The purple heading, the little pill badge and the three rounded cards are gone. All three are on the never list.</li>
+    <li>Centred everything became a composed page with one image carrying it.</li>
+    <li>The words stopped selling. <em>Places for the particular</em> is a point of view, not a benefit.</li>
+    <li>Numbered steps replaced feature boxes.</li>
+  </ul>
+</div>
+
+<!-- 5 -->
+<div class="panel" id="p5" role="tabpanel" hidden>
+  <h2>8. Open questions</h2>
+  <ol>
+    <li><strong>Is a prompt the right thing to hand over at all?</strong> What I actually want to give someone is a copy of my creative brain, something they can use again and again without starting from scratch. A prompt is a thin version of that. A skill is a little better. Neither is really it. I do not yet know what the right object is.</li>
+    <li><strong>Does taste survive being cut short?</strong> The file has to stay to one page or the model skims it. How short can it get before the person disappears from it?</li>
+    <li><strong>Should the rules change with the subject?</strong> A wine shop and a student club are different jobs. Keeping the rules fixed is the stronger claim. Letting them move is more useful, and then somebody has to decide how they move.</li>
+    <li><strong>Is borrowed taste still taste?</strong> If everything I make comes out of one set of rules, and everything I make goes back into those rules, it tightens. That is either the point or a trap.</li>
+    <li><strong>How many rules?</strong> Few enough that all of them are mine. Enough that the results are not all the same. I do not know where that sits.</li>
+    <li><strong>Can anyone see the difference?</strong> This is the whole thing. If nobody can pick which page used the file, there is nothing here.</li>
+  </ol>
+
+  <h2>9. How you can help</h2>
+  <ol>
+    <li><strong>Send me the paragraph you retype.</strong> If you build with AI you have a block of instructions you paste at the start of every session. Send it to me. It is both proof that this problem is real and the best material I could have.</li>
+    <li><strong>Tell me what reading pictures misses.</strong> If you design, I want to know what this method cannot see. I suspect it catches surface details and misses how a page is put together.</li>
+    <li><strong>Tell me what you did on day one,</strong> if you have built anything that learns a person. How did you avoid pretending to know more about them than you did?</li>
+    <li><strong>Take the blind test.</strong> If you cannot tell which page a person made, say so. That is worth more to me than encouragement.</li>
+  </ol>
+</div>
+
+</div>
+
+<script>
+  var tabs = document.querySelectorAll('.tab');
+  function show(id){
+    tabs.forEach(function(t){
+      var on = t.dataset.p === id;
+      t.setAttribute('aria-selected', on);
+      document.getElementById(t.dataset.p).hidden = !on;
+    });
+    if (location.hash.slice(1) !== id) history.replaceState(null,'','#'+id);
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ show(t.dataset.p); window.scrollTo(0,0); });
+  });
+  function fromHash(){
+    var id = location.hash.slice(1);
+    if (document.getElementById(id)) show(id);
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+</script>
+</body>
+</html>
