@@ -105,7 +105,7 @@
     display:block;background:#fff;border:1px solid #e4e4e4}
   .ring-core{position:absolute;inset:0;display:flex;flex-direction:column;
     align-items:center;justify-content:center;text-align:center;z-index:2;pointer-events:none}
-  .smash{position:absolute;left:0;top:0;width:238px;opacity:0;
+  .smash{position:absolute;left:0;top:0;width:252px;opacity:0;
     overflow:visible;pointer-events:none;z-index:3;transition:opacity .3s ease}
   .smash.set{opacity:1}
   .smash .ln{stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -118,9 +118,15 @@
   .smash{transition:left .5s cubic-bezier(.4,0,.35,1), opacity .3s ease}
   .smash .ln,.smash .hd{stroke:var(--pen,#FF3E00)}
   .smash .hd{fill:var(--pen,#FF3E00)}
-  .smash .arm{transform-box:view-box;transform-origin:236px 36px;
-    transform:rotate(-64deg);transition:transform .28s cubic-bezier(.4,0,.95,1)}
-  .smash.hit .arm{transform:rotate(12deg);transition-duration:.16s}
+  .smash .arm{transform-box:view-box;transform-origin:234px 43px;
+    transform:rotate(-68deg);transition:transform .3s cubic-bezier(.4,0,.95,1)}
+  .smash.hit .arm{transform:rotate(16deg);transition-duration:.15s}
+  .smash .lean{transform-box:view-box;transform-origin:233px 58px;
+    transform:rotate(-7deg);transition:transform .3s cubic-bezier(.4,0,.95,1)}
+  .smash.hit .lean{transform:rotate(11deg);transition-duration:.15s}
+  .smash .legs{transform-box:view-box;transform-origin:233px 58px;
+    transform:rotate(2deg);transition:transform .3s ease}
+  .smash.hit .legs{transform:rotate(-3deg);transition-duration:.15s}
   .smash .body{animation:bob 1.1s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
   @media (prefers-reduced-motion:reduce){.smash{display:none}}
@@ -293,13 +299,21 @@
       <div class="c" style="--a:337.5"><div class="cc"><img src="images/roll-16.jpg" alt=""></div></div>
     </div>
     <svg class="smash" viewBox="0 0 340 120" aria-hidden="true">
-      <g class="ln body">
-        <circle cx="236" cy="24" r="4.5"/>
-        <path d="M236,28.5 L236,54"/>
-        <path d="M236,54 L229,76 M236,54 L244,76"/>
-        <g class="arm">
-          <path d="M236,36 L251,44 L264,53"/>
-          <path class="hd" d="M259,46 h11 v11 h-11 z" stroke="none"/>
+      <defs><clipPath id="hd"><circle cx="236" cy="24" r="14"/></clipPath></defs>
+      <g class="body">
+        <g class="lean">
+          <image href="images/head.jpg" clip-path="url(#hd)"
+                 x="187" y="-9.9" width="73.7" height="73.7" preserveAspectRatio="xMidYMid slice"/>
+          <circle class="ln" cx="236" cy="24" r="14"/>
+          <path class="ln" d="M236,38 L233,58"/>
+          <g class="arm">
+            <path class="ln" d="M234,43 L252,51 L266,61"/>
+            <path class="hd" d="M261,54 h12 v12 h-12 z" stroke="none"/>
+          </g>
+        </g>
+        <g class="legs">
+          <path class="ln" d="M233,58 L226,70 L228,84"/>
+          <path class="ln" d="M233,58 L243,69 L242,84"/>
         </g>
       </g>
     </svg>
@@ -758,7 +772,7 @@ SILHOUETTE
     function stand(el){
       var r = el.getBoundingClientRect(), c = core.getBoundingClientRect();
       var k = svg.getBoundingClientRect().width / 340;
-      svg.style.left = (r.left + r.width/2 - c.left - 236*k) + 'px';
+      svg.style.left = (r.left + r.width/2 - c.left - 233*k) + 'px';
       svg.style.top  = (r.top  - c.top - 74*k) + 'px';
       svg.classList.add('set');
     }
