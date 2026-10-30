@@ -6,7 +6,7 @@
 <title>Litmus engine, stage one</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Nunito:wght@300;400;600;700&family=Instrument+Serif&family=Newsreader:ital,wght@0,300;1,300&family=Space+Mono&family=Bebas+Neue&family=Playfair+Display:wght@500&family=Caveat&family=DM+Sans&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box}
   body{margin:0;background:#fff;color:#14130F;
@@ -60,6 +60,38 @@
   .chip{font-size:12px;padding:3px 9px;border:1px solid #14130F}
   .chip.base{border-color:#ddd;color:#aaa}
   .note{color:#444;max-width:46em}
+
+  /* judge */
+  .deck{display:grid;grid-template-columns:1fr 300px;gap:30px;align-items:start}
+  .card{border:1px solid #ddd;height:330px;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;background:#fff;position:relative}
+  .card > .fill{width:100%;height:100%}
+  .card .pad{padding:26px 28px;width:100%}
+  .swatches{display:flex;width:100%;height:100%}
+  .swatches i{flex:1}
+  .jmeta{display:flex;align-items:baseline;gap:12px;margin:0 0 10px}
+  .jcat{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#fff;background:#14130F;padding:3px 8px}
+  .jcount{font-size:12px;color:#999;margin-left:auto}
+  .jnote{font-size:13px;color:#888;margin:10px 0 0}
+  .jbtns{display:flex;gap:10px;margin:16px 0 0}
+  .jb{font:inherit;font-size:15px;padding:12px 30px;border:1px solid #14130F;background:#fff;cursor:pointer}
+  .jb.no{border-color:#D0402F;color:#D0402F;font-weight:700}
+  .jb.no:hover{background:#D0402F;color:#fff}
+  .jb.yes:hover{background:#14130F;color:#fff}
+  .why{font:inherit;font-size:14px;padding:9px 12px;border:1px solid #ccc;width:100%;margin-top:12px}
+  .why:focus{outline:none;border-color:#14130F}
+  .jhint{font-size:12px;color:#aaa;margin:8px 0 0}
+  .prog{height:5px;background:#eee;margin:0 0 16px}
+  .prog i{display:block;height:100%;background:#14130F}
+  .side h3{font-size:12px;letter-spacing:.03em;text-transform:uppercase;margin:0 0 10px;color:#666}
+  .side .rej h3{color:#D0402F}
+  .wrow{display:flex;align-items:center;gap:8px;font-size:13px;padding:5px 0}
+  .wrow .bar{height:7px;flex:none}
+  .rej .bar{background:#D0402F}
+  .acc .bar{background:#14130F}
+  .wrow .v{font-size:11px;color:#aaa;margin-left:auto}
+  .side .blk{margin-bottom:24px}
+  .done{border:1px solid #14130F;padding:20px}
 
   /* 3 subtract */
   .two{display:grid;grid-template-columns:1fr 1fr;gap:30px}
@@ -119,10 +151,11 @@
   <div class="rail" role="tablist">
     <button class="st" role="tab" aria-selected="true"  data-p="s1"><span class="n">01</span> Corpus</button>
     <button class="st" role="tab" aria-selected="false" data-p="s2"><span class="n">02</span> Read</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">03</span> Subtract</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">04</span> Correct</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">05</span> The file</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">06</span> Use it</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sj"><span class="n">03</span> Judge</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">04</span> Subtract</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">05</span> Correct</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">06</span> The file</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">07</span> Use it</button>
   </div>
 
   <!-- 01 -->
@@ -146,6 +179,35 @@
       <button class="act ghost" id="prev">Previous piece</button>
       <button class="act" id="next">Next piece</button>
     </div>
+  </div>
+
+  <!-- judge -->
+  <div class="pane" id="sj" role="tabpanel" hidden style="--c:#D0402F">
+    <h2>What I turn down on sight</h2>
+    <p class="lede">The corpus says what I have made. This says what I refuse, which is the
+      stronger signal: a no draws a boundary round the answer, a yes only marks a point inside it.
+      Fifty specimens across seven categories. Judge fast, do not reason about it. The reason box
+      is optional, and it is worth filling in, because the comment turns out to be the useful part.</p>
+    <div class="prog"><i id="prog"></i></div>
+    <div class="deck">
+      <div>
+        <div class="jmeta"><span class="jcat" id="jcat"></span><span class="jcount" id="jcount"></span></div>
+        <div class="card" id="card"></div>
+        <p class="jnote" id="jnote"></p>
+        <input type="text" class="why" id="why" placeholder="why, in a few words (optional)">
+        <div class="jbtns">
+          <button class="jb no"  id="btnNo">No</button>
+          <button class="jb yes" id="btnYes">Yes</button>
+        </div>
+        <p class="jhint">Left arrow for no, right arrow for yes. Judgments save as you go.</p>
+      </div>
+      <div class="side">
+        <div class="blk rej"><h3>Rejected, weighted 1.0</h3><div id="rejList"></div></div>
+        <div class="blk acc"><h3>Accepted, weighted 0.55</h3><div id="accList"></div></div>
+        <button class="act ghost" id="resetJ" style="font-size:12px;padding:6px 12px">Start the deck over</button>
+      </div>
+    </div>
+    <div id="jdone"></div>
   </div>
 
   <!-- 03 -->
@@ -304,6 +366,119 @@ document.getElementById('claims').addEventListener('click', function(e){
   save(); drawClaims();
 });
 
+
+/* ---------- judge ---------- */
+var JKEY = 'litmus-judge-v1';
+var judg = {};
+try { judg = JSON.parse(localStorage.getItem(JKEY) || '{}'); } catch(e){ judg = {}; }
+function jsave(){ try { localStorage.setItem(JKEY, JSON.stringify(judg)); } catch(e){} }
+
+function renderSpec(sp){
+  if (sp.t === 'type')  return '<div class="pad"><p style="margin:0;'+sp.css+'">'+PHRASE+'</p></div>';
+  if (sp.t === 'copy')  return '<div class="pad"><p style="margin:0;font-size:20px;line-height:1.45;max-width:20em">'+sp.text+'</p></div>';
+  if (sp.t === 'swatch')return '<div class="fill swatches">'+sp.cols.map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</div>';
+  if (sp.t === 'tex')   return '<div class="fill" style="'+sp.css+'">'+(sp.inner||'')+'</div>';
+  if (sp.t === 'raw')   return '<div class="fill">'+sp.html+'</div>';
+  if (sp.t === 'space'){
+    var bar = function(w){ return '<div style="height:'+sp.size*0.62+'px;background:#e6e6e6;width:'+w+'%;margin-bottom:'+(sp.size*0.42)+'px"></div>'; };
+    return '<div class="pad"><div style="max-width:'+sp.measure+'">'+
+      '<p style="margin:0 0 '+sp.gap+'px;font-size:'+sp.size+'px;line-height:'+sp.lh+'">Places for the particular. Twenty five cities, read by people who live in them.</p>'+
+      bar(100)+bar(92)+bar(74)+'</div></div>';
+  }
+  if (sp.t === 'img'){
+    var ph = '<div style="width:100%;height:100%;background:linear-gradient(140deg,#9AA98B,#4A5440)"></div>';
+    if (sp.mode==='bleed')  return '<div class="fill">'+ph+'</div>';
+    if (sp.mode==='matted') return '<div class="fill" style="background:#E8C84A;padding:30px"><div style="height:100%">'+ph+'</div></div>';
+    if (sp.mode==='card')   return '<div class="fill" style="padding:34px"><div style="height:100%;border-radius:16px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.22)">'+ph+'</div></div>';
+    if (sp.mode==='oval')   return '<div class="fill" style="padding:26px"><div style="height:100%;border-radius:50%;overflow:hidden">'+ph+'</div></div>';
+    if (sp.mode==='tilt')   return '<div class="fill" style="padding:30px;perspective:800px"><div style="height:100%;transform:rotateY(-17deg) rotateX(7deg);border-radius:10px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.25)">'+ph+'</div></div>';
+    if (sp.mode==='grid')   return '<div class="fill" style="padding:20px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;height:100%">'+
+      [1,2,3,4,5,6].map(function(n){return '<div><span style="font-size:8px;color:#aaa">0'+n+'</span>'+ph+'</div>';}).join('')+'</div></div>';
+  }
+  return '';
+}
+
+function nextIdx(){
+  for (var i=0;i<SPECIMENS.length;i++) if (!judg[SPECIMENS[i].id]) return i;
+  return -1;
+}
+function drawJudge(){
+  var i = nextIdx(), done = Object.keys(judg).length;
+  document.getElementById('prog').style.width = (done/SPECIMENS.length*100)+'%';
+  drawWeights();
+  if (i < 0){
+    document.getElementById('card').innerHTML = '';
+    document.getElementById('jcat').textContent = 'done';
+    document.getElementById('jcount').textContent = SPECIMENS.length+' of '+SPECIMENS.length;
+    document.getElementById('jnote').textContent = '';
+    document.getElementById('jdone').innerHTML =
+      '<div class="done"><p style="margin:0 0 8px;font-weight:700">Deck finished.</p>'+
+      '<p style="margin:0;color:#555;max-width:40em">The refusals this produced are folded into the file in step six, '+
+      'above the rules drawn from the corpus. Reasons you typed are kept alongside them.</p></div>';
+    drawFile(); drawPrompt();
+    return;
+  }
+  document.getElementById('jdone').innerHTML = '';
+  var sp = SPECIMENS[i];
+  document.getElementById('card').innerHTML = renderSpec(sp);
+  document.getElementById('jcat').textContent = CATS[sp.cat];
+  document.getElementById('jcount').textContent = (done+1)+' of '+SPECIMENS.length;
+  document.getElementById('jnote').textContent = sp.note || '';
+  document.getElementById('why').value = '';
+}
+function judge(v){
+  var i = nextIdx(); if (i < 0) return;
+  var why = document.getElementById('why').value.trim();
+  judg[SPECIMENS[i].id] = { v: v, why: why };
+  jsave(); drawJudge(); drawFile(); drawPrompt();
+}
+document.getElementById('btnNo').onclick  = function(){ judge('no'); };
+document.getElementById('btnYes').onclick = function(){ judge('yes'); };
+document.addEventListener('keydown', function(e){
+  if (document.getElementById('sj').hidden) return;
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); judge('no'); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); judge('yes'); }
+});
+document.getElementById('resetJ').onclick = function(){ judg = {}; jsave(); drawJudge(); drawFile(); drawPrompt(); };
+
+function weights(){
+  var w = {};
+  SPECIMENS.forEach(function(sp){
+    var j = judg[sp.id]; if (!j) return;
+    sp.tags.forEach(function(t){
+      if (!w[t]) w[t] = { rej:0, acc:0, why:[] };
+      if (j.v === 'no'){ w[t].rej += REJECT_WEIGHT; if (j.why) w[t].why.push(j.why); }
+      else             { w[t].acc += ACCEPT_WEIGHT; }
+    });
+  });
+  return w;
+}
+function drawWeights(){
+  var w = weights();
+  var rej = Object.keys(w).filter(function(t){ return w[t].rej > w[t].acc; })
+            .sort(function(a,b){ return w[b].rej - w[a].rej; }).slice(0,9);
+  var acc = Object.keys(w).filter(function(t){ return w[t].acc >= w[t].rej && w[t].acc > 0; })
+            .sort(function(a,b){ return w[b].acc - w[a].acc; }).slice(0,9);
+  function row(t, val, cls){
+    return '<div class="wrow"><span class="bar" style="width:'+Math.min(val*16,58)+'px"></span>'+t+
+           '<span class="v">'+val.toFixed(2)+'</span></div>';
+  }
+  document.getElementById('rejList').innerHTML = rej.length
+    ? rej.map(function(t){ return row(t, w[t].rej); }).join('')
+    : '<p style="font-size:13px;color:#bbb;margin:0">nothing yet</p>';
+  document.getElementById('accList').innerHTML = acc.length
+    ? acc.map(function(t){ return row(t, w[t].acc); }).join('')
+    : '<p style="font-size:13px;color:#bbb;margin:0">nothing yet</p>';
+}
+
+function judgedRefusals(){
+  var w = weights();
+  return Object.keys(w)
+    .filter(function(t){ return w[t].rej >= 1 && w[t].rej > w[t].acc; })
+    .sort(function(a,b){ return w[b].rej - w[a].rej; })
+    .map(function(t){ return { tag:t, score:w[t].rej, why:w[t].why }; });
+}
+
 /* ---------- 05 the file ---------- */
 function fileText(){
   var kept   = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
@@ -312,7 +487,15 @@ function fileText(){
   out.push('taste.md');
   out.push('Noor Sharma. Compiled from 12 pieces of my own work.');
   out.push('');
-  out.push('NEVER');
+  var jr = judgedRefusals();
+  if (jr.length){
+    out.push('NEVER  judged, ' + Object.keys(judg).length + ' of ' + SPECIMENS.length + ' specimens');
+    jr.slice(0,10).forEach(function(r){
+      out.push('  ' + r.tag + (r.why.length ? '   (' + r.why[0] + ')' : ''));
+    });
+    out.push('');
+  }
+  out.push('NEVER  standing');
   out.push('  No default white ground. No plain edge.');
   out.push('  No single element picked out in colour against a neutral.');
   out.push('  No border left over as empty margin.');
@@ -376,6 +559,7 @@ function fromHash(){ var id = location.hash.slice(1); if (document.getElementByI
 window.addEventListener('hashchange', fromHash);
 
 drawClaims();
+drawJudge();
 fromHash();
 </script>
 </body>

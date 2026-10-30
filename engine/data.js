@@ -132,3 +132,185 @@ const CLAIMS = [
     rule:'Texture comes from a printing process, not a filter laid on top.',
     tags:['halftone'], from:['art-04','art-21'] }
 ];
+
+/* ---------------------------------------------------------------
+   Judgment deck. 50 specimens across seven categories, shown one at
+   a time. Yes or no, plus an optional reason.
+
+   A rejection counts for more than an acceptance. This follows the
+   negative-preference work: a no draws a boundary round the answer,
+   a yes only marks a point inside it.
+   --------------------------------------------------------------- */
+
+const REJECT_WEIGHT = 1.0;
+const ACCEPT_WEIGHT = 0.55;
+const PHRASE = 'Places for the particular';
+
+const CATS = {
+  type:   'Type',
+  layout: 'Layout',
+  colour: 'Colour',
+  space:  'Spacing',
+  texture:'Texture',
+  image:  'Imagery',
+  voice:  'Voice'
+};
+
+const SPECIMENS = [
+
+/* ---- TYPE ---- 9 */
+{id:'t1', cat:'type', tags:['grotesque','heavy','uppercase','tight tracking'],
+ t:'type', css:'font-family:Archivo;font-weight:900;font-size:40px;letter-spacing:-.04em;text-transform:uppercase;line-height:.95'},
+{id:'t2', cat:'type', tags:['display serif','light','generous'],
+ t:'type', css:'font-family:"Instrument Serif";font-size:50px;line-height:1.02'},
+{id:'t3', cat:'type', tags:['editorial serif','italic','light'],
+ t:'type', css:'font-family:Newsreader;font-weight:300;font-style:italic;font-size:40px;line-height:1.14'},
+{id:'t4', cat:'type', tags:['mono','technical','wide tracking'],
+ t:'type', css:'font-family:"Space Mono";font-size:26px;line-height:1.35'},
+{id:'t5', cat:'type', tags:['condensed caps','heavy','poster'],
+ t:'type', css:'font-family:"Bebas Neue";font-size:56px;letter-spacing:.015em;line-height:.98'},
+{id:'t6', cat:'type', tags:['high contrast serif','classical'],
+ t:'type', css:'font-family:"Playfair Display";font-weight:500;font-size:40px;line-height:1.14'},
+{id:'t7', cat:'type', tags:['handwriting','informal'],
+ t:'type', css:'font-family:Caveat;font-size:46px;line-height:1.12'},
+{id:'t8', cat:'type', tags:['neutral sans','centred','grey text','generic'],
+ t:'type', css:'font-family:"DM Sans";font-size:31px;line-height:1.25;text-align:center;color:#6B7280'},
+{id:'t9', cat:'type', tags:['rounded sans','light','soft'],
+ t:'type', css:'font-family:Nunito;font-weight:300;font-size:36px;line-height:1.22'},
+
+/* ---- COLOUR ---- 8 */
+{id:'c1', cat:'colour', tags:['two colour','high contrast','ink on paper'],
+ t:'swatch', cols:['#14130F','#F0E9D8'], note:'Two. Ink and paper.'},
+{id:'c2', cat:'colour', tags:['whole frame colour','saturated','single cast'],
+ t:'swatch', cols:['#E8C84A','#E8C84A','#E8C84A','#14130F'], note:'One colour taking the whole field.'},
+{id:'c3', cat:'colour', tags:['accent colour','neutral ground','restrained'],
+ t:'swatch', cols:['#FFFFFF','#F4F4F4','#14130F','#FF3E00'], note:'Neutral, with one accent.'},
+{id:'c4', cat:'colour', tags:['pastel','soft','low contrast'],
+ t:'swatch', cols:['#F7E6E9','#E6EEF7','#EAF2E6','#F7F0E6'], note:'Pastels, low contrast.'},
+{id:'c5', cat:'colour', tags:['purple gradient','tech','generic'],
+ t:'swatch', cols:['#6366F1','#8B5CF6','#A855F7','#EC4899'], note:'The indigo to pink run.'},
+{id:'c6', cat:'colour', tags:['earth','muted','analogue'],
+ t:'swatch', cols:['#8EA066','#833405','#D0402F','#404C25'], note:'Earth, muted, printed.'},
+{id:'c7', cat:'colour', tags:['monochrome','grey scale','no colour'],
+ t:'swatch', cols:['#111111','#555555','#999999','#DDDDDD'], note:'No colour at all.'},
+{id:'c8', cat:'colour', tags:['clashing','loud','primary'],
+ t:'swatch', cols:['#151DE0','#FF3E00','#E8C84A','#14130F'], note:'Primaries, clashing on purpose.'},
+
+/* ---- SPACING ---- 6 */
+{id:'s1', cat:'space', tags:['dense','tight leading','small text','narrow measure'],
+ t:'space', size:12, lh:1.42, measure:'22em', gap:7},
+{id:'s2', cat:'space', tags:['airy','generous','large text','wide measure'],
+ t:'space', size:17, lh:1.85, measure:'34em', gap:26},
+{id:'s3', cat:'space', tags:['dense','small text','wide measure'],
+ t:'space', size:12, lh:1.5, measure:'40em', gap:10},
+{id:'s4', cat:'space', tags:['airy','large text','narrow measure'],
+ t:'space', size:19, lh:1.6, measure:'18em', gap:22},
+{id:'s5', cat:'space', tags:['very dense','packed','tiny text'],
+ t:'space', size:10.5, lh:1.35, measure:'26em', gap:4},
+{id:'s6', cat:'space', tags:['airy','very generous','sparse'],
+ t:'space', size:15, lh:2.1, measure:'30em', gap:38},
+
+/* ---- TEXTURE ---- 6 */
+{id:'x1', cat:'texture', tags:['halftone','print','intrinsic texture'],
+ t:'tex', css:'background-image:radial-gradient(circle,#14130F 1.6px,transparent 1.9px);background-size:7px 7px', note:'Halftone dots.'},
+{id:'x2', cat:'texture', tags:['grain overlay','applied texture','noise'],
+ t:'tex', css:'background-color:#E8E4DA;background-image:url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.9\' numOctaves=\'4\'/%3E%3C/filter%3E%3Crect width=\'120\' height=\'120\' filter=\'url(%23n)\' opacity=\'0.5\'/%3E%3C/svg%3E")', note:'Grain laid over the top.'},
+{id:'x3', cat:'texture', tags:['graph paper','grid','drawn on'],
+ t:'tex', css:'background-color:#fff;background-image:linear-gradient(#D8DEE4 1px,transparent 1px),linear-gradient(90deg,#D8DEE4 1px,transparent 1px);background-size:14px 14px', note:'Graph paper.'},
+{id:'x4', cat:'texture', tags:['glassmorphism','blur','translucent','generic'],
+ t:'tex', css:'background:linear-gradient(135deg,#C7D2FE,#F5D0FE);position:relative', inner:'<div style="position:absolute;inset:18%;background:rgba(255,255,255,.55);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.8);border-radius:16px"></div>', note:'Frosted glass panel.'},
+{id:'x5', cat:'texture', tags:['flat','no texture','plain ground'],
+ t:'tex', css:'background:#F0E9D8', note:'Nothing at all. Flat colour.'},
+{id:'x6', cat:'texture', tags:['checkerboard','pattern','graphic'],
+ t:'tex', css:'background-color:#fff;background-image:linear-gradient(45deg,#14130F 25%,transparent 25%,transparent 75%,#14130F 75%),linear-gradient(45deg,#14130F 25%,transparent 25%,transparent 75%,#14130F 75%);background-size:22px 22px;background-position:0 0,11px 11px', note:'Checkerboard.'},
+
+/* ---- IMAGERY ---- 6 */
+{id:'i1', cat:'image', tags:['full bleed','edge to edge','no frame'],
+ t:'img', mode:'bleed', note:'Image running to every edge.'},
+{id:'i2', cat:'image', tags:['border is active','coloured ground','image inside a field'],
+ t:'img', mode:'matted', note:'Image set inside a coloured field.'},
+{id:'i3', cat:'image', tags:['rounded corners','drop shadow','card','generic'],
+ t:'img', mode:'card', note:'Rounded, floating, with a shadow.'},
+{id:'i4', cat:'image', tags:['non rectangular mask','cut out','shaped'],
+ t:'img', mode:'oval', note:'Masked to an oval.'},
+{id:'i5', cat:'image', tags:['repeat grid','index','numbered'],
+ t:'img', mode:'grid', note:'Repeated in a numbered grid.'},
+{id:'i6', cat:'image', tags:['tilted','perspective','3d mockup','generic'],
+ t:'img', mode:'tilt', note:'Tilted in fake perspective.'},
+
+/* ---- VOICE ---- 6 */
+{id:'v1', cat:'voice', tags:['plain','concrete','stated'],
+ t:'copy', text:'Thursdays, seven, Meyerson B3. Anyone can come.'},
+{id:'v2', cat:'voice', tags:['selling','benefit language','generic'],
+ t:'copy', text:'Unlock your full creative potential and ship beautiful work, effortlessly.'},
+{id:'v3', cat:'voice', tags:['position','opinionated','short'],
+ t:'copy', text:'Places for the particular.'},
+{id:'v4', cat:'voice', tags:['explanatory','long','hedged'],
+ t:'copy', text:'We believe that great design is ultimately about understanding the needs of your users and delivering experiences that resonate.'},
+{id:'v5', cat:'voice', tags:['refusal','negative','boundary'],
+ t:'copy', text:'No ratings. No listicles. No stars.'},
+{id:'v6', cat:'voice', tags:['playful','informal','aside'],
+ t:'copy', text:'Most of it is not finished, and that is sort of the point.'},
+
+/* ---- LAYOUT ---- 9 */
+{id:'l1', cat:'layout', tags:['centred','white ground','rounded corners','cards','pill badge','drop shadow','airy','generic'],
+ t:'raw', html:'<div style="text-align:center;padding:6px 12px">'+
+  '<span style="display:inline-block;font-size:9px;padding:4px 10px;border-radius:999px;background:#EEF2FF;color:#4F46E5;margin-bottom:12px">Introducing</span>'+
+  '<p style="font-size:20px;font-weight:800;letter-spacing:-.02em;margin:0 0 7px;color:#111">Places for the particular</p>'+
+  '<p style="font-size:10px;color:#9CA3AF;margin:0 auto 13px;max-width:74%">The all in one platform for discovering places you will actually like.</p>'+
+  '<span style="display:inline-block;font-size:10px;color:#fff;background:#6366F1;padding:7px 18px;border-radius:9px;box-shadow:0 6px 16px rgba(99,102,241,.35);margin-bottom:14px">Get started</span>'+
+  '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">'+
+  '<div style="border:1px solid #E5E7EB;border-radius:11px;padding:9px 6px"><div style="width:15px;height:15px;border-radius:6px;background:#EEF2FF;margin:0 auto 6px"></div><div style="height:4px;background:#eee;width:70%;margin:0 auto 4px"></div><div style="height:4px;background:#f3f3f3;width:84%;margin:0 auto"></div></div>'.repeat(3)+
+  '</div></div>'},
+
+{id:'l2', cat:'layout', tags:['left aligned','white ground','hairline rules','dense','numbers visible'],
+ t:'raw', html:'<div style="padding:6px 12px">'+
+  '<p style="font-size:17px;font-weight:700;margin:0 0 10px">Places for the particular</p>'+
+  '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid #ddd;font-size:11px"><span style="color:#999;font-size:9px;letter-spacing:.1em">01</span><span>Thursdays, seven, Meyerson B3</span></div>'+
+  '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid #ddd;font-size:11px"><span style="color:#999;font-size:9px;letter-spacing:.1em">02</span><span>Anyone can come, no portfolio</span></div>'+
+  '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid #ddd;font-size:11px"><span style="color:#999;font-size:9px;letter-spacing:.1em">03</span><span>Two hours, then we show it</span></div>'+
+  '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid #ddd;font-size:11px"><span style="color:#999;font-size:9px;letter-spacing:.1em">04</span><span>Most of it is not finished</span></div>'+
+  '</div>'},
+
+{id:'l3', cat:'layout', tags:['image ground','type over image','whole frame colour','dense'],
+ t:'raw', html:'<div style="position:relative;height:100%;background:linear-gradient(160deg,#3F5134,#1E2A1C);padding:22px 18px">'+
+  '<p style="font-size:21px;font-weight:700;color:#F2EFE6;margin:0 0 7px;line-height:1.1">Places for the particular</p>'+
+  '<p style="font-size:10px;color:rgba(242,239,230,.7);margin:0">Twenty five cities, read by people who live in them.</p></div>'},
+
+{id:'l4', cat:'layout', tags:['left aligned','index grid','numbers visible','dense'],
+ t:'raw', html:'<div style="padding:6px 12px">'+
+  '<p style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#888;margin:0 0 10px">Plate one &#183; 01 to 08</p>'+
+  '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'+
+  [1,2,3,4,5,6,7,8].map(function(n){return '<div><span style="font-size:8px;color:#aaa;display:block;margin-bottom:3px">0'+n+'</span><div style="aspect-ratio:1;background:#ececec"></div></div>';}).join('')+
+  '</div></div>'},
+
+{id:'l5', cat:'layout', tags:['coloured ground','border is active','whole frame colour','dense'],
+ t:'raw', html:'<div style="height:100%;background:#E8C84A;padding:18px;display:flex;align-items:center">'+
+  '<div style="background:#fff;padding:18px 16px;width:100%">'+
+  '<p style="font-size:17px;font-weight:700;margin:0 0 7px">Places for the particular</p>'+
+  '<p style="font-size:10px;color:#555;margin:0;line-height:1.5">Twenty five cities, read by people who live in them.</p></div></div>'},
+
+{id:'l6', cat:'layout', tags:['centred','airy','generous','quiet','light'],
+ t:'raw', html:'<div style="text-align:center;padding:34px 26px">'+
+  '<p style="font-size:19px;font-weight:300;line-height:1.45;margin:0;color:#222">Places for the particular</p>'+
+  '<p style="font-size:10px;color:#aaa;margin:16px 0 0;letter-spacing:.12em;text-transform:uppercase">Est. 2026</p></div>'},
+
+{id:'l7', cat:'layout', tags:['asymmetric','left aligned','image beside text'],
+ t:'raw', html:'<div style="display:grid;grid-template-columns:38% 1fr;gap:14px;padding:6px 12px;align-items:start">'+
+  '<div style="aspect-ratio:3/4;background:#ddd"></div>'+
+  '<div><p style="font-size:15px;font-weight:700;margin:0 0 7px;line-height:1.2">Places for the particular</p>'+
+  '<p style="font-size:10px;color:#555;line-height:1.6;margin:0">Twenty five cities, read by people who live in them. No ratings, no listicles, no stars.</p></div></div>'},
+
+{id:'l8', cat:'layout', tags:['centred','gradient','cards','rounded corners','generic'],
+ t:'raw', html:'<div style="text-align:center;padding:20px 14px">'+
+  '<p style="font-size:23px;font-weight:800;letter-spacing:-.02em;margin:0 0 12px;background:linear-gradient(95deg,#6366F1,#A855F7);-webkit-background-clip:text;background-clip:text;color:transparent">Places for the particular</p>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+  '<div style="border-radius:13px;background:linear-gradient(180deg,#fff,#F8F7FF);border:1px solid #EEF0F8;padding:13px 8px"><div style="height:5px;background:#EEF2FF;width:60%;margin:0 auto 6px"></div><div style="height:4px;background:#F3F4F6;width:80%;margin:0 auto"></div></div>'.repeat(2)+
+  '</div></div>'},
+
+{id:'l9', cat:'layout', tags:['left aligned','coloured ground','no white','dense','whole frame colour'],
+ t:'raw', html:'<div style="height:100%;background:#F0E9D8;padding:22px 18px">'+
+  '<p style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8A8070;margin:0 0 10px">Disco &#183; No. 01</p>'+
+  '<p style="font-size:19px;font-weight:700;margin:0 0 8px;line-height:1.15;color:#1A1714">Places for the particular</p>'+
+  '<div style="border-top:1px solid #D5CBBB;padding-top:8px"><p style="font-size:10px;color:#5C5248;margin:0;line-height:1.55">Twenty five cities, read by people who live in them.</p></div></div>'}
+];
