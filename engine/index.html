@@ -335,6 +335,10 @@
       measure change while the refusals hold. That is the difference between a taste and a template.
       Above all of it sit the rules that are not matters of taste at all: contrast, minimum sizes,
       line length, things that have to be true whatever the look.</p>
+    <p class="lede">The brief is read first and it outranks the file on anything to do with
+      function. The engine also picks only two or three signature moves per run out of everything
+      it knows, because using the whole vocabulary at once is the failure, not the goal. Halftone
+      belongs in the file. It does not belong on every page.</p>
     <input type="text" id="brief" placeholder="a landing page for a natural wine shop" value="a landing page for a natural wine shop">
     <div class="out">
       <pre id="prompt"></pre>
@@ -964,6 +968,19 @@ function thisRun(seed, brief){
   return out;
 }
 
+/* Taste is selection, so the vocabulary is a menu and not a checklist.
+   A piece that fires every signature at once is a pastiche of the corpus
+   rather than something out of it. Each run commits to two or three moves
+   and leaves the rest alone. */
+function moves(seed, pool){
+  var r = rng(seed + 7919), list = pool.slice(), out = [];
+  var n = Math.min(list.length, 2 + Math.floor(r() * 2));
+  while (out.length < n && list.length){
+    out.push(list.splice(Math.floor(r() * list.length), 1)[0]);
+  }
+  return out;
+}
+
 /* fundamentals. not taste, and they outrank it. */
 var CONSTANTS = [
   'Body text at 4.5:1 contrast against whatever sits behind it. Display text at 3:1.',
@@ -984,6 +1001,14 @@ function fileText(){
   out.push('taste.md');
   out.push('Noor Sharma. ' + readable.length + ' pieces read, ' +
            Object.keys(judg).length + ' of ' + DECK.length + ' specimens judged.');
+  out.push('');
+  out.push('HOW TO READ THIS  the sections do not carry the same weight');
+  out.push('  NON NEGOTIABLE      hard. Not taste. Nothing below overrides it.');
+  out.push('  NEVER, THE FIELD    hard. Refusals and bounds, drawn from judged answers.');
+  out.push('  DIRECTION           soft. Tendencies in the work, not requirements.');
+  out.push('  Everything marked soft is a vocabulary to choose from. Most of it should');
+  out.push('  sit unused in any one piece. Reaching for all of it at once produces an');
+  out.push('  imitation of the corpus rather than something belonging to it.');
   out.push('');
   var jr = judgedRefusals(), jk = judgedKeeps(), jc = contested();
   if (jr.length){
@@ -1028,17 +1053,22 @@ function fileText(){
   }
 
   out.push('NEVER  standing');
-  out.push('  No default white ground. No plain edge.');
+  out.push('  No plain edge, and no default white unless the piece argues for it.');
   out.push('  No single element picked out in colour against a neutral.');
   out.push('  No border left over as empty margin.');
   out.push('  No texture laid on top as a filter.');
   out.push('  Never write: supercharge, effortlessly, introducing, seamless.');
   out.push('');
-  out.push('ALWAYS');
+  out.push('DIRECTION  soft. Where the work tends to go, not a list to satisfy');
   kept.forEach(function(c){ out.push('  ' + c.rule); });
+  if (kept.length){
+    out.push('');
+    out.push('  Take two or three of these, the ones this piece has a reason for.');
+    out.push('  Leave the others out. Halftone on everything is not taste, it is a tic.');
+  }
   if (nearly.length){
     out.push('');
-    out.push('HOLDING  marked nearly, not settled');
+    out.push('HOLDING  marked nearly, not settled. Weaker again than DIRECTION.');
     nearly.forEach(function(c){ out.push('  ' + c.rule); });
   }
   out.push('');
@@ -1068,7 +1098,13 @@ function promptText(){
   var b = document.getElementById('brief').value.trim() || 'a page';
   var brief = readBrief(b);
   var run = thisRun(runSeed, brief);
-  var lines = ['Build ' + b + '.', '', 'Work inside this. It is not a suggestion.', ''];
+  var lines = ['Build ' + b + '.', ''];
+  lines.push('What follows is one person\'s taste, written down. It is not a template and');
+  lines.push('not a checklist. The hard parts are marked hard and the rest is direction.');
+  lines.push('Where this file and the brief disagree about what the thing has to do, the');
+  lines.push('brief wins. Where they disagree about how it should look, this file wins.');
+  lines.push('Serve the brief first, then make it look like this.');
+  lines.push('');
 
   if (brief.kind){
     lines.push('READING THE BRIEF');
@@ -1097,16 +1133,30 @@ function promptText(){
     lines.push('');
   }
 
+  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
+  var mv = moves(runSeed, kept);
+  if (mv.length){
+    lines.push('MOVES FOR THIS RUN  take these ' + mv.length + ', leave the rest of the vocabulary alone');
+    mv.forEach(function(c){ lines.push('  ' + c.rule); });
+    var rest = kept.length - mv.length;
+    if (rest > 0){
+      lines.push('');
+      lines.push('  The other ' + rest + ' are in the file and are deliberately not being used here.');
+      lines.push('  Do not reach for them to make the piece look more like me.');
+    }
+    lines.push('');
+  }
+
   var avoid = FIELD.filter(function(f){ return f.stance === 'avoid'; });
   var lean  = FIELD.filter(function(f){ return f.stance === 'lean'; });
   lines.push('AGAINST THE GRAIN  tag counts from siteinspire, 30 October 2026');
-  lines.push('  What the gallery is full of, so it is where the defaults will pull you:');
+  lines.push('  Where the defaults pull, and which way to lean off them:');
   avoid.forEach(function(f){
-    lines.push('    ' + f.tag + ', ' + f.n + ' sites. Instead, ' + f.mine + '.');
+    lines.push('    ' + f.tag + ', ' + f.n + ' sites. Lean toward: ' + f.mine + '.');
   });
-  lines.push('  What the gallery almost never has, and what this file is made of:');
+  lines.push('  Rare in the gallery and close to this corpus. Available, not required:');
   lean.forEach(function(f){
-    lines.push('    ' + f.tag + ', ' + f.n + ' sites. Do this: ' + f.mine + '.');
+    lines.push('    ' + f.tag + ', ' + f.n + ' sites. ' + f.mine.charAt(0).toUpperCase() + f.mine.slice(1) + '.');
   });
   lines.push('');
 
