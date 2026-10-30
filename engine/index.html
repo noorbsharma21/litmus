@@ -132,6 +132,45 @@
   .col.out .tagrow .bar{background:#ddd}
   .tagrow .c{font-size:11px;color:#999;margin-left:auto}
   .col.out .tagrow{color:#aaa}
+
+  /* samples */
+  .siteframe{overflow:hidden;border:1px solid #ddd;background:#fff;position:relative;height:300px}
+  /* out of flow, or its 900px would force every grid column open */
+  .siteframe .scaler{position:absolute;top:0;left:0;width:900px;transform-origin:top left}
+  .siteframe[data-label]::after{content:attr(data-label);position:absolute;left:0;top:0;
+    background:#14130F;color:#fff;font-size:10px;letter-spacing:.1em;padding:3px 8px;z-index:3}
+  .quad{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:8px 0 16px}
+  @media (max-width:52rem){ .quad{grid-template-columns:1fr} }
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 0}
+  @media (max-width:52rem){ .pair{grid-template-columns:1fr} }
+  .quad>*,.pair>*{min-width:0}
+  .pair .opt{display:flex;flex-direction:column;gap:9px}
+  .pair .pick{font:inherit;font-size:14px;padding:10px;border:1px solid #14130F;background:#fff;cursor:pointer}
+  .pair .pick:hover{background:#14130F;color:#fff}
+  .pair .diff{font-size:12px;color:#777;line-height:1.5}
+  .fb{margin:22px 0 0;padding:16px 0 0;border-top:1px solid #eee}
+  .fbl{margin:0 0 9px;font-size:13px;color:#555}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 11px}
+  .chips button{font:inherit;font-size:12px;padding:5px 11px;border:1px solid #ccc;background:#fff;cursor:pointer}
+  .chips button[aria-pressed="true"]{background:#14130F;color:#fff;border-color:#14130F}
+  #fbText{width:100%;max-width:34em;font:inherit;font-size:13px;padding:8px 10px;border:1px solid #ccc}
+
+  /* listen */
+  .src{border:1px solid #ddd;padding:16px;margin:8px 0 22px;max-width:46em}
+  .srow{display:flex;gap:9px;margin:0 0 12px}
+  .srow input{flex:1;font:inherit;font-size:14px;padding:8px 10px;border:1px solid #ccc}
+  .srow select{font:inherit;font-size:14px;padding:8px;border:1px solid #ccc}
+  .sq{display:flex;align-items:center;gap:10px;margin:0 0 8px;font-size:13px;flex-wrap:wrap}
+  .sq b{font-weight:400;color:#555;flex-basis:12em}
+  .sq button{font:inherit;font-size:12px;padding:4px 10px;border:1px solid #ccc;background:#fff;cursor:pointer}
+  .sq button[aria-pressed="true"]{background:#E8A33D;border-color:#E8A33D;color:#14130F}
+  .src textarea{width:100%;box-sizing:border-box;font:inherit;font-size:13px;padding:8px 10px;
+    border:1px solid #ccc;margin:12px 0 12px;resize:vertical}
+  .srcard{border-bottom:1px solid #eee;padding:13px 0}
+  .srcard h4{margin:0 0 4px;font-size:15px;font-weight:700}
+  .srcard .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#999;margin-left:7px}
+  .srcard p{margin:3px 0 0;font-size:13px;color:#555;line-height:1.55}
+  .srcard .drop{font:inherit;font-size:12px;color:#999;border:0;background:0;cursor:pointer;padding:0;margin-top:5px}
   .fieldhead{margin:34px 0 0}
   .tagrow.field{flex-wrap:wrap;color:#aaa}
   .tagrow.field .bar{background:#ddd}
@@ -200,17 +239,19 @@
 
   <h1>Litmus engine</h1>
   <p class="sub">Stage one. Reading my own work to find out what my taste is, then writing it down where a model can use it.</p>
-  <p class="meta">43 pieces in. 12 read so far. <a href="../">Back to Litmus</a></p>
+  <p class="meta" id="hdCount"><a href="../">Back to Litmus</a></p>
 
   <div class="rail" role="tablist">
     <button class="st" role="tab" aria-selected="true"  data-p="s1"><span class="n">01</span> Corpus</button>
     <button class="st" role="tab" aria-selected="false" data-p="s2"><span class="n">02</span> Read</button>
-    <button class="st" role="tab" aria-selected="false" data-p="sj"><span class="n">03</span> Judge</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">04</span> Subtract</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">05</span> Correct</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">06</span> The file</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">07</span> Use it</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s7"><span class="n">08</span> Log</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sl"><span class="n">03</span> Listen</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sj"><span class="n">04</span> Judge</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sp"><span class="n">05</span> This or that</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">06</span> Subtract</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">07</span> Correct</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">08</span> The file</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">09</span> Use it</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s7"><span class="n">10</span> Log</button>
   </div>
 
   <!-- 01 -->
@@ -237,6 +278,38 @@
   </div>
 
   <!-- judge -->
+  <!-- 03 listen -->
+  <div class="pane" id="sl" role="tabpanel" hidden style="--c:#E8A33D">
+    <h2>The things that are not pictures</h2>
+    <p class="lede">A corpus of images only teaches the engine how things look. Most of what I
+      actually go back to is a song or a poem, and what carries over from those is structure:
+      how long before it gets going, how much is left out, whether it repeats, how it ends.
+      Those are layout questions in a different costume, so they are asked that way.</p>
+    <p class="lede">These are not my work, so they sit apart from the corpus and are labelled
+      that way in the file. They bias what the engine reaches for. They do not become rules.</p>
+
+    <div class="src">
+      <div class="srow">
+        <input type="text" id="srcTitle" placeholder="Mk.gee, Are You Looking Up">
+        <select id="srcKind">
+          <option value="song">song</option>
+          <option value="poem">poem</option>
+          <option value="film">film</option>
+          <option value="book">book</option>
+          <option value="record">record</option>
+          <option value="other">other</option>
+        </select>
+      </div>
+      <div id="srcQs"></div>
+      <textarea id="srcTake" rows="2" placeholder="What do you take from it? One sentence, plain."></textarea>
+      <div class="btns">
+        <button class="act" id="srcAdd">Add it</button>
+        <button class="act ghost" id="srcClear">Clear the form</button>
+      </div>
+    </div>
+    <div id="srcList"></div>
+  </div>
+
   <div class="pane" id="sj" role="tabpanel" hidden style="--c:#D0402F">
     <h2>What I turn down on sight</h2>
     <p class="lede">The corpus says what I have made. This says what I refuse, which is the
@@ -278,6 +351,28 @@
   </div>
 
   <!-- 03 -->
+  <!-- 05 this or that -->
+  <div class="pane" id="sp" role="tabpanel" hidden style="--c:#9D70C0">
+    <h2>This or that</h2>
+    <p class="lede">Two whole pages, both built out of the file as it currently stands, differing
+      on a few values. Pick one. A forced choice between two real things is a better reading than
+      a yes or no on a swatch, because there is no scale to be generous or harsh on. You are only
+      saying which one you would rather have made.</p>
+    <p class="lede">Every dimension the two disagree on takes the result. The one you did not pick
+      loses, and a loss counts for more than a win, same as everywhere else in this engine.</p>
+
+    <div class="pair" id="pair"></div>
+    <div class="fb">
+      <p class="fbl">Say what is wrong with the one you picked. Optional, and it counts.</p>
+      <div class="chips" id="fbChips"></div>
+      <input type="text" id="fbText" placeholder="Anything else. Plain words.">
+      <div class="btns">
+        <button class="act ghost" id="pairSkip">Neither, show me another</button>
+      </div>
+    </div>
+    <p class="meta" id="pairNote"></p>
+  </div>
+
   <div class="pane" id="s3" role="tabpanel" hidden style="--c:#151DE0">
     <h2>Subtracting what everyone does</h2>
     <p class="lede">This is the step that decides whether the engine is worth anything.
@@ -323,6 +418,13 @@
       <button class="act" id="copyFile">Copy the file</button>
       <button class="act ghost" id="dlFile">Download taste.md</button>
     </div>
+
+    <h3 class="fieldhead">Four pages this file would allow</h3>
+    <p class="lede">The text above is hard to check by reading. These are drawn from it, four
+      different draws out of the same field, so you can see whether the engine has you right.
+      If one of them looks wrong, that is a judgment the engine has not been given yet.</p>
+    <div class="quad" id="fileSamples"></div>
+    <div class="btns"><button class="act ghost" id="resample">Draw four more</button></div>
   </div>
 
   <!-- 06 -->
@@ -349,6 +451,11 @@
       </div>
       <p class="meta" id="runNote" style="margin-top:10px"></p>
     </div>
+
+    <h3 class="fieldhead">What this run looks like</h3>
+    <p class="lede">The same values the prompt is handing over, drawn here so you can see them
+      before you send them anywhere. Generate another above and this changes with it.</p>
+    <div id="runSample" style="max-width:420px"></div>
   </div>
 
   <!-- 08 -->
@@ -371,6 +478,7 @@
 </div>
 
 <script src="data.js"></script>
+<script src="site.js"></script>
 <script>
 /* ---------- state ---------- */
 var KEY = 'litmus-marks-v1';
@@ -644,9 +752,28 @@ function renderSpec(sp){
   return '';
 }
 
+/* ---- forced choices ----
+   A pair result is stored against the ladder tag directly, in the same
+   shape a judged specimen produces, so it lands in the evidence model
+   without a second set of rules. */
+var PKEY = 'litmus-pairs-v1';
+var pairs = {};
+try { pairs = JSON.parse(localStorage.getItem(PKEY) || '{}'); } catch(e){ pairs = {}; }
+function psave(){ try { localStorage.setItem(PKEY, JSON.stringify(pairs)); } catch(e){} }
+function pairBump(tag, won){
+  if (!pairs[tag]) pairs[tag] = { win:0, loss:0 };
+  pairs[tag][won ? 'win' : 'loss']++;
+}
+
 /* ---- evidence model ---- */
 function weights(){
   var w = {};
+  Object.keys(pairs).forEach(function(t){
+    var p = pairs[t], tot = p.win + p.loss;
+    if (!tot) return;
+    w[t] = { rej:p.loss * REJECT_WEIGHT, acc:p.win * ACCEPT_WEIGHT, n:tot,
+             why:[], yesIn:{}, noIn:{}, fromPairs:tot };
+  });
   DECK.forEach(function(sp){
     var jd = judg[sp.id]; if (!jd || !jd.ctx) return;
     var ks = Object.keys(jd.ctx);
@@ -972,14 +1099,233 @@ function thisRun(seed, brief){
    A piece that fires every signature at once is a pastiche of the corpus
    rather than something out of it. Each run commits to two or three moves
    and leaves the rest alone. */
-function moves(seed, pool){
+function moves(seed, pool, favour){
   var r = rng(seed + 7919), list = pool.slice(), out = [];
-  var n = Math.min(list.length, 2 + Math.floor(r() * 2));
+  var fav = favour || [];
+  /* anything the sources lean on gets a second ticket, not a guarantee */
+  fav.forEach(function(id){
+    var c = pool.filter(function(x){ return x.id === id; })[0];
+    if (c) list.push(c);
+  });
+  var n = Math.min(pool.length, 2 + Math.floor(r() * 2));
   while (out.length < n && list.length){
-    out.push(list.splice(Math.floor(r() * list.length), 1)[0]);
+    var c = list.splice(Math.floor(r() * list.length), 1)[0];
+    if (out.indexOf(c) < 0) out.push(c);
   }
   return out;
 }
+
+/* ---------- 03 listen ----------
+   A song cannot tell you a font. It can tell you how long a thing waits
+   before it starts, how much is left out, and whether it says itself
+   twice, and those are the same questions a page answers. So the intake
+   asks about structure and leaves the sound alone. */
+var SQS = [
+  { k:'start', q:'How does it start?', opts:[
+    { v:'straight in', bias:{ scale:'high', 'section gap':'low' } },
+    { v:'slow build',  bias:{ scale:'low', 'section gap':'high' } } ] },
+  { k:'room', q:'How much is left out?', opts:[
+    { v:'a lot of room', bias:{ 'how many colours':'low', 'section gap':'high', measure:'low' } },
+    { v:'some',          bias:{} },
+    { v:'nothing, it is full', bias:{ 'section gap':'low', 'how many colours':'high' } } ] },
+  { k:'repeat', q:'Does it say itself twice?', opts:[
+    { v:'barely',  bias:{} },
+    { v:'over and over', bias:{}, favour:['c4','c13'] } ] },
+  { k:'orn', q:'Plain or worked over?', opts:[
+    { v:'plain',      bias:{ border:'low', 'how many colours':'low' } },
+    { v:'worked over', bias:{ border:'high' }, favour:['c8','c5'] } ] },
+  { k:'end', q:'How does it end?', opts:[
+    { v:'lands hard', bias:{ weight:'high', tracking:'low' } },
+    { v:'trails off', bias:{ weight:'low', leading:'high' } } ] }
+];
+
+var SKEY = 'litmus-sources-v1';
+var sources = [];
+try { sources = JSON.parse(localStorage.getItem(SKEY) || '[]'); } catch(e){ sources = []; }
+function ssave(){ try { localStorage.setItem(SKEY, JSON.stringify(sources)); } catch(e){} }
+
+var srcDraft = {};
+
+/* majority vote across everything added. one source is an anecdote. */
+function sourceBias(){
+  var votes = {};
+  sources.forEach(function(s){
+    SQS.forEach(function(q){
+      var o = (q.opts.filter(function(x){ return x.v === s.ans[q.k]; })[0]) || {};
+      Object.keys(o.bias || {}).forEach(function(d){
+        votes[d] = votes[d] || { low:0, high:0 };
+        votes[d][o.bias[d]]++;
+      });
+    });
+  });
+  var out = {};
+  Object.keys(votes).forEach(function(d){
+    if (votes[d].low === votes[d].high) return;        /* a tie says nothing */
+    out[d] = votes[d].low > votes[d].high ? 'low' : 'high';
+  });
+  return out;
+}
+function sourceFavour(){
+  var f = [];
+  sources.forEach(function(s){
+    SQS.forEach(function(q){
+      var o = (q.opts.filter(function(x){ return x.v === s.ans[q.k]; })[0]) || {};
+      (o.favour || []).forEach(function(id){ if (f.indexOf(id) < 0) f.push(id); });
+    });
+  });
+  return f;
+}
+
+function drawSrcForm(){
+  document.getElementById('srcQs').innerHTML = SQS.map(function(q){
+    return '<div class="sq" data-k="' + q.k + '"><b>' + q.q + '</b>' +
+      q.opts.map(function(o){
+        return '<button data-v="' + o.v + '" aria-pressed="' +
+               (srcDraft[q.k] === o.v) + '">' + o.v + '</button>';
+      }).join('') + '</div>';
+  }).join('');
+}
+function drawSrcList(){
+  var hd = document.getElementById('hdCount');
+  if (hd) hd.firstChild.nodeValue = CORPUS.length + ' pieces in, all read. ' +
+    sources.length + (sources.length === 1 ? ' thing' : ' things') + ' I return to. ';
+  var el = document.getElementById('srcList');
+  if (!sources.length){
+    el.innerHTML = '<p class="meta">Nothing added yet. The engine runs without this, ' +
+      'it just has less to go on.</p>';
+    return;
+  }
+  el.innerHTML = sources.map(function(s, i){
+    return '<div class="srcard"><h4>' + s.title + '<span class="k">' + s.kind + '</span></h4>' +
+      '<p>' + SQS.map(function(q){ return s.ans[q.k]; }).filter(Boolean).join(', ') + '</p>' +
+      (s.take ? '<p><em>taken:</em> ' + s.take + '</p>' : '') +
+      '<button class="drop" data-i="' + i + '">remove</button></div>';
+  }).join('');
+}
+document.getElementById('srcQs').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  srcDraft[b.closest('.sq').dataset.k] = b.dataset.v;
+  drawSrcForm();
+});
+document.getElementById('srcAdd').onclick = function(){
+  var title = document.getElementById('srcTitle').value.trim();
+  if (!title) { document.getElementById('srcTitle').focus(); return; }
+  var s = { title:title, kind:document.getElementById('srcKind').value,
+            ans:JSON.parse(JSON.stringify(srcDraft)),
+            take:document.getElementById('srcTake').value.trim(), t:Date.now() };
+  sources.push(s); ssave();
+  record({ kind:'source', title:s.title, srcKind:s.kind, ans:s.ans, take:s.take });
+  srcDraft = {};
+  document.getElementById('srcTitle').value = '';
+  document.getElementById('srcTake').value = '';
+  drawSrcForm(); drawSrcList(); drawFile(); drawPrompt();
+};
+document.getElementById('srcClear').onclick = function(){
+  srcDraft = {};
+  document.getElementById('srcTitle').value = '';
+  document.getElementById('srcTake').value = '';
+  drawSrcForm();
+};
+document.getElementById('srcList').addEventListener('click', function(e){
+  var b = e.target.closest('.drop'); if (!b) return;
+  var s = sources.splice(+b.dataset.i, 1)[0]; ssave();
+  record({ kind:'source removed', title:s.title });
+  drawSrcList(); drawFile(); drawPrompt();
+});
+
+/* ---------- 05 this or that ---------- */
+var FBC = [
+  { label:'too loud',     dims:['weight','scale'] },
+  { label:'too quiet',    dims:['weight','scale'] },
+  { label:'too plain',    dims:['how many colours','border'] },
+  { label:'too busy',     dims:['how many colours','border'] },
+  { label:'too tight',    dims:['section gap','leading'] },
+  { label:'too airy',     dims:['section gap','leading'] },
+  { label:'wrong ground', dims:['ground'] },
+  { label:'wrong type',   dims:['weight','case','tracking'] },
+  { label:'lines too long', dims:['measure'] }
+];
+var DIFFABLE = ['weight','tracking','case','scale','measure','leading',
+                'section gap','ground','how many colours','alignment','border'];
+var pairSeed = Math.floor(Math.random() * 1e6);
+var pairNow = null, fbOn = {};
+
+function buildPair(seed){
+  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
+  var fav = sourceFavour(), sb0 = sourceBias();
+  for (var attempt = 0; attempt < 24; attempt++){
+    var sa = seed + attempt * 101, sb = seed + attempt * 101 + 50021;
+    var ma = moves(sa, kept, fav).map(function(c){ return c.id; });
+    var mb = moves(sb, kept, fav).map(function(c){ return c.id; });
+    /* resolve the moves that overrule a dimension, so what gets recorded
+       is what was actually on screen */
+    var A = effectiveSpec(specFrom(thisRun(sa, { bias: sb0 })), ma);
+    var B = effectiveSpec(specFrom(thisRun(sb, { bias: sb0 })), mb);
+    var diff = DIFFABLE.filter(function(d){ return A[d] && B[d] && A[d] !== B[d]; });
+    if (diff.length >= 2) return { a:A, b:B, diff:diff, ma:ma, mb:mb, sa:sa, sb:sb };
+  }
+  return null;
+}
+function drawPair(){
+  pairNow = buildPair(pairSeed); fbOn = {};
+  var el = document.getElementById('pair');
+  if (!pairNow){
+    el.innerHTML = '<p class="meta">The field is still a single point, so there is nothing to ' +
+      'choose between. Judge some specimens in stage 04 and come back.</p>';
+    document.getElementById('pairNote').textContent = '';
+    return;
+  }
+  el.innerHTML = ['a','b'].map(function(side){
+    var sp = pairNow[side], mv = pairNow[side === 'a' ? 'ma' : 'mb'];
+    return '<div class="opt">' +
+      renderSite(sp, mv, pairNow[side === 'a' ? 'sa' : 'sb'], side === 'a' ? 'This' : 'That') +
+      '<button class="pick" data-side="' + side + '">Pick ' + (side === 'a' ? 'this' : 'that') + '</button>' +
+      '<p class="diff">' + pairNow.diff.map(function(d){ return d + ' ' + sp[d]; }).join(' &#183; ') + '</p>' +
+    '</div>';
+  }).join('');
+  document.getElementById('fbChips').innerHTML = FBC.map(function(c){
+    return '<button data-l="' + c.label + '" aria-pressed="false">' + c.label + '</button>';
+  }).join('');
+  fitSites(el);
+  var n = Object.keys(pairs).length;
+  document.getElementById('pairNote').textContent =
+    'They differ on ' + pairNow.diff.length + ' of ' + DIFFABLE.length + ' dimensions: ' +
+    pairNow.diff.join(', ') + '. ' + n + ' values carry a pair result so far.';
+}
+document.getElementById('fbChips').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  var on = b.getAttribute('aria-pressed') !== 'true';
+  b.setAttribute('aria-pressed', on); fbOn[b.dataset.l] = on;
+});
+document.getElementById('pair').addEventListener('click', function(e){
+  var b = e.target.closest('.pick'); if (!b || !pairNow) return;
+  var win = b.dataset.side, lose = win === 'a' ? 'b' : 'a';
+  var W = pairNow[win], L = pairNow[lose];
+
+  pairNow.diff.forEach(function(d){
+    pairBump(d + ': ' + W[d], true);
+    pairBump(d + ': ' + L[d], false);
+  });
+
+  /* the complaint overrides the pick on whatever it names */
+  var said = Object.keys(fbOn).filter(function(k){ return fbOn[k]; });
+  said.forEach(function(label){
+    var c = FBC.filter(function(x){ return x.label === label; })[0];
+    (c ? c.dims : []).forEach(function(d){ if (W[d]) pairBump(d + ': ' + W[d], false); });
+  });
+  psave();
+
+  record({ kind:'pair', picked:specLine(W), over:specLine(L),
+           differedOn:pairNow.diff, said:said,
+           note:document.getElementById('fbText').value.trim() });
+  document.getElementById('fbText').value = '';
+  pairSeed = Math.floor(Math.random() * 1e6);
+  drawPair(); drawWeights(); drawProfile(); drawFile(); drawPrompt();
+});
+document.getElementById('pairSkip').onclick = function(){
+  record({ kind:'pair skipped', differedOn:pairNow ? pairNow.diff : [] });
+  pairSeed = Math.floor(Math.random() * 1e6); drawPair();
+};
 
 /* fundamentals. not taste, and they outrank it. */
 var CONSTANTS = [
@@ -1037,6 +1383,21 @@ function fileText(){
     out.push('  ' + jc.slice(0,10).join(', '));
     out.push('');
   }
+  if (sources.length){
+    out.push('WHAT I RETURN TO  soft. Not my work. Structure borrowed, style not copied.');
+    sources.forEach(function(s){
+      out.push('  ' + s.title + '   ' + s.kind);
+      var ans = SQS.map(function(q){ return s.ans[q.k]; }).filter(Boolean).join(', ');
+      if (ans) out.push('    ' + ans);
+      if (s.take) out.push('    taken: ' + s.take);
+    });
+    var sb = sourceBias();
+    if (Object.keys(sb).length){
+      out.push('  Across all of them this leans ' +
+        Object.keys(sb).map(function(d){ return d + ' ' + sb[d]; }).join(', ') + '.');
+    }
+    out.push('');
+  }
   out.push('NON NEGOTIABLE  not matters of taste, and they outrank everything below');
   CONSTANTS.forEach(function(c){ out.push('  ' + c); });
   out.push('');
@@ -1078,7 +1439,28 @@ function fileText(){
   });
   return out.join('\n');
 }
-function drawFile(){ document.getElementById('file').textContent = fileText(); }
+var sampleSeed = Math.floor(Math.random() * 1e6);
+function drawSamples(){
+  var el = document.getElementById('fileSamples'); if (!el) return;
+  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
+  var fav  = sourceFavour(), sb = sourceBias();
+  var out = [];
+  for (var i = 0; i < 4; i++){
+    var s = sampleSeed + i * 7717;
+    out.push(renderSite(specFrom(thisRun(s, { bias: sb })),
+                        moves(s, kept, fav).map(function(c){ return c.id; }),
+                        s, 'Draw ' + (i + 1)));
+  }
+  el.innerHTML = out.join('');
+  fitSites(el);
+}
+function drawFile(){
+  document.getElementById('file').textContent = fileText();
+  drawSamples();
+}
+document.getElementById('resample').onclick = function(){
+  sampleSeed = Math.floor(Math.random() * 1e6); drawSamples();
+};
 
 function copy(txt, btn){
   navigator.clipboard.writeText(txt).then(function(){
@@ -1097,7 +1479,12 @@ document.getElementById('dlFile').onclick = function(){
 function promptText(){
   var b = document.getElementById('brief').value.trim() || 'a page';
   var brief = readBrief(b);
-  var run = thisRun(runSeed, brief);
+  /* standing taste fills the dimensions the brief says nothing about */
+  var sb = sourceBias(), merged = {};
+  Object.keys(sb).forEach(function(d){ merged[d] = sb[d]; });
+  Object.keys(brief.bias).forEach(function(d){ merged[d] = brief.bias[d]; });
+  var fromSource = Object.keys(sb).filter(function(d){ return !brief.bias[d]; });
+  var run = thisRun(runSeed, { bias: merged });
   var lines = ['Build ' + b + '.', ''];
   lines.push('What follows is one person\'s taste, written down. It is not a template and');
   lines.push('not a checklist. The hard parts are marked hard and the rest is direction.');
@@ -1133,8 +1520,14 @@ function promptText(){
     lines.push('');
   }
 
+  if (fromSource.length){
+    lines.push('FROM WHAT I RETURN TO  the brief was silent on these, so the sources decided');
+    lines.push('  ' + fromSource.map(function(d){ return d + ' ' + sb[d]; }).join(', '));
+    lines.push('');
+  }
+
   var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-  var mv = moves(runSeed, kept);
+  var mv = moves(runSeed, kept, sourceFavour());
   if (mv.length){
     lines.push('MOVES FOR THIS RUN  take these ' + mv.length + ', leave the rest of the vocabulary alone');
     mv.forEach(function(c){ lines.push('  ' + c.rule); });
@@ -1164,9 +1557,22 @@ function promptText(){
 }
 function drawPrompt(){
   document.getElementById('prompt').textContent = promptText();
+  var brief = readBrief(document.getElementById('brief').value);
+
+  var rs = document.getElementById('runSample');
+  if (rs){
+    var sb = sourceBias(), merged = {};
+    Object.keys(sb).forEach(function(d){ merged[d] = sb[d]; });
+    Object.keys(brief.bias).forEach(function(d){ merged[d] = brief.bias[d]; });
+    var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
+    rs.innerHTML = renderSite(specFrom(thisRun(runSeed, { bias: merged })),
+                              moves(runSeed, kept, sourceFavour()).map(function(c){ return c.id; }),
+                              runSeed, 'Run ' + runSeed);
+    fitSites(rs);
+  }
+
   var el = document.getElementById('runNote');
   if (!el) return;
-  var brief = readBrief(document.getElementById('brief').value);
   el.textContent = 'Run ' + runSeed + '. ' + (brief.kind
     ? 'Read as ' + brief.kind + ', so the field is pulled rather than drawn evenly.'
     : 'No surface detected, so every step in the field is equally likely.');
@@ -1262,13 +1668,21 @@ function show(id){
   });
   if (location.hash.slice(1) !== id) history.replaceState(null,'','#'+id);
   window.scrollTo(0,0);
+  /* a hidden pane measures zero wide, so the samples in it are scaled
+     to nothing until the pane is actually on screen */
+  fitSites(document.getElementById(id));
 }
 stages.forEach(function(s){ s.addEventListener('click', function(){ show(s.dataset.p); }); });
 function fromHash(){ var id = location.hash.slice(1); if (document.getElementById(id)) show(id); }
 window.addEventListener('hashchange', fromHash);
 
+document.getElementById('hdCount').insertAdjacentHTML('afterbegin', ' ');
+
+drawSrcForm();
+drawSrcList();
 drawClaims();
 drawJudge();
+drawPair();
 drawLog();
 fromHash();
 </script>
