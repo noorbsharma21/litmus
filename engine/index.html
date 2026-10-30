@@ -410,9 +410,12 @@ document.getElementById('claims').addEventListener('click', function(e){
 
 
 /* ---------- refine ---------- */
-var JKEY = 'litmus-judge-v2';
+var JKEY = 'litmus-judge-v3';
 var judg = {};
 try { judg = JSON.parse(localStorage.getItem(JKEY) || '{}'); } catch(e){ judg = {}; }
+/* drop anything saved in an older shape */
+Object.keys(judg).forEach(function(k){ if (!judg[k] || !judg[k].ctx) delete judg[k]; });
+try { localStorage.removeItem('litmus-judge-v1'); localStorage.removeItem('litmus-judge-v2'); } catch(e){}
 function jsave(){ try { localStorage.setItem(JKEY, JSON.stringify(judg)); } catch(e){} }
 
 
