@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Litmus engine, stage one</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:#fff;color:#14130F;
+    font-family:Nunito,Calibri,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .page{max-width:1040px;margin:0 auto;padding:40px 28px 110px}
+  a{color:#14130F;text-decoration:none;border-bottom:1px solid #bbb}
+
+  h1{font-family:Archivo,sans-serif;font-size:36px;font-weight:900;letter-spacing:-.035em;
+    text-transform:uppercase;line-height:.95;margin:0 0 6px}
+  .sub{margin:0 0 4px}
+  .meta{color:#666;font-size:14px;margin:0}
+
+  /* stage rail */
+  .rail{display:flex;flex-wrap:wrap;gap:0;margin:30px 0 0;border-bottom:1px solid #ccc}
+  .st{background:none;border:none;cursor:pointer;font:inherit;color:#666;
+    padding:0 18px 10px 0;margin-bottom:-1px;border-bottom:2px solid transparent;
+    display:flex;align-items:baseline;gap:8px}
+  .st:hover{color:#14130F}
+  .st[aria-selected="true"]{color:#14130F;font-weight:700;border-bottom-color:#14130F}
+  .st .n{font-size:10px;letter-spacing:.14em;color:#aaa}
+  .st[aria-selected="true"] .n{color:#FF3E00}
+
+  .pane{padding-top:26px}
+  .pane[hidden]{display:none}
+  h2{font-size:17px;font-weight:700;margin:0 0 8px;display:flex;align-items:center;gap:10px}
+  h2::before{content:"";width:13px;height:13px;border-radius:50%;background:var(--c,#FF3E00);flex:none}
+  .lede{max-width:620px;color:#444;margin:0 0 20px}
+  .kicker{font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:#FF3E00;margin:28px 0 14px}
+
+  /* 1 corpus */
+  .counts{display:flex;gap:28px;margin:0 0 18px;flex-wrap:wrap}
+  .counts div{font-size:13px;color:#666}
+  .counts b{display:block;font-family:Archivo,sans-serif;font-size:30px;font-weight:900;
+    color:#14130F;letter-spacing:-.03em;line-height:1}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px}
+  .cell{position:relative;cursor:pointer;background:none;border:none;padding:0;display:block}
+  .cell img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+  .cell.q img{filter:grayscale(1);opacity:.38}
+  .cell .tag{position:absolute;left:0;bottom:0;font-size:9px;letter-spacing:.1em;
+    background:#14130F;color:#fff;padding:2px 5px}
+  .cell.q .tag{background:#bbb}
+  .cell.sel{outline:2px solid #FF3E00;outline-offset:3px}
+
+  /* 2 read */
+  .reader{display:grid;grid-template-columns:260px 1fr;gap:26px;align-items:start}
+  .reader img{width:100%;display:block;border:1px solid #e2e2e2}
+  .rec dt{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#999;margin:14px 0 5px}
+  .rec dd{margin:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:12px;padding:3px 9px;border:1px solid #14130F}
+  .chip.base{border-color:#ddd;color:#aaa}
+  .note{color:#444;max-width:46em}
+
+  /* 3 subtract */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+  .col h3{font-size:13px;letter-spacing:.03em;text-transform:uppercase;margin:0 0 10px}
+  .col.out h3{color:#aaa}
+  .col.keep h3{color:#FF3E00}
+  .tagrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #eee;font-size:14px}
+  .tagrow .bar{height:7px;background:#FF3E00;flex:none}
+  .col.out .tagrow .bar{background:#ddd}
+  .tagrow .c{font-size:11px;color:#999;margin-left:auto}
+  .col.out .tagrow{color:#aaa}
+
+  /* 4 claims */
+  .claim{border-top:1px solid #ddd;padding:16px 0}
+  .claim:last-child{border-bottom:1px solid #ddd}
+  .ch{display:flex;align-items:flex-start;gap:11px}
+  .ch .o{width:14px;height:14px;border-radius:50%;flex:none;margin-top:5px}
+  .ch p{margin:0;font-size:17px;line-height:1.35;max-width:34em}
+  .cmeta{display:flex;align-items:center;gap:14px;margin:9px 0 0 25px;flex-wrap:wrap}
+  .from{font-size:12px;color:#999}
+  .marks{display:flex;gap:6px;margin-left:auto}
+  .mk{font:inherit;font-size:12px;padding:4px 12px;border:1px solid #ccc;background:#fff;cursor:pointer}
+  .mk:hover{border-color:#14130F}
+  .mk[aria-pressed="true"]{background:#14130F;color:#fff;border-color:#14130F}
+  .claim[data-state="false"] .ch p{text-decoration:line-through;color:#aaa}
+  .claim[data-state="false"] .ch .o{opacity:.3}
+  .tally{font-size:13px;color:#666;margin:16px 0 0}
+
+  /* 5 file */
+  pre{font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.62;
+    white-space:pre-wrap;margin:0;border-top:1px solid #14130F;padding-top:14px}
+  .btns{display:flex;gap:10px;margin:18px 0 0;flex-wrap:wrap}
+  button.act{font:inherit;font-size:13px;padding:9px 18px;border:1px solid #14130F;
+    background:#14130F;color:#fff;cursor:pointer}
+  button.act.ghost{background:#fff;color:#14130F}
+
+  /* 6 use */
+  input[type=text]{font:inherit;font-size:16px;padding:11px 13px;border:1px solid #14130F;
+    width:100%;max-width:520px;background:#fff}
+  .out{margin-top:22px}
+
+  @media (max-width:50rem){
+    .reader{grid-template-columns:1fr}
+    .two{grid-template-columns:1fr}
+    .rail{gap:0}
+    .st{padding-right:14px;font-size:15px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Litmus engine</h1>
+  <p class="sub">Stage one. Reading my own work to find out what my taste is, then writing it down where a model can use it.</p>
+  <p class="meta">43 pieces in. 12 read so far. <a href="../">Back to Litmus</a></p>
+
+  <div class="rail" role="tablist">
+    <button class="st" role="tab" aria-selected="true"  data-p="s1"><span class="n">01</span> Corpus</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s2"><span class="n">02</span> Read</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">03</span> Subtract</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">04</span> Correct</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">05</span> The file</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">06</span> Use it</button>
+  </div>
+
+  <!-- 01 -->
+  <div class="pane" id="s1" role="tabpanel" style="--c:#FF3E00">
+    <h2>What goes in</h2>
+    <p class="lede">Not references I admire. Work I made, which is harder to fake and says more.
+      Drawings and paintings from the portfolio, photographs off my phone, and pages I designed and built.</p>
+    <div class="counts" id="counts"></div>
+    <div class="grid" id="corpus"></div>
+    <p class="meta" style="margin-top:14px">Colour means read. Grey means queued. Click any piece to open its record.</p>
+  </div>
+
+  <!-- 02 -->
+  <div class="pane" id="s2" role="tabpanel" hidden style="--c:#8EA066">
+    <h2>What the engine takes off each piece</h2>
+    <p class="lede">Every piece gets read for the same things: what the ground is, how colour behaves,
+      how the frame is used, what is repeated, what the subject is. Tags in black are particular.
+      Tags in grey are things any competent designer would also do, and they get thrown away in the next step.</p>
+    <div class="reader" id="reader"></div>
+    <div class="btns">
+      <button class="act ghost" id="prev">Previous piece</button>
+      <button class="act" id="next">Next piece</button>
+    </div>
+  </div>
+
+  <!-- 03 -->
+  <div class="pane" id="s3" role="tabpanel" hidden style="--c:#151DE0">
+    <h2>Subtracting what everyone does</h2>
+    <p class="lede">This is the step that decides whether the engine is worth anything.
+      Read a pile of work I like and you get a description of good design in general.
+      The part that is mine is what is left after you remove everything true of any competent designer.</p>
+    <div class="two">
+      <div class="col out">
+        <h3>Thrown away &#183; true of everyone</h3>
+        <div id="baseOut"></div>
+      </div>
+      <div class="col keep">
+        <h3>Kept &#183; the gap</h3>
+        <div id="baseKeep"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="pane" id="s4" role="tabpanel" hidden style="--c:#9D70C0">
+    <h2>Telling it where it is wrong</h2>
+    <p class="lede">The kept tags get written as statements specific enough to argue with.
+      I mark each one. The false ones matter most, because a first read of anyone&#8217;s taste is
+      a description of good design until they correct it. Marking here rewrites the file in the next step.</p>
+    <div id="claims"></div>
+    <p class="tally" id="tally"></p>
+  </div>
+
+  <!-- 05 -->
+  <div class="pane" id="s5" role="tabpanel" hidden style="--c:#833405">
+    <h2>What comes out</h2>
+    <p class="lede">One page, built from whatever survived the last step. Refusals first, because
+      a model will do anything you have not forbidden. Change a mark in step four and this changes.</p>
+    <pre id="file"></pre>
+    <div class="btns">
+      <button class="act" id="copyFile">Copy the file</button>
+      <button class="act ghost" id="dlFile">Download taste.md</button>
+    </div>
+  </div>
+
+  <!-- 06 -->
+  <div class="pane" id="s6" role="tabpanel" hidden style="--c:#D0402F">
+    <h2>Putting it to work</h2>
+    <p class="lede">Say what you are making. The engine wraps it in the file and hands back the
+      whole instruction, ready to paste anywhere.</p>
+    <input type="text" id="brief" placeholder="a landing page for a natural wine shop" value="a landing page for a natural wine shop">
+    <div class="out">
+      <pre id="prompt"></pre>
+      <div class="btns">
+        <button class="act" id="copyPrompt">Copy the prompt</button>
+        <button class="act ghost" id="openClaude">Open in Claude</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+/* ---------- state ---------- */
+var KEY = 'litmus-marks-v1';
+var marks = {};
+try { marks = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ marks = {}; }
+CLAIMS.forEach(function(c){ if (!marks[c.id]) marks[c.id] = 'true'; });
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch(e){} }
+
+var readable = CORPUS.filter(function(p){ return p.read; });
+var cursor = 0;
+
+/* ---------- 01 corpus ---------- */
+(function(){
+  var by = {drawing:0, photo:0, built:0};
+  CORPUS.forEach(function(p){ by[p.kind]++; });
+  document.getElementById('counts').innerHTML =
+    '<div><b>' + CORPUS.length + '</b>pieces in the corpus</div>' +
+    '<div><b>' + readable.length + '</b>read and tagged</div>' +
+    '<div><b>' + by.drawing + '</b>drawings and paintings</div>' +
+    '<div><b>' + by.photo + '</b>photographs</div>' +
+    '<div><b>' + by.built + '</b>pages I built</div>';
+
+  document.getElementById('corpus').innerHTML = CORPUS.map(function(p){
+    return '<button class="cell' + (p.read ? '' : ' q') + '" data-id="' + p.id + '">' +
+           '<img src="' + p.src + '" alt="' + p.id + '" loading="lazy">' +
+           '<span class="tag">' + (p.read ? 'read' : 'queued') + '</span></button>';
+  }).join('');
+
+  document.getElementById('corpus').addEventListener('click', function(e){
+    var b = e.target.closest('.cell'); if (!b) return;
+    var i = readable.findIndex(function(p){ return p.id === b.dataset.id; });
+    if (i < 0) return;
+    cursor = i; drawReader(); show('s2');
+  });
+})();
+
+/* ---------- 02 read ---------- */
+function drawReader(){
+  var p = readable[cursor];
+  var chips = p.tags.map(function(t){
+    var base = BASELINE.indexOf(t) > -1;
+    return '<span class="chip' + (base ? ' base' : '') + '">' + t + '</span>';
+  }).join('');
+  document.getElementById('reader').innerHTML =
+    '<div><img src="' + p.src + '" alt="' + p.id + '"></div>' +
+    '<dl class="rec">' +
+      '<dt>Piece</dt><dd>' + p.id + ' &#183; ' + p.kind + ' &#183; ' + (cursor+1) + ' of ' + readable.length + '</dd>' +
+      '<dt>What the engine saw</dt><dd class="note">' + p.note + '</dd>' +
+      '<dt>Tags</dt><dd class="chips">' + chips + '</dd>' +
+    '</dl>';
+}
+document.getElementById('next').onclick = function(){ cursor = (cursor+1) % readable.length; drawReader(); };
+document.getElementById('prev').onclick = function(){ cursor = (cursor-1+readable.length) % readable.length; drawReader(); };
+drawReader();
+
+/* ---------- 03 subtract ---------- */
+(function(){
+  var freq = {};
+  readable.forEach(function(p){ p.tags.forEach(function(t){ freq[t] = (freq[t]||0)+1; }); });
+  var rows = Object.keys(freq).map(function(t){ return {t:t, n:freq[t], base: BASELINE.indexOf(t) > -1}; })
+                   .sort(function(a,b){ return b.n - a.n; });
+  var max = Math.max.apply(null, rows.map(function(r){ return r.n; }));
+  function render(list){
+    return list.map(function(r){
+      return '<div class="tagrow"><span class="bar" style="width:' + (r.n/max*64+6) + 'px"></span>' +
+             r.t + '<span class="c">' + r.n + ' of ' + readable.length + '</span></div>';
+    }).join('');
+  }
+  document.getElementById('baseOut').innerHTML  = render(rows.filter(function(r){ return r.base; }));
+  document.getElementById('baseKeep').innerHTML = render(rows.filter(function(r){ return !r.base && r.n > 1; }));
+})();
+
+/* ---------- 04 correct ---------- */
+function drawClaims(){
+  document.getElementById('claims').innerHTML = CLAIMS.map(function(c){
+    var m = marks[c.id];
+    return '<div class="claim" data-state="' + m + '" data-id="' + c.id + '">' +
+      '<div class="ch"><span class="o" style="background:' + c.colour + '"></span><p>' + c.text + '</p></div>' +
+      '<div class="cmeta"><span class="from">read out of ' + c.from.length + ' pieces: ' + c.from.join(', ') + '</span>' +
+      '<span class="marks">' +
+        ['true','nearly','false'].map(function(v){
+          return '<button class="mk" data-v="' + v + '" aria-pressed="' + (m===v) + '">' + v + '</button>';
+        }).join('') +
+      '</span></div></div>';
+  }).join('');
+  var t = {true:0, nearly:0, false:0};
+  CLAIMS.forEach(function(c){ t[marks[c.id]]++; });
+  document.getElementById('tally').textContent =
+    t['true'] + ' true, ' + t.nearly + ' nearly, ' + t['false'] + ' false. ' +
+    'Revision ' + (1 + t.nearly + t['false']) + ' of the file.';
+  drawFile(); drawPrompt();
+}
+document.getElementById('claims').addEventListener('click', function(e){
+  var b = e.target.closest('.mk'); if (!b) return;
+  marks[b.closest('.claim').dataset.id] = b.dataset.v;
+  save(); drawClaims();
+});
+
+/* ---------- 05 the file ---------- */
+function fileText(){
+  var kept   = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
+  var nearly = CLAIMS.filter(function(c){ return marks[c.id] === 'nearly'; });
+  var out = [];
+  out.push('taste.md');
+  out.push('Noor Sharma. Compiled from 12 pieces of my own work.');
+  out.push('');
+  out.push('NEVER');
+  out.push('  No default white ground. No plain edge.');
+  out.push('  No single element picked out in colour against a neutral.');
+  out.push('  No border left over as empty margin.');
+  out.push('  No texture laid on top as a filter.');
+  out.push('  Never write: supercharge, effortlessly, introducing, seamless.');
+  out.push('');
+  out.push('ALWAYS');
+  kept.forEach(function(c){ out.push('  ' + c.rule); });
+  if (nearly.length){
+    out.push('');
+    out.push('HOLDING  marked nearly, not settled');
+    nearly.forEach(function(c){ out.push('  ' + c.rule); });
+  }
+  out.push('');
+  out.push('EVIDENCE');
+  kept.concat(nearly).forEach(function(c){
+    out.push('  ' + c.rule.split('.')[0] + '  <-  ' + c.from.join(', '));
+  });
+  return out.join('\n');
+}
+function drawFile(){ document.getElementById('file').textContent = fileText(); }
+
+function copy(txt, btn){
+  navigator.clipboard.writeText(txt).then(function(){
+    var old = btn.textContent; btn.textContent = 'Copied';
+    setTimeout(function(){ btn.textContent = old; }, 1400);
+  });
+}
+document.getElementById('copyFile').onclick = function(){ copy(fileText(), this); };
+document.getElementById('dlFile').onclick = function(){
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([fileText()], {type:'text/markdown'}));
+  a.download = 'taste.md'; a.click();
+};
+
+/* ---------- 06 use it ---------- */
+function promptText(){
+  var b = document.getElementById('brief').value.trim() || 'a page';
+  return 'Build ' + b + '.\n\nWork inside this. It is not a suggestion.\n\n' + fileText();
+}
+function drawPrompt(){ document.getElementById('prompt').textContent = promptText(); }
+document.getElementById('brief').addEventListener('input', drawPrompt);
+document.getElementById('copyPrompt').onclick = function(){ copy(promptText(), this); };
+document.getElementById('openClaude').onclick = function(){
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(promptText()), '_blank');
+};
+
+/* ---------- rail ---------- */
+var stages = document.querySelectorAll('.st');
+function show(id){
+  stages.forEach(function(s){
+    var on = s.dataset.p === id;
+    s.setAttribute('aria-selected', on);
+    document.getElementById(s.dataset.p).hidden = !on;
+  });
+  if (location.hash.slice(1) !== id) history.replaceState(null,'','#'+id);
+  window.scrollTo(0,0);
+}
+stages.forEach(function(s){ s.addEventListener('click', function(){ show(s.dataset.p); }); });
+function fromHash(){ var id = location.hash.slice(1); if (document.getElementById(id)) show(id); }
+window.addEventListener('hashchange', fromHash);
+
+drawClaims();
+fromHash();
+</script>
+</body>
+</html>
