@@ -314,3 +314,110 @@ const SPECIMENS = [
   '<p style="font-size:19px;font-weight:700;margin:0 0 8px;line-height:1.15;color:#1A1714">Places for the particular</p>'+
   '<div style="border-top:1px solid #D5CBBB;padding-top:8px"><p style="font-size:10px;color:#5C5248;margin:0;line-height:1.55">Twenty five cities, read by people who live in them.</p></div></div>'}
 ];
+
+/* ---------------------------------------------------------------
+   Round two. Ladders.
+
+   Round one asks broad questions across categories. These vary one
+   dimension at a time and nothing else, so a yes or no lands on a
+   single variable instead of a whole look. This is where close
+   calls get separated.
+   --------------------------------------------------------------- */
+
+function ladder(base, cat, dim, steps){
+  return steps.map(function(st, n){
+    return {
+      id: base + (n+1), cat: cat, dim: dim, round: 2,
+      tags: [dim + ': ' + st.v].concat(st.tags || []),
+      note: st.note || (dim + ', ' + st.v),
+      t: st.t || 'type', css: st.css, cols: st.cols, html: st.html,
+      size: st.size, lh: st.lh, measure: st.measure, gap: st.gap, text: st.text
+    };
+  });
+}
+
+var TYPE_BASE = 'font-family:Archivo;font-size:34px;line-height:1.2;';
+
+const LADDERS = [].concat(
+
+  ladder('w','type','weight', [
+    {v:'300', tags:['light'],      css:TYPE_BASE+'font-weight:300'},
+    {v:'400', tags:['regular'],    css:TYPE_BASE+'font-weight:400'},
+    {v:'700', tags:['bold'],       css:TYPE_BASE+'font-weight:700'},
+    {v:'900', tags:['heavy'],      css:TYPE_BASE+'font-weight:900'}
+  ]),
+
+  ladder('k','type','tracking', [
+    {v:'-0.04em', tags:['tight tracking'], css:TYPE_BASE+'font-weight:700;letter-spacing:-.04em'},
+    {v:'0',       tags:['normal tracking'],css:TYPE_BASE+'font-weight:700;letter-spacing:0'},
+    {v:'+0.08em', tags:['open tracking'],  css:TYPE_BASE+'font-weight:700;letter-spacing:.08em'},
+    {v:'+0.22em', tags:['wide tracking'],  css:'font-family:Archivo;font-size:22px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;line-height:1.5'}
+  ]),
+
+  ladder('cs','type','case', [
+    {v:'lower',    tags:['lowercase'],  css:TYPE_BASE+'font-weight:700;text-transform:lowercase'},
+    {v:'sentence', tags:['sentence case'], css:TYPE_BASE+'font-weight:700'},
+    {v:'Title',    tags:['title case'], css:TYPE_BASE+'font-weight:700', text:'Places For The Particular'},
+    {v:'UPPER',    tags:['uppercase'],  css:TYPE_BASE+'font-weight:700;text-transform:uppercase'}
+  ]),
+
+  ladder('sc','type','scale', [
+    {v:'22px', tags:['small display'],  css:'font-family:Archivo;font-weight:700;font-size:22px;line-height:1.25'},
+    {v:'34px', tags:['medium display'], css:'font-family:Archivo;font-weight:700;font-size:34px;line-height:1.18'},
+    {v:'50px', tags:['large display'],  css:'font-family:Archivo;font-weight:700;font-size:50px;line-height:1.05'},
+    {v:'72px', tags:['huge display'],   css:'font-family:Archivo;font-weight:900;font-size:72px;line-height:.95;letter-spacing:-.04em'}
+  ]),
+
+  ladder('m','space','measure', [
+    {v:'18em', tags:['narrow measure'], t:'space', size:14, lh:1.6, measure:'18em', gap:14},
+    {v:'26em', tags:['medium measure'], t:'space', size:14, lh:1.6, measure:'26em', gap:14},
+    {v:'34em', tags:['wide measure'],   t:'space', size:14, lh:1.6, measure:'34em', gap:14},
+    {v:'46em', tags:['very wide measure'], t:'space', size:14, lh:1.6, measure:'46em', gap:14}
+  ]),
+
+  ladder('lh','space','leading', [
+    {v:'1.25', tags:['tight leading'],   t:'space', size:14, lh:1.25, measure:'28em', gap:14},
+    {v:'1.5',  tags:['normal leading'],  t:'space', size:14, lh:1.5,  measure:'28em', gap:14},
+    {v:'1.8',  tags:['open leading'],    t:'space', size:14, lh:1.8,  measure:'28em', gap:14},
+    {v:'2.1',  tags:['very open leading'],t:'space',size:14, lh:2.1,  measure:'28em', gap:14}
+  ]),
+
+  ladder('g','space','section gap', [
+    {v:'14px', tags:['packed sections'], t:'space', size:14, lh:1.5, measure:'28em', gap:14},
+    {v:'30px', tags:['normal sections'], t:'space', size:14, lh:1.5, measure:'28em', gap:30},
+    {v:'56px', tags:['loose sections'],  t:'space', size:14, lh:1.5, measure:'28em', gap:56},
+    {v:'90px', tags:['very loose sections'], t:'space', size:14, lh:1.5, measure:'28em', gap:90}
+  ]),
+
+  ladder('gr','colour','ground', [
+    {v:'white',  tags:['white ground'],   t:'swatch', cols:['#FFFFFF'], note:'Pure white.'},
+    {v:'paper',  tags:['paper ground'],   t:'swatch', cols:['#F0E9D8'], note:'Warm off white.'},
+    {v:'colour', tags:['coloured ground'],t:'swatch', cols:['#E8C84A'], note:'A colour taking the ground.'},
+    {v:'dark',   tags:['dark ground'],    t:'swatch', cols:['#14130F'], note:'Near black.'}
+  ]),
+
+  ladder('n','colour','how many colours', [
+    {v:'1', tags:['one colour'],    t:'swatch', cols:['#14130F'], note:'Ink only.'},
+    {v:'2', tags:['two colour'],    t:'swatch', cols:['#14130F','#F0E9D8'], note:'Two.'},
+    {v:'3', tags:['three colour'],  t:'swatch', cols:['#14130F','#F0E9D8','#FF3E00'], note:'Three.'},
+    {v:'6', tags:['many colours'],  t:'swatch', cols:['#FF3E00','#8EA066','#151DE0','#9D70C0','#833405','#E8C84A'], note:'Six.'}
+  ]),
+
+  ladder('al','layout','alignment', [
+    {v:'left',      tags:['left aligned'], t:'raw', html:'<div style="padding:26px 28px;text-align:left"><p style="font-size:20px;font-weight:700;margin:0 0 8px">Places for the particular</p><p style="font-size:12px;color:#666;margin:0;max-width:26em;line-height:1.6">Twenty five cities, read by people who live in them.</p></div>'},
+    {v:'centre',    tags:['centred'],      t:'raw', html:'<div style="padding:26px 28px;text-align:center"><p style="font-size:20px;font-weight:700;margin:0 0 8px">Places for the particular</p><p style="font-size:12px;color:#666;margin:0 auto;max-width:26em;line-height:1.6">Twenty five cities, read by people who live in them.</p></div>'},
+    {v:'right',     tags:['right aligned'],t:'raw', html:'<div style="padding:26px 28px;text-align:right"><p style="font-size:20px;font-weight:700;margin:0 0 8px">Places for the particular</p><p style="font-size:12px;color:#666;margin:0 0 0 auto;max-width:26em;line-height:1.6">Twenty five cities, read by people who live in them.</p></div>'},
+    {v:'justified', tags:['justified'],    t:'raw', html:'<div style="padding:26px 28px"><p style="font-size:20px;font-weight:700;margin:0 0 8px">Places for the particular</p><p style="font-size:12px;color:#666;margin:0;max-width:26em;line-height:1.6;text-align:justify">Twenty five cities, read by people who live in them, not by an algorithm counting stars and reviews.</p></div>'}
+  ]),
+
+  ladder('bd','layout','border', [
+    {v:'none',    tags:['no border','edge to edge'], t:'raw', html:'<div style="height:100%;background:#D9D4C6"></div>'},
+    {v:'hairline',tags:['hairline border'], t:'raw', html:'<div style="height:100%;padding:16px"><div style="height:100%;border:1px solid #14130F"></div></div>'},
+    {v:'field',   tags:['colour field border','border is active'], t:'raw', html:'<div style="height:100%;background:#E8C84A;padding:34px"><div style="height:100%;background:#D9D4C6"></div></div>'},
+    {v:'mat',     tags:['image mat','border is active'], t:'raw', html:'<div style="height:100%;background:linear-gradient(140deg,#8A5A2B,#C98A3C);padding:34px"><div style="height:100%;background:#D9D4C6"></div></div>'}
+  ])
+);
+
+/* every specimen the engine can ask about */
+SPECIMENS.forEach(function(s){ if (!s.round) s.round = 1; });
+const DECK = SPECIMENS.concat(LADDERS);

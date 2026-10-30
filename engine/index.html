@@ -91,6 +91,18 @@
   .acc .bar{background:#14130F}
   .wrow .v{font-size:11px;color:#aaa;margin-left:auto}
   .side .blk{margin-bottom:24px}
+  .con .bar{background:#E8A33D}
+  .roundlbl{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#999;margin:0 0 8px}
+  .jdim{font-size:12px;color:#999}
+  .profile{border-top:1px solid #14130F}
+  .prow{display:grid;grid-template-columns:140px 1fr 90px 44px;gap:12px;align-items:center;
+    padding:9px 0;border-bottom:1px solid #eee;font-size:13px}
+  .pd{color:#666}
+  .pw{font-weight:600}
+  .pbar{height:6px;background:#eee;display:block}
+  .pbar i{display:block;height:100%;background:#14130F}
+  .pn{font-size:11px;color:#aaa;text-align:right}
+  @media (max-width:50rem){.prow{grid-template-columns:1fr 1fr;gap:6px}.pbar,.pn{display:none}}
   .done{border:1px solid #14130F;padding:20px}
 
   /* 3 subtract */
@@ -188,10 +200,11 @@
       stronger signal: a no draws a boundary round the answer, a yes only marks a point inside it.
       Fifty specimens across seven categories. Judge fast, do not reason about it. The reason box
       is optional, and it is worth filling in, because the comment turns out to be the useful part.</p>
+    <p class="roundlbl" id="roundLbl"></p>
     <div class="prog"><i id="prog"></i></div>
     <div class="deck">
       <div>
-        <div class="jmeta"><span class="jcat" id="jcat"></span><span class="jcount" id="jcount"></span></div>
+        <div class="jmeta"><span class="jcat" id="jcat"></span><span class="jdim" id="jdim"></span><span class="jcount" id="jcount"></span></div>
         <div class="card" id="card"></div>
         <p class="jnote" id="jnote"></p>
         <input type="text" class="why" id="why" placeholder="why, in a few words (optional)">
@@ -203,11 +216,16 @@
       </div>
       <div class="side">
         <div class="blk rej"><h3>Rejected, weighted 1.0</h3><div id="rejList"></div></div>
-        <div class="blk acc"><h3>Accepted, weighted 0.55</h3><div id="accList"></div></div>
+        <div class="blk acc"><h3>Kept</h3><div id="accList"></div></div>
+        <div class="blk con"><h3>Contested, needs asking again</h3><div id="conList"></div></div>
         <button class="act ghost" id="resetJ" style="font-size:12px;padding:6px 12px">Start the deck over</button>
       </div>
     </div>
     <div id="jdone"></div>
+    <p class="kicker">Where each dimension has landed</p>
+    <div class="profile" id="profile"></div>
+    <p class="meta" style="margin-top:12px">The bar is confidence, not preference. A short bar means
+      the answers so far disagree with each other and the engine will keep asking.</p>
   </div>
 
   <!-- 03 -->
@@ -367,20 +385,21 @@ document.getElementById('claims').addEventListener('click', function(e){
 });
 
 
-/* ---------- judge ---------- */
-var JKEY = 'litmus-judge-v1';
+/* ---------- refine ---------- */
+var JKEY = 'litmus-judge-v2';
 var judg = {};
 try { judg = JSON.parse(localStorage.getItem(JKEY) || '{}'); } catch(e){ judg = {}; }
 function jsave(){ try { localStorage.setItem(JKEY, JSON.stringify(judg)); } catch(e){} }
 
 function renderSpec(sp){
-  if (sp.t === 'type')  return '<div class="pad"><p style="margin:0;'+sp.css+'">'+PHRASE+'</p></div>';
+  var words = sp.text || PHRASE;
+  if (sp.t === 'type')  return '<div class="pad"><p style="margin:0;'+sp.css+'">'+words+'</p></div>';
   if (sp.t === 'copy')  return '<div class="pad"><p style="margin:0;font-size:20px;line-height:1.45;max-width:20em">'+sp.text+'</p></div>';
   if (sp.t === 'swatch')return '<div class="fill swatches">'+sp.cols.map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</div>';
   if (sp.t === 'tex')   return '<div class="fill" style="'+sp.css+'">'+(sp.inner||'')+'</div>';
   if (sp.t === 'raw')   return '<div class="fill">'+sp.html+'</div>';
   if (sp.t === 'space'){
-    var bar = function(w){ return '<div style="height:'+sp.size*0.62+'px;background:#e6e6e6;width:'+w+'%;margin-bottom:'+(sp.size*0.42)+'px"></div>'; };
+    var bar = function(w){ return '<div style="height:'+sp.size*0.6+'px;background:#e9e9e9;width:'+w+'%;margin-bottom:'+(sp.size*0.4)+'px"></div>'; };
     return '<div class="pad"><div style="max-width:'+sp.measure+'">'+
       '<p style="margin:0 0 '+sp.gap+'px;font-size:'+sp.size+'px;line-height:'+sp.lh+'">Places for the particular. Twenty five cities, read by people who live in them.</p>'+
       bar(100)+bar(92)+bar(74)+'</div></div>';
@@ -398,85 +417,168 @@ function renderSpec(sp){
   return '';
 }
 
-function nextIdx(){
-  for (var i=0;i<SPECIMENS.length;i++) if (!judg[SPECIMENS[i].id]) return i;
-  return -1;
+/* ---- evidence model ---- */
+function weights(){
+  var w = {};
+  DECK.forEach(function(sp){
+    var jd = judg[sp.id]; if (!jd) return;
+    sp.tags.forEach(function(t){
+      if (!w[t]) w[t] = { rej:0, acc:0, n:0, why:[] };
+      w[t].n++;
+      if (jd.v === 'no'){ w[t].rej += REJECT_WEIGHT; if (jd.why) w[t].why.push(jd.why); }
+      else              { w[t].acc += ACCEPT_WEIGHT; }
+    });
+  });
+  Object.keys(w).forEach(function(t){
+    var x = w[t], tot = x.rej + x.acc;
+    x.lean   = tot ? (x.rej - x.acc) / tot : 0;         // -1 kept .. +1 refused
+    x.conf   = Math.min(1, Math.abs(x.lean) * Math.min(1, x.n / 3));
+    x.state  = x.n < 2 ? 'thin'
+             : Math.abs(x.lean) < 0.34 ? 'contested'
+             : x.lean > 0 ? 'refused' : 'kept';
+  });
+  return w;
 }
+
+/* uncertainty of a specimen: how much asking it would resolve */
+function uncertainty(sp, w){
+  var score = 0;
+  sp.tags.forEach(function(t){
+    var x = w[t];
+    if (!x)                  score += 1.0;            // never seen
+    else if (x.state==='contested') score += 1.6;     // actively conflicting
+    else if (x.state==='thin')      score += 0.9;
+    else                            score += 0.15 * (1 - x.conf);
+  });
+  return score / Math.max(1, sp.tags.length);
+}
+
+function pending(round){
+  return DECK.filter(function(sp){ return !judg[sp.id] && (!round || sp.round === round); });
+}
+function currentRound(){
+  if (pending(1).length) return 1;
+  if (pending(2).length) return 2;
+  return 3;
+}
+function pickNext(){
+  var r = currentRound();
+  if (r === 3) return null;
+  var pool = pending(r), w = weights();
+  if (r === 1) return pool[0];                        // round one runs in order, broad sweep
+  return pool.map(function(sp){ return {sp:sp, u:uncertainty(sp,w)}; })
+             .sort(function(a,b){ return b.u - a.u; })[0].sp;   // round two chases uncertainty
+}
+
+/* ---- draw ---- */
 function drawJudge(){
-  var i = nextIdx(), done = Object.keys(judg).length;
-  document.getElementById('prog').style.width = (done/SPECIMENS.length*100)+'%';
-  drawWeights();
-  if (i < 0){
+  var sp = pickNext(), done = Object.keys(judg).length, r = currentRound();
+  document.getElementById('prog').style.width = (done/DECK.length*100)+'%';
+  document.getElementById('roundLbl').textContent =
+    r === 1 ? 'Round one, broad sweep'
+  : r === 2 ? 'Round two, one variable at a time, ordered by what is least settled'
+  : 'Both rounds done';
+  drawWeights(); drawProfile();
+  if (!sp){
     document.getElementById('card').innerHTML = '';
     document.getElementById('jcat').textContent = 'done';
-    document.getElementById('jcount').textContent = SPECIMENS.length+' of '+SPECIMENS.length;
+    document.getElementById('jcount').textContent = done+' of '+DECK.length;
     document.getElementById('jnote').textContent = '';
+    document.getElementById('jdim').textContent = '';
     document.getElementById('jdone').innerHTML =
-      '<div class="done"><p style="margin:0 0 8px;font-weight:700">Deck finished.</p>'+
-      '<p style="margin:0;color:#555;max-width:40em">The refusals this produced are folded into the file in step six, '+
-      'above the rules drawn from the corpus. Reasons you typed are kept alongside them.</p></div>';
-    drawFile(); drawPrompt();
-    return;
+      '<div class="done"><p style="margin:0 0 8px;font-weight:700">Both rounds judged.</p>'+
+      '<p style="margin:0;color:#555;max-width:44em">Anything still marked contested in the profile below '+
+      'is where the engine cannot tell yet. Those are the questions worth asking a second time, '+
+      'or worth settling by hand in step five.</p></div>';
+    drawFile(); drawPrompt(); return;
   }
   document.getElementById('jdone').innerHTML = '';
-  var sp = SPECIMENS[i];
   document.getElementById('card').innerHTML = renderSpec(sp);
-  document.getElementById('jcat').textContent = CATS[sp.cat];
-  document.getElementById('jcount').textContent = (done+1)+' of '+SPECIMENS.length;
+  document.getElementById('jcat').textContent = CATS[sp.cat] || sp.cat;
+  document.getElementById('jdim').textContent = sp.dim ? sp.dim : '';
+  document.getElementById('jcount').textContent = (done+1)+' of '+DECK.length;
   document.getElementById('jnote').textContent = sp.note || '';
   document.getElementById('why').value = '';
 }
 function judge(v){
-  var i = nextIdx(); if (i < 0) return;
-  var why = document.getElementById('why').value.trim();
-  judg[SPECIMENS[i].id] = { v: v, why: why };
+  var sp = pickNext(); if (!sp) return;
+  judg[sp.id] = { v:v, why: document.getElementById('why').value.trim() };
   jsave(); drawJudge(); drawFile(); drawPrompt();
 }
 document.getElementById('btnNo').onclick  = function(){ judge('no'); };
 document.getElementById('btnYes').onclick = function(){ judge('yes'); };
 document.addEventListener('keydown', function(e){
   if (document.getElementById('sj').hidden) return;
+  if (document.activeElement === document.getElementById('why') && e.key !== 'Enter') return;
   if (e.key === 'ArrowLeft')  { e.preventDefault(); judge('no'); }
   if (e.key === 'ArrowRight') { e.preventDefault(); judge('yes'); }
 });
 document.getElementById('resetJ').onclick = function(){ judg = {}; jsave(); drawJudge(); drawFile(); drawPrompt(); };
 
-function weights(){
-  var w = {};
-  SPECIMENS.forEach(function(sp){
-    var j = judg[sp.id]; if (!j) return;
-    sp.tags.forEach(function(t){
-      if (!w[t]) w[t] = { rej:0, acc:0, why:[] };
-      if (j.v === 'no'){ w[t].rej += REJECT_WEIGHT; if (j.why) w[t].why.push(j.why); }
-      else             { w[t].acc += ACCEPT_WEIGHT; }
-    });
-  });
-  return w;
-}
 function drawWeights(){
   var w = weights();
-  var rej = Object.keys(w).filter(function(t){ return w[t].rej > w[t].acc; })
-            .sort(function(a,b){ return w[b].rej - w[a].rej; }).slice(0,9);
-  var acc = Object.keys(w).filter(function(t){ return w[t].acc >= w[t].rej && w[t].acc > 0; })
-            .sort(function(a,b){ return w[b].acc - w[a].acc; }).slice(0,9);
-  function row(t, val, cls){
-    return '<div class="wrow"><span class="bar" style="width:'+Math.min(val*16,58)+'px"></span>'+t+
-           '<span class="v">'+val.toFixed(2)+'</span></div>';
+  function pick(st){ return Object.keys(w).filter(function(t){ return w[t].state===st; })
+    .sort(function(a,b){ return Math.abs(w[b].lean)-Math.abs(w[a].lean); }); }
+  function row(t){
+    var x = w[t];
+    return '<div class="wrow"><span class="bar" style="width:'+Math.max(4,Math.abs(x.lean)*52)+'px"></span>'+t+
+           '<span class="v">'+x.n+'</span></div>';
   }
-  document.getElementById('rejList').innerHTML = rej.length
-    ? rej.map(function(t){ return row(t, w[t].rej); }).join('')
-    : '<p style="font-size:13px;color:#bbb;margin:0">nothing yet</p>';
-  document.getElementById('accList').innerHTML = acc.length
-    ? acc.map(function(t){ return row(t, w[t].acc); }).join('')
-    : '<p style="font-size:13px;color:#bbb;margin:0">nothing yet</p>';
+  function fill(el, list){
+    document.getElementById(el).innerHTML = list.length
+      ? list.slice(0,10).map(row).join('')
+      : '<p style="font-size:13px;color:#bbb;margin:0">nothing yet</p>';
+  }
+  fill('rejList', pick('refused'));
+  fill('accList', pick('kept'));
+  fill('conList', pick('contested'));
+}
+
+/* ---- profile readout ---- */
+function drawProfile(){
+  var w = weights(), el = document.getElementById('profile');
+  if (!el) return;
+  var dims = {};
+  LADDERS.forEach(function(sp){
+    if (!dims[sp.dim]) dims[sp.dim] = [];
+    dims[sp.dim].push(sp);
+  });
+  var rows = Object.keys(dims).map(function(d){
+    var winner = null, best = -2, asked = 0;
+    dims[d].forEach(function(sp){
+      if (judg[sp.id]) asked++;
+      var t = sp.tags[0], x = w[t];
+      if (x && -x.lean > best){ best = -x.lean; winner = sp.tags[1] || t; }
+    });
+    return { d:d, asked:asked, total:dims[d].length, winner:winner, conf:Math.max(0,best) };
+  });
+  el.innerHTML = rows.map(function(r){
+    var pct = Math.round(r.conf*100);
+    return '<div class="prow">'+
+      '<span class="pd">'+r.d+'</span>'+
+      '<span class="pw">'+(r.asked ? (r.winner || 'no clear winner') : 'not asked yet')+'</span>'+
+      '<span class="pbar"><i style="width:'+pct+'%"></i></span>'+
+      '<span class="pn">'+r.asked+'/'+r.total+'</span></div>';
+  }).join('');
 }
 
 function judgedRefusals(){
   var w = weights();
   return Object.keys(w)
-    .filter(function(t){ return w[t].rej >= 1 && w[t].rej > w[t].acc; })
-    .sort(function(a,b){ return w[b].rej - w[a].rej; })
-    .map(function(t){ return { tag:t, score:w[t].rej, why:w[t].why }; });
+    .filter(function(t){ return w[t].state === 'refused'; })
+    .sort(function(a,b){ return w[b].lean - w[a].lean; })
+    .map(function(t){ return { tag:t, lean:w[t].lean, n:w[t].n, why:w[t].why }; });
+}
+function judgedKeeps(){
+  var w = weights();
+  return Object.keys(w)
+    .filter(function(t){ return w[t].state === 'kept'; })
+    .sort(function(a,b){ return a.lean - b.lean; })
+    .map(function(t){ return { tag:t, n:w[t].n }; });
+}
+function contested(){
+  var w = weights();
+  return Object.keys(w).filter(function(t){ return w[t].state === 'contested'; });
 }
 
 /* ---------- 05 the file ---------- */
@@ -485,14 +587,24 @@ function fileText(){
   var nearly = CLAIMS.filter(function(c){ return marks[c.id] === 'nearly'; });
   var out = [];
   out.push('taste.md');
-  out.push('Noor Sharma. Compiled from 12 pieces of my own work.');
+  out.push('Noor Sharma. 12 pieces read, ' + Object.keys(judg).length + ' of ' + DECK.length + ' specimens judged.');
   out.push('');
-  var jr = judgedRefusals();
+  var jr = judgedRefusals(), jk = judgedKeeps(), jc = contested();
   if (jr.length){
-    out.push('NEVER  judged, ' + Object.keys(judg).length + ' of ' + SPECIMENS.length + ' specimens');
-    jr.slice(0,10).forEach(function(r){
+    out.push('NEVER  judged, ' + Object.keys(judg).length + ' of ' + DECK.length + ' specimens');
+    jr.slice(0,14).forEach(function(r){
       out.push('  ' + r.tag + (r.why.length ? '   (' + r.why[0] + ')' : ''));
     });
+    out.push('');
+  }
+  if (jk.length){
+    out.push('PREFER  judged');
+    jk.slice(0,14).forEach(function(r){ out.push('  ' + r.tag); });
+    out.push('');
+  }
+  if (jc.length){
+    out.push('UNSETTLED  the answers disagree, do not guess');
+    out.push('  ' + jc.slice(0,10).join(', '));
     out.push('');
   }
   out.push('NEVER  standing');
