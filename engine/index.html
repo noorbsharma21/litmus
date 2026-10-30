@@ -313,13 +313,20 @@
     <h2>Putting it to work</h2>
     <p class="lede">Say what you are making. The engine wraps it in the file and hands back the
       whole instruction, ready to paste anywhere.</p>
+    <p class="lede">The file describes a field, not a single answer, so every run picks different
+      values inside it and commits to them. Generate another and the type, the ground and the
+      measure change while the refusals hold. That is the difference between a taste and a template.
+      Above all of it sit the rules that are not matters of taste at all: contrast, minimum sizes,
+      line length, things that have to be true whatever the look.</p>
     <input type="text" id="brief" placeholder="a landing page for a natural wine shop" value="a landing page for a natural wine shop">
     <div class="out">
       <pre id="prompt"></pre>
       <div class="btns">
         <button class="act" id="copyPrompt">Copy the prompt</button>
+        <button class="act ghost" id="reroll">Generate another</button>
         <button class="act ghost" id="openClaude">Open in Claude</button>
       </div>
+      <p class="meta" id="runNote" style="margin-top:10px"></p>
     </div>
   </div>
 
@@ -607,7 +614,7 @@ function weights(){
     var ks = Object.keys(jd.ctx);
     sp.tags.forEach(function(t){
       if (!w[t]) w[t] = { rej:0, acc:0, n:0, why:[], yesIn:{}, noIn:{} };
-      w[t].n++;
+      w[t].n += ks.length;      /* each context answered is its own piece of evidence */
       ks.forEach(function(k){
         if (jd.ctx[k] === 'no'){
           w[t].rej += REJECT_WEIGHT / ks.length;
@@ -825,6 +832,53 @@ function contested(){
   return Object.keys(w).filter(function(t){ return w[t].state === 'contested'; });
 }
 
+
+/* ---- the field, not a point ----
+   Each ladder dimension yields a band: the steps accepted, and the steps
+   refused. Keeping only the winner is what made every run identical. */
+function ranges(){
+  var w = weights(), dims = {};
+  LADDERS.forEach(function(sp){
+    var d = sp.dim, tag = sp.tags[0], label = sp.tags[1] || tag;
+    var val = tag.split(': ')[1];
+    if (!dims[d]) dims[d] = { dim:d, ok:[], no:[], unknown:[] };
+    var x = w[tag];
+    var bucket = !x || x.state === 'thin' || x.state === 'contested' ? 'unknown'
+               : x.state === 'refused' ? 'no' : 'ok';
+    dims[d][bucket].push({ v:val, label:label });
+  });
+  return Object.keys(dims).map(function(d){ return dims[d]; });
+}
+
+/* deterministic pick from a seed, so a run can be repeated or re-rolled */
+function rng(seed){
+  var x = seed || 1;
+  return function(){ x = (x * 1664525 + 1013904223) % 4294967296; return x / 4294967296; };
+}
+var runSeed = Math.floor(Math.random() * 1e6);
+
+function thisRun(seed){
+  var r = rng(seed), out = [];
+  ranges().forEach(function(d){
+    var pool = d.ok.length ? d.ok : d.unknown;
+    if (!pool.length) return;
+    out.push({ dim:d.dim, choice: pool[Math.floor(r() * pool.length)] });
+  });
+  return out;
+}
+
+/* fundamentals. not taste, and they outrank it. */
+var CONSTANTS = [
+  'Body text at 4.5:1 contrast against whatever sits behind it. Display text at 3:1.',
+  'Check contrast against the actual ground, not against white. A coloured field changes it.',
+  'Never let colour alone carry meaning. It must also be in position, weight or wording.',
+  'Body text never below 15px, and never below 16px on a phone.',
+  'Line length between 45 and 80 characters. Narrower is better than wider.',
+  'Anything you tap is at least 44 by 44 points.',
+  'Text over an image needs a scrim, a solid panel, or a crop that guarantees the contrast.',
+  'Every image carries alt text. Every control reachable by keyboard.'
+];
+
 /* ---------- 05 the file ---------- */
 function fileText(){
   var kept   = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
@@ -860,6 +914,21 @@ function fileText(){
     out.push('  ' + jc.slice(0,10).join(', '));
     out.push('');
   }
+  out.push('NON NEGOTIABLE  not matters of taste, and they outrank everything below');
+  CONSTANTS.forEach(function(c){ out.push('  ' + c); });
+  out.push('');
+
+  var band = ranges().filter(function(d){ return d.ok.length || d.no.length; });
+  if (band.length){
+    out.push('THE FIELD  choose inside these, and choose differently each time');
+    band.forEach(function(d){
+      var ok = d.ok.map(function(x){ return x.v; }).join(', ') || 'not settled';
+      var no = d.no.map(function(x){ return x.v; }).join(', ');
+      out.push('  ' + (d.dim + '                ').slice(0,18) + ok + (no ? '   never ' + no : ''));
+    });
+    out.push('');
+  }
+
   out.push('NEVER  standing');
   out.push('  No default white ground. No plain edge.');
   out.push('  No single element picked out in colour against a neutral.');
@@ -899,11 +968,30 @@ document.getElementById('dlFile').onclick = function(){
 /* ---------- 06 use it ---------- */
 function promptText(){
   var b = document.getElementById('brief').value.trim() || 'a page';
-  return 'Build ' + b + '.\n\nWork inside this. It is not a suggestion.\n\n' + fileText();
+  var run = thisRun(runSeed);
+  var lines = ['Build ' + b + '.', '', 'Work inside this. It is not a suggestion.', ''];
+  if (run.length){
+    lines.push('THIS RUN  one choice from inside the field. Hold these for the whole piece.');
+    run.forEach(function(r){
+      lines.push('  ' + (r.dim + '                ').slice(0,18) + r.choice.label);
+    });
+    lines.push('');
+    lines.push('Another run would choose differently and still be mine. Do not average the field,');
+    lines.push('commit to the values above.');
+    lines.push('');
+  }
+  return lines.join('\n') + fileText();
 }
-function drawPrompt(){ document.getElementById('prompt').textContent = promptText(); }
+function drawPrompt(){
+  document.getElementById('prompt').textContent = promptText();
+  var el = document.getElementById('runNote');
+  if (el) el.textContent = 'Run ' + runSeed + '. Same file, different choices inside it.';
+}
 document.getElementById('brief').addEventListener('input', drawPrompt);
 document.getElementById('copyPrompt').onclick = function(){ copy(promptText(), this); };
+document.getElementById('reroll').onclick = function(){
+  runSeed = Math.floor(Math.random() * 1e6); drawPrompt();
+};
 document.getElementById('openClaude').onclick = function(){
   window.open('https://claude.ai/new?q=' + encodeURIComponent(promptText()), '_blank');
 };
