@@ -149,6 +149,21 @@
   .claim[data-state="false"] .ch .o{opacity:.3}
   .tally{font-size:13px;color:#666;margin:16px 0 0}
 
+  /* 8 log */
+  .lrow{display:grid;grid-template-columns:52px 86px 1fr 150px;gap:14px;align-items:baseline;
+    padding:9px 0;border-bottom:1px solid #eee;font-size:13px}
+  .lseq{font-size:11px;color:#bbb}
+  .lkind{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#fff;
+    background:#14130F;padding:2px 6px;justify-self:start}
+  .lkind.mark{background:#9D70C0}
+  .lwhat b{font-weight:600}
+  .lwhy{color:#D0402F;font-style:italic}
+  .lctx{font-size:12px;color:#666;text-align:right}
+  .lctx .y{color:#14130F;font-weight:600}
+  .lctx .n{color:#D0402F;font-weight:600}
+  .ltime{font-size:11px;color:#bbb}
+  @media (max-width:50rem){.lrow{grid-template-columns:1fr;gap:3px}.lctx{text-align:left}}
+
   /* 5 file */
   pre{font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.62;
     white-space:pre-wrap;margin:0;border-top:1px solid #14130F;padding-top:14px}
@@ -186,6 +201,7 @@
     <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">05</span> Correct</button>
     <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">06</span> The file</button>
     <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">07</span> Use it</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s7"><span class="n">08</span> Log</button>
   </div>
 
   <!-- 01 -->
@@ -307,6 +323,23 @@
     </div>
   </div>
 
+  <!-- 08 -->
+  <div class="pane" id="s7" role="tabpanel" hidden style="--c:#404C25">
+    <h2>Everything I have put in</h2>
+    <p class="lede">Append only. A change of mind is added, not substituted, so the record shows
+      the order things were decided in and where I went back on myself.</p>
+    <div class="counts" id="logCounts"></div>
+    <div class="btns" style="margin:0 0 20px">
+      <button class="act" id="expLog">Export everything</button>
+      <button class="act ghost" id="impBtn">Import a file</button>
+      <input type="file" id="impLog" accept="application/json" hidden>
+      <button class="act ghost" id="wipeLog">Erase the record</button>
+    </div>
+    <p class="meta" style="margin:-10px 0 20px">This is kept in this browser only. There is no server
+      behind it, so export before you clear anything or move to another machine.</p>
+    <div id="logList"></div>
+  </div>
+
 </div>
 
 <script src="data.js"></script>
@@ -404,13 +437,26 @@ function drawClaims(){
 }
 document.getElementById('claims').addEventListener('click', function(e){
   var b = e.target.closest('.mk'); if (!b) return;
-  marks[b.closest('.claim').dataset.id] = b.dataset.v;
-  save(); drawClaims();
+  var id = b.closest('.claim').dataset.id, was = marks[id];
+  if (was === b.dataset.v) return;
+  marks[id] = b.dataset.v;
+  save();
+  record({ kind:'mark', id:id, from:was, to:b.dataset.v,
+           claim:(CLAIMS.filter(function(c){return c.id===id;})[0]||{}).text });
+  drawClaims();
 });
 
 
 /* ---------- refine ---------- */
 var JKEY = 'litmus-judge-v3';
+var LKEY = 'litmus-log-v1';
+var LOG = [];
+try { LOG = JSON.parse(localStorage.getItem(LKEY) || '[]'); } catch(e){ LOG = []; }
+function logSave(){ try { localStorage.setItem(LKEY, JSON.stringify(LOG)); } catch(e){} }
+function record(ev){
+  ev.t = Date.now(); ev.seq = LOG.length + 1;
+  LOG.push(ev); logSave(); drawLog();
+}
 var judg = {};
 try { judg = JSON.parse(localStorage.getItem(JKEY) || '{}'); } catch(e){ judg = {}; }
 /* drop anything saved in an older shape */
@@ -673,8 +719,12 @@ document.getElementById('card').addEventListener('click', function(e){
 
 function commit(ctxMap){
   var sp = pickNext(); if (!sp) return;
-  judg[sp.id] = { ctx: ctxMap, why: document.getElementById('why').value.trim() };
-  jsave(); drawJudge(); drawFile(); drawPrompt();
+  var why = document.getElementById('why').value.trim();
+  judg[sp.id] = { ctx: ctxMap, why: why, t: Date.now() };
+  jsave();
+  record({ kind:'judge', id:sp.id, cat:sp.cat, dim:sp.dim||null,
+           round:sp.round, tags:sp.tags, ctx:ctxMap, why:why });
+  drawJudge(); drawFile(); drawPrompt();
 }
 function all(v){ var m = {}; CTX.forEach(function(c){ m[c.k] = v; }); return m; }
 
@@ -858,6 +908,78 @@ document.getElementById('openClaude').onclick = function(){
   window.open('https://claude.ai/new?q=' + encodeURIComponent(promptText()), '_blank');
 };
 
+/* ---------- 08 log ---------- */
+function drawLog(){
+  var el = document.getElementById('logList'); if (!el) return;
+  var j = LOG.filter(function(e){ return e.kind==='judge'; }).length;
+  var m = LOG.filter(function(e){ return e.kind==='mark'; }).length;
+  var w = LOG.filter(function(e){ return e.why; }).length;
+  var splits = LOG.filter(function(e){
+    if (e.kind!=='judge' || !e.ctx) return false;
+    var v = Object.keys(e.ctx).map(function(k){ return e.ctx[k]; });
+    return v.indexOf('yes')>-1 && v.indexOf('no')>-1;
+  }).length;
+  document.getElementById('logCounts').innerHTML =
+    '<div><b>'+LOG.length+'</b>inputs recorded</div>'+
+    '<div><b>'+j+'</b>specimens judged</div>'+
+    '<div><b>'+splits+'</b>split across contexts</div>'+
+    '<div><b>'+w+'</b>with a reason</div>'+
+    '<div><b>'+m+'</b>claim corrections</div>';
+
+  if (!LOG.length){ el.innerHTML = '<p class="meta">Nothing yet. Judge a specimen or mark a claim.</p>'; return; }
+  el.innerHTML = LOG.slice().reverse().map(function(e){
+    var when = new Date(e.t);
+    var time = when.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' ' +
+               when.toLocaleDateString([], {day:'numeric', month:'short'});
+    var what, ctx = '';
+    if (e.kind === 'judge'){
+      what = '<b>'+e.id+'</b> &#183; '+(CATS[e.cat]||e.cat)+(e.dim ? ' &#183; '+e.dim : '')+
+             (e.why ? ' <span class="lwhy">&ldquo;'+e.why+'&rdquo;</span>' : '');
+      ctx = CTX.map(function(c){
+        var v = e.ctx && e.ctx[c.k];
+        return v ? '<span class="'+(v==='yes'?'y':'n')+'">'+c.label.toLowerCase()+' '+v+'</span>' : '';
+      }).filter(Boolean).join(', ');
+    } else {
+      what = '<b>'+e.id+'</b> &#183; '+(e.claim||'') ;
+      ctx = '<span class="'+(e.to==='false'?'n':'y')+'">'+(e.from||'unset')+' &#8594; '+e.to+'</span>';
+    }
+    return '<div class="lrow"><span class="lseq">'+e.seq+'</span>'+
+           '<span class="lkind'+(e.kind==='mark'?' mark':'')+'">'+e.kind+'</span>'+
+           '<span class="lwhat">'+what+'</span>'+
+           '<span class="lctx">'+ctx+'<br><span class="ltime">'+time+'</span></span></div>';
+  }).join('');
+}
+
+document.getElementById('expLog').onclick = function(){
+  var blob = { exported: new Date().toISOString(), judgments: judg, marks: marks, log: LOG };
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(blob,null,2)], {type:'application/json'}));
+  a.download = 'litmus-inputs-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+};
+document.getElementById('impBtn').onclick = function(){ document.getElementById('impLog').click(); };
+document.getElementById('impLog').onchange = function(e){
+  var f = e.target.files[0]; if (!f) return;
+  var fr = new FileReader();
+  fr.onload = function(){
+    try {
+      var d = JSON.parse(fr.result);
+      if (d.judgments) { judg = d.judgments; jsave(); }
+      if (d.marks)     { marks = d.marks;     save();  }
+      if (d.log)       { LOG = d.log;         logSave(); }
+      drawJudge(); drawClaims(); drawLog(); drawFile(); drawPrompt();
+    } catch(err){ alert('That file could not be read.'); }
+  };
+  fr.readAsText(f);
+};
+document.getElementById('wipeLog').onclick = function(){
+  if (!confirm('Erase every judgment, mark and log entry in this browser? Export first if you want to keep them.')) return;
+  judg = {}; LOG = []; marks = {};
+  CLAIMS.forEach(function(c){ marks[c.id] = 'true'; });
+  jsave(); logSave(); save();
+  drawJudge(); drawClaims(); drawLog(); drawFile(); drawPrompt();
+};
+
 /* ---------- rail ---------- */
 var stages = document.querySelectorAll('.st');
 function show(id){
@@ -875,6 +997,7 @@ window.addEventListener('hashchange', fromHash);
 
 drawClaims();
 drawJudge();
+drawLog();
 fromHash();
 </script>
 </body>
