@@ -62,9 +62,26 @@
   .note{color:#444;max-width:46em}
 
   /* judge */
-  .deck{display:grid;grid-template-columns:1fr 300px;gap:30px;align-items:start}
-  .card{border:1px solid #ddd;height:330px;display:flex;align-items:center;justify-content:center;
-    overflow:hidden;background:#fff;position:relative}
+  .deck{display:grid;grid-template-columns:1fr 268px;gap:28px;align-items:start}
+  .ctxrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .ctx{min-width:0}
+  .ctxlab{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.13em;
+    text-transform:uppercase;color:#999;margin:0 0 6px}
+  .ctxlab .d{width:8px;height:8px;border-radius:50%;background:#ddd;flex:none}
+  .ctx.y .ctxlab .d{background:#14130F}
+  .ctx.n .ctxlab .d{background:#D0402F}
+  .ctx.y .ctxlab{color:#14130F}
+  .ctx.n .ctxlab{color:#D0402F}
+  .card{border:1px solid #ddd;height:232px;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;background:#fff;position:relative;cursor:pointer;transition:border-color .15s}
+  .card:hover{border-color:#999}
+  .ctx.y .card{border-color:#14130F;border-width:2px}
+  .ctx.n .card{border-color:#D0402F;border-width:2px}
+  .ctx.n .card > *{opacity:.4}
+  .verdict{font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:6px 0 0;color:#999}
+  .ctx.y .verdict{color:#14130F}
+  .ctx.n .verdict{color:#D0402F}
+  .jb.go{border-color:#14130F;background:#14130F;color:#fff}
   .card > .fill{width:100%;height:100%}
   .card .pad{padding:26px 28px;width:100%}
   .swatches{display:flex;width:100%;height:100%}
@@ -145,6 +162,7 @@
     width:100%;max-width:520px;background:#fff}
   .out{margin-top:22px}
 
+  @media (max-width:64rem){.ctxrow{grid-template-columns:1fr}.card{height:200px}}
   @media (max-width:50rem){
     .reader{grid-template-columns:1fr}
     .two{grid-template-columns:1fr}
@@ -205,14 +223,16 @@
     <div class="deck">
       <div>
         <div class="jmeta"><span class="jcat" id="jcat"></span><span class="jdim" id="jdim"></span><span class="jcount" id="jcount"></span></div>
-        <div class="card" id="card"></div>
+        <div class="ctxrow" id="card"></div>
         <p class="jnote" id="jnote"></p>
         <input type="text" class="why" id="why" placeholder="why, in a few words (optional)">
         <div class="jbtns">
-          <button class="jb no"  id="btnNo">No</button>
-          <button class="jb yes" id="btnYes">Yes</button>
+          <button class="jb no"  id="btnNo">No, in all three</button>
+          <button class="jb yes" id="btnYes">Yes, in all three</button>
+          <button class="jb go"  id="btnGo" hidden>Keep what I picked</button>
         </div>
-        <p class="jhint">Left arrow for no, right arrow for yes. Judgments save as you go.</p>
+        <p class="jhint">Click a tile to flip it between yes and no. Or answer all three at once.
+          Left and right arrows still work.</p>
       </div>
       <div class="side">
         <div class="blk rej"><h3>Rejected, weighted 1.0</h3><div id="rejList"></div></div>
@@ -391,6 +411,115 @@ var judg = {};
 try { judg = JSON.parse(localStorage.getItem(JKEY) || '{}'); } catch(e){ judg = {}; }
 function jsave(){ try { localStorage.setItem(JKEY, JSON.stringify(judg)); } catch(e){} }
 
+
+/* ---- the same decision, shown three ways ----
+   A decision is rarely right or wrong on its own. Heavy type is right
+   for a headline and wrong for body copy. So each specimen is rendered
+   large, small, and inside a composed page, and each one is judged. */
+
+var CTX = [
+  {k:'large', label:'Large'},
+  {k:'small', label:'Small'},
+  {k:'page',  label:'In a page'}
+];
+
+function miniPage(opts){
+  var o = opts || {};
+  return '<div style="height:100%;background:'+(o.bg||'#fff')+';padding:14px 15px;'+(o.extra||'')+'">'+
+    '<p style="margin:0 0 7px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:'+(o.meta||'#aaa')+'">Disco &#183; No. 01</p>'+
+    '<p style="margin:0 0 6px;'+(o.head||'font-size:15px;font-weight:700;color:#14130F')+'">'+(o.title||PHRASE)+'</p>'+
+    '<p style="margin:0 0 8px;font-size:9px;line-height:1.55;color:'+(o.body||'#666')+';max-width:30em">'+
+      (o.copy||'Twenty five cities, read by people who live in them.')+'</p>'+
+    (o.after||'')+'</div>';
+}
+
+function contextViews(sp){
+  var words = sp.text || PHRASE;
+
+  if (sp.t === 'type'){
+    var small = sp.css.replace(/font-size:[^;]+/, 'font-size:13px')
+                      .replace(/line-height:[^;]+/, 'line-height:1.6');
+    return {
+      large: '<div class="pad"><p style="margin:0;'+sp.css+'">'+words+'</p></div>',
+      small: '<div class="pad"><p style="margin:0;'+small+';max-width:26em">'+words+
+             '. Twenty five cities, read by people who live in them, not by an algorithm counting stars.</p></div>',
+      page:  miniPage({ head: sp.css.replace(/font-size:[^;]+/, 'font-size:17px'), title: words })
+    };
+  }
+
+  if (sp.t === 'copy'){
+    return {
+      large: '<div class="pad"><p style="margin:0;font-size:22px;font-weight:700;line-height:1.3;max-width:18em">'+sp.text+'</p></div>',
+      small: '<div class="pad"><p style="margin:0;font-size:12px;line-height:1.6;color:#555;max-width:30em">'+sp.text+'</p></div>',
+      page:  miniPage({ title: sp.text, copy:'Thursdays, seven. Anyone can come.' })
+    };
+  }
+
+  if (sp.t === 'swatch'){
+    var a = sp.cols[0], b = sp.cols[1] || '#14130F';
+    return {
+      large: '<div class="fill swatches">'+sp.cols.map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</div>',
+      small: '<div class="pad"><p style="margin:0 0 9px;font-size:13px;color:#555">An accent, at the size it would really be used.</p>'+
+             '<p style="margin:0;font-size:15px">Places for the <span style="color:'+a+';font-weight:700">particular</span></p>'+
+             '<div style="display:flex;gap:5px;margin-top:10px">'+sp.cols.map(function(c){return '<i style="width:17px;height:17px;background:'+c+';display:block;border:1px solid #ddd"></i>';}).join('')+'</div></div>',
+      page:  miniPage({ bg:a, head:'font-size:15px;font-weight:700;color:'+b, body:b, meta:b, copy:'Twenty five cities, read by people who live in them.' })
+    };
+  }
+
+  if (sp.t === 'tex'){
+    return {
+      large: '<div class="fill" style="'+sp.css+'">'+(sp.inner||'')+'</div>',
+      small: '<div class="pad"><div style="width:74px;height:74px;'+sp.css+'">'+(sp.inner||'')+'</div>'+
+             '<p style="margin:10px 0 0;font-size:12px;color:#777">At panel size.</p></div>',
+      page:  '<div class="fill" style="'+sp.css+'">'+(sp.inner||'')+
+             '<div style="position:absolute;inset:0;padding:16px"><p style="margin:0;font-size:16px;font-weight:700;color:#14130F">'+PHRASE+'</p>'+
+             '<p style="margin:5px 0 0;font-size:9px;color:#333;max-width:26em">Twenty five cities, read by people who live in them.</p></div></div>'
+    };
+  }
+
+  if (sp.t === 'space'){
+    var blk = function(size, lh, measure, gap){
+      var bar = function(w){ return '<div style="height:'+size*0.6+'px;background:#e9e9e9;width:'+w+'%;margin-bottom:'+(size*0.4)+'px"></div>'; };
+      return '<div class="pad"><div style="max-width:'+measure+'">'+
+        '<p style="margin:0 0 '+gap+'px;font-size:'+size+'px;line-height:'+lh+'">Places for the particular. Twenty five cities, read by people who live in them.</p>'+
+        bar(100)+bar(92)+bar(74)+'</div></div>';
+    };
+    return {
+      large: blk(sp.size, sp.lh, sp.measure, sp.gap),
+      small: blk(Math.max(9, sp.size*0.74), sp.lh, sp.measure, Math.round(sp.gap*0.6)),
+      page:  miniPage({ copy:'Twenty five cities, read by people who live in them, not by an algorithm counting stars and reviews.',
+                        after:'<div style="max-width:'+sp.measure+';font-size:'+Math.max(9,sp.size*0.7)+'px;line-height:'+sp.lh+'">'+
+                              '<div style="height:5px;background:#eee;margin-bottom:'+Math.round(sp.gap*0.5)+'px"></div>'+
+                              '<div style="height:5px;background:#eee;width:88%"></div></div>' })
+    };
+  }
+
+  if (sp.t === 'img'){
+    var ph = '<div style="width:100%;height:100%;background:linear-gradient(140deg,#9AA98B,#4A5440)"></div>';
+    var mode = {
+      bleed:  ['<div class="fill">'+ph+'</div>', 'padding:0'],
+      matted: ['<div class="fill" style="background:#E8C84A;padding:26px"><div style="height:100%">'+ph+'</div></div>', 'background:#E8C84A;padding:9px'],
+      card:   ['<div class="fill" style="padding:30px"><div style="height:100%;border-radius:16px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.22)">'+ph+'</div></div>', 'border-radius:8px;overflow:hidden;box-shadow:0 5px 14px rgba(0,0,0,.2)'],
+      oval:   ['<div class="fill" style="padding:24px"><div style="height:100%;border-radius:50%;overflow:hidden">'+ph+'</div></div>', 'border-radius:50%;overflow:hidden'],
+      tilt:   ['<div class="fill" style="padding:28px;perspective:800px"><div style="height:100%;transform:rotateY(-17deg) rotateX(7deg);border-radius:10px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.25)">'+ph+'</div></div>', 'transform:rotateY(-15deg);border-radius:6px;overflow:hidden'],
+      grid:   ['<div class="fill" style="padding:18px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;height:100%">'+
+               [1,2,3,4,5,6].map(function(n){return '<div><span style="font-size:8px;color:#aaa">0'+n+'</span>'+ph+'</div>';}).join('')+'</div></div>', 'padding:0']
+    }[sp.mode];
+    return {
+      large: mode[0],
+      small: '<div class="pad"><div style="width:86px;height:64px;'+mode[1]+'">'+ph+'</div><p style="margin:10px 0 0;font-size:12px;color:#777">As a thumbnail.</p></div>',
+      page:  miniPage({ after:'<div style="height:96px;'+mode[1]+'">'+ph+'</div>' })
+    };
+  }
+
+  /* raw layouts */
+  return {
+    large: '<div class="fill">'+sp.html+'</div>',
+    small: '<div class="fill" style="display:flex;align-items:center;justify-content:center"><div style="width:62%;transform:scale(.72);transform-origin:center">'+sp.html+'</div></div>',
+    page:  '<div class="fill" style="background:#f4f4f4;padding:16px"><div style="background:#fff;height:100%;overflow:hidden">'+sp.html+'</div></div>'
+  };
+}
+
 function renderSpec(sp){
   var words = sp.text || PHRASE;
   if (sp.t === 'type')  return '<div class="pad"><p style="margin:0;'+sp.css+'">'+words+'</p></div>';
@@ -421,12 +550,21 @@ function renderSpec(sp){
 function weights(){
   var w = {};
   DECK.forEach(function(sp){
-    var jd = judg[sp.id]; if (!jd) return;
+    var jd = judg[sp.id]; if (!jd || !jd.ctx) return;
+    var ks = Object.keys(jd.ctx);
     sp.tags.forEach(function(t){
-      if (!w[t]) w[t] = { rej:0, acc:0, n:0, why:[] };
+      if (!w[t]) w[t] = { rej:0, acc:0, n:0, why:[], yesIn:{}, noIn:{} };
       w[t].n++;
-      if (jd.v === 'no'){ w[t].rej += REJECT_WEIGHT; if (jd.why) w[t].why.push(jd.why); }
-      else              { w[t].acc += ACCEPT_WEIGHT; }
+      ks.forEach(function(k){
+        if (jd.ctx[k] === 'no'){
+          w[t].rej += REJECT_WEIGHT / ks.length;
+          w[t].noIn[k] = (w[t].noIn[k]||0) + 1;
+          if (jd.why) w[t].why.push(jd.why);
+        } else {
+          w[t].acc += ACCEPT_WEIGHT / ks.length;
+          w[t].yesIn[k] = (w[t].yesIn[k]||0) + 1;
+        }
+      });
     });
   });
   Object.keys(w).forEach(function(t){
@@ -471,6 +609,8 @@ function pickNext(){
 }
 
 /* ---- draw ---- */
+var pick = {};          /* current specimen's per-context choices */
+
 function drawJudge(){
   var sp = pickNext(), done = Object.keys(judg).length, r = currentRound();
   document.getElementById('prog').style.width = (done/DECK.length*100)+'%';
@@ -479,39 +619,69 @@ function drawJudge(){
   : r === 2 ? 'Round two, one variable at a time, ordered by what is least settled'
   : 'Both rounds done';
   drawWeights(); drawProfile();
+
   if (!sp){
     document.getElementById('card').innerHTML = '';
     document.getElementById('jcat').textContent = 'done';
     document.getElementById('jcount').textContent = done+' of '+DECK.length;
     document.getElementById('jnote').textContent = '';
     document.getElementById('jdim').textContent = '';
+    document.getElementById('btnGo').hidden = true;
     document.getElementById('jdone').innerHTML =
       '<div class="done"><p style="margin:0 0 8px;font-weight:700">Both rounds judged.</p>'+
-      '<p style="margin:0;color:#555;max-width:44em">Anything still marked contested in the profile below '+
-      'is where the engine cannot tell yet. Those are the questions worth asking a second time, '+
-      'or worth settling by hand in step five.</p></div>';
+      '<p style="margin:0;color:#555;max-width:44em">Anything still contested in the profile below is '+
+      'where the engine cannot tell yet. Anything you answered differently across contexts became a '+
+      'conditional rule in the file rather than a flat one.</p></div>';
     drawFile(); drawPrompt(); return;
   }
+
   document.getElementById('jdone').innerHTML = '';
-  document.getElementById('card').innerHTML = renderSpec(sp);
+  var views = contextViews(sp);
+  pick = {};
+  document.getElementById('card').innerHTML = CTX.map(function(c){
+    return '<div class="ctx" data-k="'+c.k+'">'+
+      '<p class="ctxlab"><span class="d"></span>'+c.label+'</p>'+
+      '<div class="card">'+views[c.k]+'</div>'+
+      '<p class="verdict">not answered</p></div>';
+  }).join('');
   document.getElementById('jcat').textContent = CATS[sp.cat] || sp.cat;
-  document.getElementById('jdim').textContent = sp.dim ? sp.dim : '';
+  document.getElementById('jdim').textContent = sp.dim || '';
   document.getElementById('jcount').textContent = (done+1)+' of '+DECK.length;
   document.getElementById('jnote').textContent = sp.note || '';
   document.getElementById('why').value = '';
+  document.getElementById('btnGo').hidden = true;
 }
-function judge(v){
+
+document.getElementById('card').addEventListener('click', function(e){
+  var box = e.target.closest('.ctx'); if (!box) return;
+  var k = box.dataset.k;
+  pick[k] = pick[k] === 'yes' ? 'no' : (pick[k] === 'no' ? null : 'yes');
+  box.classList.toggle('y', pick[k] === 'yes');
+  box.classList.toggle('n', pick[k] === 'no');
+  box.querySelector('.verdict').textContent =
+    pick[k] === 'yes' ? 'yes here' : pick[k] === 'no' ? 'no here' : 'not answered';
+  var any = CTX.some(function(c){ return pick[c.k]; });
+  document.getElementById('btnGo').hidden = !any;
+});
+
+function commit(ctxMap){
   var sp = pickNext(); if (!sp) return;
-  judg[sp.id] = { v:v, why: document.getElementById('why').value.trim() };
+  judg[sp.id] = { ctx: ctxMap, why: document.getElementById('why').value.trim() };
   jsave(); drawJudge(); drawFile(); drawPrompt();
 }
-document.getElementById('btnNo').onclick  = function(){ judge('no'); };
-document.getElementById('btnYes').onclick = function(){ judge('yes'); };
+function all(v){ var m = {}; CTX.forEach(function(c){ m[c.k] = v; }); return m; }
+
+document.getElementById('btnNo').onclick  = function(){ commit(all('no')); };
+document.getElementById('btnYes').onclick = function(){ commit(all('yes')); };
+document.getElementById('btnGo').onclick  = function(){
+  var m = {}; CTX.forEach(function(c){ if (pick[c.k]) m[c.k] = pick[c.k]; });
+  commit(m);
+};
 document.addEventListener('keydown', function(e){
   if (document.getElementById('sj').hidden) return;
-  if (document.activeElement === document.getElementById('why') && e.key !== 'Enter') return;
-  if (e.key === 'ArrowLeft')  { e.preventDefault(); judge('no'); }
-  if (e.key === 'ArrowRight') { e.preventDefault(); judge('yes'); }
+  if (document.activeElement === document.getElementById('why')) return;
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); commit(all('no')); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); commit(all('yes')); }
 });
 document.getElementById('resetJ').onclick = function(){ judg = {}; jsave(); drawJudge(); drawFile(); drawPrompt(); };
 
@@ -562,12 +732,29 @@ function drawProfile(){
   }).join('');
 }
 
+function where(x, which){
+  var m = which === 'yes' ? x.yesIn : x.noIn;
+  var ks = CTX.filter(function(c){ return m[c.k]; }).map(function(c){ return c.label.toLowerCase(); });
+  return (ks.length === 0 || ks.length === CTX.length) ? '' : ks.join(' and ');
+}
 function judgedRefusals(){
   var w = weights();
   return Object.keys(w)
     .filter(function(t){ return w[t].state === 'refused'; })
     .sort(function(a,b){ return w[b].lean - w[a].lean; })
-    .map(function(t){ return { tag:t, lean:w[t].lean, n:w[t].n, why:w[t].why }; });
+    .map(function(t){ return { tag:t, lean:w[t].lean, n:w[t].n, why:w[t].why, only:where(w[t],'no') }; });
+}
+/* answered yes somewhere and no somewhere else: a conditional, not a rule */
+function conditionals(){
+  var w = weights(), out = [];
+  Object.keys(w).forEach(function(t){
+    var x = w[t], ys = Object.keys(x.yesIn), ns = Object.keys(x.noIn);
+    if (!ys.length || !ns.length) return;
+    out.push({ tag:t,
+      yes: CTX.filter(function(c){ return x.yesIn[c.k]; }).map(function(c){ return c.label.toLowerCase(); }).join(' and '),
+      no:  CTX.filter(function(c){ return x.noIn[c.k];  }).map(function(c){ return c.label.toLowerCase(); }).join(' and ') });
+  });
+  return out.sort(function(a,b){ return a.tag.localeCompare(b.tag); });
 }
 function judgedKeeps(){
   var w = weights();
@@ -593,13 +780,22 @@ function fileText(){
   if (jr.length){
     out.push('NEVER  judged, ' + Object.keys(judg).length + ' of ' + DECK.length + ' specimens');
     jr.slice(0,14).forEach(function(r){
-      out.push('  ' + r.tag + (r.why.length ? '   (' + r.why[0] + ')' : ''));
+      out.push('  ' + r.tag + (r.only ? '  when ' + r.only : '') +
+               (r.why.length ? '   (' + r.why[0] + ')' : ''));
     });
     out.push('');
   }
   if (jk.length){
     out.push('PREFER  judged');
     jk.slice(0,14).forEach(function(r){ out.push('  ' + r.tag); });
+    out.push('');
+  }
+  var cond = conditionals();
+  if (cond.length){
+    out.push('DEPENDS ON CONTEXT');
+    cond.slice(0,12).forEach(function(c){
+      out.push('  ' + c.tag + '  yes ' + c.yes + ', no ' + c.no);
+    });
     out.push('');
   }
   if (jc.length){
