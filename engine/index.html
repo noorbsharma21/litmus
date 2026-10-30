@@ -132,6 +132,15 @@
   .col.out .tagrow .bar{background:#ddd}
   .tagrow .c{font-size:11px;color:#999;margin-left:auto}
   .col.out .tagrow{color:#aaa}
+  .fieldhead{margin:34px 0 0}
+  .tagrow.field{flex-wrap:wrap;color:#aaa}
+  .tagrow.field .bar{background:#ddd}
+  .tagrow.field.vs{color:#14130F}
+  .tagrow.field.avoid .bar{background:#D0402F}
+  .tagrow.field.lean .bar{background:#151DE0}
+  .tagrow .mine{flex-basis:100%;margin-left:14px;font-size:13px;color:#555}
+  .tagrow.avoid .mine::before{content:'\2192  ';color:#D0402F}
+  .tagrow.lean .mine::before{content:'\2192  ';color:#151DE0}
 
   /* 4 claims */
   .claim{border-top:1px solid #ddd;padding:16px 0}
@@ -211,7 +220,7 @@
       Drawings and paintings from the portfolio, photographs off my phone, and pages I designed and built.</p>
     <div class="counts" id="counts"></div>
     <div class="grid" id="corpus"></div>
-    <p class="meta" style="margin-top:14px">Colour means read. Grey means queued. Click any piece to open its record.</p>
+    <p class="meta" style="margin-top:14px">Every piece has been read and tagged. Click any one to open its record.</p>
   </div>
 
   <!-- 02 -->
@@ -284,6 +293,14 @@
         <div id="baseKeep"></div>
       </div>
     </div>
+
+    <h3 class="fieldhead">What the galleries agree on</h3>
+    <p class="lede">Subtracting a consensus means knowing what it is, so I counted one instead
+      of assuming it. These are siteinspire&#8217;s own style filters with the number of sites
+      under each, read on 30 October 2026. Minimal is tagged on 847 sites. Pattern is tagged on 19.
+      That ratio is the thing worth noticing: the corpus above is mostly pattern.</p>
+    <div id="fieldOut"></div>
+    <p class="note" id="fieldPrompts"></p>
   </div>
 
   <!-- 04 -->
@@ -420,6 +437,20 @@ drawReader();
   }
   document.getElementById('baseOut').innerHTML  = render(rows.filter(function(r){ return r.base; }));
   document.getElementById('baseKeep').innerHTML = render(rows.filter(function(r){ return !r.base && r.n > 1; }));
+
+  var fmax = Math.max.apply(null, FIELD.map(function(f){ return f.n; }));
+  document.getElementById('fieldOut').innerHTML = FIELD.map(function(f){
+    return '<div class="tagrow field' + (f.stance ? ' vs ' + f.stance : '') + '">' +
+      '<span class="bar" style="width:' + (f.n/fmax*150+4) + 'px"></span>' +
+      f.tag + '<span class="c">' + f.n + '</span>' +
+      (f.mine ? '<span class="mine">' +
+        (f.stance === 'lean' ? 'Rare, and it is what I do: ' : 'I do this instead: ') +
+        f.mine + '</span>' : '') +
+    '</div>';
+  }).join('');
+  document.getElementById('fieldPrompts').textContent =
+    'Land-book puts four suggestions in its search box the moment you arrive: ' +
+    FIELD_PROMPTS.join(', ') + '. That is the house style saying its own name.';
 })();
 
 /* ---------- 04 correct ---------- */
@@ -428,7 +459,10 @@ function drawClaims(){
     var m = marks[c.id];
     return '<div class="claim" data-state="' + m + '" data-id="' + c.id + '">' +
       '<div class="ch"><span class="o" style="background:' + c.colour + '"></span><p>' + c.text + '</p></div>' +
-      '<div class="cmeta"><span class="from">read out of ' + c.from.length + ' pieces: ' + c.from.join(', ') + '</span>' +
+      '<div class="cmeta"><span class="from">read out of ' + c.from.length + ' pieces: ' + c.from.join(', ') +
+        ((c.against && c.against.length)
+          ? '<br><em>broken by ' + c.against.join(', ') + '</em>'
+          : '<br><em>nothing in the corpus breaks it</em>') + '</span>' +
       '<span class="marks">' +
         ['true','nearly','false'].map(function(v){
           return '<button class="mk" data-v="' + v + '" aria-pressed="' + (m===v) + '">' + v + '</button>';
@@ -857,12 +891,75 @@ function rng(seed){
 }
 var runSeed = Math.floor(Math.random() * 1e6);
 
-function thisRun(seed){
-  var r = rng(seed), out = [];
+/* What is being made changes which end of the field to pull from.
+   A poster and a settings screen are not the same problem, so the
+   same file should not hand back the same instruction for both.
+   'low' leans to the first steps of a ladder, 'high' to the last. */
+var SURFACES = [
+  { kind:'an app screen', words:['app','dashboard','interface','ui','product','console','settings','admin','form','tool'],
+    bias:{ scale:'low', 'section gap':'low', border:'low', weight:'low' },
+    note:'Looked at every day, not once. Display scale sits low, spacing stays tight, and the tap target and contrast rules below bind harder than anything about taste.',
+    watch:['Anything you tap is at least 44 by 44 points.','Body text never below 15px, and never below 16px on a phone.'] },
+
+  { kind:'an email', words:['email','mailer','drip','campaign','broadcast'],
+    bias:{ measure:'low', 'how many colours':'low', border:'low', alignment:'low' },
+    note:'Rendered by clients that will drop half of what you write. One column, few colours, and nothing the layout cannot survive losing.',
+    watch:['Line length between 45 and 80 characters. Narrower is better than wider.','Never let colour alone carry meaning. It must also be in position, weight or wording.'] },
+
+  { kind:'something to read', words:['article','essay','blog','journal','magazine','long read','longread','documentation','docs','report','paper','story'],
+    bias:{ measure:'low', leading:'high', scale:'low', weight:'low' },
+    note:'Long reading. Measure and leading carry it, display does not. The 45 to 80 character rule is the binding constraint here, not a guideline.',
+    watch:['Line length between 45 and 80 characters. Narrower is better than wider.','Body text at 4.5:1 contrast against whatever sits behind it. Display text at 3:1.'] },
+
+  { kind:'a poster', words:['poster','flyer','cover','sleeve','billboard','zine','print','merch','shirt','sticker'],
+    bias:{ scale:'high', measure:'low', weight:'high', 'section gap':'high', tracking:'high' },
+    note:'One surface, read from across a room. Scale can go to the top of the field, the measure stays short, and the ground is doing most of the work.',
+    watch:['Check contrast against the actual ground, not against white. A coloured field changes it.'] },
+
+  { kind:'an identity', words:['logo','identity','brand','wordmark','mark','deck','pitch','slide'],
+    bias:{ 'how many colours':'low', scale:'high', border:'low' },
+    note:'It has to hold at one centimetre and at one metre. Few colours, and nothing that only works at one size.',
+    watch:['Never let colour alone carry meaning. It must also be in position, weight or wording.'] },
+
+  { kind:'a page', words:['landing','home page','homepage','website','site','page','shop','store','portfolio'],
+    bias:{ scale:'high', 'section gap':'high' },
+    note:'Scrolled once, top to bottom. Sections can breathe and the display end of the field is open.',
+    watch:['Text over an image needs a scrim, a solid panel, or a crop that guarantees the contrast.'] }
+];
+
+function readBrief(text){
+  var t = (text || '').toLowerCase();
+  for (var i = 0; i < SURFACES.length; i++){
+    var hits = SURFACES[i].words.filter(function(w){ return t.indexOf(w) > -1; });
+    if (hits.length) {
+      var s = SURFACES[i];
+      return { kind:s.kind, hits:hits, bias:s.bias, note:s.note, watch:s.watch };
+    }
+  }
+  return { kind:null, hits:[], bias:{}, note:null, watch:[] };
+}
+
+/* Weighted draw. With no bias every step is equally likely. With one, the
+   rank is cubed, so the brief decides the end of the field and the seed
+   still decides which step at that end. A loose weighting let an app screen
+   come back with the widest spacing in the band, which made the prompt
+   contradict its own reasoning two lines further up. */
+function lean(pool, dir, r){
+  var w = pool.map(function(_, i){
+    var rank = dir === 'high' ? i + 1 : dir === 'low' ? pool.length - i : 1;
+    return rank * rank * rank;
+  });
+  var total = w.reduce(function(a,b){ return a+b; }, 0), x = r() * total;
+  for (var i = 0; i < pool.length; i++){ x -= w[i]; if (x <= 0) return pool[i]; }
+  return pool[pool.length - 1];
+}
+
+function thisRun(seed, brief){
+  var r = rng(seed), out = [], bias = (brief && brief.bias) || {};
   ranges().forEach(function(d){
     var pool = d.ok.length ? d.ok : d.unknown;
     if (!pool.length) return;
-    out.push({ dim:d.dim, choice: pool[Math.floor(r() * pool.length)] });
+    out.push({ dim:d.dim, choice: lean(pool, bias[d.dim], r), pulled: !!bias[d.dim] });
   });
   return out;
 }
@@ -885,7 +982,8 @@ function fileText(){
   var nearly = CLAIMS.filter(function(c){ return marks[c.id] === 'nearly'; });
   var out = [];
   out.push('taste.md');
-  out.push('Noor Sharma. 12 pieces read, ' + Object.keys(judg).length + ' of ' + DECK.length + ' specimens judged.');
+  out.push('Noor Sharma. ' + readable.length + ' pieces read, ' +
+           Object.keys(judg).length + ' of ' + DECK.length + ' specimens judged.');
   out.push('');
   var jr = judgedRefusals(), jk = judgedKeeps(), jc = contested();
   if (jr.length){
@@ -968,24 +1066,60 @@ document.getElementById('dlFile').onclick = function(){
 /* ---------- 06 use it ---------- */
 function promptText(){
   var b = document.getElementById('brief').value.trim() || 'a page';
-  var run = thisRun(runSeed);
+  var brief = readBrief(b);
+  var run = thisRun(runSeed, brief);
   var lines = ['Build ' + b + '.', '', 'Work inside this. It is not a suggestion.', ''];
+
+  if (brief.kind){
+    lines.push('READING THE BRIEF');
+    lines.push('  surface      ' + brief.kind);
+    lines.push('  matched on   ' + brief.hits.map(function(h){ return '"' + h + '"'; }).join(', '));
+    lines.push('  so           ' + brief.note);
+    var pulled = run.filter(function(r){ return r.pulled; }).map(function(r){ return r.dim; });
+    if (pulled.length) lines.push('  pulled       ' + pulled.join(', ') + ' drawn from one end of the field rather than evenly');
+    lines.push('');
+    if (brief.watch.length){
+      lines.push('  The rules that bind hardest here:');
+      brief.watch.forEach(function(c){ lines.push('    ' + c); });
+      lines.push('');
+    }
+  }
+
   if (run.length){
     lines.push('THIS RUN  one choice from inside the field. Hold these for the whole piece.');
     run.forEach(function(r){
-      lines.push('  ' + (r.dim + '                ').slice(0,18) + r.choice.label);
+      lines.push('  ' + (r.dim + '                ').slice(0,18) + r.choice.label +
+                 (r.pulled ? '   (pulled by the brief)' : ''));
     });
     lines.push('');
     lines.push('Another run would choose differently and still be mine. Do not average the field,');
     lines.push('commit to the values above.');
     lines.push('');
   }
+
+  var avoid = FIELD.filter(function(f){ return f.stance === 'avoid'; });
+  var lean  = FIELD.filter(function(f){ return f.stance === 'lean'; });
+  lines.push('AGAINST THE GRAIN  tag counts from siteinspire, 30 October 2026');
+  lines.push('  What the gallery is full of, so it is where the defaults will pull you:');
+  avoid.forEach(function(f){
+    lines.push('    ' + f.tag + ', ' + f.n + ' sites. Instead, ' + f.mine + '.');
+  });
+  lines.push('  What the gallery almost never has, and what this file is made of:');
+  lean.forEach(function(f){
+    lines.push('    ' + f.tag + ', ' + f.n + ' sites. Do this: ' + f.mine + '.');
+  });
+  lines.push('');
+
   return lines.join('\n') + fileText();
 }
 function drawPrompt(){
   document.getElementById('prompt').textContent = promptText();
   var el = document.getElementById('runNote');
-  if (el) el.textContent = 'Run ' + runSeed + '. Same file, different choices inside it.';
+  if (!el) return;
+  var brief = readBrief(document.getElementById('brief').value);
+  el.textContent = 'Run ' + runSeed + '. ' + (brief.kind
+    ? 'Read as ' + brief.kind + ', so the field is pulled rather than drawn evenly.'
+    : 'No surface detected, so every step in the field is equally likely.');
 }
 document.getElementById('brief').addEventListener('input', drawPrompt);
 document.getElementById('copyPrompt').onclick = function(){ copy(promptText(), this); };

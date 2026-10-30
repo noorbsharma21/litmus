@@ -56,46 +56,178 @@ const CORPUS = [
     note:'Three bands stacked. Toy animals in low lamplight, nothing lit for the camera.',
     tags:['repeat grid','three band','objects not people','low light','warm cast','no faces','high contrast'] },
 
-  { id:'art-02', src:'../images/art-02.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-03', src:'../images/art-03.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-05', src:'../images/art-05.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-06', src:'../images/art-06.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-08', src:'../images/art-08.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-09', src:'../images/art-09.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-10', src:'../images/art-10.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-12', src:'../images/art-12.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-13', src:'../images/art-13.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-14', src:'../images/art-14.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-16', src:'../images/art-16.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-17', src:'../images/art-17.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-19', src:'../images/art-19.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-20', src:'../images/art-20.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-22', src:'../images/art-22.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'art-23', src:'../images/art-23.jpg', kind:'drawing', read:false, tags:[] },
-  { id:'roll-02', src:'../images/roll-02.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-03', src:'../images/roll-03.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-04', src:'../images/roll-04.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-06', src:'../images/roll-06.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-07', src:'../images/roll-07.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-08', src:'../images/roll-08.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-10', src:'../images/roll-10.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-11', src:'../images/roll-11.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-12', src:'../images/roll-12.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-14', src:'../images/roll-14.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-15', src:'../images/roll-15.jpg', kind:'photo', read:false, tags:[] },
-  { id:'roll-16', src:'../images/roll-16.jpg', kind:'photo', read:false, tags:[] },
-  { id:'disco',  src:'../images/disco.png', kind:'built', read:false, tags:[] },
-  { id:'disco-explore', src:'../images/disco-explore.png', kind:'built', read:false, tags:[] },
-  { id:'disco-about',   src:'../images/disco-about.png',   kind:'built', read:false, tags:[] }
+  { id:'art-02', src:'../images/art-02.jpg', kind:'drawing', read:true,
+    note:'Kraft paper. A totem of botanical parts, mirrored down the middle, cut off top and bottom.',
+    tags:['coloured paper','constructed ground','mirror symmetry','dense ornament','runs off edge','ink linework','two colour','no faces','no white','limited palette'] },
+
+  { id:'art-03', src:'../images/art-03.jpg', kind:'drawing', read:true,
+    note:'Three figures on kraft, drawn over each other so the arms pass through the bodies.',
+    tags:['coloured paper','constructed ground','overlapping layers','repeat motif','ink linework','two colour','face','runs off edge','no white','high contrast'] },
+
+  { id:'art-05', src:'../images/art-05.jpg', kind:'drawing', read:true,
+    note:'One face with the eyes and mouth drawn four times across it. Orange dots behind.',
+    tags:['halftone','constructed ground','mirror symmetry','repeat motif','face','two colour','ink linework','saturated','high contrast'] },
+
+  { id:'art-06', src:'../images/art-06.jpg', kind:'drawing', read:true,
+    note:'Four vertical bands. The same drawing on red, magenta, blue and yellow paper.',
+    tags:['coloured paper','constructed ground','repeat grid','recoloured variants','four band','ink linework','face','saturated','no white'] },
+
+  { id:'art-08', src:'../images/art-08.jpg', kind:'drawing', read:true,
+    note:'Flat vector on plain white. A boy, a floating red hat, nothing else. The odd one out.',
+    tags:['white ground','flat illustration','pastel','figure','empty space','muted','clear hierarchy','legible type'] },
+
+  { id:'art-09', src:'../images/art-09.jpg', kind:'drawing', read:true,
+    note:'Seen from above, face covered by a bag. Plastic wrap drawn over the whole image.',
+    tags:['constructed ground','whole frame colour','face hidden','objects scattered','border is active','texture over everything','saturated','digital'] },
+
+  { id:'art-10', src:'../images/art-10.jpg', kind:'drawing', read:true,
+    note:'Oil. A checkerboard of thirty odd colours fills the frame. A hand holds a brush and an eye.',
+    tags:['checkerboard','constructed ground','repeat grid','painted','many colours','objects not people','no white','high contrast'] },
+
+  { id:'art-12', src:'../images/art-12.jpg', kind:'drawing', read:true,
+    note:'Two fish mirrored into one shape. Orange ground with pale dots over it.',
+    tags:['mirror symmetry','constructed ground','whole frame colour','painted','repeat motif','no faces','saturated','limited palette'] },
+
+  { id:'art-13', src:'../images/art-13.jpg', kind:'drawing', read:true,
+    note:'Four quadrants. The same figure on kraft, green, green and red paper.',
+    tags:['coloured paper','constructed ground','repeat grid','recoloured variants','ink linework','no white','limited palette','considered spacing'] },
+
+  { id:'art-14', src:'../images/art-14.jpg', kind:'drawing', read:true,
+    note:'Kraft. A row of one eyed figures repeated and mirrored, running off both edges.',
+    tags:['coloured paper','constructed ground','mirror symmetry','repeat motif','runs off edge','ink linework','two colour','no white','high contrast'] },
+
+  { id:'art-16', src:'../images/art-16.jpg', kind:'drawing', read:true,
+    note:'Pen face on white, orange dot grid behind, hair scrubbed in red crayon.',
+    tags:['halftone','white ground','face','ink linework','two colour','repeat grid','high contrast'] },
+
+  { id:'art-17', src:'../images/art-17.jpg', kind:'drawing', read:true,
+    note:'Same build as the orange one, green dots, magenta hair. A pair, not a one off.',
+    tags:['halftone','white ground','face','ink linework','two colour','repeat grid','recoloured variants','saturated'] },
+
+  { id:'art-19', src:'../images/art-19.jpg', kind:'drawing', read:true,
+    note:'HANDMAIDEN set vertically up the left edge and cut by the frame. Eyes repeated down a tentacle.',
+    tags:['type runs off edge','vertical type','deep field','repeat motif','face','constructed ground','saturated','no white','intentional composition'] },
+
+  { id:'art-20', src:'../images/art-20.jpg', kind:'drawing', read:true,
+    note:'Two people on a line, on a cream circle, on dusty pink. Six swatches printed in the corner.',
+    tags:['palette declared','swatch strip','flat illustration','constructed ground','whole frame colour','muted','figure','considered spacing','limited palette'] },
+
+  { id:'art-22', src:'../images/art-22.jpg', kind:'drawing', read:true,
+    note:'Charcoal Lincoln, heavy grain, one face filling the whole frame. No colour at all.',
+    tags:['no colour','charcoal','face','grain','deep field','high contrast','intentional composition'] },
+
+  { id:'art-23', src:'../images/art-23.jpg', kind:'drawing', read:true,
+    note:'Oil. The crop cuts the face in half. Bees and vines sit on the skin.',
+    tags:['painted','face','runs off edge','dense ornament','objects scattered','saturated','whole frame colour','high contrast'] },
+
+  { id:'roll-02', src:'../images/roll-02.jpg', kind:'photo', read:true,
+    note:'Four photographs stacked edge to edge. Rock, a plate close up, sepia dancers, a meadow.',
+    tags:['collage grid','full bleed band','four band','no faces','mixed sources','warm cast','no white','high contrast'] },
+
+  { id:'roll-03', src:'../images/roll-03.jpg', kind:'photo', read:true,
+    note:'Three pictures on a yellow ground with yellow left around them.',
+    tags:['constructed ground','whole frame colour','yellow cast','collage grid','offset panels','no faces','saturated','considered spacing'] },
+
+  { id:'roll-04', src:'../images/roll-04.jpg', kind:'photo', read:true,
+    note:'Four bands. Paint on knees, a table of food, trees, flowers. Nothing arranged for the camera.',
+    tags:['collage grid','full bleed band','four band','no faces','in situ','warm cast','no white'] },
+
+  { id:'roll-06', src:'../images/roll-06.jpg', kind:'photo', read:true,
+    note:'Four bands, all shot in low light. Two shadows, a car at dusk, trees inverted, a lit wall.',
+    tags:['collage grid','full bleed band','four band','low light','person from behind','no faces','saturated','high contrast'] },
+
+  { id:'roll-07', src:'../images/roll-07.jpg', kind:'photo', read:true,
+    note:'Three photographs laid on a photograph of the sky. The sky is the page.',
+    tags:['ground is an image','constructed ground','collage grid','no faces','cool cast','considered spacing'] },
+
+  { id:'roll-08', src:'../images/roll-08.jpg', kind:'photo', read:true,
+    note:'Two paintings on acid yellow, set off from each other rather than aligned.',
+    tags:['constructed ground','whole frame colour','yellow cast','offset panels','no faces','saturated','high contrast'] },
+
+  { id:'roll-10', src:'../images/roll-10.jpg', kind:'photo', read:true,
+    note:'A tent ceiling, a bracket fungus, the tent ceiling again. The same picture twice with one between.',
+    tags:['collage grid','full bleed band','same image twice','three band','repeat motif','no faces','muted','low light'] },
+
+  { id:'roll-11', src:'../images/roll-11.jpg', kind:'photo', read:true,
+    note:'A black and white photograph of feet, laid on a painting of sunflowers.',
+    tags:['ground is an image','constructed ground','whole frame colour','yellow cast','person from behind','no faces','mixed media','high contrast'] },
+
+  { id:'roll-12', src:'../images/roll-12.jpg', kind:'photo', read:true,
+    note:'Three photographs on yellow, overlapping at the corners instead of sitting in a grid.',
+    tags:['constructed ground','whole frame colour','yellow cast','offset panels','overlapping layers','no faces','in situ','saturated'] },
+
+  { id:'roll-14', src:'../images/roll-14.jpg', kind:'photo', read:true,
+    note:'A word cloud band over a photograph of a branch on water. Type and picture, no join.',
+    tags:['collage grid','full bleed band','type as texture','no faces','cool cast','mixed sources','considered spacing'] },
+
+  { id:'roll-15', src:'../images/roll-15.jpg', kind:'photo', read:true,
+    note:'Pictures pinned on a blue painting, at different sizes, corners overlapping.',
+    tags:['ground is an image','constructed ground','whole frame colour','cool cast','offset panels','overlapping layers','person from behind','mixed media'] },
+
+  { id:'roll-16', src:'../images/roll-16.jpg', kind:'photo', read:true,
+    note:'A rendered room tilted off square, over a photographed wall of posters and tags.',
+    tags:['ground is an image','tilted panel','constructed ground','low light','deep field','no faces','mixed media','high contrast'] },
+
+  { id:'disco', src:'../images/disco.png', kind:'built', read:true,
+    note:'The hero is a train window. Parchment ground with a faint ruled grid. Labels float off the frame.',
+    tags:['constructed ground','border is active','no white','ground is an image','display serif','offset panels','considered spacing','intentional composition'] },
+
+  { id:'disco-explore', src:'../images/disco-explore.png', kind:'built', read:true,
+    note:'Parchment and a ruled grid again. Serif headline broken by an italic in blue.',
+    tags:['constructed ground','no white','display serif','two colour','clear hierarchy','legible type','considered spacing','limited palette'] },
+
+  { id:'disco-about', src:'../images/disco-about.png', kind:'built', read:true,
+    note:'Green to maroon under heavy noise. Lowercase serif. Notes scattered round a diagram.',
+    tags:['whole frame colour','constructed ground','grain','deep field','lower case','objects scattered','no white','display serif'] }
+];
+
+/* ---------------------------------------------------------------
+   The reference pole. Not Noor's work, and not admired either.
+   This is what the design internet agrees on, counted rather than
+   assumed, so the gap between it and the corpus above is measurable.
+
+   Read from siteinspire's own style filter, 30 October 2026. The
+   numbers are how many sites in that gallery carry each tag.
+   --------------------------------------------------------------- */
+const FIELD = [
+  { tag:'Minimal',           n:847, stance:'avoid', mine:'build the ground before anything goes on it' },
+  { tag:'Grid Layout',       n:672, stance:'avoid', mine:'offset the panels, let corners cross' },
+  { tag:'Unusual Layout',    n:671, stance:null, mine:null },
+  { tag:'Use of Animation',  n:457, stance:null, mine:null },
+  { tag:'Black & White',     n:451, stance:'avoid', mine:'cast colour over the whole frame' },
+  { tag:'Big Type',          n:391, stance:'avoid', mine:'let the frame cut the type rather than sizing it up' },
+  { tag:'Unusual Navigation',n:368, stance:null, mine:null },
+  { tag:'Editorial',         n:273, stance:null, mine:null },
+  { tag:'Colourful',         n:267, stance:null, mine:null },
+  { tag:'Illustrative',      n:204, stance:null, mine:null },
+  { tag:'Corporate',         n:204, stance:null, mine:null },
+  { tag:'Greyscale',         n:126, stance:null, mine:null },
+  { tag:'Monochrome',        n:101, stance:null, mine:null },
+  { tag:'Luxury',            n:96,  stance:null, mine:null },
+  { tag:'Horizontal Layout', n:49,  stance:'lean',  mine:'stack bands edge to edge, full bleed' },
+  { tag:'Retro & Vintage',   n:28,  stance:null, mine:null },
+  { tag:'Pattern',           n:19,  stance:'lean',  mine:'halftone, checkerboard, repeat grid, mirrored motif' },
+  { tag:'Use of Infographics',n:13, stance:null, mine:null },
+  { tag:'Japanese',          n:10,  stance:null, mine:null }
+];
+
+/* What the galleries put in the search box as a suggestion, which is
+   the clearest statement of house style they make. Land-book, same day. */
+const FIELD_PROMPTS = [
+  'SaaS dashboard', 'Gradient in background', 'Outline Illustration', 'Big blue button'
 ];
 
 /* Claims are generated from the kept tags, then written as something arguable.
-   `from` lists the pieces the claim was drawn out of. */
+   `from` lists the pieces the claim was drawn out of. `against` lists the
+   pieces in the same corpus that break it. A claim with no counter-example
+   has not been tested hard enough. */
 const CLAIMS = [
   { id:'c1', colour:'#FF3E00',
-    text:'The ground is always built. Never a default white, never a plain edge.',
+    text:'The ground is built before anything is put on it. Rarely a default white.',
     rule:'Choose the ground before the subject and give it a treatment of its own.',
-    tags:['constructed ground','no white'], from:['art-01','art-04','art-07','art-21','roll-01','roll-05','roll-09'] },
+    tags:['constructed ground','no white'],
+    from:['art-01','art-02','art-04','art-06','art-07','art-13','art-21','roll-01','roll-05','roll-09','disco'],
+    against:['art-08','art-16','art-17'] },
 
   { id:'c2', colour:'#8EA066',
     text:'Drawings are faces. Photographs have no faces in them at all.',
@@ -130,7 +262,39 @@ const CLAIMS = [
   { id:'c8', colour:'#FF3E00',
     text:'Halftone dots recur as a texture, carried over from print.',
     rule:'Texture comes from a printing process, not a filter laid on top.',
-    tags:['halftone'], from:['art-04','art-21'] }
+    tags:['halftone'], from:['art-04','art-05','art-16','art-17','art-21'],
+    against:['art-09'] },
+
+  { id:'c9', colour:'#151DE0',
+    text:'Photographs are never shown one at a time. They arrive in stacks of three or four.',
+    rule:'Put several images together. One picture on its own is not a composition.',
+    tags:['collage grid','full bleed band','four band','three band'],
+    from:['roll-02','roll-04','roll-06','roll-09','roll-10','roll-14'], against:[] },
+
+  { id:'c10', colour:'#8EA066',
+    text:'The ground under a picture is often another picture, not a colour.',
+    rule:'When you need a backdrop, reach for an image before you reach for a fill.',
+    tags:['ground is an image','frame is another image'],
+    from:['roll-01','roll-07','roll-11','roll-15','roll-16','disco'], against:['roll-03','roll-08'] },
+
+  { id:'c11', colour:'#D0402F',
+    text:'Nothing sits square. Panels are offset, tilted, or overlapping at the corners.',
+    rule:'Break the alignment on purpose. Let edges cross instead of meeting.',
+    tags:['offset panels','tilted panel','overlapping layers'],
+    from:['roll-03','roll-08','roll-12','roll-15','roll-16','art-03','disco'],
+    against:['roll-02','roll-04','art-13'] },
+
+  { id:'c12', colour:'#833405',
+    text:'Yellow keeps returning as the ground, more than any other colour.',
+    rule:'When a flat colour has to carry the page, try yellow first.',
+    tags:['yellow cast'],
+    from:['roll-03','roll-05','roll-08','roll-11','roll-12','art-05','art-16'], against:[] },
+
+  { id:'c13', colour:'#9D70C0',
+    text:'The same image appears twice inside one piece, recoloured or plain repeated.',
+    rule:'Reuse the asset in the same frame. Repetition is the finish, not laziness.',
+    tags:['same image twice','recoloured variants','repeat motif'],
+    from:['art-01','art-06','art-13','art-17','roll-10','art-05'], against:[] }
 ];
 
 /* ---------------------------------------------------------------
