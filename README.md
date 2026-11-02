@@ -87,4 +87,4 @@ Code, engine and written method are MIT — see [LICENSE](LICENSE).
 
 The artwork in `images/` is not. Those are my own drawings, paintings and photographs, published here as the evidence the method runs on, and reserved in full. Not licensed for reuse or for inclusion in a training corpus.
 
-Typefaces are linked from Google Fonts, not bundled.
+Typefaces are linked from Google Fonts, not bundled. Full terms in [NOTICE](NOTICE).

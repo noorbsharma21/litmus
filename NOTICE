@@ -1,0 +1,32 @@
+Litmus
+Copyright (c) 2026 Noor Sharma
+
+The MIT licence in LICENSE covers the code, the engine, and the written
+method. It does not cover everything in this repository. What follows is
+not a modification of that licence — it records what the licence was never
+granted over in the first place.
+
+
+THE ARTWORK
+
+Everything in images/ — the drawings, paintings and photographs that make up
+the corpus — is the author's own work. It is published here as evidence of a
+method, and reserved in full. All rights reserved.
+
+It is not licensed for reuse, redistribution, or inclusion in a training
+corpus. The point of this project is that a person's work is the record of
+their judgment; treating it as free material would be the argument running
+backwards.
+
+
+THE TYPEFACES
+
+Archivo, Nunito and Inter are linked from Google Fonts and served from
+Google's servers. They are not redistributed here. Each is under the SIL
+Open Font License 1.1 and belongs to its designers.
+
+
+PRIOR WORK
+
+The method cites ViPer and the mere-exposure literature (Zajonc, 1968).
+Those are other people's findings, credited in the README and on the site.
