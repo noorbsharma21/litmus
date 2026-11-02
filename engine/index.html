@@ -361,6 +361,15 @@
     <p class="lede">Every dimension the two disagree on takes the result. The one you did not pick
       loses, and a loss counts for more than a win, same as everywhere else in this engine.</p>
 
+    <div class="srow" style="max-width:26em;margin:0 0 14px">
+      <select id="pairArch">
+        <option value="shop">compare two shops</option>
+        <option value="gallery">compare two photography sites</option>
+        <option value="editorial">compare two long reads</option>
+        <option value="listing">compare two listings</option>
+        <option value="page">compare two plain pages</option>
+      </select>
+    </div>
     <div class="pair" id="pair"></div>
     <div class="fb">
       <p class="fbl">Say what is wrong with the one you picked. Optional, and it counts.</p>
@@ -406,6 +415,29 @@
       a description of good design until they correct it. Marking here rewrites the file in the next step.</p>
     <div id="claims"></div>
     <p class="tally" id="tally"></p>
+
+    <h3 class="fieldhead">Rules in your own words</h3>
+    <p class="lede">The claims above were written by the engine out of the corpus. These are
+      written by you, carried into every prompt word for word, and never paraphrased. Say what
+      is good or what is bad, and scope it if it only applies to one kind of thing.</p>
+    <div class="src" style="max-width:52em">
+      <input type="text" id="ruleText" placeholder="Never put a price in a rounded pill" style="width:100%;box-sizing:border-box;font:inherit;font-size:14px;padding:9px 11px;border:1px solid #ccc">
+      <div class="srow" style="margin-top:11px;align-items:center">
+        <div class="chips" style="margin:0">
+          <button id="ruleGood" aria-pressed="false">this is good</button>
+          <button id="ruleBad" aria-pressed="true">this is bad</button>
+        </div>
+        <select id="ruleScope">
+          <option value="any">on anything</option>
+          <option value="shop">only on shops</option>
+          <option value="gallery">only on photography</option>
+          <option value="editorial">only on long reads</option>
+          <option value="listing">only on listings</option>
+        </select>
+        <button class="act" id="ruleAdd">Add the rule</button>
+      </div>
+    </div>
+    <div id="ruleList"></div>
   </div>
 
   <!-- 05 -->
@@ -419,12 +451,17 @@
       <button class="act ghost" id="dlFile">Download taste.md</button>
     </div>
 
-    <h3 class="fieldhead">Four pages this file would allow</h3>
-    <p class="lede">The text above is hard to check by reading. These are drawn from it, four
-      different draws out of the same field, so you can see whether the engine has you right.
-      If one of them looks wrong, that is a judgment the engine has not been given yet.</p>
+    <h3 class="fieldhead">The same taste, four different jobs</h3>
+    <p class="lede">A shop, a photography site, a long read and a listing, all built from the file
+      above. They should not look like each other. A shop is a catalogue with a price on everything;
+      a photography site opens on a picture and barely speaks. What they share is the hand, not the
+      layout. If one of them looks wrong, that is a judgment or a rule the engine has not been given yet.</p>
     <div class="quad" id="fileSamples"></div>
-    <div class="btns"><button class="act ghost" id="resample">Draw four more</button></div>
+    <div class="btns">
+      <button class="act ghost" id="resample">Redraw all four</button>
+      <button class="act ghost" id="markBad">One of these is wrong</button>
+    </div>
+    <div id="markPanel" hidden></div>
   </div>
 
   <!-- 06 -->
@@ -765,9 +802,23 @@ function pairBump(tag, won){
   pairs[tag][won ? 'win' : 'loss']++;
 }
 
-/* ---- evidence model ---- */
+/* ---- evidence model ----
+   Assumptions go in first and are thrown out the moment the tag gets a
+   real answer, rather than being averaged with it. An assumption that
+   argues with the person it is modelling is worse than none. */
 function weights(){
-  var w = {};
+  var w = {}, spoken = {};
+  DECK.forEach(function(sp){
+    if (judg[sp.id] && judg[sp.id].ctx) sp.tags.forEach(function(t){ spoken[t] = 1; });
+  });
+  Object.keys(pairs).forEach(function(t){ if (pairs[t].win + pairs[t].loss) spoken[t] = 1; });
+
+  DEFAULTS.forEach(function(d){
+    if (spoken[d.tag]) return;
+    w[d.tag] = { rej: d.v === 'no' ? 1 : 0, acc: d.v === 'no' ? 0 : 1, n:2,
+                 why:[d.why], yesIn:{}, noIn:{}, assumed:true };
+  });
+
   Object.keys(pairs).forEach(function(t){
     var p = pairs[t], tot = p.win + p.loss;
     if (!tot) return;
@@ -971,7 +1022,8 @@ function judgedRefusals(){
   return Object.keys(w)
     .filter(function(t){ return w[t].state === 'refused'; })
     .sort(function(a,b){ return w[b].lean - w[a].lean; })
-    .map(function(t){ return { tag:t, lean:w[t].lean, n:w[t].n, why:w[t].why, only:where(w[t],'no') }; });
+    .map(function(t){ return { tag:t, lean:w[t].lean, n:w[t].n, why:w[t].why,
+                               only:where(w[t],'no'), assumed:!!w[t].assumed }; });
 }
 /* answered yes somewhere and no somewhere else: a conditional, not a rule */
 function conditionals(){
@@ -990,7 +1042,7 @@ function judgedKeeps(){
   return Object.keys(w)
     .filter(function(t){ return w[t].state === 'kept'; })
     .sort(function(a,b){ return a.lean - b.lean; })
-    .map(function(t){ return { tag:t, n:w[t].n }; });
+    .map(function(t){ return { tag:t, n:w[t].n, assumed:!!w[t].assumed }; });
 }
 function contested(){
   var w = weights();
@@ -1060,14 +1112,29 @@ var SURFACES = [
 
 function readBrief(text){
   var t = (text || '').toLowerCase();
+
+  /* what it is made of decides the skeleton */
+  var a = readArch(t), A = ARCH[a.key];
+
+  /* what it has to do decides the function rules on top of that */
+  var surf = null, sHits = [];
   for (var i = 0; i < SURFACES.length; i++){
     var hits = SURFACES[i].words.filter(function(w){ return t.indexOf(w) > -1; });
-    if (hits.length) {
-      var s = SURFACES[i];
-      return { kind:s.kind, hits:hits, bias:s.bias, note:s.note, watch:s.watch };
-    }
+    if (hits.length){ surf = SURFACES[i]; sHits = hits; break; }
   }
-  return { kind:null, hits:[], bias:{}, note:null, watch:[] };
+
+  /* The surface sets the floor and the skeleton overrides it, because the
+     skeleton matched on what the thing is made of and the surface only on
+     the word "page". A shop that says "landing page" is a shop first. */
+  var bias = {};
+  if (surf) Object.keys(surf.bias).forEach(function(d){ bias[d] = surf.bias[d]; });
+  Object.keys(A.bias).forEach(function(d){ bias[d] = A.bias[d]; });
+
+  return {
+    arch:a.key, archLabel:A.label, archHits:a.hits, archNote:A.note,
+    kind: surf ? surf.kind : null, hits:sHits, bias:bias,
+    note: surf ? surf.note : null, watch: surf ? surf.watch : []
+  };
 }
 
 /* Weighted draw. With no bias every step is equally likely. With one, the
@@ -1233,6 +1300,64 @@ document.getElementById('srcList').addEventListener('click', function(e){
   drawSrcList(); drawFile(); drawPrompt();
 });
 
+/* ---------- rules in your own words ----------
+   Carried into the prompt verbatim. The engine does not read English,
+   so it never claims to have checked one of these itself. What it does
+   instead is show them to you against a page you marked bad and ask
+   which one it broke, and tell you when none of them covers it. */
+var RKEY = 'litmus-rules-v1';
+var rules = [];
+try { rules = JSON.parse(localStorage.getItem(RKEY) || '[]'); } catch(e){ rules = []; }
+function rsave(){ try { localStorage.setItem(RKEY, JSON.stringify(rules)); } catch(e){} }
+var ruleVerdict = 'bad';
+
+var SCOPE_LABEL = { any:'anything', shop:'shops', gallery:'photography',
+                    editorial:'long reads', listing:'listings' };
+
+function drawRules(){
+  var el = document.getElementById('ruleList'); if (!el) return;
+  if (!rules.length){
+    el.innerHTML = '<p class="meta">No rules written yet. The engine runs on the claims alone ' +
+      'until you add one.</p>';
+    return;
+  }
+  el.innerHTML = rules.map(function(r, i){
+    return '<div class="srcard"><h4>' + (r.verdict === 'good' ? 'Good' : 'Bad') +
+      '<span class="k">' + SCOPE_LABEL[r.scope] + (r.broke ? ' &#183; broken ' + r.broke + 'x' : '') + '</span></h4>' +
+      '<p>' + r.text + '</p>' +
+      '<button class="drop" data-i="' + i + '">remove</button></div>';
+  }).join('');
+}
+document.getElementById('ruleGood').onclick = function(){
+  ruleVerdict = 'good';
+  this.setAttribute('aria-pressed', true);
+  document.getElementById('ruleBad').setAttribute('aria-pressed', false);
+};
+document.getElementById('ruleBad').onclick = function(){
+  ruleVerdict = 'bad';
+  this.setAttribute('aria-pressed', true);
+  document.getElementById('ruleGood').setAttribute('aria-pressed', false);
+};
+document.getElementById('ruleAdd').onclick = function(){
+  var t = document.getElementById('ruleText').value.trim();
+  if (!t) { document.getElementById('ruleText').focus(); return; }
+  var r = { id:'r' + Date.now(), text:t, verdict:ruleVerdict,
+            scope:document.getElementById('ruleScope').value, broke:0 };
+  rules.push(r); rsave();
+  record({ kind:'rule', verdict:r.verdict, scope:r.scope, text:r.text });
+  document.getElementById('ruleText').value = '';
+  drawRules(); drawFile(); drawPrompt();
+};
+document.getElementById('ruleList').addEventListener('click', function(e){
+  var b = e.target.closest('.drop'); if (!b) return;
+  var r = rules.splice(+b.dataset.i, 1)[0]; rsave();
+  record({ kind:'rule removed', text:r.text });
+  drawRules(); drawFile(); drawPrompt();
+});
+function rulesFor(arch){
+  return rules.filter(function(r){ return r.scope === 'any' || r.scope === arch; });
+}
+
 /* ---------- 05 this or that ---------- */
 var FBC = [
   { label:'too loud',     dims:['weight','scale'] },
@@ -1253,16 +1378,20 @@ var pairNow = null, fbOn = {};
 function buildPair(seed){
   var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
   var fav = sourceFavour(), sb0 = sourceBias();
+  var ak = (document.getElementById('pairArch') || {}).value || 'page';
+  var bias = {};
+  Object.keys(sb0).forEach(function(d){ bias[d] = sb0[d]; });
+  Object.keys(ARCH[ak].bias).forEach(function(d){ bias[d] = ARCH[ak].bias[d]; });
   for (var attempt = 0; attempt < 24; attempt++){
     var sa = seed + attempt * 101, sb = seed + attempt * 101 + 50021;
     var ma = moves(sa, kept, fav).map(function(c){ return c.id; });
     var mb = moves(sb, kept, fav).map(function(c){ return c.id; });
     /* resolve the moves that overrule a dimension, so what gets recorded
        is what was actually on screen */
-    var A = effectiveSpec(specFrom(thisRun(sa, { bias: sb0 })), ma);
-    var B = effectiveSpec(specFrom(thisRun(sb, { bias: sb0 })), mb);
+    var A = effectiveSpec(specFrom(thisRun(sa, { bias: bias })), ma);
+    var B = effectiveSpec(specFrom(thisRun(sb, { bias: bias })), mb);
     var diff = DIFFABLE.filter(function(d){ return A[d] && B[d] && A[d] !== B[d]; });
-    if (diff.length >= 2) return { a:A, b:B, diff:diff, ma:ma, mb:mb, sa:sa, sb:sb };
+    if (diff.length >= 2) return { a:A, b:B, diff:diff, ma:ma, mb:mb, sa:sa, sb:sb, arch:ak };
   }
   return null;
 }
@@ -1278,7 +1407,8 @@ function drawPair(){
   el.innerHTML = ['a','b'].map(function(side){
     var sp = pairNow[side], mv = pairNow[side === 'a' ? 'ma' : 'mb'];
     return '<div class="opt">' +
-      renderSite(sp, mv, pairNow[side === 'a' ? 'sa' : 'sb'], side === 'a' ? 'This' : 'That') +
+      renderSite(sp, mv, pairNow[side === 'a' ? 'sa' : 'sb'],
+                 side === 'a' ? 'This' : 'That', pairNow.arch) +
       '<button class="pick" data-side="' + side + '">Pick ' + (side === 'a' ? 'this' : 'that') + '</button>' +
       '<p class="diff">' + pairNow.diff.map(function(d){ return d + ' ' + sp[d]; }).join(' &#183; ') + '</p>' +
     '</div>';
@@ -1350,6 +1480,7 @@ function fileText(){
   out.push('');
   out.push('HOW TO READ THIS  the sections do not carry the same weight');
   out.push('  NON NEGOTIABLE      hard. Not taste. Nothing below overrides it.');
+  out.push('  MY RULES            hard. Written by hand. Follow the wording, do not paraphrase.');
   out.push('  NEVER, THE FIELD    hard. Refusals and bounds, drawn from judged answers.');
   out.push('  DIRECTION           soft. Tendencies in the work, not requirements.');
   out.push('  Everything marked soft is a vocabulary to choose from. Most of it should');
@@ -1357,17 +1488,28 @@ function fileText(){
   out.push('  imitation of the corpus rather than something belonging to it.');
   out.push('');
   var jr = judgedRefusals(), jk = judgedKeeps(), jc = contested();
+  /* say which of these were answered and which were assumed off the
+     corpus. calling an assumption a judgment overstates the evidence
+     to the model and to whoever reads the file. */
+  var prov = function(list){
+    var a = list.filter(function(x){ return x.assumed; }).length;
+    if (!a) return 'judged, ' + Object.keys(judg).length + ' of ' + DECK.length + ' specimens answered';
+    if (a === list.length) return 'all assumed from the corpus, none of this answered yet';
+    return (list.length - a) + ' judged, ' + a + ' assumed from the corpus and marked';
+  };
+  var mark = function(r){ return r.assumed ? '  [assumed]' : ''; };
+
   if (jr.length){
-    out.push('NEVER  judged, ' + Object.keys(judg).length + ' of ' + DECK.length + ' specimens');
-    jr.slice(0,14).forEach(function(r){
-      out.push('  ' + r.tag + (r.only ? '  when ' + r.only : '') +
+    out.push('NEVER  ' + prov(jr));
+    jr.slice(0,16).forEach(function(r){
+      out.push('  ' + r.tag + (r.only ? '  when ' + r.only : '') + mark(r) +
                (r.why.length ? '   (' + r.why[0] + ')' : ''));
     });
     out.push('');
   }
   if (jk.length){
-    out.push('PREFER  judged');
-    jk.slice(0,14).forEach(function(r){ out.push('  ' + r.tag); });
+    out.push('PREFER  ' + prov(jk));
+    jk.slice(0,16).forEach(function(r){ out.push('  ' + r.tag + mark(r)); });
     out.push('');
   }
   var cond = conditionals();
@@ -1396,6 +1538,18 @@ function fileText(){
       out.push('  Across all of them this leans ' +
         Object.keys(sb).map(function(d){ return d + ' ' + sb[d]; }).join(', ') + '.');
     }
+    out.push('');
+  }
+  if (rules.length){
+    out.push('MY RULES  hard. Written by me, not inferred. Follow them word for word.');
+    ['bad','good'].forEach(function(v){
+      var set = rules.filter(function(r){ return r.verdict === v; });
+      if (!set.length) return;
+      out.push('  ' + (v === 'bad' ? 'Never:' : 'Always:'));
+      set.forEach(function(r){
+        out.push('    ' + r.text + (r.scope === 'any' ? '' : '   (' + SCOPE_LABEL[r.scope] + ' only)'));
+      });
+    });
     out.push('');
   }
   out.push('NON NEGOTIABLE  not matters of taste, and they outrank everything below');
@@ -1447,9 +1601,13 @@ function drawSamples(){
   var out = [];
   for (var i = 0; i < 4; i++){
     var s = sampleSeed + i * 7717;
-    out.push(renderSite(specFrom(thisRun(s, { bias: sb })),
+    var ak = ARCH_ORDER[i % ARCH_ORDER.length];
+    var bias = {};
+    Object.keys(sb).forEach(function(d){ bias[d] = sb[d]; });
+    Object.keys(ARCH[ak].bias).forEach(function(d){ bias[d] = ARCH[ak].bias[d]; });
+    out.push(renderSite(specFrom(thisRun(s, { bias: bias })),
                         moves(s, kept, fav).map(function(c){ return c.id; }),
-                        s, 'Draw ' + (i + 1)));
+                        s, ARCH[ak].label, ak));
   }
   el.innerHTML = out.join('');
   fitSites(el);
@@ -1459,8 +1617,97 @@ function drawFile(){
   drawSamples();
 }
 document.getElementById('resample').onclick = function(){
-  sampleSeed = Math.floor(Math.random() * 1e6); drawSamples();
+  sampleSeed = Math.floor(Math.random() * 1e6);
+  document.getElementById('markPanel').hidden = true;
+  drawSamples();
 };
+
+/* Marking a page bad does two things. It takes the values that page
+   held and records a loss against each, the same as losing a pair. And
+   it shows the rules you have written for that kind of page and asks
+   which one it broke. If you say none of them did, the engine says so
+   plainly: the rule is missing, and nothing it knows would have caught
+   this. That is the gap worth finding. */
+function drawMarkPanel(){
+  var p = document.getElementById('markPanel');
+  p.hidden = false;
+  p.innerHTML =
+    '<div class="fb" style="margin-top:4px">' +
+      '<p class="fbl">Which one is wrong?</p>' +
+      '<div class="chips" id="markWhich">' +
+        ARCH_ORDER.map(function(k, i){
+          return '<button data-k="' + k + '" data-i="' + i + '" aria-pressed="false">' +
+                 ARCH[k].label + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div id="markRules"></div>' +
+    '</div>';
+}
+document.getElementById('markBad').onclick = drawMarkPanel;
+
+var markPick = null;
+document.getElementById('markPanel').addEventListener('click', function(e){
+  var w = e.target.closest('#markWhich button');
+  if (w){
+    markPick = { arch:w.dataset.k, i:+w.dataset.i };
+    Array.prototype.forEach.call(this.querySelectorAll('#markWhich button'), function(b){
+      b.setAttribute('aria-pressed', b === w);
+    });
+    var mine = rulesFor(markPick.arch);
+    document.getElementById('markRules').innerHTML =
+      '<p class="fbl" style="margin-top:14px">' +
+        (mine.length ? 'Which of your rules did it break? Tick any, or say none.'
+                     : 'You have not written any rules for this kind of page yet.') + '</p>' +
+      (mine.length ? '<div class="chips" id="markBroke">' + mine.map(function(r){
+          return '<button data-id="' + r.id + '" aria-pressed="false">' +
+                 (r.text.length > 46 ? r.text.slice(0,46) + '…' : r.text) + '</button>';
+        }).join('') + '</div>' : '') +
+      '<div class="btns"><button class="act" id="markGo">Record it</button>' +
+      '<button class="act ghost" id="markNone">No rule covers this</button></div>' +
+      '<p class="meta" id="markOut"></p>';
+    return;
+  }
+  var b = e.target.closest('#markBroke button');
+  if (b){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); return; }
+
+  var go = e.target.closest('#markGo'), none = e.target.closest('#markNone');
+  if (!go && !none) return;
+  if (!markPick) return;
+
+  /* the values that page actually held take the loss */
+  var s = sampleSeed + markPick.i * 7717;
+  var sbz = sourceBias(), bias = {};
+  Object.keys(sbz).forEach(function(d){ bias[d] = sbz[d]; });
+  Object.keys(ARCH[markPick.arch].bias).forEach(function(d){ bias[d] = ARCH[markPick.arch].bias[d]; });
+  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
+  var mv = moves(s, kept, sourceFavour()).map(function(c){ return c.id; });
+  var spec = effectiveSpec(specFrom(thisRun(s, { bias: bias })), mv);
+  DIFFABLE.forEach(function(d){ if (spec[d]) pairBump(d + ': ' + spec[d], false); });
+  psave();
+
+  var broke = [];
+  if (go){
+    Array.prototype.forEach.call(document.querySelectorAll('#markBroke button[aria-pressed="true"]'),
+      function(b){ broke.push(b.dataset.id); });
+    broke.forEach(function(id){
+      var r = rules.filter(function(x){ return x.id === id; })[0];
+      if (r) r.broke = (r.broke || 0) + 1;
+    });
+    rsave();
+  }
+
+  record({ kind:'page marked bad', arch:markPick.arch, spec:specLine(spec),
+           brokeRules:broke.map(function(id){
+             return (rules.filter(function(x){ return x.id === id; })[0] || {}).text; }),
+           noRuleCovers: !!none });
+
+  document.getElementById('markOut').textContent = none || !broke.length
+    ? 'Recorded, and nothing you have written would have caught it. Write the rule above while ' +
+      'you can still see what was wrong, otherwise the engine will do it again.'
+    : 'Recorded. ' + broke.length + (broke.length === 1 ? ' rule' : ' rules') +
+      ' marked broken, and the values that page held have each taken a loss.';
+  drawRules(); drawWeights(); drawProfile(); drawFile(); drawPrompt();
+});
 
 function copy(txt, btn){
   navigator.clipboard.writeText(txt).then(function(){
@@ -1493,8 +1740,29 @@ function promptText(){
   lines.push('Serve the brief first, then make it look like this.');
   lines.push('');
 
+  lines.push('READING THE BRIEF');
+  lines.push('  building     ' + brief.archLabel +
+             (brief.archHits.length ? '   matched on ' +
+              brief.archHits.map(function(h){ return '"' + h + '"'; }).join(', ') : ''));
+  lines.push('  structure    ' + brief.archNote);
+  if (brief.arch !== 'page'){
+    lines.push('  This is the architecture, not a suggestion about it. A ' + brief.archLabel +
+               ' does not get the same page as anything else in this file, and the taste below');
+    lines.push('  is what makes it recognisable, not what makes it a ' + brief.archLabel + '.');
+  }
+  lines.push('');
+
+  var mine = rulesFor(brief.arch);
+  if (mine.length){
+    lines.push('RULES THAT APPLY HERE  ' + mine.length + ' of ' + rules.length + ', by scope');
+    mine.forEach(function(r){
+      lines.push('  ' + (r.verdict === 'bad' ? 'Never: ' : 'Always: ') + r.text);
+    });
+    lines.push('');
+  }
+
   if (brief.kind){
-    lines.push('READING THE BRIEF');
+    lines.push('WHAT IT HAS TO DO');
     lines.push('  surface      ' + brief.kind);
     lines.push('  matched on   ' + brief.hits.map(function(h){ return '"' + h + '"'; }).join(', '));
     lines.push('  so           ' + brief.note);
@@ -1567,7 +1835,7 @@ function drawPrompt(){
     var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
     rs.innerHTML = renderSite(specFrom(thisRun(runSeed, { bias: merged })),
                               moves(runSeed, kept, sourceFavour()).map(function(c){ return c.id; }),
-                              runSeed, 'Run ' + runSeed);
+                              runSeed, brief.archLabel, brief.arch);
     fitSites(rs);
   }
 
@@ -1678,8 +1946,13 @@ window.addEventListener('hashchange', fromHash);
 
 document.getElementById('hdCount').insertAdjacentHTML('afterbegin', ' ');
 
+document.getElementById('pairArch').addEventListener('change', function(){
+  pairSeed = Math.floor(Math.random() * 1e6); drawPair();
+});
+
 drawSrcForm();
 drawSrcList();
+drawRules();
 drawClaims();
 drawJudge();
 drawPair();

@@ -585,3 +585,56 @@ const LADDERS = [].concat(
 /* every specimen the engine can ask about */
 SPECIMENS.forEach(function(s){ if (!s.round) s.round = 1; });
 const DECK = SPECIMENS.concat(LADDERS);
+
+/* ---------------------------------------------------------------
+   Starting assumptions, so the engine makes a correct page the first
+   time it is opened and not a grey one.
+
+   These are read off the corpus, not judged. Each carries the reason
+   it is here. The moment a tag gets a real judgment the assumption is
+   dropped entirely rather than averaged with it, because an assumption
+   that argues with the person it is modelling is worse than no
+   assumption at all.
+
+   Anything genuinely mixed in the corpus is deliberately absent, so
+   the engine asks rather than guesses. Uppercase is missing because
+   art-19 sets HANDMAIDEN in caps. Six colours is missing because
+   art-10 is a checkerboard of about thirty and art-18 declares six.
+   Dark grounds are missing because art-19, roll-16 and disco-about
+   are all dark.
+   --------------------------------------------------------------- */
+const DEFAULTS = [
+  { tag:'ground: white',       v:'no',  why:'11 pieces build the ground, 3 leave it white' },
+  { tag:'ground: paper',       v:'yes', why:'kraft is the single most common ground in the drawings' },
+  { tag:'ground: colour',      v:'yes', why:'yellow returns in 7 pieces' },
+
+  { tag:'weight: 900',         v:'no',  why:'the ink work is line, never mass' },
+  { tag:'weight: 300',         v:'yes', why:'pen weight across the drawings' },
+  { tag:'weight: 400',         v:'yes', why:'pen weight across the drawings' },
+  { tag:'weight: 700',         v:'yes', why:'the built pages set headings bold' },
+
+  { tag:'tracking: +0.22em',   v:'no',  why:'no wide tracked caps anywhere in 43 pieces' },
+  { tag:'tracking: -0.04em',   v:'yes', why:'display type is set tight on the built pages' },
+  { tag:'tracking: 0',         v:'yes', why:'default on everything read' },
+
+  { tag:'scale: 72px',         v:'no',  why:'the corpus cuts type with the edge instead of sizing it up' },
+  { tag:'scale: 22px',         v:'yes', why:'type sits inside the image, not over it' },
+  { tag:'scale: 34px',         v:'yes', why:'the built pages head at about this' },
+
+  { tag:'measure: 46em',       v:'no',  why:'breaks the 45 to 80 character rule, which is not taste' },
+  { tag:'measure: 18em',       v:'yes', why:'captions and notes run short' },
+  { tag:'measure: 26em',       v:'yes', why:'the built pages sit here' },
+
+  { tag:'leading: 2.1',        v:'no',  why:'nothing in the corpus is that airy' },
+  { tag:'leading: 1.5',        v:'yes', why:'the built pages sit here' },
+
+  { tag:'alignment: centre',   v:'no',  why:'nothing read is centred' },
+  { tag:'alignment: left',     v:'yes', why:'everything read is left or full bleed' },
+
+  { tag:'how many colours: 2', v:'yes', why:'two colour is the commonest treatment in the drawings' },
+
+  { tag:'border: field',       v:'yes', why:'art-11, roll-03, roll-08 and roll-12 all set work in a colour field' },
+  { tag:'border: none',        v:'yes', why:'the photo collages run edge to edge' },
+
+  { tag:'section gap: 90px',   v:'no',  why:'the collages are packed, nothing is spread that far' }
+];
