@@ -1841,9 +1841,12 @@ function drawPrompt(){
 
   var el = document.getElementById('runNote');
   if (!el) return;
-  el.textContent = 'Run ' + runSeed + '. ' + (brief.kind
-    ? 'Read as ' + brief.kind + ', so the field is pulled rather than drawn evenly.'
-    : 'No surface detected, so every step in the field is equally likely.');
+  el.textContent = 'Run ' + runSeed + '. Built as ' +
+    (brief.arch === 'page' ? 'a plain page' : 'a ' + brief.archLabel) +
+    (brief.kind ? ', doing the job of ' + brief.kind : '') +
+    (Object.keys(brief.bias).length
+      ? ', so the field is pulled rather than drawn evenly.'
+      : ', with every step in the field equally likely.');
 }
 document.getElementById('brief').addEventListener('input', drawPrompt);
 document.getElementById('copyPrompt').onclick = function(){ copy(promptText(), this); };
