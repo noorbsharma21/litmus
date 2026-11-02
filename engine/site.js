@@ -142,7 +142,7 @@ var ARCH = {
 
   /* ---- photography. pictures first, words almost absent ---- */
   gallery: {
-    label:'photography',
+    label:'photography site',
     match:['photograph','photography','photo','portfolio','gallery','pictures','images',
            'my work','artist','painter','film','darkroom','prints','series'],
     note:'The pictures are the content and the type is a caption. No hero sentence, no explaining. The first thing on the page is an image and the name sits small.',
