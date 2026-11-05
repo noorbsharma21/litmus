@@ -807,14 +807,20 @@ function pairBump(tag, won){
    real answer, rather than being averaged with it. An assumption that
    argues with the person it is modelling is worse than none. */
 function weights(){
-  var w = {}, spoken = {};
+  var w = {}, answered = {};
   DECK.forEach(function(sp){
-    if (judg[sp.id] && judg[sp.id].ctx) sp.tags.forEach(function(t){ spoken[t] = 1; });
+    if (judg[sp.id] && judg[sp.id].ctx) sp.tags.forEach(function(t){ answered[t] = 1; });
   });
-  Object.keys(pairs).forEach(function(t){ if (pairs[t].win + pairs[t].loss) spoken[t] = 1; });
 
+  /* Only a straight answer on a specimen evicts an assumption, because
+     that answer is about the value itself and carries all three
+     contexts. A forced choice is comparative and one sided, so it adds
+     to the assumption instead of replacing it. Replacing it meant that
+     picking a paper page over a yellow one left the engine knowing
+     less about grounds than before it was asked, and the draw started
+     offering dark, which nothing had ever endorsed. */
   DEFAULTS.forEach(function(d){
-    if (spoken[d.tag]) return;
+    if (answered[d.tag]) return;
     w[d.tag] = { rej: d.v === 'no' ? 1 : 0, acc: d.v === 'no' ? 0 : 1, n:2,
                  why:[d.why], yesIn:{}, noIn:{}, assumed:true };
   });
@@ -822,8 +828,11 @@ function weights(){
   Object.keys(pairs).forEach(function(t){
     var p = pairs[t], tot = p.win + p.loss;
     if (!tot) return;
-    w[t] = { rej:p.loss * REJECT_WEIGHT, acc:p.win * ACCEPT_WEIGHT, n:tot,
-             why:[], yesIn:{}, noIn:{}, fromPairs:tot };
+    if (!w[t]) w[t] = { rej:0, acc:0, n:0, why:[], yesIn:{}, noIn:{} };
+    w[t].rej += p.loss * REJECT_WEIGHT;
+    w[t].acc += p.win * ACCEPT_WEIGHT;
+    w[t].n   += tot;
+    w[t].fromPairs = tot;
   });
   DECK.forEach(function(sp){
     var jd = judg[sp.id]; if (!jd || !jd.ctx) return;
