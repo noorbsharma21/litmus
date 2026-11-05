@@ -23,6 +23,10 @@ const PROFILE = {
   updated: '2026-11-05',
   note: 'Written from the conversation. Everything here was said out loud, not inferred.',
 
+  /* The slop rules below clear the floor. They are not taste, because
+     nobody with any would make that page. Taste starts at the point
+     where every option on the table is already well made. */
+
   /* Specimen answers. id from DECK, each with the three contexts.
      Empty for now: nothing has been judged in conversation yet. */
   judgments: {},
@@ -50,7 +54,31 @@ const PROFILE = {
     { id:'p-flip', verdict:'bad', scope:'any',
       text:'Never use the negation flip: "X is not A, it is B". Say what it is.' },
     { id:'p-claim', verdict:'good', scope:'any',
-      text:'Every mention of Disco says what it is and carries the traction: 25 cities, 600 weekly actives, 42k+ Instagram impressions. Weekly, never monthly.' }
+      text:'Every mention of Disco says what it is and carries the traction: 25 cities, 600 weekly actives, 42k+ Instagram impressions. Weekly, never monthly.' },
+
+    /* The house style of generated marketing pages, refused by name.
+       These are the floor, not the taste. Clearing them gets you to
+       competent, which is where the actual judgments start. */
+    { id:'s-gradtext', verdict:'bad', scope:'any',
+      text:'Never fill type with a gradient.' },
+    { id:'s-glass', verdict:'bad', scope:'any',
+      text:'Never use translucent blurred panels.' },
+    { id:'s-badge', verdict:'bad', scope:'any',
+      text:'Never open with a rounded pill badge announcing a feature, with or without a sparkle.' },
+    { id:'s-dualcta', verdict:'bad', scope:'any',
+      text:'Never pair a filled primary button with a ghost secondary beside it.' },
+    { id:'s-cards', verdict:'bad', scope:'any',
+      text:'Never use a row of three rounded cards with soft drop shadows.' },
+    { id:'s-stats', verdict:'bad', scope:'any',
+      text:'Never show a row of large round statistics with captions under them.' },
+    { id:'s-logos', verdict:'bad', scope:'any',
+      text:'Never run a row of greyed-out logos under the hero.' },
+    { id:'s-quote', verdict:'bad', scope:'any',
+      text:'Never use a centred testimonial with a circular avatar under it.' },
+    { id:'s-darkcta', verdict:'bad', scope:'any',
+      text:'Never close on a dark band with a glowing CTA.' },
+    { id:'s-words', verdict:'bad', scope:'any',
+      text:'Never write supercharge, seamless, effortlessly, unlock, empower, or introducing.' }
   ],
 
   /* Things returned to, with the structure read off them. */
