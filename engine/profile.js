@@ -78,7 +78,18 @@ const PROFILE = {
     { id:'s-darkcta', verdict:'bad', scope:'any',
       text:'Never close on a dark band with a glowing CTA.' },
     { id:'s-words', verdict:'bad', scope:'any',
-      text:'Never write supercharge, seamless, effortlessly, unlock, empower, or introducing.' }
+      text:'Never write supercharge, seamless, effortlessly, unlock, empower, or introducing.' },
+
+    /* Caught in the engine's own mockups, which had ten rules on one
+       page. A hairline is the cheapest thing that reads as structure,
+       so it is what gets reached for when the spacing has not been
+       solved. Deleting them is only half the fix. */
+    { id:'n-rules', verdict:'bad', scope:'any',
+      text:'Do not use hairlines, dividers or rules to create structure. Space, alignment, weight and position separate things. A rule is allowed only where it marks something space cannot: the head of a data table, or a real edge of the page.' },
+    { id:'n-space', verdict:'good', scope:'any',
+      text:'When a rule comes out, give the space back. A block that was separated by a line needs roughly double the gap it had, or it reads as one block.' },
+    { id:'n-label', verdict:'good', scope:'any',
+      text:'Where a line was labelling a change of section, use a small label in the quiet colour instead, not a line and not nothing.' }
   ],
 
   /* Things returned to, with the structure read off them. */
