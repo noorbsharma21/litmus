@@ -120,7 +120,7 @@ var ARCH = {
         'drunk by somebody who works here, which is the only filter.</p>');
 
       var cells = WINES.map(function(w, i){
-        return '<div style="border-top:1px solid ' + c.line + ';padding:12px 0 0">' +
+        return '<div>' +
           plate(c.seed + i * 29, 132, c.has('c3') ? c.acc : null) +
           '<p style="font-family:Archivo;font-weight:700;font-size:15px;margin:10px 0 2px;color:' + c.ink + ';' +
             c.caseCss + '">' + w[0] + '</p>' +
@@ -131,8 +131,7 @@ var ARCH = {
       out.push('<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:' + c.gap + 'px 0 0">' +
         cells.join('') + '</div>');
 
-      out.push('<div style="margin:' + c.gap + 'px 0 0;display:flex;gap:28px;align-items:flex-start;' +
-        'border-top:1px solid ' + c.line + ';padding-top:14px">' +
+      out.push('<div style="margin:' + Math.round(c.gap * 1.9) + 'px 0 0;display:flex;gap:28px;align-items:flex-start">' +
         '<p style="' + c.bodyCss + ';flex:1">Delivery Tuesday and Friday inside the M25. ' +
         'Everything else goes by courier, packed in straw.</p>' +
         '<p style="font-family:Archivo;font-weight:700;font-size:14px;margin:0;color:' + c.ink + '">In stock today</p></div>');
@@ -186,8 +185,7 @@ var ARCH = {
     build:function(c){
       var out = [];
       out.push('<div style="display:flex;justify-content:space-between;font-family:Nunito;font-size:11px;' +
-        'letter-spacing:.14em;text-transform:uppercase;color:' + c.muted +
-        ';border-bottom:1px solid ' + c.line + ';padding-bottom:10px">' +
+        'letter-spacing:.14em;text-transform:uppercase;color:' + c.muted + '">' +
         '<span>Essays</span><span>No. 14 &#183; November</span></div>');
 
       out.push('<p style="font-family:Nunito;font-size:12px;letter-spacing:.1em;text-transform:uppercase;' +
@@ -234,15 +232,15 @@ var ARCH = {
         'in the room. Nothing is sponsored and nothing is ranked.</p>');
 
       out.push('<div style="margin:' + c.gap + 'px 0 0">' + NIGHTS.map(function(n, i){
-        return '<div style="display:flex;gap:18px;align-items:baseline;padding:11px 0;' +
-          'border-top:1px solid ' + c.line + '">' +
+        return '<div style="display:flex;gap:18px;align-items:baseline;padding:' +
+          Math.round(c.gap * 0.42) + 'px 0">' +
           '<span style="font-family:Archivo;font-weight:700;font-size:14px;width:62px;flex:none;color:' +
             (c.nCol > 1 && i % 2 === 0 ? c.acc : c.ink) + '">' + n[0] + '</span>' +
           '<span style="font-family:Nunito;font-size:13px;width:52px;flex:none;color:' + c.muted + '">' + n[1] + '</span>' +
           '<span style="font-family:Archivo;font-weight:700;font-size:14px;flex:1;color:' + c.ink + ';' +
             c.caseCss + '">' + n[2] + '</span>' +
           '<span style="font-family:Nunito;font-size:13px;flex:1;color:' + c.muted + '">' + n[3] + '</span></div>';
-      }).join('') + '<div style="border-top:1px solid ' + c.line + '"></div></div>');
+      }).join('') + '</div>');
 
       if (c.has('c9') || c.has('c4')){
         out.push('<div style="display:flex;gap:8px;margin:' + c.gap + 'px -56px 0">' +
@@ -327,7 +325,7 @@ function renderSite(spec, moveIds, seed, label, archKey){
     words: s['case'] === 'Title' ? titleCase(PHRASE) : PHRASE,
     nav: function(right){
       return '<div style="display:flex;justify-content:space-between;align-items:center;' +
-        'padding:0 0 ' + Math.round(gap*0.6) + 'px;border-bottom:1px solid ' + line + ';' +
+        'padding:0 0 ' + Math.round(gap*0.6) + 'px;' +
         'font-family:Nunito;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:' + muted + '">' +
         '<span style="color:' + ink + ';font-weight:700">Disco</span><span>' + right + '</span></div>';
     }
@@ -344,8 +342,8 @@ function renderSite(spec, moveIds, seed, label, archKey){
     }
     out.push('<div style="display:flex;gap:6px;margin:' + gap + 'px 0 0">' + sw.join('') + '</div>');
   }
-  out.push('<div style="margin:' + gap + 'px 0 0;padding-top:16px;border-top:1px solid ' + line +
-    ';font-family:Nunito;font-size:13px;color:' + muted + '">Disco &#183; built by people who go outside</div>');
+  out.push('<div style="margin:' + Math.round(gap * 2.2) + 'px 0 0;' +
+    'font-family:Nunito;font-size:13px;color:' + muted + '">Disco &#183; built by people who go outside</div>');
 
   var groundCss = 'background:' + bg;
   if (has('c8')) groundCss += ';' + halftoneCss(gk === 'dark' ? 'rgba(255,255,255,.13)' : 'rgba(0,0,0,.10)');
