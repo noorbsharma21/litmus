@@ -500,6 +500,7 @@
     <h2>Everything I have put in</h2>
     <p class="lede">Append only. A change of mind is added, not substituted, so the record shows
       the order things were decided in and where I went back on myself.</p>
+    <div id="localState"></div>
     <div class="counts" id="logCounts"></div>
     <div class="btns" style="margin:0 0 20px">
       <button class="act" id="expLog">Export everything</button>
@@ -515,14 +516,41 @@
 </div>
 
 <script src="data.js"></script>
+<script src="profile.js"></script>
 <script src="site.js"></script>
 <script>
-/* ---------- state ---------- */
+/* ---------- state ----------
+   Every decision has two homes. profile.js is what we settled in
+   conversation: it is committed, it ships with the page, and it is the
+   same on every machine and for anyone you send the link to. The
+   browser layer is what you do on the site right now, and it only
+   exists in this browser.
+
+   Reads see the two merged, with the browser on top. Writes only ever
+   touch the browser layer, so the committed file cannot be altered by
+   clicking, and local work can always be dropped or handed back to be
+   committed. */
+function loadLocal(key, empty){
+  try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(empty)); }
+  catch(e){ return empty; }
+}
+function localCount(){
+  return Object.keys(Lmarks).length + Object.keys(Ljudg).length +
+         Object.keys(Lpairs).length + Lrules.length + Lsources.length;
+}
+
 var KEY = 'litmus-marks-v1';
+var Lmarks = loadLocal(KEY, {});
 var marks = {};
-try { marks = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ marks = {}; }
-CLAIMS.forEach(function(c){ if (!marks[c.id]) marks[c.id] = 'true'; });
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch(e){} }
+function remarks(){
+  marks = {};
+  CLAIMS.forEach(function(c){ marks[c.id] = 'true'; });
+  Object.keys(PROFILE.marks || {}).forEach(function(k){ marks[k] = PROFILE.marks[k]; });
+  Object.keys(Lmarks).forEach(function(k){ marks[k] = Lmarks[k]; });
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(Lmarks)); } catch(e){} }
+function setMark(id, v){ Lmarks[id] = v; remarks(); save(); drawLocal(); }
+remarks();
 
 var readable = CORPUS.filter(function(p){ return p.read; });
 var cursor = 0;
@@ -629,8 +657,7 @@ document.getElementById('claims').addEventListener('click', function(e){
   var b = e.target.closest('.mk'); if (!b) return;
   var id = b.closest('.claim').dataset.id, was = marks[id];
   if (was === b.dataset.v) return;
-  marks[id] = b.dataset.v;
-  save();
+  setMark(id, b.dataset.v);
   record({ kind:'mark', id:id, from:was, to:b.dataset.v,
            claim:(CLAIMS.filter(function(c){return c.id===id;})[0]||{}).text });
   drawClaims();
@@ -645,14 +672,21 @@ try { LOG = JSON.parse(localStorage.getItem(LKEY) || '[]'); } catch(e){ LOG = []
 function logSave(){ try { localStorage.setItem(LKEY, JSON.stringify(LOG)); } catch(e){} }
 function record(ev){
   ev.t = Date.now(); ev.seq = LOG.length + 1;
-  LOG.push(ev); logSave(); drawLog();
+  LOG.push(ev); logSave(); drawLog(); drawLocal();
 }
-var judg = {};
-try { judg = JSON.parse(localStorage.getItem(JKEY) || '{}'); } catch(e){ judg = {}; }
+var Ljudg = loadLocal(JKEY, {});
 /* drop anything saved in an older shape */
-Object.keys(judg).forEach(function(k){ if (!judg[k] || !judg[k].ctx) delete judg[k]; });
+Object.keys(Ljudg).forEach(function(k){ if (!Ljudg[k] || !Ljudg[k].ctx) delete Ljudg[k]; });
 try { localStorage.removeItem('litmus-judge-v1'); localStorage.removeItem('litmus-judge-v2'); } catch(e){}
-function jsave(){ try { localStorage.setItem(JKEY, JSON.stringify(judg)); } catch(e){} }
+var judg = {};
+function rejudge(){
+  judg = {};
+  Object.keys(PROFILE.judgments || {}).forEach(function(k){ judg[k] = PROFILE.judgments[k]; });
+  Object.keys(Ljudg).forEach(function(k){ judg[k] = Ljudg[k]; });
+}
+function jsave(){ try { localStorage.setItem(JKEY, JSON.stringify(Ljudg)); } catch(e){} }
+function setJudg(id, rec){ Ljudg[id] = rec; rejudge(); jsave(); drawLocal(); }
+rejudge();
 
 
 /* ---- the same decision, shown three ways ----
@@ -794,13 +828,27 @@ function renderSpec(sp){
    shape a judged specimen produces, so it lands in the evidence model
    without a second set of rules. */
 var PKEY = 'litmus-pairs-v1';
+var Lpairs = loadLocal(PKEY, {});
 var pairs = {};
-try { pairs = JSON.parse(localStorage.getItem(PKEY) || '{}'); } catch(e){ pairs = {}; }
-function psave(){ try { localStorage.setItem(PKEY, JSON.stringify(pairs)); } catch(e){} }
-function pairBump(tag, won){
-  if (!pairs[tag]) pairs[tag] = { win:0, loss:0 };
-  pairs[tag][won ? 'win' : 'loss']++;
+/* pair counts add across the two layers rather than one hiding the
+   other, because they are tallies and not verdicts */
+function repair(){
+  pairs = {};
+  [PROFILE.pairs || {}, Lpairs].forEach(function(src){
+    Object.keys(src).forEach(function(t){
+      if (!pairs[t]) pairs[t] = { win:0, loss:0 };
+      pairs[t].win  += src[t].win  || 0;
+      pairs[t].loss += src[t].loss || 0;
+    });
+  });
 }
+function psave(){ try { localStorage.setItem(PKEY, JSON.stringify(Lpairs)); } catch(e){} }
+function pairBump(tag, won){
+  if (!Lpairs[tag]) Lpairs[tag] = { win:0, loss:0 };
+  Lpairs[tag][won ? 'win' : 'loss']++;
+  repair();
+}
+repair();
 
 /* ---- evidence model ----
    Assumptions go in first and are thrown out the moment the tag gets a
@@ -952,7 +1000,7 @@ document.getElementById('card').addEventListener('click', function(e){
 function commit(ctxMap){
   var sp = pickNext(); if (!sp) return;
   var why = document.getElementById('why').value.trim();
-  judg[sp.id] = { ctx: ctxMap, why: why, t: Date.now() };
+  setJudg(sp.id, { ctx: ctxMap, why: why, t: Date.now() });
   jsave();
   record({ kind:'judge', id:sp.id, cat:sp.cat, dim:sp.dim||null,
            round:sp.round, tags:sp.tags, ctx:ctxMap, why:why });
@@ -972,7 +1020,9 @@ document.addEventListener('keydown', function(e){
   if (e.key === 'ArrowLeft')  { e.preventDefault(); commit(all('no')); }
   if (e.key === 'ArrowRight') { e.preventDefault(); commit(all('yes')); }
 });
-document.getElementById('resetJ').onclick = function(){ judg = {}; jsave(); drawJudge(); drawFile(); drawPrompt(); };
+document.getElementById('resetJ').onclick = function(){
+  Ljudg = {}; rejudge(); jsave(); drawJudge(); drawFile(); drawPrompt(); drawLocal();
+};
 
 function drawWeights(){
   var w = weights();
@@ -1216,9 +1266,14 @@ var SQS = [
 ];
 
 var SKEY = 'litmus-sources-v1';
+var Lsources = loadLocal(SKEY, []);
 var sources = [];
-try { sources = JSON.parse(localStorage.getItem(SKEY) || '[]'); } catch(e){ sources = []; }
-function ssave(){ try { localStorage.setItem(SKEY, JSON.stringify(sources)); } catch(e){} }
+function resources(){
+  sources = (PROFILE.sources || []).map(function(s){ s.fromFile = true; return s; })
+              .concat(Lsources);
+}
+function ssave(){ try { localStorage.setItem(SKEY, JSON.stringify(Lsources)); } catch(e){} }
+resources();
 
 var srcDraft = {};
 
@@ -1272,10 +1327,11 @@ function drawSrcList(){
     return;
   }
   el.innerHTML = sources.map(function(s, i){
-    return '<div class="srcard"><h4>' + s.title + '<span class="k">' + s.kind + '</span></h4>' +
+    return '<div class="srcard"><h4>' + s.title + '<span class="k">' + s.kind +
+      (s.fromFile ? ' &#183; from the file' : ' &#183; this browser only') + '</span></h4>' +
       '<p>' + SQS.map(function(q){ return s.ans[q.k]; }).filter(Boolean).join(', ') + '</p>' +
       (s.take ? '<p><em>taken:</em> ' + s.take + '</p>' : '') +
-      '<button class="drop" data-i="' + i + '">remove</button></div>';
+      (s.fromFile ? '' : '<button class="drop" data-i="' + i + '">remove</button>') + '</div>';
   }).join('');
 }
 document.getElementById('srcQs').addEventListener('click', function(e){
@@ -1289,7 +1345,7 @@ document.getElementById('srcAdd').onclick = function(){
   var s = { title:title, kind:document.getElementById('srcKind').value,
             ans:JSON.parse(JSON.stringify(srcDraft)),
             take:document.getElementById('srcTake').value.trim(), t:Date.now() };
-  sources.push(s); ssave();
+  Lsources.push(s); resources(); ssave();
   record({ kind:'source', title:s.title, srcKind:s.kind, ans:s.ans, take:s.take });
   srcDraft = {};
   document.getElementById('srcTitle').value = '';
@@ -1304,7 +1360,9 @@ document.getElementById('srcClear').onclick = function(){
 };
 document.getElementById('srcList').addEventListener('click', function(e){
   var b = e.target.closest('.drop'); if (!b) return;
-  var s = sources.splice(+b.dataset.i, 1)[0]; ssave();
+  var s = sources[+b.dataset.i];
+  if (s.fromFile) return;
+  Lsources.splice(+b.dataset.i - (PROFILE.sources || []).length, 1); resources(); ssave();
   record({ kind:'source removed', title:s.title });
   drawSrcList(); drawFile(); drawPrompt();
 });
@@ -1315,9 +1373,14 @@ document.getElementById('srcList').addEventListener('click', function(e){
    instead is show them to you against a page you marked bad and ask
    which one it broke, and tell you when none of them covers it. */
 var RKEY = 'litmus-rules-v1';
+var Lrules = loadLocal(RKEY, []);
 var rules = [];
-try { rules = JSON.parse(localStorage.getItem(RKEY) || '[]'); } catch(e){ rules = []; }
-function rsave(){ try { localStorage.setItem(RKEY, JSON.stringify(rules)); } catch(e){} }
+function rerules(){
+  rules = (PROFILE.rules || []).map(function(r){ r.fromFile = true; return r; })
+            .concat(Lrules);
+}
+function rsave(){ try { localStorage.setItem(RKEY, JSON.stringify(Lrules)); } catch(e){} }
+rerules();
 var ruleVerdict = 'bad';
 
 var SCOPE_LABEL = { any:'anything', shop:'shops', gallery:'photography',
@@ -1332,9 +1395,12 @@ function drawRules(){
   }
   el.innerHTML = rules.map(function(r, i){
     return '<div class="srcard"><h4>' + (r.verdict === 'good' ? 'Good' : 'Bad') +
-      '<span class="k">' + SCOPE_LABEL[r.scope] + (r.broke ? ' &#183; broken ' + r.broke + 'x' : '') + '</span></h4>' +
+      '<span class="k">' + SCOPE_LABEL[r.scope] +
+        (r.broke ? ' &#183; broken ' + r.broke + 'x' : '') +
+        (r.fromFile ? ' &#183; from the file' : ' &#183; this browser only') + '</span></h4>' +
       '<p>' + r.text + '</p>' +
-      '<button class="drop" data-i="' + i + '">remove</button></div>';
+      (r.fromFile ? '<p class="meta" style="margin-top:5px">Settled in the chat. Say so there to change it.</p>'
+                  : '<button class="drop" data-i="' + i + '">remove</button>') + '</div>';
   }).join('');
 }
 document.getElementById('ruleGood').onclick = function(){
@@ -1352,14 +1418,16 @@ document.getElementById('ruleAdd').onclick = function(){
   if (!t) { document.getElementById('ruleText').focus(); return; }
   var r = { id:'r' + Date.now(), text:t, verdict:ruleVerdict,
             scope:document.getElementById('ruleScope').value, broke:0 };
-  rules.push(r); rsave();
+  Lrules.push(r); rerules(); rsave();
   record({ kind:'rule', verdict:r.verdict, scope:r.scope, text:r.text });
   document.getElementById('ruleText').value = '';
   drawRules(); drawFile(); drawPrompt();
 };
 document.getElementById('ruleList').addEventListener('click', function(e){
   var b = e.target.closest('.drop'); if (!b) return;
-  var r = rules.splice(+b.dataset.i, 1)[0]; rsave();
+  var r = rules[+b.dataset.i];
+  if (r.fromFile) return;
+  Lrules.splice(+b.dataset.i - (PROFILE.rules || []).length, 1); rerules(); rsave();
   record({ kind:'rule removed', text:r.text });
   drawRules(); drawFile(); drawPrompt();
 });
@@ -1486,6 +1554,10 @@ function fileText(){
   out.push('taste.md');
   out.push('Noor Sharma. ' + readable.length + ' pieces read, ' +
            Object.keys(judg).length + ' of ' + DECK.length + ' specimens judged.');
+  var ln = localCount();
+  out.push('Profile committed ' + PROFILE.updated +
+           (ln ? ', plus ' + ln + ' change' + (ln === 1 ? '' : 's') +
+                 ' made in one browser and not yet in it.' : '. Nothing unsaved.'));
   out.push('');
   out.push('HOW TO READ THIS  the sections do not carry the same weight');
   out.push('  NON NEGOTIABLE      hard. Not taste. Nothing below overrides it.');
@@ -1958,6 +2030,53 @@ window.addEventListener('hashchange', fromHash);
 
 document.getElementById('hdCount').insertAdjacentHTML('afterbegin', ' ');
 
+/* ---------- where a decision lives ----------
+   The committed file is the same for everybody. The browser layer is
+   only here, so it has to say so, and has to be handed back rather
+   than hoped about. */
+function drawLocal(){
+  var el = document.getElementById('localState');
+  if (!el || typeof PROFILE === 'undefined') return;
+  var n = localCount();
+  var fileN = Object.keys(PROFILE.judgments || {}).length +
+              Object.keys(PROFILE.marks || {}).length +
+              Object.keys(PROFILE.pairs || {}).length +
+              (PROFILE.rules || []).length + (PROFILE.sources || []).length;
+  el.innerHTML =
+    '<div class="src" style="max-width:52em">' +
+      '<p style="margin:0 0 6px;font-size:14px"><b>' + fileN + '</b> decisions come from the ' +
+        'committed file, last changed ' + PROFILE.updated + '. They are the same in every ' +
+        'browser and for anyone you send the link to.</p>' +
+      '<p style="margin:0 0 12px;font-size:14px">' +
+        (n ? '<b>' + n + '</b> more ' + (n === 1 ? 'was' : 'were') + ' made in this browser and ' +
+             (n === 1 ? 'exists' : 'exist') + ' nowhere else. ' +
+             'Clearing site data ends ' + (n === 1 ? 'it' : 'them') + '. ' +
+             'Hand ' + (n === 1 ? 'it' : 'them') + ' back to put ' + (n === 1 ? 'it' : 'them') + ' in the file.'
+           : 'Nothing has been changed in this browser, so what you see is the file.') + '</p>' +
+      (n ? '<div class="btns">' +
+             '<button class="act" id="handBack">Copy them for the chat</button>' +
+             '<button class="act ghost" id="dropLocal">Discard and return to the file</button>' +
+           '</div>' : '') +
+    '</div>';
+}
+function localPayload(){
+  return JSON.stringify({ judgments:Ljudg, marks:Lmarks, pairs:Lpairs,
+                          rules:Lrules, sources:Lsources }, null, 2);
+}
+document.getElementById('localState').addEventListener('click', function(e){
+  if (e.target.id === 'handBack'){
+    copy('Put these in profile.js:\n\n' + localPayload(), e.target);
+    return;
+  }
+  if (e.target.id === 'dropLocal'){
+    Lmarks = {}; Ljudg = {}; Lpairs = {}; Lrules = []; Lsources = [];
+    save(); jsave(); psave(); rsave(); ssave();
+    remarks(); rejudge(); repair(); rerules(); resources();
+    drawClaims(); drawJudge(); drawRules(); drawSrcList();
+    drawPair(); drawFile(); drawPrompt(); drawLocal();
+  }
+});
+
 document.getElementById('pairArch').addEventListener('change', function(){
   pairSeed = Math.floor(Math.random() * 1e6); drawPair();
 });
@@ -1965,6 +2084,7 @@ document.getElementById('pairArch').addEventListener('change', function(){
 drawSrcForm();
 drawSrcList();
 drawRules();
+drawLocal();
 drawClaims();
 drawJudge();
 drawPair();
