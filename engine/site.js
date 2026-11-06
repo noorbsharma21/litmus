@@ -14,11 +14,24 @@
 
 var PAGE_W = 900, PAGE_H = 760;
 
-var GROUND = { white:'#FFFFFF', paper:'#F0E9D8', colour:'#E8C84A', dark:'#14130F' };
-var INK    = { white:'#14130F', paper:'#14130F', colour:'#14130F', dark:'#F0E9D8' };
-var MUTED  = { white:'#777777', paper:'#6B6453', colour:'#6B5A14', dark:'#9A958A' };
-var LINE   = { white:'#E4E4E4', paper:'#DAD2BC', colour:'#CBAE38', dark:'#33312A' };
-var ACCENT = ['#FF3E00','#151DE0','#8EA066','#9D70C0','#833405','#D0402F'];
+/* Every value below is sampled off the references, not chosen. See
+   palette.js for which piece each one came out of and how much of that
+   piece it covers.
+
+   Three of these were wrong before and wrong in the same way. The
+   yellow ground was #E8C84A, a golden amber at hue 48, when every
+   yellow in forty-four pieces sits between 48 and 61 and the one that
+   carries a whole page is #FDFF70. Two of the six accents, an olive at
+   21% saturation and a mauve at 38%, sat in a band of the colour space
+   that forty-four pieces do not touch once. They were the muddy middle,
+   which is the thing being refused everywhere else in this project. */
+var GROUND = { white:'#FFFFFF', paper:'#F3EBE0', colour:'#FDFF70', dark:'#1A1614' };
+var INK    = { white:'#1A1614', paper:'#110B0A', colour:'#110B0A', dark:'#F3EBE0' };
+var MUTED  = { white:'#382F2C', paper:'#6B6453', colour:'#4B4C2D', dark:'#9A958A' };
+var LINE   = { white:'#E4E4E4', paper:'#DAD2BC', colour:'#D8DA55', dark:'#33312A' };
+var ACCENT = (typeof M_ACCENT !== 'undefined') ? M_ACCENT :
+             ['#A40603','#C5242B','#F4432D','#EE5884','#F64FB2','#E47937',
+              '#FCF02A','#FDFF70','#EDD164','#072493','#3866C1','#88B7D3','#0F6E2B'];
 
 var CASE_CSS = { 'lower':'text-transform:lowercase', 'sentence':'', 'Title':'',
                  'UPPER':'text-transform:uppercase' };
@@ -65,11 +78,33 @@ function effectiveSpec(spec, moveIds){
   return s;
 }
 
+/* A plate stands in for a photograph. It used to be a gradient at a
+   random hue, saturation 24 to 30, lightness 24 to 42. Three separate
+   problems in one line. The gradient is refused by name in the file.
+   The random hue could produce teal or mauve, neither of which occurs
+   in forty-four references. And that saturation and lightness band is
+   the muddy middle, which nothing in the set touches once.
+
+   What the references actually do with a photograph, every time: a flat
+   colour knocked out of it, a halftone screen over it, or a duotone of
+   two flat inks. P07 silhouettes cattle in oxide red. S03 knocks the
+   figures out in highlighter yellow. P21 screens the whole thing. S19
+   runs the photographs as a blue and red duotone. All flat, all from a
+   press, never a wash. */
 function plate(seed, h, tint, extra){
-  var r = rng(seed), a = Math.floor(r()*360), b = (a + 40 + Math.floor(r()*60)) % 360;
+  var r = rng(seed);
+  var pick = (typeof pickAccent === 'function') ? pickAccent(r())
+                                                : ACCENT[Math.floor(r() * ACCENT.length)];
+  var base = tint || pick;
+  var mode = Math.floor(r() * 3);
+  var over = mode === 0 ? halftoneCss('rgba(17,11,10,.38)')
+           : mode === 1 ? 'background-image:repeating-linear-gradient(' +
+                          (r() < 0.5 ? '90deg' : '0deg') +
+                          ',rgba(17,11,10,.30) 0 1px,transparent 1px 7px)'
+           : 'background-image:radial-gradient(rgba(17,11,10,.30) 1px,transparent 1.2px);background-size:7px 7px';
   return '<div style="height:' + h + 'px;position:relative;overflow:hidden;' + (extra || '') +
-    'background:linear-gradient(' + Math.floor(r()*180) + 'deg,hsl(' + a + ',24%,42%),hsl(' + b + ',30%,24%))">' +
-    (tint ? '<div style="position:absolute;inset:0;background:' + tint + ';mix-blend-mode:multiply;opacity:.55"></div>' : '') +
+    'background:' + base + '">' +
+    '<div style="position:absolute;inset:0;' + over + '"></div>' +
   '</div>';
 }
 function halftoneCss(col){
