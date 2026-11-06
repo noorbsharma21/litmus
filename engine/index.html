@@ -470,6 +470,7 @@
 <script src="site.js"></script>
 <script src="structure.js"></script>
 <script src="compare.js"></script>
+<script src="constructs.js"></script>
 <script>
 /* ---------- state ----------
    Every decision has two homes. profile.js is what we settled in
@@ -669,7 +670,12 @@ function readBrief(text){
   var t = (text || '').toLowerCase();
   var surf = null, sHits = [];
   for (var i = 0; i < SURFACES.length; i++){
-    var hits = SURFACES[i].words.filter(function(w){ return t.indexOf(w) > -1; });
+    /* Whole words only. Substring matching read "guide" as an app screen
+       because it contains "ui", and would do the same to "building",
+       "quiet" and "suite". */
+    var hits = SURFACES[i].words.filter(function(w){
+      return new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(t);
+    });
     if (hits.length){ surf = SURFACES[i]; sHits = hits; break; }
   }
   return {
@@ -1043,6 +1049,7 @@ function fileText(){
   out.push('HOW TO READ THIS  the sections do not carry the same weight');
   out.push('  NON NEGOTIABLE      hard. Not taste. Nothing below overrides it.');
   out.push('  MY RULES            hard. Written by hand. Follow the wording, do not paraphrase.');
+  out.push('  CONSTRUCTS          hard. His words, from triads of excellent work. Each has two ends.');
   out.push('  BEHAVIOUR           hard. Settled by comparing good work, not by counting.');
   out.push('  MEASURED            hard as numbers, soft as choices. Sampled, not chosen.');
   out.push('  DIRECTION           soft. Tendencies he confirmed, most of them conditional.');
@@ -1074,6 +1081,27 @@ function fileText(){
   out.push('NON NEGOTIABLE  not matters of taste, and they outrank everything below');
   CONSTANTS.forEach(function(c){ out.push('  ' + c); });
   out.push('');
+
+  /* Constructs, the unit of evidence after the rebuild. Each end carries
+     the sites that anchor it, because a model reading "world building"
+     without an example will guess, and the guess is the average. */
+  if (typeof CONSTRUCTS !== 'undefined'){
+    out.push('CONSTRUCTS  hard. In his words, from triads of excellent work');
+    var link = function(k){ var x = SITES[k]; return x ? x.name + ' ' + x.url : k; };
+    [F1_AS_CONSTRUCT].concat(CONSTRUCTS).forEach(function(k){
+      out.push('  ' + k.id + '  ' + (k.good.words + '                              ').slice(0,30) +
+               'not  ' + k.bad.words + (k.unsure ? '   [unconfirmed]' : ''));
+      out.push('      like:  ' + k.good.exemplars.map(link).join('   '));
+      out.push('      not:   ' + k.bad.exemplars.map(link).join('   '));
+    });
+    out.push('  None of these is a technology. The end he prefers is anchored in at least');
+    out.push('  two different media every time: plain HTML net art and WebGL worlds sit on');
+    out.push('  the same side. Do not read immersive as 3D. A menu or a poster can be');
+    out.push('  groundbreaking and immersive with no code at all.');
+    out.push('  Winning a pair means better than that one opponent, never good. Feixen beat');
+    out.push('  Are.na on motion and lost to Igloo and Petra Cortright on normalcy.');
+    out.push('');
+  }
 
   /* The palette, which the prompt for the surreal artist's site had to
      have pasted in by hand because the file did not carry it. */
