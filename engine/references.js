@@ -237,6 +237,65 @@ const RCLAIMS = [
     holds:[], breaks:[], n:0, negative:true }
 ];
 
+/* The cross-check.
+
+   This is what the folder was actually for. The thirteen claims in
+   data.js were read off work Noor made, so at best they describe a
+   hand. These forty-four are work he picked out, so they describe an
+   eye. A claim that holds in both is about taste. A claim that holds
+   only in the corpus is about how he happens to draw, and has no
+   business telling a model how to build someone else's page.
+
+   `for` lists the references that carry the claim. `against` lists the
+   ones that do the opposite, which matters more: a claim with nothing
+   against it has not been looked at hard enough, and two of these have
+   more against than for.
+
+   Read by eye on 6 November 2026, piece by piece. The tag vocabularies
+   in the two files were written separately and are not matched up
+   automatically, on purpose. An automatic match would agree with
+   itself.                                                            */
+const CROSS = {
+  c1:  { for:['P01','P05','P06','P09','P12','P16','P21','P22','S05','S08','S11','S12','S17','S19'],
+         against:['P02','P04','P10','P14','P20','S02','S04','S07','S14','S16','S20','S21'] },
+  c3:  { for:['P11','P17','P19','S03'],
+         against:['P04','P09','P16','P20','P22','S05','S10','S11','S14','S18'] },
+  c4:  { for:['P04','P08','P10','P13','P15','P16','P21','S01','S10','S14','S16','S18'],
+         against:['P17','S04','S07'] },
+  c5:  { for:['P02','P08','P17'], against:[] },
+  c6:  { for:['P01','P09','P15','P16','S12'], against:[] },
+  c7:  { for:[], against:[] },
+  c8:  { for:['P06','P15','P16','P17','P20','P21','S03'], against:[] },
+  c9:  { for:['P03','P23','S06','S15','S19'], against:[] },
+  c10: { for:['P23','S04','S06','S15','S19'], against:[] },
+  c11: { for:['P03','P23','S06','S19'],
+         against:['P04','P13','P16','S05','S10','S14','S21'] },
+  c12: { for:['P03','P05','P11','P17','S03','S06','S09'], against:[] },
+  c13: { for:[], against:[] }
+};
+
+/* The verdict is derived, not written down, so it cannot drift away
+   from the counts above when a reference is added or a claim changes.
+
+   "corpus only" is the one that matters most. It means the claim was
+   true of everything he made and appears in nothing he chose, which
+   makes it a description of his hand. A hand does not transfer. Those
+   claims should not be instructing a model about someone else's page.
+
+   A claim is contested when the references push back about as hard as
+   they carry it, at half the count or more. Twelve for and three
+   against is not contested, it is carried. Fourteen for and twelve
+   against is a claim that has not decided what it is yet.            */
+function crossOf(id){
+  var x = CROSS[id];
+  if (!x) return null;
+  var f = x.for.length, a = x.against.length;
+  if (f === 0 && a === 0) return { f:f, a:a, verdict:'corpus only' };
+  if (a >= f / 2)         return { f:f, a:a, verdict:'contested' };
+  if (f <= 3)             return { f:f, a:a, verdict:'thin' };
+  return { f:f, a:a, verdict:'cross-validated' };
+}
+
 /* Facts about the set rather than claims about taste. These go into
    the file as evidence because they are counts, and a count cannot be
    marked "nearly". */

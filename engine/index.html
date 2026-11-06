@@ -1241,6 +1241,16 @@ function claimWhen(c){
   var p = (PROFILE.claims || {})[c.id];
   return p ? p.when : null;
 }
+/* Every rule in the file now says whether it survived contact with work
+   Noor chose rather than made. Without this the file reads as thirteen
+   equally weighted instructions, and they are nothing of the sort. */
+function crossTag(c){
+  if (typeof crossOf !== 'function') return '';
+  var x = crossOf(c.id);
+  if (!x) return '';
+  if (x.verdict === 'corpus only') return '   [his hand only: 0 of 44 references]';
+  return '   [' + x.verdict + ': ' + x.f + ' for, ' + x.a + ' against, of 44]';
+}
 var TRIGGER = {
   /* collage only, in his words */
   c9: function(brief, spec){
@@ -1710,7 +1720,7 @@ function fileText(){
   out.push('  Never write: supercharge, effortlessly, introducing, seamless.');
   out.push('');
   out.push('DIRECTION  soft. Confirmed, and they hold without a reason being given');
-  kept.forEach(function(c){ out.push('  ' + claimRule(c)); });
+  kept.forEach(function(c){ out.push('  ' + claimRule(c) + crossTag(c)); });
   if (kept.length){
     out.push('');
     out.push('  Take two or three of these, the ones this piece has a reason for.');
@@ -1724,9 +1734,24 @@ function fileText(){
     out.push('  the failure this section exists to prevent.');
     nearly.forEach(function(c){
       var wn = claimWhen(c);
-      out.push('  ' + claimRule(c));
+      out.push('  ' + claimRule(c) + crossTag(c));
       out.push('      use it when: ' + (wn || 'NOT SET. Do not reach for this one. The condition has not been given yet.'));
     });
+  }
+  /* Anything that holds across his own work and nothing else is a
+     description of how he draws. It has no authority over a page made
+     for somebody else, and the file says so rather than quietly
+     dropping it. */
+  var handOnly = kept.concat(nearly).filter(function(c){
+    var x = (typeof crossOf === 'function') ? crossOf(c.id) : null;
+    return x && x.verdict === 'corpus only';
+  });
+  if (handOnly.length){
+    out.push('');
+    out.push('HIS HAND, NOT HIS EYE  true of everything he made, absent from everything he chose');
+    out.push('  Forty-four pieces he picked out carry no example of these. Treat them as');
+    out.push('  facts about how he draws, not as instructions for this page.');
+    handOnly.forEach(function(c){ out.push('  ' + claimRule(c)); });
   }
   out.push('');
   out.push('EVIDENCE');
