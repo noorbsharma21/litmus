@@ -24,7 +24,7 @@
    much of that there is. */
 
 const PROFILE = {
-  updated: '2026-11-05',
+  updated: '2026-11-06',
   note: 'Written from the conversation. Everything here was said out loud, not inferred.',
 
   /* The slop rules below clear the floor. They are not taste, because
@@ -140,7 +140,27 @@ const PROFILE = {
     { id:'n-space', verdict:'good', scope:'any',
       text:'When a rule comes out, give the space back. A block that was separated by a line needs roughly double the gap it had, or it reads as one block.' },
     { id:'n-label', verdict:'good', scope:'any',
-      text:'Where a line was labelling a change of section, use a small label in the quiet colour instead, not a line and not nothing.' }
+      text:'Where a line was labelling a change of section, use a small label in the quiet colour instead, not a line and not nothing.' },
+
+    /* His critique of the first piece made from the rebuilt file, the
+       surreal artist's site, 6 November 2026. Quoted where he named the
+       thing. Every one of these was in the page he was looking at. */
+    { id:'c-dot', verdict:'bad', scope:'any',
+      text:'Never use a middle dot as a separator in labels or metadata, as in "16 \u00b7 head". He called it an AI trope.' },
+    { id:'c-font', verdict:'bad', scope:'any',
+      text:'Never use the AI-native type pairing: a clean grotesque for headings with a monospace or typewriter face for labels and notes. "The heading and the fonts are all very AI-native." Choose type that belongs to this piece, or none of the usual kind at all.' },
+    { id:'c-count', verdict:'bad', scope:'any',
+      text:'Never put a number on the page that needs explaining, like "figure 9,880 of 13,824". "I don\u2019t understand what type of figure ... even means."' },
+    { id:'c-beige', verdict:'bad', scope:'any',
+      text:'No beige backgrounds. Paper, cream and kraft grounds are out, even though thirteen of the references sit on paper: those are photographs of printed things, not a preference for a web page.' },
+    { id:'c-dry', verdict:'bad', scope:'any',
+      text:'No dull, dry copy. Placeholder or not, words that describe the work clinically make the whole piece read dead.' },
+    { id:'c-instruct', verdict:'bad', scope:'any', inferred:true,
+      text:'If the page needs a paragraph explaining how to use it, the interaction has failed. The first piece had working interactions and a paragraph explaining them, and he said "there is no interactivity". Interaction has to be felt the moment the pointer moves, without reading. (My reading of his words, not his wording.)' },
+    { id:'c-colour', verdict:'good', scope:'any',
+      text:'Experiment with colour. A safe two colour scheme of ground, ink and one accent is not enough: "there isn\u2019t much experimentation in terms of colors."' },
+    { id:'c-markers', verdict:'good', scope:'any',
+      text:'Markers and leader lines that tie one thing to another are liked: "I like that you\u2019re trying to do those markers using arrows." Keep them. They are the one part of the first piece he kept.' }
   ],
 
   /* Things returned to, with the structure read off them. */

@@ -367,7 +367,7 @@ function sContent(brief, n){
 
 function sctx(spec, moveIds, seed, brief){
   var m = moveIds || [], s = effectiveSpec(spec || {}, m), r = rng(seed || 1);
-  var gk = s.ground || 'paper';
+  var gk = (s.ground && s.ground !== 'paper') ? s.ground : 'white';
   var bg = GROUND[gk], ink = INK[gk], muted = MUTED[gk];
   var nCol = parseInt(s['how many colours'] || '2', 10);
   var pool = accentsOn(bg, 3);

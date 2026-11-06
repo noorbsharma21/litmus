@@ -684,21 +684,21 @@ function readBrief(text){
   };
 }
 
-/* The only dimension the engine is entitled to choose is the ground,
-   because the grounds were measured off the references rather than
-   guessed: nineteen neutral, thirteen warm paper, one flat colour, and
-   no dark page anywhere. The draw follows those counts. Weight, scale,
-   measure, leading, tracking and the rest are left unset on purpose.
-   The previous version filled them from my assumptions and labelled the
-   result "one choice from inside the field". */
-var GROUND_COUNTS = { white:19, paper:13, colour:1 };
+/* The ground used to be drawn from the measured counts: nineteen
+   neutral, thirteen warm paper, one flat colour. He hates beige on a
+   site, and the thirteen paper grounds were photographs of printed
+   things, which is frequency read as preference again, with a
+   measurement standing in front of it. So the paper grounds are out,
+   and what is left is drawn evenly between white and a flat colour
+   rather than weighted by a count that has already been wrong once. */
+var GROUND_COUNTS = { white:1, colour:1 };
 function thisRun(seed){
   var r = rng(seed), bag = [];
   Object.keys(GROUND_COUNTS).forEach(function(k){
     for (var i = 0; i < GROUND_COUNTS[k]; i++) bag.push(k);
   });
   var g = bag[Math.floor(r() * bag.length)];
-  return [{ dim:'ground', choice:{ v:g }, pulled:false, measured:true }];
+  return [{ dim:'ground', choice:{ v:g }, pulled:false }];
 }
 
 /* Taste is selection, so the vocabulary is a menu and not a checklist.
@@ -1138,9 +1138,9 @@ function fileText(){
      have pasted in by hand because the file did not carry it. */
   if (typeof MEASURED !== 'undefined'){
     out.push('MEASURED  sampled off the references, every value traceable to an image');
-    out.push('  Grounds. Nineteen neutral, thirteen warm paper between hue 35 and 51, one flat');
-    out.push('  colour, none dark. Almost nothing sits between neutral and warm.');
-    ['white','paper','card','kraft','cream','colour'].forEach(function(k){
+    out.push('  Grounds. What the references sit on, not what he wants: thirteen of them are');
+    out.push('  warm paper and he refuses beige on a site. Only these two are open:');
+    ['white','colour'].forEach(function(k){
       var g = MEASURED.grounds[k]; if (g && g.hex) out.push('    ' + g.hex + '  ' + k);
     });
     out.push('  Ink. A warm near-black, mean lightness 12.');
@@ -1447,7 +1447,7 @@ function promptText(){
   lines.push('THIS RUN');
   run.forEach(function(r){
     lines.push('  ' + (r.dim + '                ').slice(0,18) + r.choice.v +
-               '   (drawn from the measured counts: 19 neutral, 13 paper, 1 colour)');
+               '   (no beige, paper, cream or kraft: refused)');
   });
   lines.push('  Weight, scale, measure, leading and tracking are not set. They used to be');
   lines.push('  filled from guesses. Choose them for this piece and commit to them.');

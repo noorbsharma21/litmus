@@ -5,344 +5,330 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Odile Varga</title>
 <!--
-  Made from taste.md, Litmus engine, 6 November 2026.
+  Made from taste.md, second version, 6 November 2026, after critique cr1.
+  The first version is in git at 2cd0ba0.
 
-  ROUTE      Made for it. Every figure on this page is assembled in the
-             browser from three of her paintings, a head from one, a body
-             from another, the feet from a third. The central image exists
-             only here and only for this visit. Not the immersive route: a
-             surrealist's own method is the cut and the join on a flat
-             surface, and a 3D world would be the studio's idea, not hers.
-  BEHAVIOUR  Responsive. The figure, the three labels, the leader lines
-             and the index answer each other. Nothing plays on its own.
-  STANDING   No hero, no sections, no grid of thumbnails. The work arrives
-             cut and recombined, and the index is one paragraph.
-  PALETTE    Measured. Ground #F3EBE0 paper, ink #1A1614 and #382F2C,
-             oxide red #A40603 for numbers and the line that just moved.
-  LINES      Only leader lines, which say which label belongs to which
-             part of the figure. None of them separates anything.
-  MOVES      c11, misregistration: the three parts sit slightly off each
-             other, because the figure is assembled and should look it.
+  ROUTE      Made for it. A flat field of colour with holes torn in it, and
+             a painting through every hole. The holes are cut for this
+             visit, in the order the visitor makes them, so the collage on
+             screen exists only here.
+  BEHAVIOUR  Responsive, felt at once. A hole follows the pointer from the
+             first movement and shows what is behind it. Clicking leaves
+             the hole torn open and the next one shows another painting.
+             Nothing on the page explains this, because cr1 had working
+             interactions and a paragraph explaining them, and read as
+             having none.
+  MARKERS    Every hole has a leader line to its title. The one part of
+             the first version he kept.
+  TYPE       The browser's default serif, set raw. Not the grotesque with
+             monospace labels he called AI-native. Default type is what
+             Olia Lialina and JODI use, and he said both of those were
+             cool. A choice, open to veto.
+  COLOUR     The ground is one flat measured accent at full strength. Rims,
+             lines and labels each take a different one. No beige, no
+             paper, no two colour scheme.
+  REFUSED    Middle dot separators, counters, explanatory copy, clinical
+             notes, a header and footer, sections.
 -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Courier+Prime&display=swap" rel="stylesheet">
 <style>
-:root{
-  --ground:#F3EBE0; --ink:#1A1614; --soft:#382F2C; --red:#A40603; --kraft:#E4DEC9;
-  --w:min(380px, 78vw); --h:calc(var(--w) * 1.5);
-}
+:root{ --ink:#1A1614; }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--ground);color:var(--ink)}
-body{font:15px/1.55 Archivo, system-ui, sans-serif;min-height:100vh}
-button{font:inherit;color:inherit}
-
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:28px 6vw 0 9vw}
-.name{font-weight:600;font-size:15px;margin:0}
-.count{font:15px 'Courier Prime', monospace;color:var(--soft);margin:0;text-align:right}
-.count b{color:var(--red);font-weight:400}
-
-.stage{position:relative;display:grid;grid-template-columns:var(--w) minmax(0, 1fr);
-  column-gap:clamp(96px, 13vw, 220px);padding:64px 6vw 0 9vw}
-.fig{position:relative;width:var(--w)}
-.band{position:relative;display:block;width:var(--w);height:calc(var(--h) / 3);overflow:hidden;
-  border:0;padding:0;background:var(--kraft);cursor:pointer;
-  transition:transform .55s cubic-bezier(.2,.7,.2,1)}
-.band img{position:absolute;left:0;width:var(--w);height:var(--h);object-fit:cover;
-  pointer-events:none;transition:opacity .25s}
-.band[data-i="0"] img{top:0}
-.band[data-i="1"] img{top:calc(var(--h) / -3)}
-.band[data-i="2"] img{top:calc(var(--h) / -1.5)}
-.band.swap img{opacity:0}
-.band:focus-visible{outline:3px solid var(--red);outline-offset:4px;z-index:2}
-.band .tag{position:absolute;left:8px;bottom:7px;font:13px 'Courier Prime', monospace;
-  color:var(--ground);background:var(--ink);padding:1px 6px}
-
-.labels{position:relative;min-height:var(--h)}
-.lab{position:absolute;left:0;width:min(36ch, 100%)}
-.lab .part{font:13px 'Courier Prime', monospace;color:var(--soft);margin:0 0 2px}
-.lab .part .no{color:var(--red)}
-.lab h2{font-size:15px;font-weight:600;margin:0;line-height:1.35}
-.lab p.note{margin:5px 0 0;font:15px/1.5 'Courier Prime', monospace;color:var(--soft)}
-.lab .scrap{display:block;object-fit:cover}
-/* The three labels are not one unit repeated. A column of identical
-   thumbnail, title, note, link would be the organised block coming back
-   in at the side, so each part is arranged differently and set at a
-   different distance from the figure. */
-.lab[data-p="0"]{left:0;width:min(34ch, 100%);display:grid;grid-template-columns:minmax(0,1fr) 96px;column-gap:20px;align-items:start}
-.lab[data-p="0"] > *{grid-column:1}
-.lab[data-p="0"] .scrap{grid-column:2;grid-row:1 / span 5;width:96px;height:124px}
-.lab[data-p="1"]{left:64px;width:min(40ch, calc(100% - 64px))}
-.lab[data-p="1"] .scrap{width:56px;height:56px;margin:0 0 10px -34px}
-.lab[data-p="2"]{left:20px;width:min(27ch, 100%);display:flex;flex-direction:column}
-.lab[data-p="2"] .scrap{order:9;width:150px;height:84px;margin:14px 0 0}
-.lab button.whole{margin-top:6px;background:none;border:0;padding:0;cursor:pointer;
-  text-align:left;justify-self:start;align-self:flex-start;white-space:nowrap;
-  font:13px 'Courier Prime', monospace;color:var(--ink);min-height:32px;
-  text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:4px}
-.lab button.whole:focus-visible{outline:2px solid var(--red);outline-offset:3px}
-
-svg.leaders{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-svg.leaders line{stroke:var(--ink);stroke-width:1;transition:stroke .3s}
-svg.leaders line.hot{stroke:var(--red);stroke-width:1.6}
-svg.leaders circle{fill:var(--ink)}
-svg.leaders circle.hot{fill:var(--red)}
-
-.index{padding:112px 6vw 72px 9vw}
-.index .lede{max-width:62ch;margin:0 0 30px;color:var(--soft)}
-.runon{margin:0;max-width:110ch;line-height:1.9}
-.runon button{background:none;border:0;padding:0;margin:0 18px 0 0;cursor:pointer;text-align:left;
-  min-height:44px;display:inline}
-.runon button .n{font-family:'Courier Prime', monospace;color:var(--red);margin-right:6px}
-.runon button:hover .t, .runon button:focus-visible .t{text-decoration:underline;text-underline-offset:4px}
-.runon button[aria-current="true"] .t{text-decoration:underline;text-decoration-color:var(--red);
-  text-decoration-thickness:2px;text-underline-offset:4px}
-.runon button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
-.next{font:13px 'Courier Prime', monospace;color:var(--soft);margin:22px 0 0}
-.next b{color:var(--red);font-weight:400}
-.foot{padding:0 6vw 52px 9vw;font:13px 'Courier Prime', monospace;color:var(--soft)}
-.foot a{color:var(--ink);text-decoration-color:var(--red);text-underline-offset:4px}
-
-@media (max-width:760px){
-  body{font-size:16px}
-  .top{padding:22px 6vw 0}
-  .stage{grid-template-columns:1fr;padding:36px 6vw 0}
-  .fig{margin:0 auto}
-  .labels{min-height:0;margin-top:36px}
-  .lab, .lab[data-p]{position:static;left:auto;width:auto;margin:0 0 30px;display:block}
-  .lab[data-p] .scrap{width:76px;height:76px;margin:0 0 10px}
-  svg.leaders{display:none}
-  .index{padding:56px 6vw 52px}
-  .lab p.note, .runon{font-size:16px}
-}
-@media (prefers-reduced-motion:reduce){
-  .band, .band img, svg.leaders line{transition:none}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:"Times New Roman", Times, serif;color:var(--ink);
+  -webkit-user-select:none;user-select:none;touch-action:none}
+#field{position:fixed;inset:0}
+#field.ready{transition:background-color .6s}
+.hole{position:fixed;overflow:hidden;pointer-events:none}
+.hole img{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block}
+/* each rim is stacked with its own hole, so a newer tear covers the
+   older edges the way paper would, instead of every rim being drawn
+   over every painting */
+.rim{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;overflow:visible}
+#over{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;overflow:visible}
+.chip{position:fixed;font-size:19px;line-height:1.25;padding:5px 10px 6px;
+  pointer-events:none;max-width:min(320px, 70vw)}
+.name{position:fixed;left:24px;top:18px;font-size:34px;margin:0;font-weight:normal;
+  letter-spacing:-.01em;pointer-events:none}
+.ctl{position:fixed;bottom:18px;font:inherit;font-size:19px;padding:6px 12px 7px;border:0;cursor:pointer;
+  min-height:44px;display:inline-flex;align-items:center}
+.ctl.write{left:24px;text-decoration:none}
+.ctl.close{right:24px}
+.ctl[hidden]{display:none}
+.ctl:focus-visible, #stage:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+#stage{position:fixed;inset:0;cursor:crosshair}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:640px){
+  .name{font-size:26px;left:16px;top:12px}
+  .chip{font-size:17px}
+  .ctl{font-size:17px;bottom:12px}
+  .ctl.write{left:16px} .ctl.close{right:16px}
 }
 </style>
 </head>
 <body>
-
-<header class="top">
-  <p class="name">Odile Varga</p>
-  <p class="count" id="count" aria-live="polite"></p>
-</header>
-
-<main>
-  <section class="stage" id="stage" aria-label="A figure assembled from three paintings">
-    <div class="fig" id="fig">
-      <button class="band" data-i="0" type="button"><img alt=""><span class="tag"></span></button>
-      <button class="band" data-i="1" type="button"><img alt=""><span class="tag"></span></button>
-      <button class="band" data-i="2" type="button"><img alt=""><span class="tag"></span></button>
-    </div>
-    <div class="labels" id="labels"></div>
-    <svg class="leaders" id="leaders" aria-hidden="true"></svg>
-  </section>
-
-  <section class="index" aria-label="All twenty-four paintings">
-    <p class="lede">Odile Varga makes paintings and collages. The figure above is cut from three of
-      them: a head from one, a body from another, the feet from a third. It is one of 13,824 this
-      page can make, and the address bar now holds this one, so it can be sent to someone.
-      Press any part of the figure to change it. Choose a title below to send that painting into
-      the next part. To see a painting on its own, use the line under its label.</p>
-    <p class="runon" id="runon"></p>
-    <p class="next" id="next"></p>
-  </section>
-</main>
-
-<footer class="foot">
-  <a href="mailto:studio@example.com">studio@example.com</a>
-</footer>
+<div id="field"></div>
+<div id="holes"></div>
+<svg id="over" aria-hidden="true"></svg>
+<div id="chips" aria-hidden="true"></div>
+<div id="stage" tabindex="0" role="application"
+     aria-label="Paintings by Odile Varga, seen through holes torn in a wall of colour. Arrow keys move the hole, Enter tears it open, Escape closes them all."></div>
+<h1 class="name" id="name">Odile Varga</h1>
+<a class="ctl write" id="write" href="mailto:studio@example.com">write to her</a>
+<button class="ctl close" id="close" type="button" hidden>close them</button>
+<p class="sr" id="live" aria-live="polite"></p>
+<ul class="sr" id="all"></ul>
 
 <script>
 var W = [
-  ['art-01','Four of the same woman','One figure drawn once, then printed four times on four different coloured papers.'],
-  ['art-02','A totem for the garden’s spine','Kraft paper. Botanical parts stacked and mirrored down the middle, cut off top and bottom.'],
-  ['art-03','Three people sharing one pair of arms','Three figures on kraft, drawn over each other so the arms pass through the bodies.'],
-  ['art-04','Portrait in weather','Pen portrait sitting on a field of orange halftone dots. Two colours, nothing else.'],
-  ['art-05','A face that could not decide','One face with the eyes and mouth drawn four times across it. Orange dots behind.'],
-  ['art-06','One drawing, four climates','Four vertical bands. The same drawing on red, magenta, blue and yellow paper.'],
-  ['art-07','The name leaves by the left edge','Digital. The title runs up the left edge and the frame cuts it.'],
-  ['art-08','The hat went on ahead','Flat on plain white. A boy, a floating red hat, nothing else.'],
-  ['art-09','Kept fresh','Seen from above, face covered by a bag. Plastic wrap drawn over the whole image.'],
-  ['art-10','Painting with an eye in hand','Oil. A checkerboard of thirty odd colours. A hand holds a brush and an eye.'],
-  ['art-11','Lost property, sorted by colour','Painting. Checkerboard down both sides with objects scattered in it.'],
-  ['art-12','Two fish agreeing','Two fish mirrored into one shape. Orange ground with pale dots over it.'],
-  ['art-13','Weather report, four regions','Four quadrants. The same figure on kraft, green, green and red paper.'],
-  ['art-14','The queue for the other eye','Kraft. A row of one eyed figures repeated and mirrored, running off both edges.'],
-  ['art-15','Red room, both sides','Mirrored on the vertical axis. The whole frame cast red.'],
-  ['art-16','Orange, with the hair scrubbed in','Pen face on white, orange dot grid behind, hair scrubbed in red crayon.'],
-  ['art-17','Green, the same girl a year later','The same build as the orange one. Green dots, magenta hair.'],
-  ['art-18','With the recipe attached','The palette is printed along the bottom as six swatches.'],
-  ['art-19','Handmaiden, watching from the arm','HANDMAIDEN runs up the left edge and is cut by the frame. Eyes repeated down a tentacle.'],
-  ['art-20','Two people balanced on a horizon','Two people on a line, on a cream circle, on dusty pink. Six swatches in the corner.'],
-  ['art-21','A sentence too long for the wall','Type crosses the whole image and both edges cut it off.'],
-  ['art-22','Lincoln, no colour allowed','Charcoal, heavy grain, one face filling the frame.'],
-  ['art-23','Half a face, kept by bees','Oil. The crop cuts the face in half. Bees and vines sit on the skin.'],
-  ['art-24','The desk it was made on','Sketchbook photographed on its own desk. Swatch dots along the top.']
+  ['art-01','Four of the same woman'], ['art-02','A totem for the garden’s spine'],
+  ['art-03','Three people sharing one pair of arms'], ['art-04','Portrait in weather'],
+  ['art-05','A face that could not decide'], ['art-06','One drawing, four climates'],
+  ['art-07','The name leaves by the left edge'], ['art-08','The hat went on ahead'],
+  ['art-09','Kept fresh'], ['art-10','Painting with an eye in hand'],
+  ['art-11','Lost property, sorted by colour'], ['art-12','Two fish agreeing'],
+  ['art-13','Weather report, four regions'], ['art-14','The queue for the other eye'],
+  ['art-15','Red room, both sides'], ['art-16','Orange, with the hair scrubbed in'],
+  ['art-17','Green, the same girl a year later'], ['art-18','With the recipe attached'],
+  ['art-19','Handmaiden, watching from the arm'], ['art-20','Two people balanced on a horizon'],
+  ['art-21','A sentence too long for the wall'], ['art-22','Lincoln, no colour allowed'],
+  ['art-23','Half a face, kept by bees'], ['art-24','The desk it was made on']
 ];
-var SCRAPS = ['roll-01','roll-02','roll-03','roll-04','roll-05','roll-06','roll-07','roll-08',
-              'roll-09','roll-10','roll-11','roll-12','roll-13','roll-14','roll-15','roll-16'];
-var PARTS = ['head','body','feet'];
-var N = W.length, TOTAL = N * N * N;
-var IMG = '../../images/', THUMB = '../../images/thumb/';
+/* One palette per wall, not a colour per element. The first draw of this
+   page cycled every rim, label and button through a different accent and
+   he called it not cohesive (cr2). Each palette below is three colours
+   that appear together in one of his references, so the combination was
+   chosen by somebody, not assembled here.
+     P17  Super Riso 2: magenta sitting straight on acid yellow, bottle green type
+     P08  nine posters: pink, ultramarine, bright red
+     S03  yellow field with the figures knocked out, near-black
+     P11  BLUE in sync: cobalt, orange, pale blue
+     P07  cattle in flat oxide red, white, near-black                  */
+var WALLS = [
+  { from:'P17', ground:'#FCF02A', rim:'#F64FB2', label:'#0F6E2B' },
+  { from:'P08', ground:'#EE5884', rim:'#072493', label:'#F4432D' },
+  { from:'S03', ground:'#FDFF70', rim:'#1A1614', label:'#1A1614' },
+  { from:'P11', ground:'#3866C1', rim:'#E47937', label:'#88B7D3' },
+  { from:'P07', ground:'#A40603', rim:'#FFFFFF', label:'#1A1614' }
+];
+var wall;
+var IMG = '../../images/';
+var MAXH = 14;
 
-var state = [0, 0, 0], nextSlot = 0, hotTimer = null;
-var bands = Array.prototype.slice.call(document.querySelectorAll('.band'));
-var labelsEl = document.getElementById('labels');
-var svg = document.getElementById('leaders');
-var stage = document.getElementById('stage');
+var field = document.getElementById('field'), holesEl = document.getElementById('holes'),
+    over = document.getElementById('over'), chipsEl = document.getElementById('chips'),
+    stage = document.getElementById('stage'), live = document.getElementById('live'),
+    closeBtn = document.getElementById('close');
 
-function pad(n){ return (n < 9 ? '0' : '') + (n + 1); }
-function scrapFor(k){ return SCRAPS[(k * 7) % SCRAPS.length]; }
-function figureNo(){ return state[0] * N * N + state[1] * N + state[2] + 1; }
-function rand(n){ return Math.floor(Math.random() * n); }
-function other(not){
-  var k; do { k = rand(N); } while (not.indexOf(k) > -1 && N > not.length);
-  return k;
+document.getElementById('all').innerHTML = W.map(function(w){ return '<li>' + w[1] + '</li>'; }).join('');
+
+function lum(h){ var c = h.replace('#',''); return [0,2,4].map(function(i){ var x = parseInt(c.substr(i,2),16)/255;
+  return x <= 0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055, 2.4); })
+  .reduce(function(a, v, i){ return a + v * [0.2126,0.7152,0.0722][i]; }, 0); }
+function contrast(a, b){ var x = lum(a), y = lum(b); return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05); }
+function textOn(bg){ return contrast(bg,'#1A1614') >= contrast(bg,'#FFFFFF') ? '#1A1614' : '#FFFFFF'; }
+function rng(seed){ var x = seed || 1; return function(){ x = (x * 1664525 + 1013904223) % 4294967296; return x / 4294967296; }; }
+function pick(n, not){ var k, tries = 0; do { k = Math.floor(Math.random() * n); tries++; }
+  while (not && not.indexOf(k) > -1 && tries < 200); return k; }
+
+/* a torn edge, not a circle: jittered radius around the rim, seeded so a
+   hole keeps its own shape for as long as it stays open */
+function tornShape(R, seed){
+  var r = rng(seed), n = 34, pts = [], base = 0.86 + r() * 0.1, f = 2 + Math.floor(r() * 3), ph = r() * 6;
+  for (var i = 0; i < n; i++){
+    var a = (i / n) * Math.PI * 2;
+    var k = base + (r() - 0.5) * 0.22 + Math.sin(a * f + ph) * 0.06;
+    pts.push([Math.cos(a) * R * k, Math.sin(a) * R * k]);
+  }
+  return pts;
 }
 
-/* the figure in the address bar, so a visitor can send the one they made */
-function fromHash(){
-  var m = location.hash.match(/^#(\d{2})-(\d{2})-(\d{2})$/);
-  if (!m) return null;
-  var v = [m[1], m[2], m[3]].map(function(x){ return parseInt(x, 10) - 1; });
-  return v.every(function(x){ return x >= 0 && x < N; }) ? v : null;
+var R, IMGS;
+function sizes(){
+  var m = Math.min(innerWidth, innerHeight);
+  R = Math.max(96, Math.min(190, m * 0.24));
+  IMGS = Math.max(R * 2.6, 520);
+}
+sizes();
+
+var groundCol, holes = [], lens = null, used = [];
+var tx = innerWidth * 0.56, ty = innerHeight * 0.48, lx = tx, ly = ty;
+var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+
+function setGround(){
+  var prev = wall;
+  do { wall = WALLS[Math.floor(Math.random() * WALLS.length)]; } while (prev && wall === prev && WALLS.length > 1);
+  groundCol = wall.ground;
+  field.style.backgroundColor = groundCol;
+  document.getElementById('name').style.color = textOn(groundCol);
 }
 
-/* labels are built once and their contents swapped, so focus is kept */
-var labs = PARTS.map(function(p, i){
-  var d = document.createElement('div');
-  d.className = 'lab';
-  d.setAttribute('data-p', i);
-  d.innerHTML = '<img class="scrap" alt="">' +
-    '<p class="part"><span class="no"></span> &#183; ' + p + '</p>' +
-    '<h2></h2><p class="note"></p>' +
-    '<button class="whole" type="button"></button>';
-  d.querySelector('.whole').addEventListener('click', function(){
-    var k = state[i];
-    state = [k, k, k]; nextSlot = 0;
-    render([0, 1, 2]);
+function makeHole(k, seed){
+  var el = document.createElement('div');
+  el.className = 'hole';
+  var img = document.createElement('img');
+  img.alt = ''; img.src = IMG + W[k][0] + '.jpg';
+  img.style.width = img.style.height = IMGS + 'px';
+  el.appendChild(img);
+  holesEl.appendChild(el);
+  var rimSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  rimSvg.setAttribute('class', 'rim');
+  rimSvg.setAttribute('aria-hidden', 'true');
+  holesEl.appendChild(rimSvg);
+  var rim = wall.rim;
+  var chipBg = wall.label;
+  var chip = document.createElement('div');
+  chip.className = 'chip';
+  chip.textContent = W[k][1];
+  chip.style.background = chipBg;
+  chip.style.color = textOn(chipBg);
+  chipsEl.appendChild(chip);
+  return { k:k, el:el, img:img, chip:chip, rim:rim, rimSvg:rimSvg, shape:tornShape(R, seed), x:0, y:0, seed:seed };
+}
+
+function placeHole(h, x, y){
+  h.x = x; h.y = y;
+  var S = R * 2.4;
+  h.el.style.left = (x - S/2) + 'px'; h.el.style.top = (y - S/2) + 'px';
+  h.el.style.width = h.el.style.height = S + 'px';
+  h.el.style.clipPath = 'polygon(' + h.shape.map(function(p){
+    return (p[0] + S/2).toFixed(1) + 'px ' + (p[1] + S/2).toFixed(1) + 'px'; }).join(',') + ')';
+
+  /* the label goes away from the middle of the screen, so it lands where
+     there is room, and the leader line runs from the torn edge to it */
+  var cx = innerWidth / 2, cy = innerHeight / 2;
+  var pref = Math.atan2(y - cy, x - cx);
+  if (Math.hypot(x - cx, y - cy) < 40) pref = -0.55;
+  var cw = h.chip.offsetWidth || 220, ch = h.chip.offsetHeight || 34;
+  var d = R * 1.08 + 64;
+  /* Try the preferred side, then the opposite side, then straight above
+     and below. Clamping a wide label against the screen edge used to push
+     it back over its own hole, and the leader line shrank to a stub. */
+  var tries = [pref, pref + Math.PI];
+  for (var a = 1; a < 12; a++) tries.push(pref + a * Math.PI / 6);
+  var hx0 = x - R, hx1 = x + R, hy0 = y - R, hy1 = y + R;
+  /* Labels also keep off every other label. Text over text breaks the
+     legibility rule, and on a busy wall the first version stacked three
+     titles on top of each other in the middle. */
+  var others = holes.concat(lens ? [lens] : []).filter(function(o){ return o !== h && o.rect; });
+  function clash(l, t){
+    var pad = 8, n = 0;
+    if (l < hx1 && l + cw > hx0 && t < hy1 && t + ch > hy0) n += 2;
+    others.forEach(function(o){
+      var r = o.rect;
+      if (l < r.l + r.w + pad && l + cw + pad > r.l && t < r.t + r.h + pad && t + ch + pad > r.t) n += 1;
+    });
+    return n;
+  }
+  var left, top, ang, best = null;
+  for (var t = 0; t < tries.length; t++){
+    var a2 = tries[t];
+    var px = x + Math.cos(a2) * d, py = y + Math.sin(a2) * d;
+    var l = Math.abs(Math.cos(a2)) < 0.3 ? px - cw / 2 : (Math.cos(a2) >= 0 ? px : px - cw);
+    var tp = py - ch / 2;
+    l = Math.max(12, Math.min(innerWidth - cw - 12, l));
+    tp = Math.max(64, Math.min(innerHeight - ch - 72, tp));
+    var c = clash(l, tp);
+    if (!best || c < best.c){ best = { c:c, l:l, t:tp, a:a2 }; }
+    if (c === 0) break;
+  }
+  left = best.l; top = best.t; ang = best.a;
+  h.rect = { l:left, t:top, w:cw, h:ch };
+  h.chip.style.left = left + 'px'; h.chip.style.top = top + 'px';
+  /* the line ends on the nearest edge of the label */
+  h.ax = Math.max(left, Math.min(left + cw, x));
+  h.ay = Math.max(top, Math.min(top + ch, y));
+  if (h.ax > left && h.ax < left + cw && h.ay > top && h.ay < top + ch) h.ay = top;
+  h.ex = x + Math.cos(ang) * R * 0.9; h.ey = y + Math.sin(ang) * R * 0.9;
+}
+
+function drawOver(){
+  var out = '';
+  holes.concat(lens ? [lens] : []).forEach(function(h){
+    var pts = h.shape.map(function(p){ return (p[0] + h.x).toFixed(1) + ',' + (p[1] + h.y).toFixed(1); }).join(' ');
+    h.rimSvg.innerHTML = '<polygon points="' + pts + '" fill="none" stroke="' + h.rim + '" stroke-width="4" stroke-linejoin="round"/>';
+    out += '<line x1="' + h.ex.toFixed(1) + '" y1="' + h.ey.toFixed(1) + '" x2="' + h.ax.toFixed(1) + '" y2="' + h.ay.toFixed(1) +
+           '" stroke="' + h.rim + '" stroke-width="2"/>';
+    out += '<circle cx="' + h.ex.toFixed(1) + '" cy="' + h.ey.toFixed(1) + '" r="4" fill="' + h.rim + '"/>';
   });
-  labelsEl.appendChild(d);
-  return d;
+  over.innerHTML = out;
+}
+
+function newLens(){
+  var k = pick(W.length, used);
+  lens = makeHole(k, Math.floor(Math.random() * 1e6));
+  placeHole(lens, lx, ly);
+}
+
+function tear(){
+  holes.push(lens);
+  used.push(lens.k);
+  live.textContent = 'Torn open onto ' + W[lens.k][1] + '.';
+  if (holes.length > MAXH){
+    var old = holes.shift();
+    old.el.remove(); old.rimSvg.remove(); old.chip.remove();
+    used.splice(used.indexOf(old.k), 1);
+  }
+  if (used.length >= W.length) used = holes.map(function(h){ return h.k; });
+  closeBtn.hidden = false;
+  newLens();
+  drawOver();
+}
+
+function closeAll(){
+  holes.forEach(function(h){ h.el.remove(); h.rimSvg.remove(); h.chip.remove(); });
+  holes = []; used = [];
+  if (lens){ lens.el.remove(); lens.rimSvg.remove(); lens.chip.remove(); }
+  closeBtn.hidden = true;
+  setGround(); styleControls();
+  newLens(); drawOver();
+  live.textContent = 'Closed. A new wall.';
+}
+
+function styleControls(){
+  var w = document.getElementById('write');
+  [w, closeBtn].forEach(function(b){ b.style.background = wall.label; b.style.color = textOn(wall.label); });
+}
+
+/* the hole eases toward the pointer so it feels moved rather than
+   teleported; with reduced motion it simply jumps */
+function tick(){
+  var e = reduce ? 1 : 0.22;
+  lx += (tx - lx) * e; ly += (ty - ly) * e;
+  if (lens) placeHole(lens, lx, ly);
+  drawOver();
+  requestAnimationFrame(tick);
+}
+
+stage.addEventListener('pointermove', function(e){ tx = e.clientX; ty = e.clientY; });
+stage.addEventListener('pointerdown', function(e){
+  tx = lx = e.clientX; ty = ly = e.clientY;
+  if (lens) placeHole(lens, lx, ly);
+  tear();
+});
+stage.addEventListener('keydown', function(e){
+  var s = 36;
+  if (e.key === 'ArrowLeft'){ tx -= s; e.preventDefault(); }
+  else if (e.key === 'ArrowRight'){ tx += s; e.preventDefault(); }
+  else if (e.key === 'ArrowUp'){ ty -= s; e.preventDefault(); }
+  else if (e.key === 'ArrowDown'){ ty += s; e.preventDefault(); }
+  else if (e.key === 'Enter' || e.key === ' '){ tear(); e.preventDefault(); }
+  else if (e.key === 'Escape'){ closeAll(); e.preventDefault(); }
+  tx = Math.max(0, Math.min(innerWidth, tx)); ty = Math.max(0, Math.min(innerHeight, ty));
+});
+closeBtn.addEventListener('click', closeAll);
+addEventListener('resize', function(){
+  sizes();
+  holes.concat(lens ? [lens] : []).forEach(function(h){
+    h.shape = tornShape(R, h.seed);
+    h.img.style.width = h.img.style.height = IMGS + 'px';
+    placeHole(h, h.x, h.y);
+  });
 });
 
-var runon = document.getElementById('runon');
-runon.innerHTML = W.map(function(w, k){
-  return '<button type="button" data-k="' + k + '"><span class="n">' + pad(k) + '</span>' +
-         '<span class="t">' + w[1] + '</span></button>';
-}).join(' ');
-runon.addEventListener('click', function(e){
-  var b = e.target.closest('button'); if (!b) return;
-  var slot = nextSlot;
-  state[slot] = +b.dataset.k;
-  nextSlot = (slot + 1) % 3;
-  render([slot]);
-});
-
-bands.forEach(function(b, i){
-  b.addEventListener('click', function(){
-    state[i] = other(state);
-    nextSlot = (i + 1) % 3;
-    render([i]);
-  });
-});
-
-function render(changed){
-  changed = changed || [];
-  var whole = state[0] === state[1] && state[1] === state[2];
-
-  bands.forEach(function(b, i){
-    var w = W[state[i]], img = b.querySelector('img');
-    var load = function(){
-      img.src = IMG + w[0] + '.jpg';
-      b.querySelector('.tag').textContent = pad(state[i]);
-      b.setAttribute('aria-label', PARTS[i] + ': ' + w[1] + ', painting ' + pad(state[i]) +
-                     '. Press to change it.');
-      /* misregistration, seeded by the painting so a figure always sits the same way */
-      var off = whole ? 0 : ((state[i] * 7 + i * 5) % 17) - 8;
-      b.style.transform = 'translateX(' + off + 'px)';
-      b.classList.remove('swap');
-    };
-    if (changed.indexOf(i) > -1){ b.classList.add('swap'); setTimeout(load, 180); }
-    else load();
-  });
-
-  labs.forEach(function(d, i){
-    var k = state[i], w = W[k];
-    d.querySelector('.no').textContent = pad(k);
-    d.querySelector('h2').textContent = w[1];
-    d.querySelector('.note').textContent = w[2];
-    var sc = d.querySelector('.scrap');
-    sc.src = THUMB + scrapFor(k) + '.jpg';
-    sc.alt = 'A source photograph kept with ' + w[1];
-    sc.style.transform = 'rotate(' + (((k * 5) % 7) - 3) + 'deg)';
-    var wb = d.querySelector('.whole');
-    wb.textContent = whole ? 'this is the painting whole' : 'see this painting whole';
-    wb.disabled = false;
-    d.style.display = (whole && i > 0) ? 'none' : '';
-  });
-
-  var no = figureNo();
-  document.getElementById('count').innerHTML = whole
-    ? 'painting <b>' + pad(state[0]) + '</b>, whole'
-    : 'figure <b>' + no.toLocaleString('en-GB') + '</b> of ' + TOTAL.toLocaleString('en-GB');
-
-  Array.prototype.forEach.call(runon.querySelectorAll('button'), function(b){
-    b.setAttribute('aria-current', state.indexOf(+b.dataset.k) > -1 ? 'true' : 'false');
-  });
-  document.getElementById('next').innerHTML = whole
-    ? 'Choose a title to start cutting it again. It goes to the <b>head</b>.'
-    : 'The next title you choose goes to the <b>' + PARTS[nextSlot] + '</b>.';
-
-  history.replaceState(null, '', '#' + state.map(pad).join('-'));
-  requestAnimationFrame(function(){ placeLabels(); drawLeaders(changed); });
-}
-
-/* Labels sit beside the part they describe, nudged so they never overlap,
-   and the leader lines are what tie each one back to its part. */
-function placeLabels(){
-  if (window.matchMedia('(max-width:760px)').matches) return;
-  var sr = stage.getBoundingClientRect(), lr = labelsEl.getBoundingClientRect();
-  var floor = 0;
-  labs.forEach(function(d, i){
-    if (d.style.display === 'none') return;
-    var br = bands[i].getBoundingClientRect();
-    var want = (br.top + br.height / 2) - lr.top - 34 + [ -28, 14, 30 ][i];
-    var top = Math.max(want, floor);
-    d.style.top = top + 'px';
-    floor = top + d.offsetHeight + 26;
-  });
-  labelsEl.style.minHeight = Math.max(floor, bands[2].getBoundingClientRect().bottom - lr.top) + 'px';
-}
-
-function drawLeaders(changed){
-  if (window.matchMedia('(max-width:760px)').matches){ svg.innerHTML = ''; return; }
-  var sr = stage.getBoundingClientRect(), out = '';
-  labs.forEach(function(d, i){
-    if (d.style.display === 'none') return;
-    var br = bands[i].getBoundingClientRect(), h2 = d.querySelector('h2').getBoundingClientRect();
-    var x1 = br.right - sr.left + 6, y1 = br.top + br.height / 2 - sr.top;
-    var x2 = h2.left - sr.left - 14, y2 = h2.top + h2.height / 2 - sr.top;
-    var hot = changed && changed.indexOf(i) > -1 ? ' class="hot"' : '';
-    out += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"' + hot + '/>' +
-           '<circle cx="' + x1 + '" cy="' + y1 + '" r="2.5"' + hot + '/>';
-  });
-  svg.innerHTML = out;
-  clearTimeout(hotTimer);
-  hotTimer = setTimeout(function(){
-    Array.prototype.forEach.call(svg.querySelectorAll('.hot'), function(n){ n.removeAttribute('class'); });
-  }, 1400);
-}
-
-window.addEventListener('resize', function(){ placeLabels(); drawLeaders([]); });
-document.fonts && document.fonts.ready.then(function(){ placeLabels(); drawLeaders([]); });
-bands.forEach(function(b){ b.querySelector('img').addEventListener('load', function(){ drawLeaders([]); }); });
-
-var start = fromHash();
-if (start) state = start;
-else { var a = rand(N), b = other([a]), c = other([a, b]); state = [a, b, c]; }
-render([]);
+setGround(); styleControls(); newLens(); drawOver(); requestAnimationFrame(tick);
+/* the wall is its colour from the first frame; only later changes fade */
+requestAnimationFrame(function(){ requestAnimationFrame(function(){ field.classList.add('ready'); }); });
 </script>
 </body>
 </html>

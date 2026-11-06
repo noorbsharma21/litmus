@@ -167,3 +167,24 @@ function mediumSpread(k){
 function constructPasses(k){
   return mediumSpread(k).length >= 2;
 }
+
+/* ---------------------------------------------------------------
+   Critiques of things the engine made. Step three of the method: a
+   concrete attempt, and his reaction to it in his own words. Each
+   critique is sorted into what it refuses, what it confirms, and what
+   it changes, and the raw text is kept so the sorting can be checked.
+   --------------------------------------------------------------- */
+const CRITIQUES = [
+  { id:'cr1', of:'made/surreal-artist, first version, commit 2cd0ba0', date:'2026-11-06',
+    said:'this uses AI tropes with the dot between 16 head and 03 body. The heading and the fonts are all very AI-native, very normally used in AI. I don’t like the formatting. It’s not innovative. It is very basic. I can actively see how AI sort of comes into this, and I feel like there is no interactivity. I don’t understand what type of figure 10,009,333 or 13,000 even means. That’s so stupid, and this just looks deeply horrible. There isn’t much experimentation in terms of colors. We’re not doing anything groundbreaking. I like that you’re trying to do those markers using arrows, and I like that, but I hate the font. I hate the presentation of it, and I feel like even in terms of narrative, it’s not really making sense to me. I know you put just all of this as placeholders, but it’s just very dull and dry. I also don’t like these beige backgrounds',
+    refuses:['c-dot','c-font','c-count','c-beige','c-dry','c-instruct'],
+    confirms:['c-markers'],
+    changes:[
+      'k0 is refined. The page had working interactions, press to swap, choose to send, make it whole, and he felt none of it. Clicking to change something does not count as answering you. It has to respond the moment the pointer moves.',
+      'STANDING was failed by the page around the figure. A figure on the left, labels on the right and a paragraph underneath is a conventional arrangement, however unusual the figure in it.',
+      'The measured grounds are demoted. Thirteen paper grounds in the references became a beige site, and he hates beige. Measurement describes the references; it does not get to choose.',
+      'Colour has to be experimented with. A ground, an ink and one accent is the safe scheme and reads as basic.'
+    ],
+    instance:'The cadavre exquis concept did not come across as a story: "even in terms of narrative, it’s not really making sense to me". Recorded against this brief only, not as a refusal of the idea.'
+  }
+];
