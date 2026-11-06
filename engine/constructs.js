@@ -186,5 +186,18 @@ const CRITIQUES = [
       'Colour has to be experimented with. A ground, an ink and one accent is the safe scheme and reads as basic.'
     ],
     instance:'The cadavre exquis concept did not come across as a story: "even in terms of narrative, it’s not really making sense to me". Recorded against this brief only, not as a refusal of the idea.'
+  },
+  { id:'cr2', of:'made/surreal-artist, second version: torn holes in a colour wall', date:'2026-11-06',
+    said:'This is a little odd because I feel like, while it\u2019s cool, I really don\u2019t like the art style, and I think it\u2019s not very cohesive. I don\u2019t like the copy you\u2019re attaching to it.',
+    confirms:['k0 as refined in cr1: the hole follows the pointer from the first movement and he called it cool, after calling the clickable first version as having no interactivity at all.'],
+    refuses:['The colour cycling of the second version, where every rim, label and button drew a different accent at random.'],
+    changes:[
+      'Experimenting with colour does not mean a different colour on every element. It needs a palette chosen as one thing. Each wall now takes a combination that appears together in one reference: P17, P08, S03, P11 or P07.',
+      'The pattern across cr1 and cr2: what came from evidence improved (felt interaction, markers, measured colour). What I authored on my own judgment failed every time: the type, the copy and now the art style. The engine cannot author voice or art style for him. Those have to come from him, or from the client in the brief.'
+    ],
+    open:[
+      'Art style: the paintings themselves, which are his own corpus standing in for the artist, or the treatment of torn holes, flat walls and labels. Not guessed.',
+      'The copy: invented titles in my voice, plus "write to her" and "close them". What the labels should say instead is his call.'
+    ]
   }
 ];
