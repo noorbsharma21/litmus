@@ -1225,6 +1225,54 @@ function thisRun(seed, brief){
    A piece that fires every signature at once is a pastiche of the corpus
    rather than something out of it. Each run commits to two or three moves
    and leaves the rest alone. */
+/* ---------- claims after marking ----------
+   A claim marked nearly is not a weaker claim. It is a move held in
+   reserve with a condition on it, and the condition is the part the
+   engine could never have guessed. Where the condition can be tested
+   against the brief or the run, it is tested. Where it cannot, the
+   move stays out of the draw and the file hands the decision over
+   rather than inventing a trigger. */
+function claimRule(c){
+  var p = (PROFILE.claims || {})[c.id];
+  return (p && p.rule) ? p.rule : c.rule;
+}
+function claimWhen(c){
+  var p = (PROFILE.claims || {})[c.id];
+  return p ? p.when : null;
+}
+var TRIGGER = {
+  /* collage only, in his words */
+  c9: function(brief, spec){
+    return /collage|zine|scrapbook|cut ?up|montage/.test(brief.text || '');
+  },
+  /* only when the layout has the room, which the run can actually answer */
+  c10: function(brief, spec){
+    return parseInt(spec['section gap'] || '0', 10) >= 56 ||
+           (spec.measure === '18em' && parseInt(spec['section gap'] || '0', 10) >= 30);
+  },
+  /* never by default */
+  c12: function(){ return false; }
+};
+function claimsNow(brief, spec){
+  var always = [], live = [], held = [];
+  CLAIMS.forEach(function(c){
+    var m = marks[c.id];
+    if (m === 'false') return;
+    if (m === 'true') { always.push(c); return; }
+    var t = TRIGGER[c.id];
+    if (t && t(brief || {}, spec || {})) live.push(c);
+    else held.push(c);
+  });
+  return { always:always, live:live, held:held };
+}
+
+/* what may be drawn for this piece: everything confirmed, plus any
+   held move whose condition the brief or the run actually satisfies */
+function movePool(brief, spec){
+  var c = claimsNow(brief, spec);
+  return c.always.concat(c.live);
+}
+
 function moves(seed, pool, favour){
   var r = rng(seed + 7919), list = pool.slice(), out = [];
   var fav = favour || [];
@@ -1461,8 +1509,10 @@ function buildPair(seed){
   Object.keys(ARCH[ak].bias).forEach(function(d){ bias[d] = ARCH[ak].bias[d]; });
   for (var attempt = 0; attempt < 24; attempt++){
     var sa = seed + attempt * 101, sb = seed + attempt * 101 + 50021;
-    var ma = moves(sa, kept, fav).map(function(c){ return c.id; });
-    var mb = moves(sb, kept, fav).map(function(c){ return c.id; });
+    var pa = movePool({ text:'' }, specFrom(thisRun(sa, { bias: bias })));
+    var pb = movePool({ text:'' }, specFrom(thisRun(sb, { bias: bias })));
+    var ma = moves(sa, pa, fav).map(function(c){ return c.id; });
+    var mb = moves(sb, pb, fav).map(function(c){ return c.id; });
     /* resolve the moves that overrule a dimension, so what gets recorded
        is what was actually on screen */
     var A = effectiveSpec(specFrom(thisRun(sa, { bias: bias })), ma);
@@ -1648,15 +1698,18 @@ function fileText(){
     out.push('');
   }
 
+  /* Two of these used to sit here and have been taken out. "No single
+     element picked out in colour" was the inverse of c3 and "no border
+     left over as margin" was the inverse of c5, and both of those are
+     now moves held in reserve rather than rules. A refusal cannot
+     outrank the claim it was derived from. */
   out.push('NEVER  standing');
   out.push('  No plain edge, and no default white unless the piece argues for it.');
-  out.push('  No single element picked out in colour against a neutral.');
-  out.push('  No border left over as empty margin.');
-  out.push('  No texture laid on top as a filter.');
+  out.push('  No texture laid on top as a filter. If there is texture it comes from a press.');
   out.push('  Never write: supercharge, effortlessly, introducing, seamless.');
   out.push('');
-  out.push('DIRECTION  soft. Where the work tends to go, not a list to satisfy');
-  kept.forEach(function(c){ out.push('  ' + c.rule); });
+  out.push('DIRECTION  soft. Confirmed, and they hold without a reason being given');
+  kept.forEach(function(c){ out.push('  ' + claimRule(c)); });
   if (kept.length){
     out.push('');
     out.push('  Take two or three of these, the ones this piece has a reason for.');
@@ -1664,14 +1717,27 @@ function fileText(){
   }
   if (nearly.length){
     out.push('');
-    out.push('HOLDING  marked nearly, not settled. Weaker again than DIRECTION.');
-    nearly.forEach(function(c){ out.push('  ' + c.rule); });
+    out.push('HELD IN RESERVE  each of these was corrected from a rule to a move.');
+    out.push('  They are not weaker versions of the above. They are things the work can');
+    out.push('  do when the piece asks for it, and reaching for one without a reason is');
+    out.push('  the failure this section exists to prevent.');
+    nearly.forEach(function(c){
+      var wn = claimWhen(c);
+      out.push('  ' + claimRule(c));
+      out.push('      use it when: ' + (wn || 'NOT SET. Do not reach for this one. The condition has not been given yet.'));
+    });
   }
   out.push('');
   out.push('EVIDENCE');
   kept.concat(nearly).forEach(function(c){
-    out.push('  ' + c.rule.split('.')[0] + '  <-  ' + c.from.join(', '));
+    out.push('  ' + claimRule(c).split('.')[0] + '  <-  ' + c.from.join(', '));
   });
+  var dead = CLAIMS.filter(function(c){ return marks[c.id] === 'false'; });
+  if (dead.length){
+    out.push('');
+    out.push('THROWN OUT  the engine inferred these and was wrong');
+    dead.forEach(function(c){ out.push('  ' + c.text); });
+  }
   return out.join('\n');
 }
 var sampleSeed = Math.floor(Math.random() * 1e6);
@@ -1687,7 +1753,9 @@ function drawSamples(){
     Object.keys(sb).forEach(function(d){ bias[d] = sb[d]; });
     Object.keys(ARCH[ak].bias).forEach(function(d){ bias[d] = ARCH[ak].bias[d]; });
     out.push(renderSite(specFrom(thisRun(s, { bias: bias })),
-                        moves(s, kept, fav).map(function(c){ return c.id; }),
+                        moves(s, movePool({ text:ARCH[ak].label },
+                                          specFrom(thisRun(s, { bias: bias }))), fav)
+                          .map(function(c){ return c.id; }),
                         s, ARCH[ak].label, ak));
   }
   el.innerHTML = out.join('');
@@ -1761,7 +1829,9 @@ document.getElementById('markPanel').addEventListener('click', function(e){
   Object.keys(sbz).forEach(function(d){ bias[d] = sbz[d]; });
   Object.keys(ARCH[markPick.arch].bias).forEach(function(d){ bias[d] = ARCH[markPick.arch].bias[d]; });
   var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-  var mv = moves(s, kept, sourceFavour()).map(function(c){ return c.id; });
+  var mv = moves(s, movePool({ text:ARCH[markPick.arch].label },
+                             specFrom(thisRun(s, { bias: bias }))), sourceFavour())
+             .map(function(c){ return c.id; });
   var spec = effectiveSpec(specFrom(thisRun(s, { bias: bias })), mv);
   DIFFABLE.forEach(function(d){ if (spec[d]) pairBump(d + ': ' + spec[d], false); });
   psave();
@@ -1876,7 +1946,9 @@ function promptText(){
   }
 
   var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-  var mv = moves(runSeed, kept, sourceFavour());
+  var mv = moves(runSeed, movePool({ text:b.toLowerCase() },
+                                   specFrom(thisRun(runSeed, { bias: merged }))),
+                 sourceFavour());
   if (mv.length){
     lines.push('MOVES FOR THIS RUN  take these ' + mv.length + ', leave the rest of the vocabulary alone');
     mv.forEach(function(c){ lines.push('  ' + c.rule); });
@@ -1915,7 +1987,9 @@ function drawPrompt(){
     Object.keys(brief.bias).forEach(function(d){ merged[d] = brief.bias[d]; });
     var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
     rs.innerHTML = renderSite(specFrom(thisRun(runSeed, { bias: merged })),
-                              moves(runSeed, kept, sourceFavour()).map(function(c){ return c.id; }),
+                              moves(runSeed, movePool({ text:document.getElementById('brief').value.toLowerCase() },
+                                                      specFrom(thisRun(runSeed, { bias: merged }))),
+                                    sourceFavour()).map(function(c){ return c.id; }),
                               runSeed, brief.archLabel, brief.arch);
     fitSites(rs);
   }

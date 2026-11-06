@@ -36,8 +36,55 @@ const PROFILE = {
   pairs: {},
 
   /* Claim verdicts, 'true' | 'nearly' | 'false'. Anything absent
-     stays at the engine's default of true. */
-  marks: {},
+     stays at the engine's default of true.
+
+     Marked 6 November 2026. Three true, nine nearly, one false.
+
+     The nine are not nine separate corrections. Six of the notes say
+     the same thing in different words: sometimes, depends on the
+     occasion, only when it needs it, not necessarily. The engine had
+     written these as standing instructions when they are moves held
+     in reserve. That is one structural error, not nine small ones.
+
+     It came from reading frequency as preference. Yellow appears in
+     seven pieces, so the engine concluded yellow was wanted. Noor's
+     answer was "not necessarily". A thing can recur in the work
+     without being a rule of the work, and nothing in the method as
+     built could tell those apart. */
+  marks: {
+    c1:'true',   c2:'false',  c3:'nearly', c4:'nearly', c5:'nearly',
+    c6:'true',   c7:'nearly', c8:'nearly', c9:'nearly', c10:'nearly',
+    c11:'nearly',c12:'nearly',c13:'true'
+  },
+
+  /* What the nine should have said, in his words where he gave them.
+     `when` is the condition that lets the move in. Where it is null
+     the condition has not been set yet, and the engine says so rather
+     than inventing one. */
+  claims: {
+    c3:  { rule:'Colour can take the whole frame instead of picking out one element.',
+           when:null, said:'' },
+    /* "the occasion" is the honest answer and not yet a usable one. It
+       is kept in `said` and `when` stays null, so the file admits the
+       condition is missing instead of dressing the words up as a test
+       the engine can run. */
+    c4:  { rule:'Repetition is available: a grid, a mirror, the same thing recoloured.',
+           when:null, said:'sometimes, depends on the occasion you see' },
+    c5:  { rule:'The border can carry something of its own rather than being margin.',
+           when:null, said:'sometimes yes' },
+    c7:  { rule:'Type may be allowed to run off the edge instead of fitting inside the picture.',
+           when:null, said:'' },
+    c8:  { rule:'Halftone is available as a texture. Where any texture is used it comes from a printing process, never a filter laid on top, and that half does not bend.',
+           when:null, said:'' },
+    c9:  { rule:'In collage, photographs arrive in stacks of three or four. Outside collage this does not apply at all.',
+           when:'the piece is a collage', said:'no, those are just for my collages' },
+    c10: { rule:'A picture can sit under a picture rather than a colour.',
+           when:'the layout has the room for it', said:'well, only sometimes depends on how much spacing it needs' },
+    c11: { rule:'Breaking the alignment is worth reaching for when the piece needs the movement.',
+           when:null, said:'i like the dynamicity but also should only be a need of the occasion' },
+    c12: { rule:'Yellow recurs in the corpus. That is a fact about the work, not a preference. Do not reach for it by default.',
+           when:'never by default', said:'not necessarily' }
+  },
 
   /* Rules in Noor's own words, carried into every prompt verbatim.
      These are the standing ones, stated across the work rather than
