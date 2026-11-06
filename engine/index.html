@@ -238,47 +238,36 @@
 <div class="page">
 
   <h1>Litmus engine</h1>
-  <p class="sub">Stage one. Reading my own work to find out what my taste is, then writing it down where a model can use it.</p>
+  <p class="sub">Rebuilt 6 November 2026. Nothing in it is inferred from pictures any more: it holds what Noor refused, what he chose between two good things, and what was measured.</p>
   <p class="meta" id="hdCount"><a href="../">Back to Litmus</a></p>
 
   <div class="rail" role="tablist">
-    <button class="st" role="tab" aria-selected="true"  data-p="s1"><span class="n">01</span> Corpus</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s2"><span class="n">02</span> Read</button>
-    <button class="st" role="tab" aria-selected="false" data-p="sl"><span class="n">03</span> Listen</button>
-    <button class="st" role="tab" aria-selected="false" data-p="sj"><span class="n">04</span> Judge</button>
-    <button class="st" role="tab" aria-selected="false" data-p="sp"><span class="n">05</span> This or that</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">06</span> Subtract</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">07</span> Correct</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">08</span> The file</button>
-    <button class="st" role="tab" aria-selected="false" data-p="sb"><span class="n">09</span> Decide</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">10</span> Use it</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s7"><span class="n">11</span> Log</button>
+    <button class="st" role="tab" aria-selected="true"  data-p="s1"><span class="n">01</span> Material</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sc"><span class="n">02</span> Compare</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">03</span> Against the grain</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">04</span> Correct</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sl"><span class="n">05</span> Listen</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sb"><span class="n">06</span> Decide</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">07</span> The file</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">08</span> Use it</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s7"><span class="n">09</span> Log</button>
   </div>
 
   <!-- 01 -->
   <div class="pane" id="s1" role="tabpanel" style="--c:#FF3E00">
-    <h2>What goes in</h2>
-    <p class="lede">Not references I admire. Work I made, which is harder to fake and says more.
-      Drawings and paintings from the portfolio, photographs off my phone, and pages I designed and built.</p>
+    <h2>The material</h2>
+    <p class="lede">Forty of my drawings, paintings and photographs. They are what the structures
+      compose with, so the hand on a generated page is literally mine. They are no longer read for
+      taste: the engine tried that, wrote thirteen claims off them, and was wrong about twelve.</p>
     <div class="counts" id="counts"></div>
     <div class="grid" id="corpus"></div>
     <p class="meta" style="margin-top:14px">Every piece has been read and tagged. Click any one to open its record.</p>
   </div>
 
   <!-- 02 -->
-  <div class="pane" id="s2" role="tabpanel" hidden style="--c:#8EA066">
-    <h2>What the engine takes off each piece</h2>
-    <p class="lede">Every piece gets read for the same things: what the ground is, how colour behaves,
-      how the frame is used, what is repeated, what the subject is. Tags in black are particular.
-      Tags in grey are things any competent designer would also do, and they get thrown away in the next step.</p>
-    <div class="reader" id="reader"></div>
-    <div class="btns">
-      <button class="act ghost" id="prev">Previous piece</button>
-      <button class="act" id="next">Next piece</button>
-    </div>
-  </div>
+  <!-- 02 Read is gone. It showed the tags the engine took off each piece,
+       which is the inference method that came back wrong 12 times out of 13. -->
 
-  <!-- judge -->
   <!-- 03 listen -->
   <div class="pane" id="sl" role="tabpanel" hidden style="--c:#E8A33D">
     <h2>The things that are not pictures</h2>
@@ -311,93 +300,25 @@
     <div id="srcList"></div>
   </div>
 
-  <div class="pane" id="sj" role="tabpanel" hidden style="--c:#D0402F">
-    <h2>What I turn down on sight</h2>
-    <p class="lede">The corpus says what I have made. This says what I refuse, which is the
-      stronger signal: a no draws a boundary round the answer, a yes only marks a point inside it.
-      Ninety four specimens across seven categories, in two rounds.</p>
-    <p class="lede">Each one is shown three ways, because a decision is rarely right or wrong on its
-      own. Heavy type is right for a headline and wrong for body copy. Answer all three at once when
-      the verdict is the same everywhere, or click the tiles one by one when it is not. A split
-      answer writes a conditional rule instead of a flat one. The reason box is worth using: the
-      comment turns out to be more useful than the verdict.</p>
-    <p class="roundlbl" id="roundLbl"></p>
-    <div class="prog"><i id="prog"></i></div>
-    <div class="deck">
-      <div>
-        <div class="jmeta"><span class="jcat" id="jcat"></span><span class="jdim" id="jdim"></span><span class="jcount" id="jcount"></span></div>
-        <div class="ctxrow" id="card"></div>
-        <p class="jnote" id="jnote"></p>
-        <input type="text" class="why" id="why" placeholder="why, in a few words (optional)">
-        <div class="jbtns">
-          <button class="jb no"  id="btnNo">No, in all three</button>
-          <button class="jb yes" id="btnYes">Yes, in all three</button>
-          <button class="jb go"  id="btnGo" hidden>Keep what I picked</button>
-        </div>
-        <p class="jhint">Click a tile to flip it between yes and no. Or answer all three at once.
-          Left and right arrows still work.</p>
-      </div>
-      <div class="side">
-        <div class="blk rej"><h3>Rejected, weighted 1.0</h3><div id="rejList"></div></div>
-        <div class="blk acc"><h3>Kept</h3><div id="accList"></div></div>
-        <div class="blk con"><h3>Contested, needs asking again</h3><div id="conList"></div></div>
-        <button class="act ghost" id="resetJ" style="font-size:12px;padding:6px 12px">Start the deck over</button>
-      </div>
-    </div>
-    <div id="jdone"></div>
-    <p class="kicker">Where each dimension has landed</p>
-    <div class="profile" id="profile"></div>
-    <p class="meta" style="margin-top:12px">The bar is confidence, not preference. A short bar means
-      the answers so far disagree with each other and the engine will keep asking.</p>
-  </div>
-
-  <!-- 03 -->
-  <!-- 05 this or that -->
-  <div class="pane" id="sp" role="tabpanel" hidden style="--c:#9D70C0">
-    <h2>This or that</h2>
-    <p class="lede">Two whole pages, both built out of the file as it currently stands, differing
-      on a few values. Pick one. A forced choice between two real things is a better reading than
-      a yes or no on a swatch, because there is no scale to be generous or harsh on. You are only
-      saying which one you would rather have made.</p>
-    <p class="lede">Every dimension the two disagree on takes the result. The one you did not pick
-      loses, and a loss counts for more than a win, same as everywhere else in this engine.</p>
-
-    <div class="srow" style="max-width:26em;margin:0 0 14px">
-      <select id="pairArch">
-        <option value="shop">compare two shops</option>
-        <option value="gallery">compare two photography sites</option>
-        <option value="editorial">compare two long reads</option>
-        <option value="listing">compare two listings</option>
-        <option value="page">compare two plain pages</option>
-      </select>
-    </div>
-    <div class="pair" id="pair"></div>
-    <div class="fb">
-      <p class="fbl">Say what is wrong with the one you picked. Optional, and it counts.</p>
-      <div class="chips" id="fbChips"></div>
-      <input type="text" id="fbText" placeholder="Anything else. Plain words.">
-      <div class="btns">
-        <button class="act ghost" id="pairSkip">Neither, show me another</button>
-      </div>
-    </div>
-    <p class="meta" id="pairNote"></p>
+  <!-- 04 Compare: the only input that has ever produced anything -->
+  <div class="pane" id="sc" role="tabpanel" hidden style="--c:#072493">
+    <h2>Which of these two is better, and why</h2>
+    <p class="lede">Every other judgment in this engine was a refusal, and refusals only clear the
+      floor. Nothing here had ever asked which of two good things is better, so there was no signal
+      in it about the top end at all.</p>
+    <p class="lede">Each pair answers the same question two opposite ways. A preference between two
+      good answers to one question transfers to a page neither of us has seen. A preference between
+      two unrelated pages does not. Open both before you pick.</p>
+    <p class="lede">A pick with no reason is recorded at zero weight. The reason is the whole payload.</p>
+    <div id="cxOut"></div>
   </div>
 
   <div class="pane" id="s3" role="tabpanel" hidden style="--c:#151DE0">
-    <h2>Subtracting what everyone does</h2>
-    <p class="lede">This is the step that decides whether the engine is worth anything.
-      Read a pile of work I like and you get a description of good design in general.
-      The part that is mine is what is left after you remove everything true of any competent designer.</p>
-    <div class="two">
-      <div class="col out">
-        <h3>Thrown away &#183; true of everyone</h3>
-        <div id="baseOut"></div>
-      </div>
-      <div class="col keep">
-        <h3>Kept &#183; the gap</h3>
-        <div id="baseKeep"></div>
-      </div>
-    </div>
+    <h2>What the galleries agree on</h2>
+    <p class="lede">This stage used to subtract a list of things any competent designer does from
+      the tags the engine read off each piece. The tags were the engine's inference, and inference
+      from pictures came back wrong twelve times in thirteen, so that half is gone. The counts below
+      stay, because they were counted rather than read.</p>
 
     <h3 class="fieldhead">What the galleries agree on</h3>
     <p class="lede">Subtracting a consensus means knowing what it is, so I counted one instead
@@ -453,10 +374,11 @@
     </div>
 
     <h3 class="fieldhead">The same taste, four different jobs</h3>
-    <p class="lede">A shop, a photography site, a long read and a listing, all built from the file
-      above. They should not look like each other. A shop is a catalogue with a price on everything;
-      a photography site opens on a picture and barely speaks. What they share is the hand, not the
-      layout. If one of them looks wrong, that is a judgment or a rule the engine has not been given yet.</p>
+    <p class="lede">Four structures built from the file above: a matrix, a board, a map and a plate.
+      They should not look like each other, because they are not the same object. All four are still
+      sheets, and the one finding settled by comparison says a page should answer the person rather
+      than sit there, so all four are known to be short of the standard. If one looks wrong in a way
+      none of your rules would catch, mark it: that is the gap worth finding.</p>
     <div class="quad" id="fileSamples"></div>
     <div class="btns">
       <button class="act ghost" id="resample">Redraw all four</button>
@@ -496,11 +418,10 @@
     <h2>Putting it to work</h2>
     <p class="lede">Say what you are making. The engine wraps it in the file and hands back the
       whole instruction, ready to paste anywhere.</p>
-    <p class="lede">The file describes a field, not a single answer, so every run picks different
-      values inside it and commits to them. Generate another and the type, the ground and the
-      measure change while the refusals hold. That is the difference between a taste and a template.
-      Above all of it sit the rules that are not matters of taste at all: contrast, minimum sizes,
-      line length, things that have to be true whatever the look.</p>
+    <p class="lede">The prompt no longer sets type size, weight, measure or leading. Those used to be
+      drawn from a field built out of my guesses and labelled as a choice. The only value each run
+      sets is the ground, drawn from the measured counts. Above everything sit the rules that are
+      not matters of taste at all: contrast, minimum sizes, line length.</p>
     <p class="lede">The brief is read first and it outranks the file on anything to do with
       function. The engine also picks only two or three signature moves per run out of everything
       it knows, because using the whole vocabulary at once is the failure, not the goal. Halftone
@@ -607,45 +528,14 @@ var cursor = 0;
     var b = e.target.closest('.cell'); if (!b) return;
     var i = readable.findIndex(function(p){ return p.id === b.dataset.id; });
     if (i < 0) return;
-    cursor = i; drawReader(); show('s2');
+    window.open(readable[i].src, '_blank');
   });
 })();
 
-/* ---------- 02 read ---------- */
-function drawReader(){
-  var p = readable[cursor];
-  var chips = p.tags.map(function(t){
-    var base = BASELINE.indexOf(t) > -1;
-    return '<span class="chip' + (base ? ' base' : '') + '">' + t + '</span>';
-  }).join('');
-  document.getElementById('reader').innerHTML =
-    '<div><img src="' + p.src + '" alt="' + p.id + '"></div>' +
-    '<dl class="rec">' +
-      '<dt>Piece</dt><dd>' + p.id + ' &#183; ' + p.kind + ' &#183; ' + (cursor+1) + ' of ' + readable.length + '</dd>' +
-      '<dt>What the engine saw</dt><dd class="note">' + p.note + '</dd>' +
-      '<dt>Tags</dt><dd class="chips">' + chips + '</dd>' +
-    '</dl>';
-}
-document.getElementById('next').onclick = function(){ cursor = (cursor+1) % readable.length; drawReader(); };
-document.getElementById('prev').onclick = function(){ cursor = (cursor-1+readable.length) % readable.length; drawReader(); };
-drawReader();
+/* 02 read is gone with its pane. */
 
 /* ---------- 03 subtract ---------- */
 (function(){
-  var freq = {};
-  readable.forEach(function(p){ p.tags.forEach(function(t){ freq[t] = (freq[t]||0)+1; }); });
-  var rows = Object.keys(freq).map(function(t){ return {t:t, n:freq[t], base: BASELINE.indexOf(t) > -1}; })
-                   .sort(function(a,b){ return b.n - a.n; });
-  var max = Math.max.apply(null, rows.map(function(r){ return r.n; }));
-  function render(list){
-    return list.map(function(r){
-      return '<div class="tagrow"><span class="bar" style="width:' + (r.n/max*64+6) + 'px"></span>' +
-             r.t + '<span class="c">' + r.n + ' of ' + readable.length + '</span></div>';
-    }).join('');
-  }
-  document.getElementById('baseOut').innerHTML  = render(rows.filter(function(r){ return r.base; }));
-  document.getElementById('baseKeep').innerHTML = render(rows.filter(function(r){ return !r.base && r.n > 1; }));
-
   var fmax = Math.max.apply(null, FIELD.map(function(f){ return f.n; }));
   document.getElementById('fieldOut').innerHTML = FIELD.map(function(f){
     return '<div class="tagrow field' + (f.stance ? ' vs ' + f.stance : '') + '">' +
@@ -705,459 +595,31 @@ function record(ev){
   ev.t = Date.now(); ev.seq = LOG.length + 1;
   LOG.push(ev); logSave(); drawLog(); drawLocal();
 }
-var Ljudg = loadLocal(JKEY, {});
-/* drop anything saved in an older shape */
-Object.keys(Ljudg).forEach(function(k){ if (!Ljudg[k] || !Ljudg[k].ctx) delete Ljudg[k]; });
-try { localStorage.removeItem('litmus-judge-v1'); localStorage.removeItem('litmus-judge-v2'); } catch(e){}
-var judg = {};
-function rejudge(){
-  judg = {};
-  Object.keys(PROFILE.judgments || {}).forEach(function(k){ judg[k] = PROFILE.judgments[k]; });
-  Object.keys(Ljudg).forEach(function(k){ judg[k] = Ljudg[k]; });
-}
-function jsave(){ try { localStorage.setItem(JKEY, JSON.stringify(Ljudg)); } catch(e){} }
-function setJudg(id, rec){ Ljudg[id] = rec; rejudge(); jsave(); drawLocal(); }
-rejudge();
+/* The judgment deck used to run from here: 94 specimens shown in three
+   contexts each, forced-choice pairs on single dimension values, a
+   weighting that let a no count for nearly twice a yes, and a field of
+   ranges built from all of it plus 24 assumptions read off the corpus.
+   None of the 94 was ever judged and none of the pairs was answered, so
+   every range the field printed was one of those 24 guesses. Noor
+   killed the method: "again these are too specific".
 
+   Nothing is chosen on his behalf now unless it was measured or he
+   chose it. */
+var judg = {}, pairs = {}, Ljudg = {}, Lpairs = {};
 
-/* ---- the same decision, shown three ways ----
-   A decision is rarely right or wrong on its own. Heavy type is right
-   for a headline and wrong for body copy. So each specimen is rendered
-   large, small, and inside a composed page, and each one is judged. */
-
-var CTX = [
-  {k:'large', label:'Large'},
-  {k:'small', label:'Small'},
-  {k:'page',  label:'In a page'}
+/* fundamentals. not taste, and they outrank it. */
+var CONSTANTS = [
+  'Body text at 4.5:1 contrast against whatever sits behind it. Display text at 3:1.',
+  'Check contrast against the actual ground, not against white. A coloured field changes it.',
+  'Never let colour alone carry meaning. It must also be in position, weight or wording.',
+  'Body text never below 15px, and never below 16px on a phone.',
+  'Line length between 45 and 80 characters. Narrower is better than wider.',
+  'Anything you tap is at least 44 by 44 points.',
+  'Text over an image needs a scrim, a solid panel, or a crop that guarantees the contrast.',
+  'Every image carries alt text. Every control reachable by keyboard.'
 ];
 
-function miniPage(opts){
-  var o = opts || {};
-  return '<div style="height:100%;background:'+(o.bg||'#fff')+';padding:14px 15px;'+(o.extra||'')+'">'+
-    '<p style="margin:0 0 7px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:'+(o.meta||'#aaa')+'">Volume &#183; No. 01</p>'+
-    '<p style="margin:0 0 6px;'+(o.head||'font-size:15px;font-weight:700;color:#14130F')+'">'+(o.title||PHRASE)+'</p>'+
-    '<p style="margin:0 0 8px;font-size:9px;line-height:1.55;color:'+(o.body||'#666')+';max-width:30em">'+
-      (o.copy||'Twenty five cities, read by people who live in them.')+'</p>'+
-    (o.after||'')+'</div>';
-}
 
-function contextViews(sp){
-  var words = sp.text || PHRASE;
-
-  if (sp.t === 'type'){
-    var small = sp.css.replace(/font-size:[^;]+/, 'font-size:13px')
-                      .replace(/line-height:[^;]+/, 'line-height:1.6');
-    return {
-      large: '<div class="pad"><p style="margin:0;'+sp.css+'">'+words+'</p></div>',
-      small: '<div class="pad"><p style="margin:0;'+small+';max-width:26em">'+words+
-             '. Twenty five cities, read by people who live in them, not by an algorithm counting stars.</p></div>',
-      page:  miniPage({ head: sp.css.replace(/font-size:[^;]+/, 'font-size:17px'), title: words })
-    };
-  }
-
-  if (sp.t === 'copy'){
-    return {
-      large: '<div class="pad"><p style="margin:0;font-size:22px;font-weight:700;line-height:1.3;max-width:18em">'+sp.text+'</p></div>',
-      small: '<div class="pad"><p style="margin:0;font-size:12px;line-height:1.6;color:#555;max-width:30em">'+sp.text+'</p></div>',
-      page:  miniPage({ title: sp.text, copy:'Thursdays, seven. Anyone can come.' })
-    };
-  }
-
-  if (sp.t === 'swatch'){
-    var a = sp.cols[0], b = sp.cols[1] || '#14130F';
-    return {
-      large: '<div class="fill swatches">'+sp.cols.map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</div>',
-      small: '<div class="pad"><p style="margin:0 0 9px;font-size:13px;color:#555">An accent, at the size it would really be used.</p>'+
-             '<p style="margin:0;font-size:15px">Places for the <span style="color:'+a+';font-weight:700">particular</span></p>'+
-             '<div style="display:flex;gap:5px;margin-top:10px">'+sp.cols.map(function(c){return '<i style="width:17px;height:17px;background:'+c+';display:block;border:1px solid #ddd"></i>';}).join('')+'</div></div>',
-      page:  miniPage({ bg:a, head:'font-size:15px;font-weight:700;color:'+b, body:b, meta:b, copy:'Twenty five cities, read by people who live in them.' })
-    };
-  }
-
-  if (sp.t === 'tex'){
-    return {
-      large: '<div class="fill" style="'+sp.css+'">'+(sp.inner||'')+'</div>',
-      small: '<div class="pad"><div style="width:74px;height:74px;'+sp.css+'">'+(sp.inner||'')+'</div>'+
-             '<p style="margin:10px 0 0;font-size:12px;color:#777">At panel size.</p></div>',
-      page:  '<div class="fill" style="'+sp.css+'">'+(sp.inner||'')+
-             '<div style="position:absolute;inset:0;padding:16px"><p style="margin:0;font-size:16px;font-weight:700;color:#14130F">'+PHRASE+'</p>'+
-             '<p style="margin:5px 0 0;font-size:9px;color:#333;max-width:26em">Twenty five cities, read by people who live in them.</p></div></div>'
-    };
-  }
-
-  if (sp.t === 'space'){
-    var blk = function(size, lh, measure, gap){
-      var bar = function(w){ return '<div style="height:'+size*0.6+'px;background:#e9e9e9;width:'+w+'%;margin-bottom:'+(size*0.4)+'px"></div>'; };
-      return '<div class="pad"><div style="max-width:'+measure+'">'+
-        '<p style="margin:0 0 '+gap+'px;font-size:'+size+'px;line-height:'+lh+'">Places for the particular. Twenty five cities, read by people who live in them.</p>'+
-        bar(100)+bar(92)+bar(74)+'</div></div>';
-    };
-    return {
-      large: blk(sp.size, sp.lh, sp.measure, sp.gap),
-      small: blk(Math.max(9, sp.size*0.74), sp.lh, sp.measure, Math.round(sp.gap*0.6)),
-      page:  miniPage({ copy:'Twenty five cities, read by people who live in them, not by an algorithm counting stars and reviews.',
-                        after:'<div style="max-width:'+sp.measure+';font-size:'+Math.max(9,sp.size*0.7)+'px;line-height:'+sp.lh+'">'+
-                              '<div style="height:5px;background:#eee;margin-bottom:'+Math.round(sp.gap*0.5)+'px"></div>'+
-                              '<div style="height:5px;background:#eee;width:88%"></div></div>' })
-    };
-  }
-
-  if (sp.t === 'img'){
-    var ph = '<div style="width:100%;height:100%;background:linear-gradient(140deg,#9AA98B,#4A5440)"></div>';
-    var mode = {
-      bleed:  ['<div class="fill">'+ph+'</div>', 'padding:0'],
-      matted: ['<div class="fill" style="background:#E8C84A;padding:26px"><div style="height:100%">'+ph+'</div></div>', 'background:#E8C84A;padding:9px'],
-      card:   ['<div class="fill" style="padding:30px"><div style="height:100%;border-radius:16px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.22)">'+ph+'</div></div>', 'border-radius:8px;overflow:hidden;box-shadow:0 5px 14px rgba(0,0,0,.2)'],
-      oval:   ['<div class="fill" style="padding:24px"><div style="height:100%;border-radius:50%;overflow:hidden">'+ph+'</div></div>', 'border-radius:50%;overflow:hidden'],
-      tilt:   ['<div class="fill" style="padding:28px;perspective:800px"><div style="height:100%;transform:rotateY(-17deg) rotateX(7deg);border-radius:10px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.25)">'+ph+'</div></div>', 'transform:rotateY(-15deg);border-radius:6px;overflow:hidden'],
-      grid:   ['<div class="fill" style="padding:18px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;height:100%">'+
-               [1,2,3,4,5,6].map(function(n){return '<div><span style="font-size:8px;color:#aaa">0'+n+'</span>'+ph+'</div>';}).join('')+'</div></div>', 'padding:0']
-    }[sp.mode];
-    return {
-      large: mode[0],
-      small: '<div class="pad"><div style="width:86px;height:64px;'+mode[1]+'">'+ph+'</div><p style="margin:10px 0 0;font-size:12px;color:#777">As a thumbnail.</p></div>',
-      page:  miniPage({ after:'<div style="height:96px;'+mode[1]+'">'+ph+'</div>' })
-    };
-  }
-
-  /* raw layouts */
-  return {
-    large: '<div class="fill">'+sp.html+'</div>',
-    small: '<div class="fill" style="display:flex;align-items:center;justify-content:center"><div style="width:62%;transform:scale(.72);transform-origin:center">'+sp.html+'</div></div>',
-    page:  '<div class="fill" style="background:#f4f4f4;padding:16px"><div style="background:#fff;height:100%;overflow:hidden">'+sp.html+'</div></div>'
-  };
-}
-
-function renderSpec(sp){
-  var words = sp.text || PHRASE;
-  if (sp.t === 'type')  return '<div class="pad"><p style="margin:0;'+sp.css+'">'+words+'</p></div>';
-  if (sp.t === 'copy')  return '<div class="pad"><p style="margin:0;font-size:20px;line-height:1.45;max-width:20em">'+sp.text+'</p></div>';
-  if (sp.t === 'swatch')return '<div class="fill swatches">'+sp.cols.map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</div>';
-  if (sp.t === 'tex')   return '<div class="fill" style="'+sp.css+'">'+(sp.inner||'')+'</div>';
-  if (sp.t === 'raw')   return '<div class="fill">'+sp.html+'</div>';
-  if (sp.t === 'space'){
-    var bar = function(w){ return '<div style="height:'+sp.size*0.6+'px;background:#e9e9e9;width:'+w+'%;margin-bottom:'+(sp.size*0.4)+'px"></div>'; };
-    return '<div class="pad"><div style="max-width:'+sp.measure+'">'+
-      '<p style="margin:0 0 '+sp.gap+'px;font-size:'+sp.size+'px;line-height:'+sp.lh+'">Places for the particular. Twenty five cities, read by people who live in them.</p>'+
-      bar(100)+bar(92)+bar(74)+'</div></div>';
-  }
-  if (sp.t === 'img'){
-    var ph = '<div style="width:100%;height:100%;background:linear-gradient(140deg,#9AA98B,#4A5440)"></div>';
-    if (sp.mode==='bleed')  return '<div class="fill">'+ph+'</div>';
-    if (sp.mode==='matted') return '<div class="fill" style="background:#E8C84A;padding:30px"><div style="height:100%">'+ph+'</div></div>';
-    if (sp.mode==='card')   return '<div class="fill" style="padding:34px"><div style="height:100%;border-radius:16px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.22)">'+ph+'</div></div>';
-    if (sp.mode==='oval')   return '<div class="fill" style="padding:26px"><div style="height:100%;border-radius:50%;overflow:hidden">'+ph+'</div></div>';
-    if (sp.mode==='tilt')   return '<div class="fill" style="padding:30px;perspective:800px"><div style="height:100%;transform:rotateY(-17deg) rotateX(7deg);border-radius:10px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.25)">'+ph+'</div></div>';
-    if (sp.mode==='grid')   return '<div class="fill" style="padding:20px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;height:100%">'+
-      [1,2,3,4,5,6].map(function(n){return '<div><span style="font-size:8px;color:#aaa">0'+n+'</span>'+ph+'</div>';}).join('')+'</div></div>';
-  }
-  return '';
-}
-
-/* ---- forced choices ----
-   A pair result is stored against the ladder tag directly, in the same
-   shape a judged specimen produces, so it lands in the evidence model
-   without a second set of rules. */
-var PKEY = 'litmus-pairs-v1';
-var Lpairs = loadLocal(PKEY, {});
-var pairs = {};
-/* pair counts add across the two layers rather than one hiding the
-   other, because they are tallies and not verdicts */
-function repair(){
-  pairs = {};
-  [PROFILE.pairs || {}, Lpairs].forEach(function(src){
-    Object.keys(src).forEach(function(t){
-      if (!pairs[t]) pairs[t] = { win:0, loss:0 };
-      pairs[t].win  += src[t].win  || 0;
-      pairs[t].loss += src[t].loss || 0;
-    });
-  });
-}
-function psave(){ try { localStorage.setItem(PKEY, JSON.stringify(Lpairs)); } catch(e){} }
-function pairBump(tag, won){
-  if (!Lpairs[tag]) Lpairs[tag] = { win:0, loss:0 };
-  Lpairs[tag][won ? 'win' : 'loss']++;
-  repair();
-}
-repair();
-
-/* ---- evidence model ----
-   Assumptions go in first and are thrown out the moment the tag gets a
-   real answer, rather than being averaged with it. An assumption that
-   argues with the person it is modelling is worse than none. */
-function weights(){
-  var w = {}, answered = {};
-  DECK.forEach(function(sp){
-    if (judg[sp.id] && judg[sp.id].ctx) sp.tags.forEach(function(t){ answered[t] = 1; });
-  });
-
-  /* Only a straight answer on a specimen evicts an assumption, because
-     that answer is about the value itself and carries all three
-     contexts. A forced choice is comparative and one sided, so it adds
-     to the assumption instead of replacing it. Replacing it meant that
-     picking a paper page over a yellow one left the engine knowing
-     less about grounds than before it was asked, and the draw started
-     offering dark, which nothing had ever endorsed. */
-  DEFAULTS.forEach(function(d){
-    if (answered[d.tag]) return;
-    w[d.tag] = { rej: d.v === 'no' ? 1 : 0, acc: d.v === 'no' ? 0 : 1, n:2,
-                 why:[d.why], yesIn:{}, noIn:{}, assumed:true };
-  });
-
-  Object.keys(pairs).forEach(function(t){
-    var p = pairs[t], tot = p.win + p.loss;
-    if (!tot) return;
-    if (!w[t]) w[t] = { rej:0, acc:0, n:0, why:[], yesIn:{}, noIn:{} };
-    w[t].rej += p.loss * REJECT_WEIGHT;
-    w[t].acc += p.win * ACCEPT_WEIGHT;
-    w[t].n   += tot;
-    w[t].fromPairs = tot;
-  });
-  DECK.forEach(function(sp){
-    var jd = judg[sp.id]; if (!jd || !jd.ctx) return;
-    var ks = Object.keys(jd.ctx);
-    sp.tags.forEach(function(t){
-      if (!w[t]) w[t] = { rej:0, acc:0, n:0, why:[], yesIn:{}, noIn:{} };
-      w[t].n += ks.length;      /* each context answered is its own piece of evidence */
-      ks.forEach(function(k){
-        if (jd.ctx[k] === 'no'){
-          w[t].rej += REJECT_WEIGHT / ks.length;
-          w[t].noIn[k] = (w[t].noIn[k]||0) + 1;
-          if (jd.why) w[t].why.push(jd.why);
-        } else {
-          w[t].acc += ACCEPT_WEIGHT / ks.length;
-          w[t].yesIn[k] = (w[t].yesIn[k]||0) + 1;
-        }
-      });
-    });
-  });
-  Object.keys(w).forEach(function(t){
-    var x = w[t], tot = x.rej + x.acc;
-    x.lean   = tot ? (x.rej - x.acc) / tot : 0;         // -1 kept .. +1 refused
-    x.conf   = Math.min(1, Math.abs(x.lean) * Math.min(1, x.n / 3));
-    x.state  = x.n < 2 ? 'thin'
-             : Math.abs(x.lean) < 0.34 ? 'contested'
-             : x.lean > 0 ? 'refused' : 'kept';
-  });
-  return w;
-}
-
-/* uncertainty of a specimen: how much asking it would resolve */
-function uncertainty(sp, w){
-  var score = 0;
-  sp.tags.forEach(function(t){
-    var x = w[t];
-    if (!x)                  score += 1.0;            // never seen
-    else if (x.state==='contested') score += 1.6;     // actively conflicting
-    else if (x.state==='thin')      score += 0.9;
-    else                            score += 0.15 * (1 - x.conf);
-  });
-  return score / Math.max(1, sp.tags.length);
-}
-
-function pending(round){
-  return DECK.filter(function(sp){ return !judg[sp.id] && (!round || sp.round === round); });
-}
-function currentRound(){
-  if (pending(1).length) return 1;
-  if (pending(2).length) return 2;
-  return 3;
-}
-function pickNext(){
-  var r = currentRound();
-  if (r === 3) return null;
-  var pool = pending(r), w = weights();
-  if (r === 1) return pool[0];                        // round one runs in order, broad sweep
-  return pool.map(function(sp){ return {sp:sp, u:uncertainty(sp,w)}; })
-             .sort(function(a,b){ return b.u - a.u; })[0].sp;   // round two chases uncertainty
-}
-
-/* ---- draw ---- */
-var pick = {};          /* current specimen's per-context choices */
-
-function drawJudge(){
-  var sp = pickNext(), done = Object.keys(judg).length, r = currentRound();
-  document.getElementById('prog').style.width = (done/DECK.length*100)+'%';
-  document.getElementById('roundLbl').textContent =
-    r === 1 ? 'Round one, broad sweep'
-  : r === 2 ? 'Round two, one variable at a time, ordered by what is least settled'
-  : 'Both rounds done';
-  drawWeights(); drawProfile();
-
-  if (!sp){
-    document.getElementById('card').innerHTML = '';
-    document.getElementById('jcat').textContent = 'done';
-    document.getElementById('jcount').textContent = done+' of '+DECK.length;
-    document.getElementById('jnote').textContent = '';
-    document.getElementById('jdim').textContent = '';
-    document.getElementById('btnGo').hidden = true;
-    document.getElementById('jdone').innerHTML =
-      '<div class="done"><p style="margin:0 0 8px;font-weight:700">Both rounds judged.</p>'+
-      '<p style="margin:0;color:#555;max-width:44em">Anything still contested in the profile below is '+
-      'where the engine cannot tell yet. Anything you answered differently across contexts became a '+
-      'conditional rule in the file rather than a flat one.</p></div>';
-    drawFile(); drawPrompt(); return;
-  }
-
-  document.getElementById('jdone').innerHTML = '';
-  var views = contextViews(sp);
-  pick = {};
-  document.getElementById('card').innerHTML = CTX.map(function(c){
-    return '<div class="ctx" data-k="'+c.k+'">'+
-      '<p class="ctxlab"><span class="d"></span>'+c.label+'</p>'+
-      '<div class="card">'+views[c.k]+'</div>'+
-      '<p class="verdict">not answered</p></div>';
-  }).join('');
-  document.getElementById('jcat').textContent = CATS[sp.cat] || sp.cat;
-  document.getElementById('jdim').textContent = sp.dim || '';
-  document.getElementById('jcount').textContent = (done+1)+' of '+DECK.length;
-  document.getElementById('jnote').textContent = sp.note || '';
-  document.getElementById('why').value = '';
-  document.getElementById('btnGo').hidden = true;
-}
-
-document.getElementById('card').addEventListener('click', function(e){
-  var box = e.target.closest('.ctx'); if (!box) return;
-  var k = box.dataset.k;
-  pick[k] = pick[k] === 'yes' ? 'no' : (pick[k] === 'no' ? null : 'yes');
-  box.classList.toggle('y', pick[k] === 'yes');
-  box.classList.toggle('n', pick[k] === 'no');
-  box.querySelector('.verdict').textContent =
-    pick[k] === 'yes' ? 'yes here' : pick[k] === 'no' ? 'no here' : 'not answered';
-  var any = CTX.some(function(c){ return pick[c.k]; });
-  document.getElementById('btnGo').hidden = !any;
-});
-
-function commit(ctxMap){
-  var sp = pickNext(); if (!sp) return;
-  var why = document.getElementById('why').value.trim();
-  setJudg(sp.id, { ctx: ctxMap, why: why, t: Date.now() });
-  jsave();
-  record({ kind:'judge', id:sp.id, cat:sp.cat, dim:sp.dim||null,
-           round:sp.round, tags:sp.tags, ctx:ctxMap, why:why });
-  drawJudge(); drawFile(); drawPrompt();
-}
-function all(v){ var m = {}; CTX.forEach(function(c){ m[c.k] = v; }); return m; }
-
-document.getElementById('btnNo').onclick  = function(){ commit(all('no')); };
-document.getElementById('btnYes').onclick = function(){ commit(all('yes')); };
-document.getElementById('btnGo').onclick  = function(){
-  var m = {}; CTX.forEach(function(c){ if (pick[c.k]) m[c.k] = pick[c.k]; });
-  commit(m);
-};
-document.addEventListener('keydown', function(e){
-  if (document.getElementById('sj').hidden) return;
-  if (document.activeElement === document.getElementById('why')) return;
-  if (e.key === 'ArrowLeft')  { e.preventDefault(); commit(all('no')); }
-  if (e.key === 'ArrowRight') { e.preventDefault(); commit(all('yes')); }
-});
-document.getElementById('resetJ').onclick = function(){
-  Ljudg = {}; rejudge(); jsave(); drawJudge(); drawFile(); drawPrompt(); drawLocal();
-};
-
-function drawWeights(){
-  var w = weights();
-  function pick(st){ return Object.keys(w).filter(function(t){ return w[t].state===st; })
-    .sort(function(a,b){ return Math.abs(w[b].lean)-Math.abs(w[a].lean); }); }
-  function row(t){
-    var x = w[t];
-    return '<div class="wrow"><span class="bar" style="width:'+Math.max(4,Math.abs(x.lean)*52)+'px"></span>'+t+
-           '<span class="v">'+x.n+'</span></div>';
-  }
-  function fill(el, list){
-    document.getElementById(el).innerHTML = list.length
-      ? list.slice(0,10).map(row).join('')
-      : '<p style="font-size:13px;color:#bbb;margin:0">nothing yet</p>';
-  }
-  fill('rejList', pick('refused'));
-  fill('accList', pick('kept'));
-  fill('conList', pick('contested'));
-}
-
-/* ---- profile readout ---- */
-function drawProfile(){
-  var w = weights(), el = document.getElementById('profile');
-  if (!el) return;
-  var dims = {};
-  LADDERS.forEach(function(sp){
-    if (!dims[sp.dim]) dims[sp.dim] = [];
-    dims[sp.dim].push(sp);
-  });
-  var rows = Object.keys(dims).map(function(d){
-    var winner = null, best = -2, asked = 0;
-    dims[d].forEach(function(sp){
-      if (judg[sp.id]) asked++;
-      var t = sp.tags[0], x = w[t];
-      if (x && -x.lean > best){ best = -x.lean; winner = sp.tags[1] || t; }
-    });
-    return { d:d, asked:asked, total:dims[d].length, winner:winner, conf:Math.max(0,best) };
-  });
-  el.innerHTML = rows.map(function(r){
-    var pct = Math.round(r.conf*100);
-    return '<div class="prow">'+
-      '<span class="pd">'+r.d+'</span>'+
-      '<span class="pw">'+(r.asked ? (r.winner || 'no clear winner') : 'not asked yet')+'</span>'+
-      '<span class="pbar"><i style="width:'+pct+'%"></i></span>'+
-      '<span class="pn">'+r.asked+'/'+r.total+'</span></div>';
-  }).join('');
-}
-
-function where(x, which){
-  var m = which === 'yes' ? x.yesIn : x.noIn;
-  var ks = CTX.filter(function(c){ return m[c.k]; }).map(function(c){ return c.label.toLowerCase(); });
-  return (ks.length === 0 || ks.length === CTX.length) ? '' : ks.join(' and ');
-}
-function judgedRefusals(){
-  var w = weights();
-  return Object.keys(w)
-    .filter(function(t){ return w[t].state === 'refused'; })
-    .sort(function(a,b){ return w[b].lean - w[a].lean; })
-    .map(function(t){ return { tag:t, lean:w[t].lean, n:w[t].n, why:w[t].why,
-                               only:where(w[t],'no'), assumed:!!w[t].assumed }; });
-}
-/* answered yes somewhere and no somewhere else: a conditional, not a rule */
-function conditionals(){
-  var w = weights(), out = [];
-  Object.keys(w).forEach(function(t){
-    var x = w[t], ys = Object.keys(x.yesIn), ns = Object.keys(x.noIn);
-    if (!ys.length || !ns.length) return;
-    out.push({ tag:t,
-      yes: CTX.filter(function(c){ return x.yesIn[c.k]; }).map(function(c){ return c.label.toLowerCase(); }).join(' and '),
-      no:  CTX.filter(function(c){ return x.noIn[c.k];  }).map(function(c){ return c.label.toLowerCase(); }).join(' and ') });
-  });
-  return out.sort(function(a,b){ return a.tag.localeCompare(b.tag); });
-}
-function judgedKeeps(){
-  var w = weights();
-  return Object.keys(w)
-    .filter(function(t){ return w[t].state === 'kept'; })
-    .sort(function(a,b){ return a.lean - b.lean; })
-    .map(function(t){ return { tag:t, n:w[t].n, assumed:!!w[t].assumed }; });
-}
-function contested(){
-  var w = weights();
-  return Object.keys(w).filter(function(t){ return w[t].state === 'contested'; });
-}
-
-
-/* ---- the field, not a point ----
-   Each ladder dimension yields a band: the steps accepted, and the steps
-   refused. Keeping only the winner is what made every run identical. */
-function ranges(){
-  var w = weights(), dims = {};
-  LADDERS.forEach(function(sp){
-    var d = sp.dim, tag = sp.tags[0], label = sp.tags[1] || tag;
-    var val = tag.split(': ')[1];
-    if (!dims[d]) dims[d] = { dim:d, ok:[], no:[], unknown:[] };
-    var x = w[tag];
-    var bucket = !x || x.state === 'thin' || x.state === 'contested' ? 'unknown'
-               : x.state === 'refused' ? 'no' : 'ok';
-    dims[d][bucket].push({ v:val, label:label });
-  });
-  return Object.keys(dims).map(function(d){ return dims[d]; });
-}
-
-/* deterministic pick from a seed, so a run can be repeated or re-rolled */
 function rng(seed){
   var x = seed || 1;
   return function(){ x = (x * 1664525 + 1013904223) % 4294967296; return x / 4294967296; };
@@ -1200,56 +662,37 @@ var SURFACES = [
     watch:['Text over an image needs a scrim, a solid panel, or a crop that guarantees the contrast.'] }
 ];
 
+/* What it has to do. The surface no longer pulls a field, because
+   there is no field: it only carries the function rules that bind
+   hardest on that kind of thing, which are not taste and outrank it. */
 function readBrief(text){
   var t = (text || '').toLowerCase();
-
-  /* what it is made of decides the skeleton */
-  var a = readArch(t), A = ARCH[a.key];
-
-  /* what it has to do decides the function rules on top of that */
   var surf = null, sHits = [];
   for (var i = 0; i < SURFACES.length; i++){
     var hits = SURFACES[i].words.filter(function(w){ return t.indexOf(w) > -1; });
     if (hits.length){ surf = SURFACES[i]; sHits = hits; break; }
   }
-
-  /* The surface sets the floor and the skeleton overrides it, because the
-     skeleton matched on what the thing is made of and the surface only on
-     the word "page". A shop that says "landing page" is a shop first. */
-  var bias = {};
-  if (surf) Object.keys(surf.bias).forEach(function(d){ bias[d] = surf.bias[d]; });
-  Object.keys(A.bias).forEach(function(d){ bias[d] = A.bias[d]; });
-
   return {
-    arch:a.key, archLabel:A.label, archHits:a.hits, archNote:A.note,
-    kind: surf ? surf.kind : null, hits:sHits, bias:bias,
+    kind: surf ? surf.kind : null, hits:sHits, bias:{},
     note: surf ? surf.note : null, watch: surf ? surf.watch : []
   };
 }
 
-/* Weighted draw. With no bias every step is equally likely. With one, the
-   rank is cubed, so the brief decides the end of the field and the seed
-   still decides which step at that end. A loose weighting let an app screen
-   come back with the widest spacing in the band, which made the prompt
-   contradict its own reasoning two lines further up. */
-function lean(pool, dir, r){
-  var w = pool.map(function(_, i){
-    var rank = dir === 'high' ? i + 1 : dir === 'low' ? pool.length - i : 1;
-    return rank * rank * rank;
+/* The only dimension the engine is entitled to choose is the ground,
+   because the grounds were measured off the references rather than
+   guessed: nineteen neutral, thirteen warm paper, one flat colour, and
+   no dark page anywhere. The draw follows those counts. Weight, scale,
+   measure, leading, tracking and the rest are left unset on purpose.
+   The previous version filled them from my assumptions and labelled the
+   result "one choice from inside the field". */
+var GROUND_COUNTS = { white:19, paper:13, colour:1 };
+function thisRun(seed){
+  var r = rng(seed), bag = [];
+  Object.keys(GROUND_COUNTS).forEach(function(k){
+    for (var i = 0; i < GROUND_COUNTS[k]; i++) bag.push(k);
   });
-  var total = w.reduce(function(a,b){ return a+b; }, 0), x = r() * total;
-  for (var i = 0; i < pool.length; i++){ x -= w[i]; if (x <= 0) return pool[i]; }
-  return pool[pool.length - 1];
-}
-
-function thisRun(seed, brief){
-  var r = rng(seed), out = [], bias = (brief && brief.bias) || {};
-  ranges().forEach(function(d){
-    var pool = d.ok.length ? d.ok : d.unknown;
-    if (!pool.length) return;
-    out.push({ dim:d.dim, choice: lean(pool, bias[d.dim], r), pulled: !!bias[d.dim] });
-  });
-  return out;
+  var g = bag[Math.floor(r() * bag.length)];
+  return [{ dim:'ground', choice:{ v:g }, pulled:false, measured:true }];
 }
 
 /* Taste is selection, so the vocabulary is a menu and not a checklist.
@@ -1545,127 +988,53 @@ function rulesFor(arch, briefText){
   });
 }
 
-/* ---------- 05 this or that ---------- */
-var FBC = [
-  { label:'too loud',     dims:['weight','scale'] },
-  { label:'too quiet',    dims:['weight','scale'] },
-  { label:'too plain',    dims:['how many colours','border'] },
-  { label:'too busy',     dims:['how many colours','border'] },
-  { label:'too tight',    dims:['section gap','leading'] },
-  { label:'too airy',     dims:['section gap','leading'] },
-  { label:'wrong ground', dims:['ground'] },
-  { label:'wrong type',   dims:['weight','case','tracking'] },
-  { label:'lines too long', dims:['measure'] }
-];
-var DIFFABLE = ['weight','tracking','case','scale','measure','leading',
-                'section gap','ground','how many colours','alignment','border'];
-var pairSeed = Math.floor(Math.random() * 1e6);
-var pairNow = null, fbOn = {};
-
-function buildPair(seed){
-  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-  var fav = sourceFavour(), sb0 = sourceBias();
-  var ak = (document.getElementById('pairArch') || {}).value || 'page';
-  var bias = {};
-  Object.keys(sb0).forEach(function(d){ bias[d] = sb0[d]; });
-  Object.keys(ARCH[ak].bias).forEach(function(d){ bias[d] = ARCH[ak].bias[d]; });
-  for (var attempt = 0; attempt < 24; attempt++){
-    var sa = seed + attempt * 101, sb = seed + attempt * 101 + 50021;
-    var pa = movePool({ text:'' }, specFrom(thisRun(sa, { bias: bias })));
-    var pb = movePool({ text:'' }, specFrom(thisRun(sb, { bias: bias })));
-    var ma = moves(sa, pa, fav).map(function(c){ return c.id; });
-    var mb = moves(sb, pb, fav).map(function(c){ return c.id; });
-    /* resolve the moves that overrule a dimension, so what gets recorded
-       is what was actually on screen */
-    var A = effectiveSpec(specFrom(thisRun(sa, { bias: bias })), ma);
-    var B = effectiveSpec(specFrom(thisRun(sb, { bias: bias })), mb);
-    var diff = DIFFABLE.filter(function(d){ return A[d] && B[d] && A[d] !== B[d]; });
-    if (diff.length >= 2) return { a:A, b:B, diff:diff, ma:ma, mb:mb, sa:sa, sb:sb, arch:ak };
-  }
-  return null;
-}
-function drawPair(){
-  pairNow = buildPair(pairSeed); fbOn = {};
-  var el = document.getElementById('pair');
-  if (!pairNow){
-    el.innerHTML = '<p class="meta">The field is still a single point, so there is nothing to ' +
-      'choose between. Judge some specimens in stage 04 and come back.</p>';
-    document.getElementById('pairNote').textContent = '';
-    return;
-  }
-  el.innerHTML = ['a','b'].map(function(side){
-    var sp = pairNow[side], mv = pairNow[side === 'a' ? 'ma' : 'mb'];
-    return '<div class="opt">' +
-      renderSite(sp, mv, pairNow[side === 'a' ? 'sa' : 'sb'],
-                 side === 'a' ? 'This' : 'That', pairNow.arch) +
-      '<button class="pick" data-side="' + side + '">Pick ' + (side === 'a' ? 'this' : 'that') + '</button>' +
-      '<p class="diff">' + pairNow.diff.map(function(d){ return d + ' ' + sp[d]; }).join(' &#183; ') + '</p>' +
+/* The forced-choice stage used to sit here. It asked which of two
+   values of one dimension he preferred, which is the specific-value
+   method he killed: "again these are too specific we want more general
+   rules". It is replaced by the contests in compare.js, which pair two
+   finished sites that answer the same question in opposite ways. */
+function drawContests(){
+  var el = document.getElementById('cxOut'); if (!el || typeof CONTESTS === 'undefined') return;
+  el.innerHTML = CONTESTS.map(function(c){
+    function side(k, x){
+      var won = c.verdict === k;
+      return '<div class="col' + (won ? ' keep' : '') + '" style="flex:1">' +
+        '<h3 style="margin:0 0 2px">' + x.name + (won ? ' &#10003;' : '') + '</h3>' +
+        '<p class="note" style="margin:0 0 6px">' + x.credit + '</p>' +
+        '<p style="font-size:14px;margin:0 0 8px">' + x.does + '</p>' +
+        '<a href="' + x.url + '" target="_blank" rel="noopener">Open it</a></div>';
+    }
+    return '<div class="src" style="margin:0 0 18px">' +
+      '<p style="font-size:16px;font-weight:600;margin:0 0 4px">' + c.question + '</p>' +
+      '<p class="note" style="margin:0 0 12px;max-width:52em">' + c.why + '</p>' +
+      '<div class="two" style="display:flex;gap:20px;align-items:flex-start">' +
+        side('a', c.a) + side('b', c.b) + '</div>' +
+      (c.verdict
+        ? '<p style="font-size:14px;margin:12px 0 0"><b>Reason given:</b> ' + c.reason + '</p>' +
+          '<p class="note" style="margin:4px 0 0">' + (c.read || '') + '</p>'
+        : '<p class="note" style="margin:12px 0 0">Not judged yet.</p>') +
     '</div>';
-  }).join('');
-  document.getElementById('fbChips').innerHTML = FBC.map(function(c){
-    return '<button data-l="' + c.label + '" aria-pressed="false">' + c.label + '</button>';
-  }).join('');
-  fitSites(el);
-  var n = Object.keys(pairs).length;
-  document.getElementById('pairNote').textContent =
-    'They differ on ' + pairNow.diff.length + ' of ' + DIFFABLE.length + ' dimensions: ' +
-    pairNow.diff.join(', ') + '. ' + n + ' values carry a pair result so far.';
+  }).join('') + (typeof FINDING !== 'undefined' ?
+    '<div class="src"><p style="font-size:16px;font-weight:600;margin:0 0 6px">What the three say together</p>' +
+    '<p style="font-size:15px;margin:0 0 8px">' + FINDING.claim + '</p>' +
+    '<p class="note" style="margin:0 0 8px">' + FINDING.against + '</p>' +
+    '<p class="note" style="margin:0">Unresolved: ' + FINDING.open + '</p></div>' : '');
 }
-document.getElementById('fbChips').addEventListener('click', function(e){
-  var b = e.target.closest('button'); if (!b) return;
-  var on = b.getAttribute('aria-pressed') !== 'true';
-  b.setAttribute('aria-pressed', on); fbOn[b.dataset.l] = on;
-});
-document.getElementById('pair').addEventListener('click', function(e){
-  var b = e.target.closest('.pick'); if (!b || !pairNow) return;
-  var win = b.dataset.side, lose = win === 'a' ? 'b' : 'a';
-  var W = pairNow[win], L = pairNow[lose];
-
-  pairNow.diff.forEach(function(d){
-    pairBump(d + ': ' + W[d], true);
-    pairBump(d + ': ' + L[d], false);
-  });
-
-  /* the complaint overrides the pick on whatever it names */
-  var said = Object.keys(fbOn).filter(function(k){ return fbOn[k]; });
-  said.forEach(function(label){
-    var c = FBC.filter(function(x){ return x.label === label; })[0];
-    (c ? c.dims : []).forEach(function(d){ if (W[d]) pairBump(d + ': ' + W[d], false); });
-  });
-  psave();
-
-  record({ kind:'pair', picked:specLine(W), over:specLine(L),
-           differedOn:pairNow.diff, said:said,
-           note:document.getElementById('fbText').value.trim() });
-  document.getElementById('fbText').value = '';
-  pairSeed = Math.floor(Math.random() * 1e6);
-  drawPair(); drawWeights(); drawProfile(); drawFile(); drawPrompt();
-});
-document.getElementById('pairSkip').onclick = function(){
-  record({ kind:'pair skipped', differedOn:pairNow ? pairNow.diff : [] });
-  pairSeed = Math.floor(Math.random() * 1e6); drawPair();
-};
-
-/* fundamentals. not taste, and they outrank it. */
-var CONSTANTS = [
-  'Body text at 4.5:1 contrast against whatever sits behind it. Display text at 3:1.',
-  'Check contrast against the actual ground, not against white. A coloured field changes it.',
-  'Never let colour alone carry meaning. It must also be in position, weight or wording.',
-  'Body text never below 15px, and never below 16px on a phone.',
-  'Line length between 45 and 80 characters. Narrower is better than wider.',
-  'Anything you tap is at least 44 by 44 points.',
-  'Text over an image needs a scrim, a solid panel, or a crop that guarantees the contrast.',
-  'Every image carries alt text. Every control reachable by keyboard.'
-];
 
 /* ---------- 05 the file ---------- */
 function fileText(){
   var kept   = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
   var nearly = CLAIMS.filter(function(c){ return marks[c.id] === 'nearly'; });
+  var nVerd  = (typeof CONTESTS !== 'undefined')
+               ? CONTESTS.filter(function(c){ return contestWeight(c); }).length : 0;
+  var nRef   = rules.filter(function(r){ return r.verdict === 'bad'; }).length;
   var out = [];
   out.push('taste.md');
-  out.push('Noor Sharma. ' + readable.length + ' pieces read, ' +
-           Object.keys(judg).length + ' of ' + DECK.length + ' specimens judged.');
+  out.push('Noor Sharma. Built from ' + nRef + ' refusals in his own words, ' + nVerd +
+           ' comparative verdicts with reasons, and a palette measured off ' +
+           (typeof REFS !== 'undefined' ? REFS.length : 0) + ' references.');
+  out.push('Nothing in the hard sections was inferred from his pictures. When the engine');
+  out.push('did that, it was wrong about twelve times out of thirteen.');
   var ln = localCount();
   out.push('Profile committed ' + PROFILE.updated +
            (ln ? ', plus ' + ln + ' change' + (ln === 1 ? '' : 's') +
@@ -1674,50 +1043,12 @@ function fileText(){
   out.push('HOW TO READ THIS  the sections do not carry the same weight');
   out.push('  NON NEGOTIABLE      hard. Not taste. Nothing below overrides it.');
   out.push('  MY RULES            hard. Written by hand. Follow the wording, do not paraphrase.');
-  out.push('  NEVER, THE FIELD    hard. Refusals and bounds, drawn from judged answers.');
-  out.push('  DIRECTION           soft. Tendencies in the work, not requirements.');
-  out.push('  Everything marked soft is a vocabulary to choose from. Most of it should');
-  out.push('  sit unused in any one piece. Reaching for all of it at once produces an');
-  out.push('  imitation of the corpus rather than something belonging to it.');
+  out.push('  BEHAVIOUR           hard. Settled by comparing good work, not by counting.');
+  out.push('  MEASURED            hard as numbers, soft as choices. Sampled, not chosen.');
+  out.push('  DIRECTION           soft. Tendencies he confirmed, most of them conditional.');
+  out.push('  Nothing here sets weight, scale, measure, leading or tracking. Those were');
+  out.push('  guesses and have been taken out. Choose them for the piece in front of you.');
   out.push('');
-  var jr = judgedRefusals(), jk = judgedKeeps(), jc = contested();
-  /* say which of these were answered and which were assumed off the
-     corpus. calling an assumption a judgment overstates the evidence
-     to the model and to whoever reads the file. */
-  var prov = function(list){
-    var a = list.filter(function(x){ return x.assumed; }).length;
-    if (!a) return 'judged, ' + Object.keys(judg).length + ' of ' + DECK.length + ' specimens answered';
-    if (a === list.length) return 'all assumed from the corpus, none of this answered yet';
-    return (list.length - a) + ' judged, ' + a + ' assumed from the corpus and marked';
-  };
-  var mark = function(r){ return r.assumed ? '  [assumed]' : ''; };
-
-  if (jr.length){
-    out.push('NEVER  ' + prov(jr));
-    jr.slice(0,16).forEach(function(r){
-      out.push('  ' + r.tag + (r.only ? '  when ' + r.only : '') + mark(r) +
-               (r.why.length ? '   (' + r.why[0] + ')' : ''));
-    });
-    out.push('');
-  }
-  if (jk.length){
-    out.push('PREFER  ' + prov(jk));
-    jk.slice(0,16).forEach(function(r){ out.push('  ' + r.tag + mark(r)); });
-    out.push('');
-  }
-  var cond = conditionals();
-  if (cond.length){
-    out.push('DEPENDS ON CONTEXT');
-    cond.slice(0,12).forEach(function(c){
-      out.push('  ' + c.tag + '  yes ' + c.yes + ', no ' + c.no);
-    });
-    out.push('');
-  }
-  if (jc.length){
-    out.push('UNSETTLED  the answers disagree, do not guess');
-    out.push('  ' + jc.slice(0,10).join(', '));
-    out.push('');
-  }
   if (sources.length){
     out.push('WHAT I RETURN TO  soft. Not my work. Structure borrowed, style not copied.');
     sources.forEach(function(s){
@@ -1726,11 +1057,6 @@ function fileText(){
       if (ans) out.push('    ' + ans);
       if (s.take) out.push('    taken: ' + s.take);
     });
-    var sb = sourceBias();
-    if (Object.keys(sb).length){
-      out.push('  Across all of them this leans ' +
-        Object.keys(sb).map(function(d){ return d + ' ' + sb[d]; }).join(', ') + '.');
-    }
     out.push('');
   }
   if (rules.length){
@@ -1740,7 +1066,7 @@ function fileText(){
       if (!set.length) return;
       out.push('  ' + (v === 'bad' ? 'Never:' : 'Always:'));
       set.forEach(function(r){
-        out.push('    ' + r.text + (r.scope === 'any' ? '' : '   (' + SCOPE_LABEL[r.scope] + ' only)'));
+        out.push('    ' + r.text + (r.scope === 'any' ? '' : '   (' + (SCOPE_LABEL[r.scope] || r.scope) + ' only)'));
       });
     });
     out.push('');
@@ -1749,14 +1075,25 @@ function fileText(){
   CONSTANTS.forEach(function(c){ out.push('  ' + c); });
   out.push('');
 
-  var band = ranges().filter(function(d){ return d.ok.length || d.no.length; });
-  if (band.length){
-    out.push('THE FIELD  choose inside these, and choose differently each time');
-    band.forEach(function(d){
-      var ok = d.ok.map(function(x){ return x.v; }).join(', ') || 'not settled';
-      var no = d.no.map(function(x){ return x.v; }).join(', ');
-      out.push('  ' + (d.dim + '                ').slice(0,18) + ok + (no ? '   never ' + no : ''));
+  /* The palette, which the prompt for the surreal artist's site had to
+     have pasted in by hand because the file did not carry it. */
+  if (typeof MEASURED !== 'undefined'){
+    out.push('MEASURED  sampled off the references, every value traceable to an image');
+    out.push('  Grounds. Nineteen neutral, thirteen warm paper between hue 35 and 51, one flat');
+    out.push('  colour, none dark. Almost nothing sits between neutral and warm.');
+    ['white','paper','card','kraft','cream','colour'].forEach(function(k){
+      var g = MEASURED.grounds[k]; if (g && g.hex) out.push('    ' + g.hex + '  ' + k);
     });
+    out.push('  Ink. A warm near-black, mean lightness 12.');
+    ['ink','deep','soft'].forEach(function(k){
+      var g = MEASURED.inks[k]; if (g) out.push('    ' + g.hex + '  ' + k);
+    });
+    out.push('  Accents, reach for them in proportion to how many pieces carry the family:');
+    MEASURED.accents.forEach(function(a){
+      out.push('    ' + a.hex + '  ' + (a.name + '              ').slice(0,14) + 'in ' + a.w + ' of 24');
+    });
+    out.push('  Absent. Each of these was looked for and is not there:');
+    MEASURED.absent.forEach(function(a){ out.push('    ' + a.what + '. ' + a.found + '.'); });
     out.push('');
   }
 
@@ -1852,36 +1189,26 @@ function fileText(){
     out.push('');
     out.push('THE REFERENCES  work he picked out rather than made. Counted, not inferred');
     REF_FACTS.forEach(function(f){ out.push('  ' + f); });
-    var unmarked = (typeof RCLAIMS === 'undefined') ? [] :
-      RCLAIMS.filter(function(r){ return !(PROFILE.marks || {})[r.id]; });
-    if (unmarked.length){
-      out.push('');
-      out.push('  ' + unmarked.length + ' claims have been read off this set and none is marked yet,');
-      out.push('  so none of them is in force. They are listed in references.js and');
-      out.push('  nothing above has been changed on their account.');
-    }
+    out.push('  Six or seven of these are serious and the rest is competent genre work. They\n'+
+             '  were counted as equal, which is why nothing derived from counting them holds.');
   }
   return out.join('\n');
 }
 var sampleSeed = Math.floor(Math.random() * 1e6);
+var SAMPLE_BRIEFS = [
+  { k:'matrix',     t:'Forty paintings, all of them at once' },
+  { k:'board',      t:'Research documentation, notes and source scraps' },
+  { k:'map',        t:'A weekend route out of the city' },
+  { k:'plate',      t:'One night, one room, one poster' }
+];
 function drawSamples(){
   var el = document.getElementById('fileSamples'); if (!el) return;
-  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-  var fav  = sourceFavour(), sb = sourceBias();
-  var out = [];
-  for (var i = 0; i < 4; i++){
-    var s = sampleSeed + i * 7717;
-    var ak = ARCH_ORDER[i % ARCH_ORDER.length];
-    var bias = {};
-    Object.keys(sb).forEach(function(d){ bias[d] = sb[d]; });
-    Object.keys(ARCH[ak].bias).forEach(function(d){ bias[d] = ARCH[ak].bias[d]; });
-    out.push(renderSite(specFrom(thisRun(s, { bias: bias })),
-                        moves(s, movePool({ text:ARCH[ak].label },
-                                          specFrom(thisRun(s, { bias: bias }))), fav)
-                          .map(function(c){ return c.id; }),
-                        s, ARCH[ak].label, ak));
-  }
-  el.innerHTML = out.join('');
+  var fav = sourceFavour();
+  el.innerHTML = SAMPLE_BRIEFS.map(function(b, i){
+    var sd = sampleSeed + i * 7717, spec = specFrom(thisRun(sd));
+    var mv = moves(sd, movePool({ text:b.t }, spec), fav).map(function(c){ return c.id; });
+    return renderStructure(b.k, spec, mv, sd, b.t, STRUCTURES[b.k].name);
+  }).join('');
   fitSites(el);
 }
 function drawFile(){
@@ -1907,9 +1234,9 @@ function drawMarkPanel(){
     '<div class="fb" style="margin-top:4px">' +
       '<p class="fbl">Which one is wrong?</p>' +
       '<div class="chips" id="markWhich">' +
-        ARCH_ORDER.map(function(k, i){
-          return '<button data-k="' + k + '" data-i="' + i + '" aria-pressed="false">' +
-                 ARCH[k].label + '</button>';
+        SAMPLE_BRIEFS.map(function(b, i){
+          return '<button data-k="' + b.k + '" data-i="' + i + '" aria-pressed="false">' +
+                 STRUCTURES[b.k].name + '</button>';
         }).join('') +
       '</div>' +
       '<div id="markRules"></div>' +
@@ -1946,18 +1273,12 @@ document.getElementById('markPanel').addEventListener('click', function(e){
   if (!go && !none) return;
   if (!markPick) return;
 
-  /* the values that page actually held take the loss */
+  /* The values a bad page held used to take a loss here, scored against
+     the pair weights. Those weights fed the field, and the field is gone,
+     so the only thing a bad page records now is which of his own rules it
+     broke, or that none of them would have caught it. */
   var s = sampleSeed + markPick.i * 7717;
-  var sbz = sourceBias(), bias = {};
-  Object.keys(sbz).forEach(function(d){ bias[d] = sbz[d]; });
-  Object.keys(ARCH[markPick.arch].bias).forEach(function(d){ bias[d] = ARCH[markPick.arch].bias[d]; });
-  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-  var mv = moves(s, movePool({ text:ARCH[markPick.arch].label },
-                             specFrom(thisRun(s, { bias: bias }))), sourceFavour())
-             .map(function(c){ return c.id; });
-  var spec = effectiveSpec(specFrom(thisRun(s, { bias: bias })), mv);
-  DIFFABLE.forEach(function(d){ if (spec[d]) pairBump(d + ': ' + spec[d], false); });
-  psave();
+  var spec = specFrom(thisRun(s));
 
   var broke = [];
   if (go){
@@ -1978,9 +1299,8 @@ document.getElementById('markPanel').addEventListener('click', function(e){
   document.getElementById('markOut').textContent = none || !broke.length
     ? 'Recorded, and nothing you have written would have caught it. Write the rule above while ' +
       'you can still see what was wrong, otherwise the engine will do it again.'
-    : 'Recorded. ' + broke.length + (broke.length === 1 ? ' rule' : ' rules') +
-      ' marked broken, and the values that page held have each taken a loss.';
-  drawRules(); drawWeights(); drawProfile(); drawFile(); drawPrompt();
+    : 'Recorded. ' + broke.length + (broke.length === 1 ? ' rule' : ' rules') + ' marked broken.';
+  drawRules(); drawFile(); drawPrompt();
 });
 
 function copy(txt, btn){
@@ -2000,65 +1320,53 @@ document.getElementById('dlFile').onclick = function(){
 function promptText(){
   var b = document.getElementById('brief').value.trim() || 'a page';
   var brief = readBrief(b);
-  /* standing taste fills the dimensions the brief says nothing about */
-  var sb = sourceBias(), merged = {};
-  Object.keys(sb).forEach(function(d){ merged[d] = sb[d]; });
-  Object.keys(brief.bias).forEach(function(d){ merged[d] = brief.bias[d]; });
-  var fromSource = Object.keys(sb).filter(function(d){ return !brief.bias[d]; });
-  var run = thisRun(runSeed, { bias: merged });
+  var run = thisRun(runSeed);
   var lines = ['Build ' + b.replace(/[.\s]+$/, '') + '.', ''];
   lines.push('What follows is one person\'s taste, written down. It is not a template and');
   lines.push('not a checklist. The hard parts are marked hard and the rest is direction.');
   lines.push('Where this file and the brief disagree about what the thing has to do, the');
   lines.push('brief wins. Where they disagree about how it should look, this file wins.');
-  lines.push('Serve the brief first, then make it look like this.');
   lines.push('');
 
-  lines.push('READING THE BRIEF');
-  lines.push('  building     ' + brief.archLabel +
-             (brief.archHits.length ? '   matched on ' +
-              brief.archHits.map(function(h){ return '"' + h + '"'; }).join(', ') : ''));
-  lines.push('  structure    ' + brief.archNote);
-  if (brief.arch !== 'page'){
-    lines.push('  This is the architecture, not a suggestion about it. A ' + brief.archLabel +
-               ' does not get the same page as anything else in this file, and the taste below');
-    lines.push('  is what makes it recognisable, not what makes it a ' + brief.archLabel + '.');
-  }
-  lines.push('');
-
-  /* The structure layer, which outranks the surface above. A
-     photography site and a shop are both a scroll; a matrix and a
-     projection are not the same object at all. Nineteen of the
-     forty-four references are a map, a plan, a network or a
-     projection, and the five surfaces above can make none of them. */
-  if (typeof chooseStructure === 'function'){
-    var ch = chooseStructure(b);
-    lines.push('THE STRUCTURE  this outranks the surface above');
-    if (!ch.pick){
-      lines.push('  None of the seven fits what this brief says, which means the brief has not');
-      lines.push('  said what is in the thing. Do not fall back to a stack of sections down a');
-      lines.push('  page: that is the default this file exists to refuse. Ask what the thing');
-      lines.push('  holds, how many of them there are, and whether they relate to each other.');
-    } else {
-      var S = STRUCTURES[ch.pick];
-      lines.push('  ' + S.name.toLowerCase() + '   ' + S.says);
-      lines.push('  why        ' + S.because);
-      lines.push('  read off   ' + S.refs.join(', ') + ', in the references folder');
-      var live = ch.scored.filter(function(x){ return !x.blocked; });
-      if (live.length > 1){
-        lines.push('  turned down ' + live.slice(1, 4).map(function(x){
-          return STRUCTURES[x.key].name.toLowerCase() + ' (' + x.score + ')'; }).join(', ') +
-          ', against ' + ch.scored[0].score);
-      }
-      lines.push('  Build that, not a hero followed by sections. If the structure and the');
-      lines.push('  surface disagree, the structure wins.');
+  /* Structure first. A matrix and a projection are not the same object,
+     and nineteen of the forty-four references are a map, a plan, a
+     network or a projection. Nothing else in this prompt matters if the
+     model builds a hero followed by sections. */
+  var ch = chooseStructure(b);
+  lines.push('THE STRUCTURE');
+  if (!ch.pick){
+    lines.push('  None of the seven fits, which means the brief has not said what is in the');
+    lines.push('  thing. Do not fall back to a stack of sections down a page: that is the');
+    lines.push('  default this file exists to refuse. Ask what the thing holds, how many of');
+    lines.push('  them there are, and whether they relate to each other, then build that.');
+  } else {
+    var S = STRUCTURES[ch.pick];
+    lines.push('  ' + S.name.toLowerCase() + '   ' + S.says);
+    lines.push('  why        ' + S.because);
+    var live = ch.scored.filter(function(x){ return !x.blocked; });
+    if (live.length > 1){
+      lines.push('  over       ' + live.slice(1, 4).map(function(x){
+        return STRUCTURES[x.key].name.toLowerCase() + ' (' + x.score + ')'; }).join(', ') +
+        ', against ' + ch.scored[0].score);
     }
-    lines.push('');
+    lines.push('  Build that, not a hero followed by sections.');
   }
+  lines.push('');
 
-  var mine = rulesFor(brief.arch, b);
+  /* f1, the only standard here settled by comparing good work. Still
+     lost every time it was on the table, so the prompt refuses it
+     outright and makes the model name the rung it chose. */
+  lines.push('HOW IT BEHAVES');
+  lines.push('  The page answers the person. It does not play at them. Pick a rung above');
+  lines.push('  still and hold it for the whole piece: revealed, responsive or inhabited.');
+  lines.push('  Name the rung in a comment at the top of the code so it can be checked.');
+  lines.push('  A cinematic scroll is refused, however well made. Two of the three sites');
+  lines.push('  that lost had more motion than the sites that beat them.');
+  lines.push('');
+
+  var mine = rulesFor('any', b);
   if (mine.length){
-    lines.push('RULES THAT APPLY HERE  ' + mine.length + ' of ' + rules.length + ', by scope');
+    lines.push('RULES THAT APPLY HERE  ' + mine.length + ' of ' + rules.length);
     mine.forEach(function(r){
       lines.push('  ' + (r.verdict === 'bad' ? 'Never: ' : 'Always: ') + r.text);
     });
@@ -2070,91 +1378,65 @@ function promptText(){
     lines.push('  surface      ' + brief.kind);
     lines.push('  matched on   ' + brief.hits.map(function(h){ return '"' + h + '"'; }).join(', '));
     lines.push('  so           ' + brief.note);
-    var pulled = run.filter(function(r){ return r.pulled; }).map(function(r){ return r.dim; });
-    if (pulled.length) lines.push('  pulled       ' + pulled.join(', ') + ' drawn from one end of the field rather than evenly');
-    lines.push('');
     if (brief.watch.length){
       lines.push('  The rules that bind hardest here:');
       brief.watch.forEach(function(c){ lines.push('    ' + c); });
-      lines.push('');
     }
-  }
-
-  if (run.length){
-    lines.push('THIS RUN  one choice from inside the field. Hold these for the whole piece.');
-    run.forEach(function(r){
-      lines.push('  ' + (r.dim + '                ').slice(0,18) + r.choice.label +
-                 (r.pulled ? '   (pulled by the brief)' : ''));
-    });
-    lines.push('');
-    lines.push('Another run would choose differently and still be mine. Do not average the field,');
-    lines.push('commit to the values above.');
     lines.push('');
   }
 
-  if (fromSource.length){
-    lines.push('FROM WHAT I RETURN TO  the brief was silent on these, so the sources decided');
-    lines.push('  ' + fromSource.map(function(d){ return d + ' ' + sb[d]; }).join(', '));
-    lines.push('');
-  }
+  lines.push('THIS RUN');
+  run.forEach(function(r){
+    lines.push('  ' + (r.dim + '                ').slice(0,18) + r.choice.v +
+               '   (drawn from the measured counts: 19 neutral, 13 paper, 1 colour)');
+  });
+  lines.push('  Weight, scale, measure, leading and tracking are not set. They used to be');
+  lines.push('  filled from guesses. Choose them for this piece and commit to them.');
+  lines.push('');
 
-  var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-  var mv = moves(runSeed, movePool({ text:b.toLowerCase() },
-                                   specFrom(thisRun(runSeed, { bias: merged }))),
-                 sourceFavour());
+  var mv = moves(runSeed, movePool({ text:b.toLowerCase() }, specFrom(run)), sourceFavour());
   if (mv.length){
-    lines.push('MOVES FOR THIS RUN  take these ' + mv.length + ', leave the rest of the vocabulary alone');
-    mv.forEach(function(c){ lines.push('  ' + c.rule); });
-    var rest = kept.length - mv.length;
-    if (rest > 0){
-      lines.push('');
-      lines.push('  The other ' + rest + ' are in the file and are deliberately not being used here.');
-      lines.push('  Do not reach for them to make the piece look more like me.');
-    }
+    lines.push('MOVES FOR THIS RUN  take these ' + mv.length + ', leave the rest alone');
+    mv.forEach(function(c){ lines.push('  ' + claimRule(c)); });
     lines.push('');
   }
 
-  var avoid = FIELD.filter(function(f){ return f.stance === 'avoid'; });
-  var lean  = FIELD.filter(function(f){ return f.stance === 'lean'; });
-  lines.push('AGAINST THE GRAIN  tag counts from siteinspire, 30 October 2026');
-  lines.push('  Where the defaults pull, and which way to lean off them:');
-  avoid.forEach(function(f){
-    lines.push('    ' + f.tag + ', ' + f.n + ' sites. Lean toward: ' + f.mine + '.');
+  /* The counts were counted. The "lean toward" suggestions that used to
+     follow each one were derived from claims the cross-check later
+     contested, so they are gone and only the counts remain. */
+  lines.push('WHERE THE DEFAULTS PULL  siteinspire tag counts, 30 October 2026');
+  FIELD.filter(function(f){ return f.stance === 'avoid'; }).forEach(function(f){
+    lines.push('  ' + f.tag + ', ' + f.n + ' sites.');
   });
-  lines.push('  Rare in the gallery and close to this corpus. Available, not required:');
-  lean.forEach(function(f){
-    lines.push('    ' + f.tag + ', ' + f.n + ' sites. ' + f.mine.charAt(0).toUpperCase() + f.mine.slice(1) + '.');
-  });
+  lines.push('  These are what the galleries agree on. Agreement is not a reason.');
   lines.push('');
 
   return lines.join('\n') + fileText();
 }
 function drawPrompt(){
   document.getElementById('prompt').textContent = promptText();
-  var brief = readBrief(document.getElementById('brief').value);
+  var b = document.getElementById('brief').value;
+  var ch = chooseStructure(b);
 
   var rs = document.getElementById('runSample');
   if (rs){
-    var sb = sourceBias(), merged = {};
-    Object.keys(sb).forEach(function(d){ merged[d] = sb[d]; });
-    Object.keys(brief.bias).forEach(function(d){ merged[d] = brief.bias[d]; });
-    var kept = CLAIMS.filter(function(c){ return marks[c.id] === 'true'; });
-    rs.innerHTML = renderSite(specFrom(thisRun(runSeed, { bias: merged })),
-                              moves(runSeed, movePool({ text:document.getElementById('brief').value.toLowerCase() },
-                                                      specFrom(thisRun(runSeed, { bias: merged }))),
-                                    sourceFavour()).map(function(c){ return c.id; }),
-                              runSeed, brief.archLabel, brief.arch);
-    fitSites(rs);
+    if (!ch.pick){
+      rs.innerHTML = '<p class="meta">Nothing to draw. The brief does not say what the thing holds.</p>';
+    } else {
+      var spec = specFrom(thisRun(runSeed));
+      rs.innerHTML = renderStructure(ch.pick, spec,
+        moves(runSeed, movePool({ text:b.toLowerCase() }, spec), sourceFavour())
+          .map(function(c){ return c.id; }),
+        runSeed, b, STRUCTURES[ch.pick].name);
+      fitSites(rs);
+    }
   }
 
   var el = document.getElementById('runNote');
   if (!el) return;
-  el.textContent = 'Run ' + runSeed + '. Built as ' +
-    (brief.arch === 'page' ? 'a plain page' : 'a ' + brief.archLabel) +
-    (brief.kind ? ', doing the job of ' + brief.kind : '') +
-    (Object.keys(brief.bias).length
-      ? ', so the field is pulled rather than drawn evenly.'
-      : ', with every step in the field equally likely.');
+  el.textContent = 'Run ' + runSeed + '. ' +
+    (ch.pick ? 'Built as a ' + STRUCTURES[ch.pick].name.toLowerCase() : 'No structure fits yet') +
+    (readBrief(b).kind ? ', doing the job of ' + readBrief(b).kind : '') + '.';
 }
 document.getElementById('brief').addEventListener('input', drawPrompt);
 document.getElementById('copyPrompt').onclick = function(){ copy(promptText(), this); };
@@ -2183,19 +1465,13 @@ function drawLog(){
     '<div><b>'+w+'</b>with a reason</div>'+
     '<div><b>'+m+'</b>claim corrections</div>';
 
-  if (!LOG.length){ el.innerHTML = '<p class="meta">Nothing yet. Judge a specimen or mark a claim.</p>'; return; }
+  if (!LOG.length){ el.innerHTML = '<p class="meta">Nothing yet. Mark a claim or a page.</p>'; return; }
   el.innerHTML = LOG.slice().reverse().map(function(e){
     var when = new Date(e.t);
     var time = when.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' ' +
                when.toLocaleDateString([], {day:'numeric', month:'short'});
     var what, ctx = '';
-    if (e.kind === 'judge'){
-      what = '<b>'+e.id+'</b> &#183; '+(CATS[e.cat]||e.cat)+(e.dim ? ' &#183; '+e.dim : '')+
-             (e.why ? ' <span class="lwhy">&ldquo;'+e.why+'&rdquo;</span>' : '');
-      ctx = CTX.map(function(c){
-        var v = e.ctx && e.ctx[c.k];
-        return v ? '<span class="'+(v==='yes'?'y':'n')+'">'+c.label.toLowerCase()+' '+v+'</span>' : '';
-      }).filter(Boolean).join(', ');
+    if (false){
     } else {
       what = '<b>'+e.id+'</b> &#183; '+(e.claim||'') ;
       ctx = '<span class="'+(e.to==='false'?'n':'y')+'">'+(e.from||'unset')+' &#8594; '+e.to+'</span>';
@@ -2208,7 +1484,7 @@ function drawLog(){
 }
 
 document.getElementById('expLog').onclick = function(){
-  var blob = { exported: new Date().toISOString(), judgments: judg, marks: marks, log: LOG };
+  var blob = { exported: new Date().toISOString(), marks: marks, log: LOG };
   var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(blob,null,2)], {type:'application/json'}));
   a.download = 'litmus-inputs-' + new Date().toISOString().slice(0,10) + '.json';
@@ -2221,20 +1497,19 @@ document.getElementById('impLog').onchange = function(e){
   fr.onload = function(){
     try {
       var d = JSON.parse(fr.result);
-      if (d.judgments) { judg = d.judgments; jsave(); }
       if (d.marks)     { marks = d.marks;     save();  }
       if (d.log)       { LOG = d.log;         logSave(); }
-      drawJudge(); drawClaims(); drawLog(); drawFile(); drawPrompt();
+      drawClaims(); drawLog(); drawFile(); drawPrompt();
     } catch(err){ alert('That file could not be read.'); }
   };
   fr.readAsText(f);
 };
 document.getElementById('wipeLog').onclick = function(){
-  if (!confirm('Erase every judgment, mark and log entry in this browser? Export first if you want to keep them.')) return;
-  judg = {}; LOG = []; marks = {};
+  if (!confirm('Erase every mark and log entry in this browser? Export first if you want to keep them.')) return;
+  LOG = []; marks = {};
   CLAIMS.forEach(function(c){ marks[c.id] = 'true'; });
-  jsave(); logSave(); save();
-  drawJudge(); drawClaims(); drawLog(); drawFile(); drawPrompt();
+  logSave(); save();
+  drawClaims(); drawLog(); drawFile(); drawPrompt();
 };
 
 /* ---------- 09, the decision ----------
@@ -2349,24 +1624,20 @@ document.getElementById('localState').addEventListener('click', function(e){
   }
   if (e.target.id === 'dropLocal'){
     Lmarks = {}; Ljudg = {}; Lpairs = {}; Lrules = []; Lsources = [];
-    save(); jsave(); psave(); rsave(); ssave();
-    remarks(); rejudge(); repair(); rerules(); resources();
-    drawClaims(); drawJudge(); drawRules(); drawSrcList();
-    drawPair(); drawFile(); drawPrompt(); drawLocal();
+    save(); rsave(); ssave();
+    remarks(); rerules(); resources();
+    drawClaims(); drawRules(); drawSrcList();
+    drawFile(); drawPrompt(); drawLocal();
   }
 });
 
-document.getElementById('pairArch').addEventListener('change', function(){
-  pairSeed = Math.floor(Math.random() * 1e6); drawPair();
-});
 
 drawSrcForm();
 drawSrcList();
 drawRules();
 drawLocal();
 drawClaims();
-drawJudge();
-drawPair();
+drawContests();
 drawLog();
 fromHash();
 </script>

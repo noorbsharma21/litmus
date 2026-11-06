@@ -361,7 +361,7 @@ function sContent(brief, n){
 /* --------------------------------------------------------------
    5. The seven renderers.
 
-   Shared context first, mirroring the one renderSite builds, so the
+   Shared context first, so the measured palette and the spec reach
    measured palette and the spec reach every structure the same way.
    -------------------------------------------------------------- */
 
@@ -888,7 +888,7 @@ var SBUILD = {
   }
 };
 
-/* Draws a structure at page size, same frame and scaler as renderSite so
+/* Draws a structure at page size, in the frame the scaler expects, so
    the two can sit side by side and be compared honestly. */
 function renderStructure(key, spec, moveIds, seed, brief, label){
   var K = SBUILD[key] ? key : 'matrix';

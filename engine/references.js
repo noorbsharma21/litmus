@@ -158,84 +158,14 @@ const REFS = [
     tags:['exploded isometric','callouts','line drawing','numbered','white ground','dense small text'] }
 ];
 
-/* Candidate claims read off the references, with their counts.
+/* Eleven candidate claims read off this set used to sit here. They
+   were never marked, and then Noor said the set itself is basic:
+   mostly architecture-school boards and Pinterest infographics, with
+   six or seven serious pieces counted as equal to the rest. Claims
+   derived from that average cannot be better than the average.
 
-   These are not in the file yet and not in the move pool. They are
-   written the way the thirteen were written so they can be marked
-   true, nearly or false the same way. The counts are there so a
-   "nearly" has something to push against.
-
-   `holds` lists the references it was drawn from. `breaks` lists the
-   references in the same set that contradict it. A claim with no
-   counter-example has not been looked at hard enough.                */
-const RCLAIMS = [
-  { id:'r1',
-    text:'A page is a map, a plan or a diagram before it is a stack of sections.',
-    rule:'Work out the structure of the thing being described, then draw that. Do not reach for a sequence of bands down a page.',
-    holds:['P01','P02','P05','P09','P12','P14','P18','P20','P21','S02','S05','S09','S10','S12','S13','S14','S15','S16','S21'],
-    breaks:['P08','P17','S07'], n:19 },
-
-  { id:'r2',
-    text:'Density goes to one end or the other. Either everything is on the page and indexed, or the page is nearly empty.',
-    rule:'Pick the extreme. A page that is two thirds full is the failure state.',
-    holds:['P02','P03','P05','P06','P21','S06','S09','S10','S15','S19','P19','P23','S12',
-           'P09','P10','P13','P16','P20','P22','S04','S07','S11','S17','S18','S05'],
-    breaks:['P14','S20'], n:25 },
-
-  { id:'r3',
-    text:'The small label is a graphic element in its own right: numbers, coordinates, codes, legends, scale bars.',
-    rule:'Number things. Label them. Put a legend or a scale somewhere. The annotation is part of the picture, not administration.',
-    holds:['P01','P02','P04','P05','P09','P12','P14','S05','S06','S08','S09','S10','S12','S15','S20','S21'],
-    breaks:['P08','P13','P22'], n:16 },
-
-  { id:'r4',
-    text:'The hand is visible. A drawn line, handwriting, pencil in the margin.',
-    rule:'Something on the page should be made by hand, and look it. Not a handwriting typeface.',
-    holds:['S04','S07','S12','S13','S16','S19','S21','S02','P11','P17','P18','P19','P23','P08'],
-    breaks:['P14','S14','S20'], n:14 },
-
-  { id:'r5',
-    text:'Lines are everywhere, and every one of them carries something: a route, a connector, an orbit, a grid, a scale.',
-    rule:'A line is allowed when it says where something goes or how big it is. A line that only separates two blocks is not.',
-    holds:['P09','P12','P18','P20','P21','S05','S10','S11','S14','S15','S16','S17','S19','P01','S12'],
-    breaks:[], n:15 },
-
-  { id:'r6',
-    text:'Flat colour gets laid over a photograph as though it were overprinted on it.',
-    rule:'Knock a shape out of a photograph in one flat colour, or print a colour over it. Do not tint the whole image.',
-    holds:['S03','P07','P17','S09','S15','S19','P23'], breaks:[], n:7 },
-
-  { id:'r7',
-    text:'Nothing here is dark. Across forty-four pieces not one page has a dark ground.',
-    rule:'The ground is paper, cream, kraft, graph paper or white. A dark page has to be argued for from scratch.',
-    /* Fourteen are paper, cream, kraft or graph paper. Twelve are white.
-       The rest are a photograph or a drawing edge to edge. P08 has a
-       black frame round nine bright plates, which is a frame and not a
-       ground, so it is not a counter-example. */
-    holds:['P01','P06','P09','P12','P22','S05','S08','S11','S17','S19','S18','P04','P10','P14','P20','S02','S04','S07','S14','S16','S20'],
-    breaks:[], n:44 },
-
-  { id:'r8',
-    text:'Space gets drawn in projection: axonometric, isometric, cut away, in section.',
-    rule:'When the subject occupies a space, draw the space in projection and cut it open rather than photographing it.',
-    holds:['S01','S02','S09','S13','S15','S21','P01'], breaks:[], n:7 },
-
-  { id:'r9',
-    text:'Many small things beat one big thing. A set gets arranged as a set: a grid, a ring, a sphere, a chain.',
-    rule:'When there is more than one of something, show all of them at once in an arrangement that has a shape.',
-    holds:['P04','P08','P10','P13','P15','P16','P21','S10','S14','S16','S18','S01'],
-    breaks:['P17','S04','S07'], n:12 },
-
-  { id:'r10',
-    text:'Yellow turns up again here, in work he did not make.',
-    rule:'Unresolved. Yellow was marked "not necessarily" on the corpus. It recurs in the references too, which makes it a fact about what he is drawn to rather than a habit of his hand.',
-    holds:['S03','S06','S09','P03','P05','P11','P17'], breaks:[], n:7 },
-
-  { id:'r11',
-    text:'Not one of these is a landing page. No hero, no call to action, no sections down a scroll.',
-    rule:'A brief that asks for a landing page is asking for the one form this set contains no example of. Build it as a board, a map, a diagram or an index instead, and let the page say what it is at the top without performing.',
-    holds:[], breaks:[], n:0, negative:true }
-];
+   The images stay. They are material and some of them are good. What
+   goes is the idea that counting them produces taste. */
 
 /* The cross-check.
 

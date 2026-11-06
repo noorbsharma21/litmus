@@ -10,9 +10,13 @@
    always the current state of what we have decided.
 
    Precedence, lowest first:
-     DEFAULTS in data.js   assumptions read off the corpus
      PROFILE here          decided in conversation, committed, shared
      the browser           what you do on the site right now, local only
+
+   There used to be a layer under this one: 24 assumptions read off the
+   corpus, which filled in everything he had not answered. It was
+   removed on 6 November 2026, so anything not decided here is now
+   simply undecided, which is what it always was.
 
    To change anything here, say so in the chat. The site updates when
    it is pushed. Anything done on the site stays in that browser until
