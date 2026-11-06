@@ -308,7 +308,7 @@ const CLAIMS = [
 
 const REJECT_WEIGHT = 1.0;
 const ACCEPT_WEIGHT = 0.55;
-const PHRASE = 'Places for the particular';
+const PHRASE = 'The long way round';
 
 const CATS = {
   type:   'Type',
@@ -421,7 +421,7 @@ const SPECIMENS = [
  t:'raw', html:'<div style="text-align:center;padding:6px 12px">'+
   '<span style="display:inline-block;font-size:9px;padding:4px 10px;border-radius:999px;background:#EEF2FF;color:#4F46E5;margin-bottom:12px">Introducing</span>'+
   '<p style="font-size:20px;font-weight:800;letter-spacing:-.02em;margin:0 0 7px;color:#111">Places for the particular</p>'+
-  '<p style="font-size:10px;color:#9CA3AF;margin:0 auto 13px;max-width:74%">The all in one platform for discovering places you will actually like.</p>'+
+  '<p style="font-size:10px;color:#9CA3AF;margin:0 auto 13px;max-width:74%">The all in one platform for the things you will actually like.</p>'+
   '<span style="display:inline-block;font-size:10px;color:#fff;background:#6366F1;padding:7px 18px;border-radius:9px;box-shadow:0 6px 16px rgba(99,102,241,.35);margin-bottom:14px">Get started</span>'+
   '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">'+
   '<div style="border:1px solid #E5E7EB;border-radius:11px;padding:9px 6px"><div style="width:15px;height:15px;border-radius:6px;background:#EEF2FF;margin:0 auto 6px"></div><div style="height:4px;background:#eee;width:70%;margin:0 auto 4px"></div><div style="height:4px;background:#f3f3f3;width:84%;margin:0 auto"></div></div>'.repeat(3)+
@@ -474,7 +474,7 @@ const SPECIMENS = [
 
 {id:'l9', cat:'layout', tags:['left aligned','coloured ground','no white','dense','whole frame colour'],
  t:'raw', html:'<div style="height:100%;background:#F0E9D8;padding:22px 18px">'+
-  '<p style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8A8070;margin:0 0 10px">Disco &#183; No. 01</p>'+
+  '<p style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8A8070;margin:0 0 10px">Volume &#183; No. 01</p>'+
   '<p style="font-size:19px;font-weight:700;margin:0 0 8px;line-height:1.15;color:#1A1714">Places for the particular</p>'+
   '<div style="border-top:1px solid #D5CBBB;padding-top:8px"><p style="font-size:10px;color:#5C5248;margin:0;line-height:1.55">Twenty five cities, read by people who live in them.</p></div></div>'}
 ];

@@ -548,6 +548,7 @@
 <script src="profile.js"></script>
 <script src="site.js"></script>
 <script src="structure.js"></script>
+<script src="compare.js"></script>
 <script>
 /* ---------- state ----------
    Every decision has two homes. profile.js is what we settled in
@@ -733,7 +734,7 @@ var CTX = [
 function miniPage(opts){
   var o = opts || {};
   return '<div style="height:100%;background:'+(o.bg||'#fff')+';padding:14px 15px;'+(o.extra||'')+'">'+
-    '<p style="margin:0 0 7px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:'+(o.meta||'#aaa')+'">Disco &#183; No. 01</p>'+
+    '<p style="margin:0 0 7px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:'+(o.meta||'#aaa')+'">Volume &#183; No. 01</p>'+
     '<p style="margin:0 0 6px;'+(o.head||'font-size:15px;font-weight:700;color:#14130F')+'">'+(o.title||PHRASE)+'</p>'+
     '<p style="margin:0 0 8px;font-size:9px;line-height:1.55;color:'+(o.body||'#666')+';max-width:30em">'+
       (o.copy||'Twenty five cities, read by people who live in them.')+'</p>'+
@@ -1481,8 +1482,7 @@ rerules();
 var ruleVerdict = 'bad';
 
 var SCOPE_LABEL = { any:'anything', shop:'shops', gallery:'photography',
-                    editorial:'long reads', listing:'listings',
-                    disco:'the Disco project' };
+                    editorial:'long reads', listing:'listings' };
 
 function drawRules(){
   var el = document.getElementById('ruleList'); if (!el) return;
@@ -1529,15 +1529,13 @@ document.getElementById('ruleList').addEventListener('click', function(e){
   record({ kind:'rule removed', text:r.text });
   drawRules(); drawFile(); drawPrompt();
 });
-/* A scope can also name a project rather than a kind of page. A project
-   rule applies only when the brief is actually about that project.
-   Without this, a prompt for a surreal artist's website arrived
-   carrying "every mention of Disco carries the traction: 25 cities,
-   600 weekly actives", which is somebody else's brand guideline
-   smuggled into somebody else's work. */
-var PROJECT_SCOPE = {
-  disco: /\bdisco\b/i
-};
+/* A scope can also name a project rather than a kind of page, and a
+   project rule only fires when the brief is about that project. The
+   mechanism stays because it is the right mechanism. The two rules it
+   was built for have been deleted from profile.js instead: a client's
+   style guide is not taste and does not belong in a file about how
+   somebody designs. Nothing is scoped to a project at the moment. */
+var PROJECT_SCOPE = {};
 function rulesFor(arch, briefText){
   var t = briefText || '';
   return rules.filter(function(r){

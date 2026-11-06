@@ -362,7 +362,7 @@ function renderSite(spec, moveIds, seed, label, archKey){
       return '<div style="display:flex;justify-content:space-between;align-items:center;' +
         'padding:0 0 ' + Math.round(gap*0.6) + 'px;' +
         'font-family:Nunito;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:' + muted + '">' +
-        '<span style="color:' + ink + ';font-weight:700">Disco</span><span>' + right + '</span></div>';
+        '<span style="color:' + ink + ';font-weight:700">Index</span><span>' + right + '</span></div>';
     }
   };
 
@@ -378,7 +378,7 @@ function renderSite(spec, moveIds, seed, label, archKey){
     out.push('<div style="display:flex;gap:6px;margin:' + gap + 'px 0 0">' + sw.join('') + '</div>');
   }
   out.push('<div style="margin:' + Math.round(gap * 2.2) + 'px 0 0;' +
-    'font-family:Nunito;font-size:13px;color:' + muted + '">Disco &#183; built by people who go outside</div>');
+    'font-family:Nunito;font-size:13px;color:' + muted + '">Set and printed, November 2026</div>');
 
   var groundCss = 'background:' + bg;
   if (has('c8')) groundCss += ';' + halftoneCss(gk === 'dark' ? 'rgba(255,255,255,.13)' : 'rgba(0,0,0,.10)');

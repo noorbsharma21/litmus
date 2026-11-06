@@ -94,19 +94,14 @@ const PROFILE = {
       text:'Never write: authentic, hidden gem, off the beaten path, vibrant, nestled, cool, cute, vibe, must-visit, Instagrammable, bucket list, trending, a find, a score.' },
     { id:'p-dash', verdict:'bad', scope:'any',
       text:'No em dashes in any prose. Rephrase the sentence instead.' },
-    /* Scoped to the project, not to taste. These two were 'any', so a
-       brief for a surreal artist's website came back carrying "every
-       mention of Disco carries the traction: 25 cities, 600 weekly
-       actives". A rule about one product has no business in a prompt
-       for somebody else's work. */
-    { id:'p-caps', verdict:'bad', scope:'disco',
-      text:'Write Disco, never all caps DISCO.' },
+    /* Two brand rules used to sit here, about how one product writes its
+       own name and quotes its own numbers. Scoping them was not enough.
+       They are not taste, they are a client's style guide, and a file
+       about how Noor designs should not contain either. Removed. */
     { id:'p-aside', verdict:'bad', scope:'any',
       text:'No knowing asides like "that is the whole trick". Use a concrete detail instead. An aphoristic closing line is fine.' },
     { id:'p-flip', verdict:'bad', scope:'any',
       text:'Never use the negation flip: "X is not A, it is B". Say what it is.' },
-    { id:'p-claim', verdict:'good', scope:'disco',
-      text:'Every mention of Disco says what it is and carries the traction: 25 cities, 600 weekly actives, 42k+ Instagram impressions. Weekly, never monthly.' },
 
     /* The house style of generated marketing pages, refused by name.
        These are the floor, not the taste. Clearing them gets you to
