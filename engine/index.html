@@ -250,8 +250,9 @@
     <button class="st" role="tab" aria-selected="false" data-p="s3"><span class="n">06</span> Subtract</button>
     <button class="st" role="tab" aria-selected="false" data-p="s4"><span class="n">07</span> Correct</button>
     <button class="st" role="tab" aria-selected="false" data-p="s5"><span class="n">08</span> The file</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">09</span> Use it</button>
-    <button class="st" role="tab" aria-selected="false" data-p="s7"><span class="n">10</span> Log</button>
+    <button class="st" role="tab" aria-selected="false" data-p="sb"><span class="n">09</span> Decide</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s6"><span class="n">10</span> Use it</button>
+    <button class="st" role="tab" aria-selected="false" data-p="s7"><span class="n">11</span> Log</button>
   </div>
 
   <!-- 01 -->
@@ -465,6 +466,32 @@
   </div>
 
   <!-- 06 -->
+  <!-- 09 -->
+  <div class="pane" id="sb" role="tabpanel" hidden style="--c:#072493">
+    <h2>What it decides, and why</h2>
+    <p class="lede">Type what the thing is. The engine asks seven questions of it, in the order
+      that decides what kind of object it is, and the answers pick a structure. The reasoning is
+      kept and shown, because a choice you cannot see the reasoning for is not a choice you can
+      correct.</p>
+    <p class="lede">Until now a brief picked one of five skeletons and all five were a stack of
+      bands down a page. Nineteen of the forty-four references are a map, a plan, a network or a
+      projection, and none of those five could make any of them. These seven are read off the
+      references instead, and each one names the pieces it came from.</p>
+    <p class="lede">Where nothing fits, the engine says nothing fits. Falling back to a stack of
+      bands is the failure this stage exists to end.</p>
+
+    <div style="display:flex;gap:10px;align-items:flex-start;max-width:56em;margin:0 0 14px">
+      <textarea id="briefIn" rows="2" placeholder="A landing page for a wine and beer shop in Peckham. Natural wine, about forty bottles in at any time."
+        style="flex:1;font:inherit;font-size:15px;padding:9px 11px;border:1px solid #c9c2ae;background:#fff"></textarea>
+      <button id="briefGo" class="btn">Decide</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px" id="briefEgs"></div>
+
+    <div id="briefTrace"></div>
+    <div id="briefOut" class="quad" style="margin:18px 0 0"></div>
+  </div>
+
+  <!-- 10 -->
   <div class="pane" id="s6" role="tabpanel" hidden style="--c:#D0402F">
     <h2>Putting it to work</h2>
     <p class="lede">Say what you are making. The engine wraps it in the file and hands back the
@@ -520,6 +547,7 @@
 <script src="palette.js"></script>
 <script src="profile.js"></script>
 <script src="site.js"></script>
+<script src="structure.js"></script>
 <script>
 /* ---------- state ----------
    Every decision has two homes. profile.js is what we settled in
@@ -2130,6 +2158,58 @@ document.getElementById('wipeLog').onclick = function(){
   jsave(); logSave(); save();
   drawJudge(); drawClaims(); drawLog(); drawFile(); drawPrompt();
 };
+
+/* ---------- 09, the decision ----------
+   The brief goes in, the seven questions are asked of it, and both the
+   reasoning and the drawing come back. Three seeds of the same
+   structure, because the structure is the decision and the styling
+   inside it is still a field rather than a point. */
+var EGS = [
+  'A landing page for a wine and beer shop in Peckham. Natural wine, about forty bottles in at any time.',
+  'A personal photography website. Three series of pictures, no words.',
+  'A menu for a chef. Eight dishes, one tasting menu.',
+  'A poster for a show I am doing. One night, Cafe Oto, 6 November.',
+  'A weekend guide to Delhi for students at Ashoka, an hour from the city.',
+  'The history of the studio, 1979 to 2010, and how the people in it influenced each other.',
+  'Documentation of my research project on how objects record habits.',
+  'make it pop'
+];
+function drawBrief(){
+  var t = (document.getElementById('briefIn').value || '').trim() ||
+          document.getElementById('briefIn').placeholder;
+  var ch = chooseStructure(t);
+  document.getElementById('briefTrace').innerHTML =
+    '<pre class="file" style="max-height:none">' +
+    ch.trace.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>';
+
+  var out = document.getElementById('briefOut');
+  if (!ch.pick){ out.innerHTML = ''; return; }
+  var fav = sourceFavour(), sb = sourceBias();
+  var html = [];
+  for (var i = 0; i < 3; i++){
+    var sd = 7000 + i * 4391;
+    var run  = thisRun(sd, { bias: sb });
+    var spec = specFrom(run);
+    html.push(renderStructure(ch.pick, spec,
+      moves(sd, movePool({ text:t }, spec), fav).map(function(c){ return c.id; }),
+      sd, t, STRUCTURES[ch.pick].name + ', seed ' + sd));
+  }
+  out.innerHTML = html.join('');
+  fitSites(out);
+}
+document.getElementById('briefGo').onclick = drawBrief;
+document.getElementById('briefIn').addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) drawBrief();
+});
+document.getElementById('briefEgs').innerHTML = EGS.map(function(e, i){
+  return '<button class="btn" data-eg="' + i + '" style="font-size:13px;padding:4px 10px">' +
+    e.split(/[.,]/)[0].slice(0, 34) + '</button>';
+}).join('');
+document.getElementById('briefEgs').addEventListener('click', function(e){
+  var b = e.target.closest('[data-eg]'); if (!b) return;
+  document.getElementById('briefIn').value = EGS[+b.dataset.eg];
+  drawBrief();
+});
 
 /* ---------- rail ---------- */
 var stages = document.querySelectorAll('.st');
