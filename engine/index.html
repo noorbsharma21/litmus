@@ -1769,7 +1769,33 @@ function fileText(){
   out.push('  No plain edge, and no default white unless the piece argues for it.');
   out.push('  No texture laid on top as a filter. If there is texture it comes from a press.');
   out.push('  Never write: supercharge, effortlessly, introducing, seamless.');
+  if (typeof BEHAVIOUR_NEVER !== 'undefined') BEHAVIOUR_NEVER.forEach(function(n){
+    out.push('  ' + n);
+  });
   out.push('');
+
+  /* The only thing in this file established by comparing good work
+     rather than by counting a corpus, which is why it sits above the
+     corpus-derived sections rather than among them. */
+  if (typeof FINDING !== 'undefined'){
+    out.push('BEHAVIOUR  hard. Settled by three comparisons, not inferred from anything');
+    out.push('  ' + FINDING.claim);
+    out.push('  ' + FINDING.against);
+    out.push('  His words, one per contest: ' + FINDING.words.map(function(w){
+      return '"' + w + '"'; }).join(', ') + '.');
+    out.push('');
+    out.push('  The ladder, least to most. Choose a rung and hold it:');
+    BEHAVIOUR.forEach(function(b){
+      out.push('    ' + (b.v + '            ').slice(0, 12) + b.says);
+    });
+    out.push('');
+    out.push('  Do not read this as permission to animate things. Two of the three');
+    out.push('  losing sites had more motion than two of the winners. The question is');
+    out.push('  whether the page answers the person or performs at them.');
+    out.push('');
+    out.push('  Unresolved: ' + FINDING.open);
+    out.push('');
+  }
   out.push('DIRECTION  soft. Confirmed, and they hold without a reason being given');
   kept.forEach(function(c){ out.push('  ' + claimRule(c) + crossTag(c)); });
   if (kept.length){

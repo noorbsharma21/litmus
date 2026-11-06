@@ -168,17 +168,7 @@ const CORPUS = [
     note:'A rendered room tilted off square, over a photographed wall of posters and tags.',
     tags:['ground is an image','tilted panel','constructed ground','low light','deep field','no faces','mixed media','high contrast'] },
 
-  { id:'disco', src:'../images/disco.png', kind:'built', read:true,
-    note:'The hero is a train window. Parchment ground with a faint ruled grid. Labels float off the frame.',
-    tags:['constructed ground','border is active','no white','ground is an image','display serif','offset panels','considered spacing','intentional composition'] },
 
-  { id:'disco-explore', src:'../images/disco-explore.png', kind:'built', read:true,
-    note:'Parchment and a ruled grid again. Serif headline broken by an italic in blue.',
-    tags:['constructed ground','no white','display serif','two colour','clear hierarchy','legible type','considered spacing','limited palette'] },
-
-  { id:'disco-about', src:'../images/disco-about.png', kind:'built', read:true,
-    note:'Green to maroon under heavy noise. Lowercase serif. Notes scattered round a diagram.',
-    tags:['whole frame colour','constructed ground','grain','deep field','lower case','objects scattered','no white','display serif'] }
 ];
 
 /* ---------------------------------------------------------------
@@ -226,7 +216,7 @@ const CLAIMS = [
     text:'The ground is built before anything is put on it. Rarely a default white.',
     rule:'Choose the ground before the subject and give it a treatment of its own.',
     tags:['constructed ground','no white'],
-    from:['art-01','art-02','art-04','art-06','art-07','art-13','art-21','roll-01','roll-05','roll-09','disco'],
+    from:['art-01','art-02','art-04','art-06','art-07','art-13','art-21','roll-01','roll-05','roll-09'],
     against:['art-08','art-16','art-17'] },
 
   { id:'c2', colour:'#8EA066',
@@ -275,13 +265,13 @@ const CLAIMS = [
     text:'The ground under a picture is often another picture, not a colour.',
     rule:'When you need a backdrop, reach for an image before you reach for a fill.',
     tags:['ground is an image','frame is another image'],
-    from:['roll-01','roll-07','roll-11','roll-15','roll-16','disco'], against:['roll-03','roll-08'] },
+    from:['roll-01','roll-07','roll-11','roll-15','roll-16'], against:['roll-03','roll-08'] },
 
   { id:'c11', colour:'#D0402F',
     text:'Nothing sits square. Panels are offset, tilted, or overlapping at the corners.',
     rule:'Break the alignment on purpose. Let edges cross instead of meeting.',
     tags:['offset panels','tilted panel','overlapping layers'],
-    from:['roll-03','roll-08','roll-12','roll-15','roll-16','art-03','disco'],
+    from:['roll-03','roll-08','roll-12','roll-15','roll-16','art-03'],
     against:['roll-02','roll-04','art-13'] },
 
   { id:'c12', colour:'#833405',
@@ -613,7 +603,7 @@ const DEFAULTS = [
   { tag:'weight: 400',         v:'yes', why:'pen weight across the drawings' },
   { tag:'weight: 700',         v:'yes', why:'the built pages set headings bold' },
 
-  { tag:'tracking: +0.22em',   v:'no',  why:'no wide tracked caps anywhere in 43 pieces' },
+  { tag:'tracking: +0.22em',   v:'no',  why:'no wide tracked caps anywhere in 40 pieces' },
   { tag:'tracking: -0.04em',   v:'yes', why:'display type is set tight on the built pages' },
   { tag:'tracking: 0',         v:'yes', why:'default on everything read' },
 
