@@ -64,7 +64,7 @@ const CONSTRUCTS = [
     bad: { words:'too techy, cheap looking', exemplars:['lando'] },
     note:'Lando is the most expensive-looking site in the set and he called it cheap. Polish of the conventional kind reads as cheap to him. In round one of the pairs he also said he "liked lando’s 3d designs". Next to Rozendaal instead of only Bruno, that went to "dont like at all". The context changed the verdict, which is what triads are for.' },
 
-  { id:'k2', from:'t3',
+  { id:'k2', from:'t3', conditional:true,
     good:{ words:'immersive', exemplars:['igloo','petra'] },
     bad: { words:'normalcy', exemplars:['feix'] },
     note:'Feixen beat Are.na in pair x2 on motion graphics, and here it is the normal one. Both are true. Winning a pair says better than that one site, never good. A pair result is stored as a ranking against its opponent and nothing more.' },
@@ -84,18 +84,70 @@ const F1_AS_CONSTRUCT = {
   bad: { words:'a sequence that plays at you', exemplars:['lando'] }
 };
 
-/* A hypothesis across all five triads. Written by me, so it is not a
-   construct and does not go in the hard part of the file until he says
-   yes or no to it. Every site he liked is either an artwork that is a
-   website (Rozendaal, JODI, Petra, Olia) or a world you enter (Bruno,
-   Messenger, Igloo). Every site he refused is a well made container for
-   something else: a driver, a studio’s output, a product range, a
-   designer’s projects. Lundgren+Lindqvist is the exception, a studio
-   site he likes, and Lusion is a studio he passed over in silence. */
+/* My hypothesis h1, "the site is the work, not a container for the
+   work", was put to him and he answered with something better. Kept
+   here as a record of what was replaced, not as evidence. His version
+   explains the exception mine could not: Lundgren+Lindqvist is a studio
+   site, a container, and he likes it because it refuses the organised
+   block layout. That is also what joins it to Olia Lialina, which was
+   the open question on triad t4. */
 const HYPOTHESES = [
   { id:'h1', text:'The site is the work, not a container for the work.',
-    holds:['raf','jodi','petra','olia','bruno','msg','igloo'],
-    breaks:['ll'], status:'mine, unconfirmed' }
+    status:'replaced by his own words in STANDING, 6 November 2026' }
+];
+
+/* ---------------------------------------------------------------
+   His answer to h1, in the shape he gave it. This shape is the
+   universe mechanism he asked for: one rule that always holds, two
+   routes to satisfy it depending on the occasion, and qualities that
+   appear in some pieces and not in others. Different briefs take
+   different routes and carry different qualities, so they cannot all
+   come out looking the same, while all of them still break the
+   stereotype.
+
+   He wrote:
+     "i like people that reject simple conventional organised blocks
+      and breaks the stereotype
+      i like immersive but only in some occasions
+      i liek in others for it to have cool elements whcih aare
+      artistivc and generated specifically for thatt website
+      there is novelty freshness and this idea of pre interenet also
+      in some"
+   --------------------------------------------------------------- */
+
+const STANDING = {
+  id:'k4',
+  good:{ words:'rejects simple conventional organised blocks and breaks the stereotype',
+         exemplars:['ll','olia','jodi','bruno'] },
+  bad: { words:'simple conventional organised blocks', exemplars:['feix','te'] },
+  note:'His top-level construct, stated directly rather than drawn out of a triad. k1, k2 and k3 sit under it: "techy, cheap looking", "normalcy" and "basic" are all names for the organised block. The organised block is also what this engine produced for weeks, a stack of bands down a page, and the matrix structure in structure.js is a grid of numbered cells, which is at risk of being exactly this.'
+};
+
+/* Two routes. One of them carries a piece, depending on the occasion.
+   The condition that decides between them has not been given, and is
+   not invented here: the next step asks him to sort real briefs into
+   the two, because a condition comes out when you are looking at an
+   occasion, not when you are asked for one in the abstract. */
+const ROUTES = [
+  { id:'r-immersive', words:'immersive', when:null,
+    said:'i like immersive but only in some occasions',
+    exemplars:['igloo','petra','bruno','msg'],
+    note:'k2 used to be a standing construct. It is a route now, held to some occasions. The first draft of this route listed only Igloo, Bruno Simon and Messenger, all three of them WebGL, and the medium check refused it: it would have taught a model that immersive means 3D. Petra Cortright is here on his own evidence, since he paired her with Igloo in t3 under "immersive and cool", and her site is not 3D.' },
+  { id:'r-made', words:'cool elements which are artistic and generated specifically for that website', when:null,
+    said:'i liek in others for it to have cool elements whcih aare artistivc and generated specifically for thatt website',
+    exemplars:['raf','petra','jodi'],
+    proposed:true,
+    note:'He did not name sites for this route. Rozendaal, Petra Cortright and JODI are my proposal, because each makes the visual elements for the site rather than placing existing ones on it. Unconfirmed. It also means the structures should stop composing with his archive of old drawings: under this route the elements have to be made for the brief in front of them.' }
+];
+
+/* Present in some, not required in any. A quality is a vocabulary to
+   reach for when the piece has a reason, the same as the moves held in
+   reserve. */
+const QUALITIES = [
+  { id:'q-novelty',  words:'novelty' },
+  { id:'q-fresh',    words:'freshness' },
+  { id:'q-preweb',   words:'this idea of pre internet',
+    unsure:'Two readings and they lead to different work. Either the early web before platforms and templates, the 1990s of Olia Lialina and JODI. Or before screens altogether, the print, riso and hand-drawn material his reference folder is full of. Not chosen on his behalf.' }
 ];
 
 /* Instance answers for one brief. These are never read as taste. */

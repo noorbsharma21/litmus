@@ -1049,6 +1049,8 @@ function fileText(){
   out.push('HOW TO READ THIS  the sections do not carry the same weight');
   out.push('  NON NEGOTIABLE      hard. Not taste. Nothing below overrides it.');
   out.push('  MY RULES            hard. Written by hand. Follow the wording, do not paraphrase.');
+  out.push('  STANDING            hard. The one rule that holds on every piece.');
+  out.push('  TWO ROUTES          one per piece. The occasion decides, and is not settled yet.');
   out.push('  CONSTRUCTS          hard. His words, from triads of excellent work. Each has two ends.');
   out.push('  BEHAVIOUR           hard. Settled by comparing good work, not by counting.');
   out.push('  MEASURED            hard as numbers, soft as choices. Sampled, not chosen.');
@@ -1086,18 +1088,47 @@ function fileText(){
      the sites that anchor it, because a model reading "world building"
      without an example will guess, and the guess is the average. */
   if (typeof CONSTRUCTS !== 'undefined'){
-    out.push('CONSTRUCTS  hard. In his words, from triads of excellent work');
     var link = function(k){ var x = SITES[k]; return x ? x.name + ' ' + x.url : k; };
+    out.push('STANDING  hard. Holds on every piece, whatever the brief');
+    out.push('  ' + STANDING.good.words.charAt(0).toUpperCase() + STANDING.good.words.slice(1) + '.');
+    out.push('      like:  ' + STANDING.good.exemplars.map(link).join('   '));
+    out.push('      not:   ' + STANDING.bad.exemplars.map(link).join('   '));
+    out.push('  A stack of sections down a page is the organised block. So is a tidy grid of');
+    out.push('  equal cards. Refusing it is the floor, not the achievement.');
+    out.push('');
+    out.push('TWO ROUTES  take one per piece, depending on the occasion');
+    ROUTES.forEach(function(r, i){
+      out.push('  ' + (i ? 'or  ' : '    ') + r.words + (r.proposed ? '   [examples proposed, unconfirmed]' : ''));
+      out.push('      like:  ' + r.exemplars.map(link).join('   '));
+      var media = mediumSpread({ good:{ exemplars:r.exemplars } });
+      if (media.length < 2){
+        out.push('      Every example here is ' + media[0] + '. That is a gap in the evidence, not');
+        out.push('      a rule: do not read this route as ' + media[0] + '.');
+      }
+    });
+    out.push('  Which occasion calls for which route has not been settled. Choose for this');
+    out.push('  brief, and say which route and why in a comment at the top of the code, so');
+    out.push('  the choice can be corrected. Do not do both. Do not default to immersive.');
+    out.push('  On the second route the elements are made for this piece. Nothing reused,');
+    out.push('  nothing stock, nothing that could sit on another site unchanged.');
+    out.push('');
+    out.push('PRESENT IN SOME  reach for these when the piece has a reason, never all at once');
+    QUALITIES.forEach(function(q){
+      out.push('  ' + q.words + (q.unsure ? '   [meaning not settled]' : ''));
+    });
+    out.push('');
+    out.push('CONSTRUCTS  hard. In his words, from triads of excellent work');
     [F1_AS_CONSTRUCT].concat(CONSTRUCTS).forEach(function(k){
       out.push('  ' + k.id + '  ' + (k.good.words + '                              ').slice(0,30) +
-               'not  ' + k.bad.words + (k.unsure ? '   [unconfirmed]' : ''));
+               'not  ' + k.bad.words +
+               (k.unsure ? '   [unconfirmed]' : '') + (k.conditional ? '   [some occasions only]' : ''));
       out.push('      like:  ' + k.good.exemplars.map(link).join('   '));
       out.push('      not:   ' + k.bad.exemplars.map(link).join('   '));
     });
     out.push('  None of these is a technology. The end he prefers is anchored in at least');
     out.push('  two different media every time: plain HTML net art and WebGL worlds sit on');
-    out.push('  the same side. Do not read immersive as 3D. A menu or a poster can be');
-    out.push('  groundbreaking and immersive with no code at all.');
+    out.push('  the same side. Do not read immersive as 3D. A menu or a poster can break the');
+    out.push('  stereotype with no code at all.');
     out.push('  Winning a pair means better than that one opponent, never good. Feixen beat');
     out.push('  Are.na on motion and lost to Igloo and Petra Cortright on normalcy.');
     out.push('');
