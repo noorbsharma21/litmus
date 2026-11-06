@@ -1310,7 +1310,16 @@ function claimsNow(brief, spec){
    held move whose condition the brief or the run actually satisfies */
 function movePool(brief, spec){
   var c = claimsNow(brief, spec);
-  return c.always.concat(c.live);
+  var pool = c.always.concat(c.live);
+  /* A claim that holds across everything he made and nothing he chose
+     describes his hand. The file says so under its own heading and then
+     this function was handing the same claim to the model as a move for
+     the run, which told it to do the thing and not to do the thing in
+     one document. The heading wins. */
+  return pool.filter(function(x){
+    var k = (typeof crossOf === 'function') ? crossOf(x.id) : null;
+    return !(k && k.verdict === 'corpus only');
+  });
 }
 
 function moves(seed, pool, favour){
@@ -1472,7 +1481,8 @@ rerules();
 var ruleVerdict = 'bad';
 
 var SCOPE_LABEL = { any:'anything', shop:'shops', gallery:'photography',
-                    editorial:'long reads', listing:'listings' };
+                    editorial:'long reads', listing:'listings',
+                    disco:'the Disco project' };
 
 function drawRules(){
   var el = document.getElementById('ruleList'); if (!el) return;
@@ -1519,8 +1529,22 @@ document.getElementById('ruleList').addEventListener('click', function(e){
   record({ kind:'rule removed', text:r.text });
   drawRules(); drawFile(); drawPrompt();
 });
-function rulesFor(arch){
-  return rules.filter(function(r){ return r.scope === 'any' || r.scope === arch; });
+/* A scope can also name a project rather than a kind of page. A project
+   rule applies only when the brief is actually about that project.
+   Without this, a prompt for a surreal artist's website arrived
+   carrying "every mention of Disco carries the traction: 25 cities,
+   600 weekly actives", which is somebody else's brand guideline
+   smuggled into somebody else's work. */
+var PROJECT_SCOPE = {
+  disco: /\bdisco\b/i
+};
+function rulesFor(arch, briefText){
+  var t = briefText || '';
+  return rules.filter(function(r){
+    if (r.scope === 'any' || r.scope === arch) return true;
+    var re = PROJECT_SCOPE[r.scope];
+    return re ? re.test(t) : false;
+  });
 }
 
 /* ---------- 05 this or that ---------- */
@@ -1958,7 +1982,7 @@ function promptText(){
   Object.keys(brief.bias).forEach(function(d){ merged[d] = brief.bias[d]; });
   var fromSource = Object.keys(sb).filter(function(d){ return !brief.bias[d]; });
   var run = thisRun(runSeed, { bias: merged });
-  var lines = ['Build ' + b + '.', ''];
+  var lines = ['Build ' + b.replace(/[.\s]+$/, '') + '.', ''];
   lines.push('What follows is one person\'s taste, written down. It is not a template and');
   lines.push('not a checklist. The hard parts are marked hard and the rest is direction.');
   lines.push('Where this file and the brief disagree about what the thing has to do, the');
@@ -1978,7 +2002,37 @@ function promptText(){
   }
   lines.push('');
 
-  var mine = rulesFor(brief.arch);
+  /* The structure layer, which outranks the surface above. A
+     photography site and a shop are both a scroll; a matrix and a
+     projection are not the same object at all. Nineteen of the
+     forty-four references are a map, a plan, a network or a
+     projection, and the five surfaces above can make none of them. */
+  if (typeof chooseStructure === 'function'){
+    var ch = chooseStructure(b);
+    lines.push('THE STRUCTURE  this outranks the surface above');
+    if (!ch.pick){
+      lines.push('  None of the seven fits what this brief says, which means the brief has not');
+      lines.push('  said what is in the thing. Do not fall back to a stack of sections down a');
+      lines.push('  page: that is the default this file exists to refuse. Ask what the thing');
+      lines.push('  holds, how many of them there are, and whether they relate to each other.');
+    } else {
+      var S = STRUCTURES[ch.pick];
+      lines.push('  ' + S.name.toLowerCase() + '   ' + S.says);
+      lines.push('  why        ' + S.because);
+      lines.push('  read off   ' + S.refs.join(', ') + ', in the references folder');
+      var live = ch.scored.filter(function(x){ return !x.blocked; });
+      if (live.length > 1){
+        lines.push('  turned down ' + live.slice(1, 4).map(function(x){
+          return STRUCTURES[x.key].name.toLowerCase() + ' (' + x.score + ')'; }).join(', ') +
+          ', against ' + ch.scored[0].score);
+      }
+      lines.push('  Build that, not a hero followed by sections. If the structure and the');
+      lines.push('  surface disagree, the structure wins.');
+    }
+    lines.push('');
+  }
+
+  var mine = rulesFor(brief.arch, b);
   if (mine.length){
     lines.push('RULES THAT APPLY HERE  ' + mine.length + ' of ' + rules.length + ', by scope');
     mine.forEach(function(r){
