@@ -516,6 +516,7 @@
 </div>
 
 <script src="data.js"></script>
+<script src="references.js"></script>
 <script src="profile.js"></script>
 <script src="site.js"></script>
 <script>
@@ -1737,6 +1738,26 @@ function fileText(){
     out.push('');
     out.push('THROWN OUT  the engine inferred these and was wrong');
     dead.forEach(function(c){ out.push('  ' + c.text); });
+  }
+
+  /* The references are a second body of evidence, and a different kind.
+     The thirteen claims came off work he made, so they describe a hand.
+     These came off work he chose, so they describe an eye. Counts only.
+     Anything read out of them that is a preference rather than a count
+     goes through the same marking as the thirteen before it reaches the
+     sections above. */
+  if (typeof REF_FACTS !== 'undefined' && REF_FACTS.length){
+    out.push('');
+    out.push('THE REFERENCES  work he picked out rather than made. Counted, not inferred');
+    REF_FACTS.forEach(function(f){ out.push('  ' + f); });
+    var unmarked = (typeof RCLAIMS === 'undefined') ? [] :
+      RCLAIMS.filter(function(r){ return !(PROFILE.marks || {})[r.id]; });
+    if (unmarked.length){
+      out.push('');
+      out.push('  ' + unmarked.length + ' claims have been read off this set and none is marked yet,');
+      out.push('  so none of them is in force. They are listed in references.js and');
+      out.push('  nothing above has been changed on their account.');
+    }
   }
   return out.join('\n');
 }
