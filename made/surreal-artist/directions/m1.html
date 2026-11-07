@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odile Varga</title>
+<!--
+  Offspring m1 of the four-up he liked (directions/index.html, cr3).
+  One mutation: one pointer, four answers. Wherever the pointer sits in
+  one world, every world receives it at the same place within itself,
+  so a single gesture moves the horizon, rewrites a word, shifts a
+  territory and turns the eye together. A click lands in all four.
+  Everything else is the parent, unchanged.
+-->
+<style>
+html,body{margin:0;height:100%;background:#FFFFFF}
+body{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;height:100vh;gap:6px}
+.cell{position:relative;overflow:hidden}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.k{position:absolute;right:0;top:0;z-index:2;background:#1A1614;color:#FFFFFF;
+  font:20px "Times New Roman", Times, serif;padding:4px 12px 6px}
+#over{position:fixed;inset:0;z-index:5;cursor:crosshair}
+</style>
+</head>
+<body>
+<div class="cell"><iframe src="a.html" title="A"></iframe><span class="k">A</span></div>
+<div class="cell"><iframe src="b.html" title="B"></iframe><span class="k">B</span></div>
+<div class="cell"><iframe src="c.html" title="C"></iframe><span class="k">C</span></div>
+<div class="cell"><iframe src="d.html" title="D"></iframe><span class="k">D</span></div>
+<div id="over" aria-hidden="true"></div>
+<script>
+var frames = Array.prototype.slice.call(document.querySelectorAll('iframe'));
+var last = frames.map(function(){ return null; });
+
+/* where the pointer is inside the cell it is over, as a fraction */
+function local(e){
+  for (var i = 0; i < frames.length; i++){
+    var r = frames[i].getBoundingClientRect();
+    if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom){
+      return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height];
+    }
+  }
+  return null;
+}
+function each(uv, fn){
+  frames.forEach(function(f, i){
+    var r = f.getBoundingClientRect(), w = f.contentWindow, d = f.contentDocument;
+    if (!w || !d) return;
+    fn(i, w, d, uv[0] * r.width, uv[1] * r.height);
+  });
+}
+document.getElementById('over').addEventListener('pointermove', function(e){
+  var uv = local(e); if (!uv) return;
+  each(uv, function(i, w, d, x, y){
+    w.dispatchEvent(new w.PointerEvent('pointermove', { clientX:x, clientY:y, bubbles:true }));
+    var el = d.elementFromPoint(x, y);
+    /* B rewrites a word as the pointer arrives on it, and C grows the
+       territory it enters: both fire once per arrival, not per pixel */
+    var t = el && (el.closest('a') || el.closest('.t'));
+    if (t && t !== last[i]){
+      t.dispatchEvent(new w.PointerEvent(t.matches('a') ? 'pointerover' : 'pointerenter', { bubbles:true }));
+    }
+    last[i] = t || null;
+  });
+});
+document.getElementById('over').addEventListener('pointerdown', function(e){
+  var uv = local(e); if (!uv) return;
+  each(uv, function(i, w, d, x, y){
+    var el = d.elementFromPoint(x, y);
+    var t = el && (el.closest('a') || el.closest('.t'));
+    if (t) t.click();
+    else w.dispatchEvent(new w.PointerEvent('pointerdown', { clientX:x, clientY:y, bubbles:true }));
+  });
+});
+</script>
+</body>
+</html>

@@ -206,6 +206,10 @@ const CRITIQUES = [
       'The first piece made from the file that he liked. What changed from the two he refused: every direction was built from a site he had named, his own paintings were removed, and my writing was cut to her name and plain nouns. The parts he kept liking (felt interaction, markers, palettes taken from one reference) stayed.',
       'Showing several genuinely different candidates at once got further in one round than three rounds of revising one guess.'
     ],
-    open:['Which one: A, B, C, D, or the four running together on one screen. Not assumed. The four-up page was meant as a viewing frame, and if that is what he means it is a structure in its own right: several live worlds as territories of one sheet.']
+    open:['Which one: A, B, C, D, or the four running together on one screen. Not assumed. The four-up page was meant as a viewing frame, and if that is what he means it is a structure in its own right: several live worlds as territories of one sheet.'],
+    answer:'The four running together on one screen. Asked 7 November 2026.',
+    instance:'For the surreal artist: several live worlds side by side as territories of one sheet. The frame built for comparing directions turned out to be the design, which is what showing candidates side by side is for: it surfaced a structure I would not have proposed.',
+    candidate:'Possibly a construct, several different living worlds on one sheet rather than one idea. Not promoted until it holds on an unrelated brief.',
+    tension:'STANDING refuses simple conventional organised blocks, and what he liked is a regular two by two grid. My reading is that the grid passes because every cell is a different living world, so the content breaks the stereotype rather than the layout. Unconfirmed. Offspring m3 isolates exactly this: the same four worlds in uneven territories.'
   }
 ];
