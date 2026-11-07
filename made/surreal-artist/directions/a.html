@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odile Varga</title>
+<!--
+  Direction A. After Rafael Rozendaal: one idea, the whole screen, flat
+  colour, and it only moves when you do.
+  The horizon is the pointer. Move up and the sun sets into the ground;
+  move sideways and the world tilts. Below the line the sun comes back as
+  its own reflection, in the colour of the sky. Click for the next
+  palette. Each palette is three colours that sit together in one of his
+  references (P17, P08, P11, S03, P07).
+  Route: made for it. Behaviour: responsive. No images, no copy beyond
+  her name.
+-->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;cursor:none;background:#000}
+svg{display:block;width:100vw;height:100vh}
+.n{position:fixed;left:22px;bottom:16px;font:22px "Times New Roman", Times, serif;pointer-events:none;margin:0;font-weight:normal}
+</style>
+</head>
+<body>
+<svg id="s" role="img" aria-label="A horizon that follows the pointer, a sun setting into it, and its reflection below"></svg>
+<h1 class="n" id="n">Odile Varga</h1>
+<script>
+var P = [
+  { sky:'#FCF02A', ground:'#F64FB2', sun:'#0F6E2B' },
+  { sky:'#EE5884', ground:'#072493', sun:'#F4432D' },
+  { sky:'#3866C1', ground:'#E47937', sun:'#88B7D3' },
+  { sky:'#FDFF70', ground:'#1A1614', sun:'#FDFF70' },
+  { sky:'#A40603', ground:'#FFFFFF', sun:'#1A1614' }
+];
+var pi = Math.floor(Math.random() * P.length);
+var s = document.getElementById('s'), n = document.getElementById('n');
+var W, H, mx, my, hy, ang, ty, ta;
+/* A page that starts inside a frame can be 0 wide for its first moment,
+   and the tilt is mx / W, so the horizon must not start until there is
+   a width to divide by, or a NaN gets in and never leaves. */
+function size(){
+  W = innerWidth; H = innerHeight;
+  if (W > 0 && H > 0 && (mx === undefined || !isFinite(hy) || !isFinite(ang))){
+    mx = W/2; my = H*0.62; hy = my; ang = 0;
+  }
+}
+size();
+function lum(h){ var c=h.slice(1); return [0,2,4].map(function(i){ var x=parseInt(c.substr(i,2),16)/255; return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4); }).reduce(function(a,v,i){ return a+v*[.2126,.7152,.0722][i]; },0); }
+function ink(bg){ return lum(bg) > 0.18 ? '#1A1614' : '#FFFFFF'; }
+var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function frame(){
+  if (W !== innerWidth || H !== innerHeight || mx === undefined) size();
+  if (!(W > 0 && H > 0) || mx === undefined){ requestAnimationFrame(frame); return; }
+  if (!isFinite(mx) || !isFinite(my)){ mx = W/2; my = H*0.62; }
+  if (!isFinite(hy) || !isFinite(ang)){ hy = my; ang = 0; }
+  ty = Math.max(H*0.12, Math.min(H*0.94, my));
+  ta = (mx / W - 0.5) * 0.6;
+  var e = reduce ? 1 : 0.12;
+  hy += (ty - hy) * e; ang += (ta - ang) * e;
+  var p = P[pi], t = Math.tan(ang);
+  var yL = hy - t * W/2, yR = hy + t * W/2;
+  var cx = W*0.5, cy = H*0.40, r = Math.min(W, H) * 0.17;
+  /* the sun's reflection across the horizon line */
+  var dx = W, dy = yR - yL, len = Math.hypot(dx, dy), nx = -dy/len, ny = dx/len;
+  var d = (cx - 0) * nx + (cy - yL) * ny;
+  var rx = cx - 2*d*nx, ry = cy - 2*d*ny;
+  s.innerHTML =
+    '<defs><clipPath id="sky"><polygon points="0,0 ' + W + ',0 ' + W + ',' + yR + ' 0,' + yL + '"/></clipPath>' +
+    '<clipPath id="gr"><polygon points="0,' + yL + ' ' + W + ',' + yR + ' ' + W + ',' + H + ' 0,' + H + '"/></clipPath></defs>' +
+    '<rect width="' + W + '" height="' + H + '" fill="' + p.sky + '"/>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + p.sun + '" clip-path="url(#sky)"/>' +
+    '<polygon points="0,' + yL + ' ' + W + ',' + yR + ' ' + W + ',' + H + ' 0,' + H + '" fill="' + p.ground + '"/>' +
+    '<circle cx="' + rx + '" cy="' + ry + '" r="' + r + '" fill="' + p.sky + '" clip-path="url(#gr)"/>';
+  n.style.color = ink(p.ground);
+  requestAnimationFrame(frame);
+}
+addEventListener('pointermove', function(e){ mx = e.clientX; my = e.clientY; });
+addEventListener('pointerdown', function(e){ mx = e.clientX; my = e.clientY; pi = (pi + 1) % P.length; });
+addEventListener('keydown', function(e){
+  if (e.key === 'ArrowUp') my -= 30; if (e.key === 'ArrowDown') my += 30;
+  if (e.key === 'ArrowLeft') mx -= 30; if (e.key === 'ArrowRight') mx += 30;
+  if (e.key === 'Enter' || e.key === ' ') pi = (pi + 1) % P.length;
+});
+addEventListener('resize', size);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

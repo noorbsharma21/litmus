@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odile Varga</title>
+<!--
+  Direction C. After Lundgren+Lindqvist: "geographic divisions and
+  interactivity between these elements". The screen is divided into
+  territories of flat colour, and they are one system: point at one and
+  it takes ground from all the others, which give way. Click one and it
+  takes the whole country; click again and the borders come back.
+  No images. The territories are what the site holds, named plainly.
+  Palette from P08, the nine posters: pink, ultramarine, bright red,
+  with white.
+  Route: made for it. Behaviour: responsive, every region answers the
+  one you point at.
+-->
+<style>
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:"Times New Roman", Times, serif;display:flex;height:100vh}
+.col{display:flex;flex-direction:column;flex:1 1 0;min-width:0;transition:flex-grow .7s cubic-bezier(.2,.7,.1,1)}
+.t{flex:1 1 0;min-height:0;min-width:0;position:relative;overflow:hidden;border:0;padding:0;margin:0;
+  font:inherit;text-align:left;cursor:pointer;transition:flex-grow .7s cubic-bezier(.2,.7,.1,1)}
+.t span{position:absolute;left:18px;top:12px;font-size:22px;line-height:1;white-space:nowrap;
+  transition:font-size .7s cubic-bezier(.2,.7,.1,1)}
+.t.big span{font-size:min(16vw, 220px);letter-spacing:-.03em}
+.t:focus-visible{outline:4px solid #1A1614;outline-offset:-4px}
+@media (prefers-reduced-motion: reduce){ .col, .t, .t span{transition:none} }
+</style>
+</head>
+<body>
+<script>
+var C = { pink:'#EE5884', ultra:'#072493', red:'#F4432D', white:'#FFFFFF' };
+var map = [
+  [ ['Odile Varga', C.ultra, 2.2], ['letters', C.pink, 1] ],
+  [ ['paintings', C.red, 1.4], ['the studio', C.white, 1], ['collages', C.ultra, 1.2] ],
+  [ ['notes', C.white, 1], ['archive', C.pink, 1.6] ]
+];
+function ink(bg){ return (bg === C.white || bg === C.pink) ? '#1A1614' : '#FFFFFF'; }
+var cols = [], ts = [];
+map.forEach(function(col){
+  var c = document.createElement('div'); c.className = 'col';
+  col.forEach(function(r){
+    var b = document.createElement('button'); b.className = 't'; b.type = 'button';
+    b.style.background = r[1]; b.style.color = ink(r[1]); b.style.flexGrow = r[2];
+    b.dataset.g = r[2];
+    var s = document.createElement('span'); s.textContent = r[0]; b.appendChild(s);
+    c.appendChild(b); ts.push(b);
+  });
+  document.body.appendChild(c); cols.push(c);
+});
+var open = null;
+function settle(hover){
+  cols.forEach(function(c){
+    var mine = hover && c.contains(hover);
+    c.style.flexGrow = open ? (c.contains(open) ? 40 : 0.0001) : (mine ? 2.6 : 1);
+  });
+  ts.forEach(function(t){
+    var g = +t.dataset.g;
+    if (open) t.style.flexGrow = t === open ? 40 : 0.0001;
+    else t.style.flexGrow = t === hover ? g * 3.4 : g;
+    t.classList.toggle('big', t === open || (!open && t === hover));
+  });
+}
+ts.forEach(function(t){
+  t.addEventListener('pointerenter', function(){ if (!open) settle(t); });
+  t.addEventListener('focus', function(){ if (!open) settle(t); });
+  t.addEventListener('click', function(){ open = open === t ? null : t; settle(open ? null : t); });
+});
+document.body.addEventListener('pointerleave', function(){ if (!open) settle(null); });
+settle(null);
+</script>
+</body>
+</html>

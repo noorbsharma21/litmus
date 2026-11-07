@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odile Varga</title>
+<!--
+  Direction B. After JODI and Olia Lialina: the early web, set raw. The
+  browser's own Times, its own link blue and visited purple, its own
+  margins. Nothing restyled to look designed.
+  The surrealists' cadavre exquis started as a word game, "le cadavre
+  exquis boira le vin nouveau". So this page writes it: every noun and
+  verb is a link, and it changes under the pointer. Click a word to keep
+  it; kept words turn the visited purple and stop moving. The page is a
+  poem the visitor finishes.
+  Route: made for it. Behaviour: responsive. The words are a vocabulary,
+  not a voice: nouns and verbs from the surrealist stock.
+-->
+<style>
+body{font-size:22px;line-height:1.7;max-width:46em}
+h1{font-size:64px;font-weight:normal;margin:.2em 0 .5em}
+a{color:#0000EE}
+a.kept{color:#551A8B}
+p.line{margin:0 0 .35em}
+</style>
+</head>
+<body>
+<h1>Odile Varga</h1>
+<div id="poem" aria-live="polite"></div>
+<script>
+var N = ['eye','door','staircase','fish','glove','clock','moon','chair','window','hat','bee','lobster',
+         'telephone','umbrella','egg','horse','piano','key','mirror','shoe','cloud','tongue','bridge','candle'];
+var V = ['swallows','opens','remembers','carries','hides','waters','wears','unlocks','forgets','paints','follows','folds'];
+var R = ['inside','under','behind','beside','through','instead of'];
+function any(a){ return a[Math.floor(Math.random() * a.length)]; }
+var poem = document.getElementById('poem');
+function word(bank){
+  var a = document.createElement('a');
+  a.href = '#'; a.textContent = any(bank); a.dataset.bank = bank === N ? 'n' : bank === V ? 'v' : 'r';
+  return a;
+}
+for (var i = 0; i < 9; i++){
+  var p = document.createElement('p'); p.className = 'line';
+  p.append('the ', word(N), ' ', word(V), ' the ', word(N), ' ', word(R), ' the ', word(N), '.');
+  poem.appendChild(p);
+}
+function bankOf(a){ return a.dataset.bank === 'n' ? N : a.dataset.bank === 'v' ? V : R; }
+poem.addEventListener('pointerover', function(e){
+  var a = e.target.closest('a'); if (!a || a.classList.contains('kept')) return;
+  var w; do { w = any(bankOf(a)); } while (w === a.textContent);
+  a.textContent = w;
+});
+poem.addEventListener('click', function(e){
+  var a = e.target.closest('a'); if (!a) return;
+  e.preventDefault();
+  a.classList.toggle('kept');
+});
+poem.addEventListener('focusin', function(e){
+  var a = e.target.closest('a'); if (!a || a.classList.contains('kept')) return;
+  a.textContent = any(bankOf(a));
+});
+</script>
+</body>
+</html>

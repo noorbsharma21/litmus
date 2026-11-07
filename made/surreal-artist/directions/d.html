@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odile Varga</title>
+<!--
+  Direction D. After Bruno Simon, Messenger and Igloo: the immersive
+  route, a small world you look into. An island in the sky with a door
+  standing on its own, stairs that stop in the air, a chair floating
+  over the grass, a fish above it, and an eye where the moon would be.
+  Nothing moves on its own. The world shifts with the pointer by depth,
+  the eye watches the pointer, and clicking a thing pins a marker line
+  to its name, which are the markers he kept from the first version.
+  Palette from P11, BLUE in sync: cobalt, orange, pale blue, with ink.
+  Drawn in code, isometric, flat faces. Route: immersive.
+-->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#3866C1}
+canvas{display:block;width:100vw;height:100vh;cursor:pointer}
+.n{position:fixed;left:24px;top:16px;margin:0;font:34px "Times New Roman", Times, serif;font-weight:normal;color:#FFFFFF;pointer-events:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<canvas id="c" role="img" aria-label="An island in the sky with a lone door, stairs to nowhere, a floating chair, a fish and an eye for a moon"></canvas>
+<h1 class="n">Odile Varga</h1>
+<p class="sr" id="live" aria-live="polite"></p>
+<script>
+var COB = '#3866C1', ORA = '#E47937', PAL = '#88B7D3', INK = '#1A1614', WHITE = '#FFFFFF';
+var cv = document.getElementById('c'), g = cv.getContext('2d'), live = document.getElementById('live');
+var W, H, dpr, S, OX, OY, mx = 0.5, my = 0.5, px = 0.5, py = 0.5;
+var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function size(){
+  dpr = Math.min(2, window.devicePixelRatio || 1);
+  W = innerWidth; H = innerHeight;
+  cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  S = Math.min(W, H) / 11; OX = W * 0.5; OY = H * 0.36;
+}
+size();
+var C30 = Math.cos(Math.PI/6), S30 = 0.5;
+var par = { x:0, y:0 };
+function iso(x, y, z, depth){
+  var k = depth || 0;
+  return [OX + (x - y) * C30 * S + par.x * k, OY + (x + y) * S30 * S - z * S + par.y * k];
+}
+function poly(pts, fill, stroke){
+  g.beginPath(); pts.forEach(function(p, i){ i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]); });
+  g.closePath(); g.fillStyle = fill; g.fill();
+  if (stroke){ g.strokeStyle = stroke; g.lineWidth = 1.5; g.stroke(); }
+}
+/* an isometric box: top, left and right faces, flat colours, the right
+   face darkened with ink rather than a new colour */
+function box(x, y, z, w, d, h, top, side, depth, hot){
+  var k = depth;
+  var a = iso(x, y, z + h, k), b = iso(x + w, y, z + h, k), c = iso(x + w, y + d, z + h, k), e = iso(x, y + d, z + h, k);
+  var b0 = iso(x + w, y, z, k), c0 = iso(x + w, y + d, z, k), e0 = iso(x, y + d, z, k);
+  var line = hot ? INK : null;
+  poly([e, c, c0, e0], side, line);
+  poly([c, b, b0, c0], side, line);
+  poly([c, b, b0, c0], 'rgba(26,22,20,.28)');
+  poly([a, b, c, e], top, line);
+  return [a, b, c, e, b0, c0, e0];
+}
+function bbox(pts){
+  var xs = pts.map(function(p){ return p[0]; }), ys = pts.map(function(p){ return p[1]; });
+  return { l:Math.min.apply(0, xs), r:Math.max.apply(0, xs), t:Math.min.apply(0, ys), b:Math.max.apply(0, ys) };
+}
+
+var things = [
+  { id:'door',   name:'door', open:false },
+  { id:'stairs', name:'stairs',   open:false },
+  { id:'chair',  name:'chair',         open:false },
+  { id:'fish',   name:'fish',       open:false },
+  { id:'eye',    name:'eye',     open:false }
+];
+var T = {}; things.forEach(function(t){ T[t.id] = t; });
+var hover = null;
+
+function draw(){
+  /* A frame can start 0 wide, and a pointer event in that moment divides
+     by zero. The eased values then stay NaN forever and the whole world
+     draws nowhere, which is what happened on the second load. Resize when
+     the window disagrees with what was measured, and refuse bad input. */
+  if (W !== innerWidth || H !== innerHeight) size();
+  if (!(W > 0 && H > 0)){ requestAnimationFrame(draw); return; }
+  if (!isFinite(mx) || !isFinite(my)){ mx = 0.5; my = 0.5; }
+  if (!isFinite(px) || !isFinite(py)){ px = mx; py = my; }
+  var e = reduce ? 1 : 0.1;
+  px += (mx - px) * e; py += (my - py) * e;
+  par.x = (px - 0.5) * -46; par.y = (py - 0.5) * -26;
+  g.fillStyle = COB; g.fillRect(0, 0, W, H);
+
+  /* the eye, far away, so it moves least, and it watches the pointer */
+  var ex = W * 0.8 + par.x * 0.2, ey = H * 0.2 + par.y * 0.2, er = Math.min(W, H) * 0.075;
+  g.beginPath(); g.ellipse(ex, ey, er * 1.6, er, 0, 0, Math.PI * 2); g.fillStyle = WHITE; g.fill();
+  if (hover === 'eye'){ g.strokeStyle = INK; g.lineWidth = 2; g.stroke(); }
+  var ax = (mx * W - ex), ay = (my * H - ey), al = Math.hypot(ax, ay) || 1;
+  var ix = ex + ax / al * Math.min(er * 0.7, al * 0.08), iy = ey + ay / al * Math.min(er * 0.35, al * 0.05);
+  g.beginPath(); g.arc(ix, iy, er * 0.55, 0, Math.PI * 2); g.fillStyle = PAL; g.fill();
+  g.beginPath(); g.arc(ix, iy, er * 0.24, 0, Math.PI * 2); g.fillStyle = INK; g.fill();
+  T.eye.box = { l:ex - er * 1.6, r:ex + er * 1.6, t:ey - er, b:ey + er };
+  T.eye.anchor = [ex - er * 1.6, ey];
+
+  /* the island */
+  box(0, 0, -0.9, 6, 6, 0.9, ORA, PAL, 1, false);
+
+  /* the door: a frame standing on its own, sky through the middle */
+  var dh = hover === 'door';
+  box(1.0, 1.4, 0, 0.18, 1.3, 2.4, PAL, PAL, 1.1, dh);
+  var o1 = iso(1.0, 1.62, 0.12, 1.1), o2 = iso(1.0, 2.48, 0.12, 1.1), o3 = iso(1.0, 2.48, 2.1, 1.1), o4 = iso(1.0, 1.62, 2.1, 1.1);
+  poly([o1, o2, o3, o4], COB, dh ? INK : null);
+  T.door.box = bbox([iso(1.0,1.4,0,1.1), iso(1.0,2.7,0,1.1), iso(1.18,2.7,2.4,1.1), iso(1.0,1.4,2.4,1.1)]);
+  T.door.anchor = iso(1.0, 2.05, 2.4, 1.1);
+
+  /* stairs that stop */
+  var sh = hover === 'stairs', sp = [];
+  for (var i = 0; i < 7; i++){
+    sp = sp.concat(box(3.6 + i * 0.3, 0.6, 0, 0.3, 1.1, 0.32 * (i + 1), i % 2 ? PAL : WHITE, PAL, 1.15, sh));
+  }
+  T.stairs.box = bbox(sp); T.stairs.anchor = iso(5.7, 1.15, 2.4, 1.15);
+
+  /* the fish, higher and nearer, so it moves most */
+  var f = iso(1.6, 4.4, 3.4, 1.9), fh = hover === 'fish', fr = S * 0.55;
+  g.beginPath(); g.ellipse(f[0], f[1], fr, fr * 0.42, -0.2, 0, Math.PI * 2); g.fillStyle = ORA; g.fill();
+  if (fh){ g.strokeStyle = INK; g.lineWidth = 1.5; g.stroke(); }
+  poly([[f[0] + fr * 0.85, f[1] - fr * 0.12], [f[0] + fr * 1.5, f[1] - fr * 0.55], [f[0] + fr * 1.45, f[1] + fr * 0.35]], ORA, fh ? INK : null);
+  g.beginPath(); g.arc(f[0] - fr * 0.55, f[1] - fr * 0.08, fr * 0.09, 0, Math.PI * 2); g.fillStyle = INK; g.fill();
+  T.fish.box = { l:f[0] - fr, r:f[0] + fr * 1.5, t:f[1] - fr * 0.6, b:f[1] + fr * 0.5 };
+  T.fish.anchor = [f[0] - fr, f[1]];
+
+  /* the chair, floating a body's height above the grass */
+  var ch = hover === 'chair', cz = 1.5, cp = [];
+  cp = cp.concat(box(3.2, 3.6, cz, 1.0, 1.0, 0.18, WHITE, PAL, 1.4, ch));
+  [[3.2,3.6],[4.05,3.6],[3.2,4.45],[4.05,4.45]].forEach(function(l){ cp = cp.concat(box(l[0], l[1], cz - 0.9, 0.15, 0.15, 0.9, PAL, PAL, 1.4, ch)); });
+  cp = cp.concat(box(3.2, 3.6, cz + 0.18, 0.15, 1.0, 1.1, WHITE, PAL, 1.4, ch));
+  /* its shadow on the grass, where it would stand */
+  poly([iso(3.2,3.6,0,1), iso(4.2,3.6,0,1), iso(4.2,4.6,0,1), iso(3.2,4.6,0,1)], 'rgba(26,22,20,.22)');
+  T.chair.box = bbox(cp); T.chair.anchor = iso(4.2, 4.1, cz + 1.2, 1.4);
+
+  /* markers, the one part of the first version he kept */
+  g.font = '20px "Times New Roman", Times, serif'; g.textBaseline = 'middle';
+  things.forEach(function(t, i){
+    if (!t.open || !t.anchor) return;
+    var a = t.anchor, dir = a[0] > W * 0.55 ? -1 : 1;
+    var lx = a[0] + dir * (90 + i * 6), ly = a[1] - 46 - i * 10;
+    var tw = g.measureText(t.name).width;
+    g.beginPath(); g.arc(a[0], a[1], 3.5, 0, Math.PI * 2); g.fillStyle = WHITE; g.fill();
+    var bx = dir > 0 ? lx : lx - tw - 16;
+    /* keep the label on the screen; the line follows it */
+    bx = Math.max(8, Math.min(W - tw - 24, bx)); ly = Math.max(70, Math.min(H - 24, ly));
+    g.strokeStyle = WHITE; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(dir > 0 ? bx : bx + tw + 16, ly); g.stroke();
+    g.fillStyle = INK; g.fillRect(bx, ly - 15, tw + 16, 30);
+    g.fillStyle = WHITE; g.fillText(t.name, bx + 8, ly + 1);
+  });
+  requestAnimationFrame(draw);
+}
+function hit(x, y){
+  var order = ['fish', 'chair', 'stairs', 'door', 'eye'];
+  for (var i = 0; i < order.length; i++){
+    var b = T[order[i]].box;
+    if (b && x >= b.l && x <= b.r && y >= b.t && y <= b.b) return order[i];
+  }
+  return null;
+}
+addEventListener('pointermove', function(e){ if (!(W > 0 && H > 0)) return; mx = e.clientX / W; my = e.clientY / H; hover = hit(e.clientX, e.clientY); });
+addEventListener('pointerdown', function(e){
+  if (!(W > 0 && H > 0)) return;
+  mx = e.clientX / W; my = e.clientY / H;
+  var h = hit(e.clientX, e.clientY);
+  if (h){ T[h].open = !T[h].open; live.textContent = T[h].open ? T[h].name : ''; }
+});
+var ki = -1;
+addEventListener('keydown', function(e){
+  if (e.key === 'Tab'){ e.preventDefault(); ki = (ki + 1) % things.length; hover = things[ki].id; live.textContent = things[ki].name; }
+  if ((e.key === 'Enter' || e.key === ' ') && hover){ e.preventDefault(); T[hover].open = !T[hover].open; }
+});
+addEventListener('resize', size);
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
