@@ -199,5 +199,13 @@ const CRITIQUES = [
       'Art style: the paintings themselves, which are his own corpus standing in for the artist, or the treatment of torn holes, flat walls and labels. Not guessed.',
       'The copy: invented titles in my voice, plus "write to her" and "close them". What the labels should say instead is his call.'
     ]
+  },
+  { id:'cr3', of:'made/surreal-artist/directions, four directions side by side, commit 900a74e', date:'2026-11-07',
+    said:'this is uber cool',
+    confirms:[
+      'The first piece made from the file that he liked. What changed from the two he refused: every direction was built from a site he had named, his own paintings were removed, and my writing was cut to her name and plain nouns. The parts he kept liking (felt interaction, markers, palettes taken from one reference) stayed.',
+      'Showing several genuinely different candidates at once got further in one round than three rounds of revising one guess.'
+    ],
+    open:['Which one: A, B, C, D, or the four running together on one screen. Not assumed. The four-up page was meant as a viewing frame, and if that is what he means it is a structure in its own right: several live worlds as territories of one sheet.']
   }
 ];
