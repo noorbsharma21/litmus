@@ -39,8 +39,15 @@ strip.addEventListener('pointerdown', function(e){ drag = true; lx = e.clientX; 
 addEventListener('pointermove', function(e){ if (!drag) return; var dx = e.clientX - lx; x += dx; v = dx; lx = e.clientX; });
 addEventListener('pointerup', function(){ drag = false; strip.style.cursor = 'grab'; });
 function frame(){
-  if (!drag){ x += v; v *= 0.95; }
   var fw = reel.firstChild ? reel.firstChild.offsetWidth : 300, loop = fw * F.length;
+  if (!drag){
+    x += v; v *= 0.95;
+    /* once it has nearly stopped, the strip registers: one frame squarely in the gate */
+    if (Math.abs(v) < 0.6 && fw){
+      var off = ((innerWidth / 2 - x) % fw + fw) % fw, d = off - fw / 2;
+      x += d * 0.12;
+    }
+  }
   if (loop){ while (x > 0) x -= loop; while (x < -loop) x += loop; }
   reel.style.transform = 'translateX(' + x.toFixed(1) + 'px)';
   /* which frame sits in the gate at the middle of the screen */
