@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Halm, 1979 to 2010</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital@0;1&display=swap" rel="stylesheet">
+<!-- 06c. A studio archive, 1979 to 2010. Round two. Material: real 3D, white
+     card models on a long table, high key like a model shop. Behaviour:
+     scroll as a walk. The table runs away from you, one model per year, and
+     scrolling walks the camera down it from 1979 to 2010. -->
+<style>
+html,body{margin:0;background:#FFFFFF;font-family:"Libre Bodoni",Georgia,serif;color:#1A1614}
+body{height:900vh}
+h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:34px;z-index:2}
+#yr{position:fixed;right:4vw;bottom:5vh;margin:0;font-size:min(18vw,190px);line-height:.85;z-index:2;font-style:italic}
+#pr{position:fixed;left:28px;bottom:6vh;margin:0;font-size:22px;z-index:2;max-width:40vw}
+</style></head><body>
+<h1>Studio Halm, 1979 to 2010</h1>
+<p id="yr" aria-live="polite">1979</p><p id="pr"></p>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from './three-kit.js';
+const S = stage({ bg:'#FFFFFF', key:2.6, fill:0.55, exposure:1.0, fov:38 });
+const { THREE, scene, camera } = S;
+S.key.position.set(-6, 10, -4);
+S.key.shadow.camera.left = -30; S.key.shadow.camera.right = 30; S.key.shadow.camera.top = 60; S.key.shadow.camera.bottom = -60; S.key.shadow.camera.far = 120;
+S.key.shadow.camera.updateProjectionMatrix();
+const KIND = ['House','School','Bathhouse','Library','Bridge','Market','Chapel','Housing','Studio','Pavilion','Ferry terminal','Garden'];
+const PLACE = ['Porto','Ghent','Bergen','Trieste','Aarhus','Lyon','Cork','Basel','Bilbao','Utrecht','Turku','Ljubljana'];
+let x = 1979; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
+const table = new THREE.Mesh(new THREE.BoxGeometry(5, 0.3, 112), new THREE.MeshStandardMaterial({ color:'#c9a77c', roughness:0.6 }));
+table.position.set(0, -0.15, -54); table.receiveShadow = true; scene.add(table);
+const card = new THREE.MeshStandardMaterial({ color:'#FBFBF8', roughness:0.85 });
+const YEARS = [];
+for (let y = 1979; y <= 2010; y++){
+  const i = y - 1979, z = -i * 3.4, g = new THREE.Group(), kind = Math.floor(r() * 6);
+  const w = 0.8 + r() * 1.4, d = 0.8 + r() * 1.2, h = 0.4 + r() * 2.2;
+  const add = (geo, px, py, pz, ry) => { const m = new THREE.Mesh(geo, card); m.position.set(px, py, pz); m.rotation.y = ry || 0; m.castShadow = m.receiveShadow = true; g.add(m); };
+  if (kind === 0){ add(new THREE.BoxGeometry(w, h, d), 0, h / 2, 0); }
+  else if (kind === 1){ add(new THREE.BoxGeometry(w, h * 0.6, d), 0, h * 0.3, 0); const roof = new THREE.CylinderGeometry(0, w * 0.72, h * 0.45, 4); add(roof, 0, h * 0.6 + h * 0.22, 0, Math.PI / 4); }
+  else if (kind === 2){ add(new THREE.BoxGeometry(w * 0.45, h * 1.6, d * 0.45), 0, h * 0.8, 0); add(new THREE.BoxGeometry(w, h * 0.3, d), 0, h * 0.15, 0); }
+  else if (kind === 3){ for (let k = 0; k < 3; k++) add(new THREE.BoxGeometry(w * 0.3, h * (0.5 + k * 0.3), d), (k - 1) * w * 0.34, h * (0.5 + k * 0.3) / 2, 0); }
+  else if (kind === 4){ add(new THREE.TorusGeometry(w * 0.45, 0.08, 8, 24, Math.PI), 0, 0, 0); add(new THREE.BoxGeometry(w * 1.2, 0.08, d * 0.5), 0, w * 0.45, 0); }
+  else { add(new THREE.CylinderGeometry(w * 0.4, w * 0.4, h, 32), 0, h / 2, 0); }
+  g.position.set((i % 2 ? 1 : -1) * 0.7, 0, z); g.rotation.y = r() * 0.6 - 0.3; scene.add(g);
+  const n = 1 + Math.floor(r() * 3), list = [];
+  for (let k = 0; k < n; k++) list.push(KIND[Math.floor(r() * KIND.length)] + ', ' + PLACE[Math.floor(r() * PLACE.length)]);
+  YEARS.push(list);
+}
+const yr = document.getElementById('yr'), pr = document.getElementById('pr');
+let cz = 6, shown = -1;
+S.loop(() => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const f = max > 0 ? scrollY / max : 0, target = 6 - f * 31 * 3.4;
+  cz += (target - cz) * 0.08;
+  camera.position.set(2.6, 2.4, cz); camera.lookAt(0, 0.6, cz - 6);
+  const i = Math.max(0, Math.min(31, Math.round((6 - cz) / 3.4)));
+  if (i !== shown){ shown = i; yr.textContent = 1979 + i; pr.innerHTML = YEARS[i].join('<br>'); }
+});
+</script></body></html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two days in Porto</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital@0;1&display=swap" rel="stylesheet">
+<!-- 05c. A weekend guide to a city. Round two. Material: a real photograph of
+     the river and the city, a placeholder. Behaviour: drag the sun. The sun
+     sits on an arc over the photograph; drag it across the sky and the day
+     moves with it: the light on the city changes, and the guide says what to
+     be doing at that hour. Past ten at night the sun goes and the city is dark. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#1A1614;font-family:"Spectral",Georgia,serif;color:#fff;touch-action:none;user-select:none;-webkit-user-select:none}
+#ph{position:fixed;inset:0;background-size:cover;background-position:center 60%}
+#tint{position:fixed;inset:0;mix-blend-mode:multiply;pointer-events:none}
+#sun{position:fixed;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:#FCF02A;cursor:grab;z-index:3}
+#sun:focus-visible{outline:3px solid #fff;outline-offset:4px}
+svg#arc{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:2}
+h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:40px;z-index:4;background:#1A1614;padding:2px 12px 6px}
+#now{position:fixed;left:28px;bottom:6vh;margin:0;z-index:4;background:#1A1614;padding:12px 16px;max-width:min(80vw,560px)}
+#now b{display:block;font-weight:normal;font-size:56px;line-height:1}
+#now span{display:block;font-style:italic;font-size:26px;margin-top:6px}
+</style></head><body>
+<div id="ph" role="img" aria-label="The river and the city of Porto"></div><div id="tint"></div>
+<svg id="arc" aria-hidden="true"><path id="ap" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.5" stroke-dasharray="3 9"/></svg>
+<div id="sun" tabindex="0" role="slider" aria-label="Time of day" aria-valuemin="6" aria-valuemax="24"></div>
+<h1>Two days in Porto</h1>
+<p id="now" aria-live="polite"><b></b><span></span></p>
+<script src="images.js"></script>
+<script>
+document.getElementById('ph').style.backgroundImage = 'url(' + U(IMG.porto[0], 2000) + ')';
+var STOPS = [[7,'coffee standing at the counter'],[9,'Bolhão market, before it fills'],[11,'Ribeira, along the river'],[14,'the little ferry to Afurada'],
+  [17,'Serralves, the garden'],[19.5,'grilled sardines in the street'],[22,'Foz, the sea at dark'],[23.5,'the last tram up the hill']];
+var sun = document.getElementById('sun'), ph = document.getElementById('ph'), tint = document.getElementById('tint');
+var now = document.getElementById('now'), ap = document.getElementById('ap');
+var t = 0.25, drag = false;
+function arc(f){ var W = innerWidth, H = innerHeight, x = W * (0.08 + 0.84 * f), y = H * 0.62 - Math.sin(f * Math.PI) * H * 0.48; return [x, y]; }
+function hourOf(f){ return 6 + f * 18; }
+function render(){
+  if (!innerWidth) return;
+  var p = arc(t), h = hourOf(t);
+  sun.style.left = p[0] + 'px'; sun.style.top = p[1] + 'px';
+  var d = ''; for (var i = 0; i <= 40; i++){ var q = arc(i / 40); d += (i ? 'L' : 'M') + q[0].toFixed(0) + ' ' + q[1].toFixed(0); }
+  ap.setAttribute('d', d);
+  /* the light: warm and low at the ends of the day, plain at noon, blue at night */
+  var noon = Math.sin(t * Math.PI), late = Math.max(0, (h - 20) / 4);
+  ph.style.filter = 'brightness(' + (0.45 + noon * 0.7 - late * 0.3).toFixed(2) + ') saturate(' + (0.7 + noon * 0.5).toFixed(2) + ')';
+  tint.style.background = h < 9 ? 'rgba(238,88,132,' + ((9 - h) / 3 * 0.45).toFixed(2) + ')'
+                       : h > 17 ? 'rgba(' + (h > 20 ? '7,36,147' : '228,121,55') + ',' + Math.min(0.7, (h - 17) / 5).toFixed(2) + ')' : 'rgba(0,0,0,0)';
+  sun.style.background = h > 21 ? '#88B7D3' : (h > 18 || h < 8 ? '#E47937' : '#FCF02A');
+  var s = STOPS[0]; STOPS.forEach(function(x){ if (h >= x[0] - 0.75) s = x; });
+  var hh = Math.floor(h) % 24, mm = Math.floor((h % 1) * 60 / 15) * 15;
+  now.querySelector('b').textContent = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+  now.querySelector('span').textContent = (t < 0.5 ? 'Saturday, ' : 'Saturday, ') + s[1];
+  sun.setAttribute('aria-valuenow', hh); sun.setAttribute('aria-valuetext', hh + ':' + mm + ', ' + s[1]);
+}
+sun.addEventListener('pointerdown', function(e){ drag = true; sun.setPointerCapture(e.pointerId); sun.style.cursor = 'grabbing'; });
+addEventListener('pointermove', function(e){ if (!drag) return; t = Math.max(0, Math.min(1, (e.clientX / innerWidth - 0.08) / 0.84)); render(); });
+addEventListener('pointerup', function(){ drag = false; sun.style.cursor = 'grab'; });
+sun.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight') t = Math.min(1, t + 1 / 36); if (e.key === 'ArrowLeft') t = Math.max(0, t - 1 / 36); render(); });
+addEventListener('resize', render);
+(function wait(){ if (innerWidth) render(); else requestAnimationFrame(wait); })();
+</script></body></html>

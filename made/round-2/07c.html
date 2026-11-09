@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ola Bente Architects</title>
+<!-- 07c. An architecture practice. Round two. Material: real 3D, one building
+     as a white massing model on the cobalt of P11. Behaviour: turn it and cut
+     it. Drag to walk round the model; click and a section plane passes
+     through it so you see the rooms inside, click again and it closes. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#3866C1;font-family:"Times New Roman",Times,serif;color:#fff}
+h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:38px;z-index:2;pointer-events:none}
+p.w{position:fixed;left:28px;top:68px;margin:0;font-size:18px;z-index:2;pointer-events:none}
+#st{position:fixed;left:28px;bottom:5vh;margin:0;font-size:22px;z-index:2;pointer-events:none}
+</style></head><body>
+<h1>Ola Bente Architects</h1><p class="w">School, Ostend. Completed 2024</p>
+<p id="st" aria-live="polite">whole</p>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from './three-kit.js';
+const S = stage({ bg:'#3866C1', key:2.8, fill:0.6, exposure:1.05, fov:30 });
+const { THREE, scene, camera, renderer } = S;
+renderer.localClippingEnabled = true;
+S.catcher(0, 60, 0.3);
+const plane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 20);
+const white = new THREE.MeshStandardMaterial({ color:'#FBFBF8', roughness:0.8, clippingPlanes:[plane], clipShadows:true, side:THREE.DoubleSide });
+const orange = new THREE.MeshStandardMaterial({ color:'#E47937', roughness:0.7, clippingPlanes:[plane], clipShadows:true, side:THREE.DoubleSide });
+const model = new THREE.Group(); scene.add(model);
+/* walls with real thickness so a section shows rooms, floors and voids */
+function wall(w, h, d, x, y, z, mat){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat || white); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; model.add(m); }
+const L = 8, D = 5, F = 1.1, T = 0.12;
+for (let f = 0; f < 3; f++){
+  const y = f * F;
+  wall(L, T, D, 0, y, 0);                                   /* floor slab */
+  wall(L, F, T, 0, y + F / 2, -D / 2); wall(L, F, T, 0, y + F / 2, D / 2);
+  wall(T, F, D, -L / 2, y + F / 2, 0); wall(T, F, D, L / 2, y + F / 2, 0);
+  for (let k = -1; k <= 1; k++) wall(T, F, D * 0.62, k * 2.2, y + F / 2, -D * 0.19);   /* classroom walls */
+  wall(L * 0.9, 0.5, 0.9, 0, y + 0.25, D * 0.28, f === 1 ? orange : white);            /* benches along the corridor */
+}
+wall(L, T, D, 0, 3 * F, 0);
+wall(2, 4.4, 2, L / 2 + 1.2, 2.2, -D / 2 + 1, orange);       /* the stair tower */
+let cut = false, cutAt = 20, yaw = 0.7, pitch = 0.42, dist = 22, drag = false, lx = 0, ly = 0, moved = 0;
+addEventListener('pointerdown', (e) => { drag = true; lx = e.clientX; ly = e.clientY; moved = 0; });
+addEventListener('pointermove', (e) => { if (!drag) return; const dx = e.clientX - lx, dy = e.clientY - ly; moved += Math.abs(dx) + Math.abs(dy);
+  yaw -= dx * 0.008; pitch = Math.max(0.08, Math.min(1.25, pitch + dy * 0.006)); lx = e.clientX; ly = e.clientY; });
+addEventListener('pointerup', () => { drag = false; if (moved < 6){ cut = !cut; document.getElementById('st').textContent = cut ? 'in section' : 'whole'; } });
+const look = new THREE.Vector3(0.6, 1.4, 0);
+S.loop(() => {
+  cutAt += ((cut ? 0.4 : 20) - cutAt) * 0.07; plane.constant = cutAt;
+  camera.position.set(look.x + Math.sin(yaw) * Math.cos(pitch) * dist, look.y + Math.sin(pitch) * dist, look.z + Math.cos(yaw) * Math.cos(pitch) * dist);
+  camera.lookAt(look);
+});
+</script></body></html>
