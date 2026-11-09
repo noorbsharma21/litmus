@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiln 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
+<!-- 09c. A ceramics studio selling pots. Round two. Material: real 3D clay on a
+     turning wheel, glazed. Behaviour: shaping. The pot turns on the wheel; press
+     on it and pull, and the clay at that height follows your hand out or in,
+     the way a pot is thrown. Every visitor leaves a different pot. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#88B7D3;font-family:"Young Serif",Georgia,serif;color:#1A1614;touch-action:none}
+h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:40px;z-index:2;pointer-events:none}
+p.w{position:fixed;left:28px;top:72px;margin:0;font-size:18px;z-index:2;pointer-events:none}
+canvas{cursor:grab}
+</style></head><body>
+<h1>Kiln 4</h1><p class="w">Thrown to order, from &pound;22. Jugs, bowls, vases, cups, jars</p>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from './three-kit.js';
+const S = stage({ bg:'#88B7D3', key:2.6, fill:0.6, exposure:1.05, fov:30 });
+const { THREE, scene, camera } = S;
+camera.position.set(0, 4.4, 11); camera.lookAt(0, 1.6, 0);
+S.catcher(0, 40, 0.25);
+const wheel = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.3, 0.3, 64), new THREE.MeshStandardMaterial({ color:'#3866C1', roughness:0.5, metalness:0.2 }));
+wheel.position.y = 0.15; wheel.castShadow = wheel.receiveShadow = true; scene.add(wheel);
+const N = 28, H = 3.2, R = [];
+for (let i = 0; i <= N; i++){ const t = i / N; R.push(0.55 + Math.sin(t * Math.PI) * 0.5); }
+const glaze = new THREE.MeshPhysicalMaterial({ color:'#E47937', roughness:0.32, clearcoat:0.8, clearcoatRoughness:0.2, side:THREE.DoubleSide });
+let pot = null;
+function build(){
+  const pts = [new THREE.Vector2(0, 0)];
+  for (let i = 0; i <= N; i++) pts.push(new THREE.Vector2(R[i], i / N * H));
+  pts.push(new THREE.Vector2(R[N] - 0.12, H), new THREE.Vector2(R[N] - 0.12, H * 0.9));
+  const g = new THREE.LatheGeometry(pts, 72);
+  if (pot){ pot.geometry.dispose(); pot.geometry = g; }
+  else { pot = new THREE.Mesh(g, glaze); pot.position.y = 0.3; pot.castShadow = true; scene.add(pot); }
+}
+build();
+let pulling = false;
+const tmp = new THREE.Vector3();
+function project(y){ tmp.set(0, y + 0.3, 0).project(camera); return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight]; }
+addEventListener('pointerdown', () => { pulling = true; });
+addEventListener('pointerup', () => { pulling = false; });
+addEventListener('pointermove', (e) => {
+  if (!pulling) return;
+  /* which height of the pot the hand is at, and how far out from the axis */
+  const top = project(H), bot = project(0);
+  const t = Math.max(0, Math.min(1, (bot[1] - e.clientY) / (bot[1] - top[1])));
+  const axis = bot[0], pxPerUnit = Math.abs(bot[1] - top[1]) / H;
+  const want = Math.max(0.18, Math.min(2.0, Math.abs(e.clientX - axis) / pxPerUnit));
+  for (let i = 0; i <= N; i++){
+    const w = Math.exp(-Math.pow((i / N - t) / 0.09, 2));
+    R[i] += (want - R[i]) * w * 0.35;
+  }
+  build();
+});
+S.loop((t) => { pot.rotation.y = t * 2.4; wheel.rotation.y = t * 2.4; });
+</script></body></html>

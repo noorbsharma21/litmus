@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night Frames</title>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Spectral&display=swap" rel="stylesheet">
+<!-- 10c. A film festival, one week. Round two. Material: real photographs of
+     cinemas, placeholders for film stills, run as a filmstrip. Behaviour: pull
+     the film. Drag the strip along the bottom through the gate; it carries on
+     with its own momentum and slows. Whatever frame is in the gate is
+     projected large above, with that film's night and time. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0B0A09;font-family:"Spectral",Georgia,serif;color:#fff;touch-action:none;user-select:none;-webkit-user-select:none}
+#proj{position:fixed;left:0;right:0;top:0;height:66vh;background-size:cover;background-position:center;transition:background-image .2s}
+h1{position:fixed;left:28px;top:18px;margin:0;font-family:"Big Shoulders Display",Impact,sans-serif;font-weight:800;font-size:64px;line-height:1;z-index:2;background:#0B0A09;padding:4px 12px}
+#film{position:fixed;left:28px;top:calc(66vh - 92px);margin:0;z-index:2;background:#0B0A09;padding:8px 14px;font-size:24px}
+#film b{font-weight:normal;display:block;font-size:30px}
+#strip{position:fixed;left:0;right:0;bottom:4vh;height:22vh;cursor:grab}
+#reel{position:absolute;left:0;top:0;height:100%;display:flex;gap:0;will-change:transform}
+.fr{height:100%;aspect-ratio:3/2;background:#0B0A09;padding:16px 6px;box-sizing:border-box;position:relative}
+.fr::before,.fr::after{content:'';position:absolute;left:0;right:0;height:9px;background-image:linear-gradient(90deg,#3a342e 0 12px,transparent 12px 22px);background-size:22px 9px}
+.fr::before{top:3px}.fr::after{bottom:3px}
+.fr div{width:100%;height:100%;background-size:cover;background-position:center}
+#gate{position:fixed;left:50%;bottom:4vh;height:22vh;aspect-ratio:3/2;transform:translateX(-50%);outline:3px solid #FCF02A;pointer-events:none}
+</style></head><body>
+<div id="proj" role="img" aria-label="The frame in the gate, projected"></div>
+<h1>Night Frames</h1>
+<p id="film" aria-live="polite"><b></b><span></span></p>
+<div id="strip"><div id="reel"></div></div><div id="gate" aria-hidden="true"></div>
+<script src="images.js"></script>
+<script>
+var F = [['The Long Shift','Thursday 12 March, 9pm'],['Salt Flats','Friday 13 March, 7pm'],['Nine Rooms','Friday 13 March, 10pm'],['Low Sun','Saturday 14 March, 6pm'],
+  ['The Diver','Saturday 14 March, 9pm'],['Harbour Lights','Sunday 15 March, 5pm'],['After the Rain','Sunday 15 March, 8pm'],['Closing night','Wednesday 18 March, 8pm']];
+var reel = document.getElementById('reel'), proj = document.getElementById('proj'), film = document.getElementById('film');
+var html = '';
+for (var rep = 0; rep < 3; rep++) F.forEach(function(f, i){ html += '<div class="fr" data-i="' + i + '"><div style="background-image:url(' + U(IMG.cinema[i % IMG.cinema.length], 600) + ')"></div></div>'; });
+reel.innerHTML = html;
+var x = 0, v = 0, drag = false, lx = 0, cur = -1;
+var strip = document.getElementById('strip');
+strip.addEventListener('pointerdown', function(e){ drag = true; lx = e.clientX; v = 0; strip.setPointerCapture(e.pointerId); strip.style.cursor = 'grabbing'; });
+addEventListener('pointermove', function(e){ if (!drag) return; var dx = e.clientX - lx; x += dx; v = dx; lx = e.clientX; });
+addEventListener('pointerup', function(){ drag = false; strip.style.cursor = 'grab'; });
+function frame(){
+  if (!drag){ x += v; v *= 0.95; }
+  var fw = reel.firstChild ? reel.firstChild.offsetWidth : 300, loop = fw * F.length;
+  if (loop){ while (x > 0) x -= loop; while (x < -loop) x += loop; }
+  reel.style.transform = 'translateX(' + x.toFixed(1) + 'px)';
+  /* which frame sits in the gate at the middle of the screen */
+  var idx = Math.floor(((innerWidth / 2 - x) / fw)) % F.length;
+  if (idx !== cur && fw){ cur = idx; var f = F[idx];
+    proj.style.backgroundImage = 'url(' + U(IMG.cinema[idx % IMG.cinema.length], 1800) + ')';
+    proj.style.filter = idx % 2 ? 'grayscale(1) contrast(1.15)' : 'none';
+    film.querySelector('b').textContent = f[0]; film.querySelector('span').textContent = f[1]; }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+addEventListener('keydown', function(e){ if (e.key === 'ArrowLeft') v += 14; if (e.key === 'ArrowRight') v -= 14; });
+</script></body></html>
