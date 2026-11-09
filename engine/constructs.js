@@ -211,5 +211,16 @@ const CRITIQUES = [
     instance:'For the surreal artist: several live worlds side by side as territories of one sheet. The frame built for comparing directions turned out to be the design, which is what showing candidates side by side is for: it surfaced a structure I would not have proposed.',
     candidate:'Possibly a construct, several different living worlds on one sheet rather than one idea. Not promoted until it holds on an unrelated brief.',
     tension:'STANDING refuses simple conventional organised blocks, and what he liked is a regular two by two grid. My reading is that the grid passes because every cell is a different living world, so the content breaks the stereotype rather than the layout. Unconfirmed. Offspring m3 isolates exactly this: the same four worlds in uneven territories.'
+  },
+  { id:'cr4', of:'made/round-1, forty pages across twenty briefs, commit 24dd320', date:'2026-11-09',
+    said:'while I think these are really good, I think they\u2019re all inherently the same format: loud block color and then some shapes. You need to understand that I really like these pages overall, some more than the others, of course. There are chances to be made, but I feel like, while I\u2019ll review these still, what I need you to understand is that the style of these pages is technically all the same. My taste is bigger than that. This is all flat. I would like 3D objects in one. Some, I like the reuse of realistic images and pictures as well. I feel like currently it\u2019s all just these block-colored shapes that are populating this, which makes it very... I think even the interactions are not very diverse. I think we have a bigger purview that we can hit there.',
+    confirms:['He likes the pages, some more than others. The flat graphic register is in his taste. It is one register, not the whole of it.'],
+    changes:[
+      'Range is part of the taste. Twenty briefs varied in structure and came out in one style, and he called that the failure. Across a batch, the work has to vary in material and behaviour as well as layout.',
+      'Material: real three dimensional objects in some pieces, real photographs and images in others, flat graphics in others. Every page in round one was flat shapes drawn in code.',
+      'Behaviour: every page in round one mapped the pointer position to one value. Interactions need their own range: scroll, drag and throw, physics, building by clicking, typing, sound, time.',
+      'Colour: all five palettes were loud and flat. Colour also has to range.'
+    ],
+    cause:'Mine. Each rule added to keep slop out became part of one house style: no images because his paintings were refused, everything drawn in code, five saturated palettes, one kind of interaction. The guard rails converged into a look. The universe test checked structure and never checked material or behaviour, so it passed while the style collapsed.'
   }
 ];
