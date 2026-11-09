@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arda</title>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+<!-- 02c. A chef's tasting menu. Round two. Material: real photographs of
+     plated food, placeholders for the chef's own. Behaviour: scroll. Each
+     course takes the whole screen in turn, and the page takes its colour
+     from the photograph on screen: the ground behind the course name is the
+     average of the plate. Nothing about the colour is chosen here. -->
+<style>
+html{scroll-snap-type:y mandatory}
+html,body{margin:0;background:#1A1614;font-family:"Gloock",Georgia,serif;color:#fff}
+section{height:100vh;scroll-snap-align:start;position:relative;display:grid;grid-template-columns:1.25fr 1fr}
+.ph{position:relative;overflow:hidden}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tx{display:flex;flex-direction:column;justify-content:flex-end;padding:6vh 4vw;transition:background .6s}
+.tx .n{font-size:15vh;line-height:.85;margin:0}
+.tx h2{font-weight:normal;font-size:clamp(28px,4.6vw,64px);line-height:1.02;margin:2vh 0 0}
+header{position:fixed;right:4vw;top:16px;z-index:3;text-align:right;width:calc(44.4vw - 8vw)}
+header h1{margin:0;font-weight:normal;font-size:34px}
+header p{margin:0;font-size:16px}
+@media (max-width:760px){ section{grid-template-columns:1fr;grid-template-rows:62vh 38vh} .tx .n{font-size:9vh} header{left:16px;right:auto;width:auto;text-align:left;background:#1A1614;padding:4px 8px} }
+</style></head><body>
+<header><h1>Arda</h1><p>Wednesday to Saturday, evenings. Eight courses, &pound;95</p></header>
+<main id="m"></main>
+<script src="images.js"></script>
+<script>
+var C = ['Oyster, fennel','Beetroot, rye','Mackerel, rhubarb','Leek, hazelnut','Lamb, anchovy','Sheep’s curd, honey','Plum, bay','Chocolate, salt'];
+var m = document.getElementById('m');
+C.forEach(function(name, i){
+  var s = document.createElement('section');
+  s.innerHTML = '<div class="ph"><img crossorigin="anonymous" alt="' + name + '" src="' + U(IMG.plate[i], 1400) + '"></div>' +
+    '<div class="tx"><p class="n">' + (i + 1) + '</p><h2>' + name + '</h2></div>';
+  m.appendChild(s);
+  var img = s.querySelector('img'), tx = s.querySelector('.tx');
+  img.addEventListener('load', function(){
+    var a = averageColour(img);
+    tx.style.background = rgb(a);
+    tx.style.color = lumOf(a) > 0.55 ? '#1A1614' : '#FFFFFF';
+    s.dataset.ink = tx.style.color;
+    if (i === 0) document.querySelector('header').style.color = tx.style.color;
+  });
+});
+var head = document.querySelector('header');
+addEventListener('scroll', function(){
+  var sec = m.children[Math.round(scrollY / innerHeight)];
+  if (sec && sec.dataset.ink) head.style.color = sec.dataset.ink;
+}, { passive:true });
+</script></body></html>

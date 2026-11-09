@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halde Duo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@1,700&display=swap" rel="stylesheet">
+<!-- 03c. A poster for one night of music. Round two. Material: a real
+     photograph of a crowd, printed as one flat ink over the highlighter
+     yellow, the way S03 and P07 in his references treat a photograph.
+     Behaviour: hold. Press and hold anywhere and a low chord swells and
+     the crowd comes up out of the yellow; let go and both fall away. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FDFF70;font-family:"Bodoni Moda",Georgia,serif;color:#1A1614;user-select:none;-webkit-user-select:none;touch-action:none}
+#ph{position:fixed;inset:0;background-size:cover;background-position:center;filter:grayscale(1) contrast(var(--c,1.9)) brightness(var(--b,1.25));mix-blend-mode:multiply;transition:filter .2s}
+h1{position:fixed;left:4vw;top:2vh;margin:0;font-style:italic;font-weight:700;font-size:16vw;line-height:.8;letter-spacing:-.03em}
+.facts{position:fixed;right:4vw;bottom:5vh;margin:0;font-size:26px;line-height:1.3;text-align:right;background:#FDFF70;padding:10px 14px;font-style:italic}
+</style></head><body>
+<div id="ph" role="img" aria-label="A crowd facing a lit stage"></div>
+<h1>Halde<br>Duo</h1>
+<p class="facts">Friday 21 November<br>The Lantern Room, doors 8pm<br>&pound;12 on the door</p>
+<script src="images.js"></script>
+<script>
+var ph = document.getElementById('ph');
+ph.style.backgroundImage = 'url(' + U(IMG.gig[0], 1800) + ')';
+var A = null, gain = null, held = false, level = 0;
+function sound(){
+  if (A) return;
+  A = new (window.AudioContext || window.webkitAudioContext)();
+  gain = A.createGain(); gain.gain.value = 0; gain.connect(A.destination);
+  [55, 82.4, 110, 164.8].forEach(function(f, i){
+    var o = A.createOscillator(); o.type = i % 2 ? 'sawtooth' : 'triangle'; o.frequency.value = f;
+    var lp = A.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 500;
+    var g = A.createGain(); g.gain.value = 0.12; o.connect(lp); lp.connect(g); g.connect(gain); o.start();
+  });
+}
+addEventListener('pointerdown', function(){ sound(); held = true; A.resume(); });
+addEventListener('pointerup', function(){ held = false; });
+addEventListener('keydown', function(e){ if (e.key === ' '){ sound(); held = true; A.resume(); } });
+addEventListener('keyup', function(e){ if (e.key === ' ') held = false; });
+function frame(){
+  level += ((held ? 1 : 0) - level) * (held ? 0.03 : 0.06);
+  ph.style.setProperty('--c', (1.9 + level * 1.6).toFixed(2));
+  ph.style.setProperty('--b', (1.25 - level * 0.55).toFixed(2));
+  if (gain) gain.gain.value = level * 0.5;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>

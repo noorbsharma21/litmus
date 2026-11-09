@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ines Moreau</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
+<!-- 04c. A photographer's portfolio. Round two. Material: real photographs,
+     placeholders for hers, as prints with white borders on a light table.
+     Behaviour: drag and throw. Pick a print up and it comes to the top of
+     the pile; throw it and it slides on with its own momentum and settles. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#F7F7F2;font-family:"Young Serif",Georgia,serif;color:#1A1614;touch-action:none}
+h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:36px;z-index:1}
+p.w{position:fixed;left:28px;top:66px;margin:0;font-size:16px;z-index:1}
+.pr{position:fixed;left:0;top:0;width:min(30vw,340px);background:#fff;padding:10px 10px 34px;box-shadow:0 1px 2px rgba(0,0,0,.18),0 8px 22px rgba(0,0,0,.10);cursor:grab;will-change:transform}
+.pr img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;pointer-events:none}
+.pr span{position:absolute;left:12px;bottom:9px;font-size:14px}
+</style></head><body>
+<h1>Ines Moreau</h1><p class="w">Low Tide, Night Kitchens, Rooftops in March</p>
+<script src="images.js"></script>
+<script>
+var CAP = ['Low Tide 1','Low Tide 2','Rooftops in March 1','Night Kitchens 1','Night Kitchens 2','Night Kitchens 3','Low Tide 3','Rooftops in March 2'];
+var P = [], z = 10;
+IMG.prints.forEach(function(id, i){
+  var el = document.createElement('div'); el.className = 'pr';
+  el.innerHTML = '<img alt="' + CAP[i] + '" src="' + U(id, 800) + '"><span>' + CAP[i] + '</span>';
+  document.body.appendChild(el);
+  var p = { el:el, x:innerWidth * (0.12 + Math.random() * 0.5), y:innerHeight * (0.2 + Math.random() * 0.4), r:(Math.random() - .5) * 14, vx:0, vy:0, vr:0 };
+  P.push(p); el.style.zIndex = z++;
+});
+var drag = null, ox = 0, oy = 0, lx = 0, ly = 0, lt = 0;
+addEventListener('pointerdown', function(e){
+  var el = e.target.closest('.pr'); if (!el) return;
+  drag = P.filter(function(p){ return p.el === el; })[0]; el.style.zIndex = z++; el.style.cursor = 'grabbing';
+  ox = e.clientX - drag.x; oy = e.clientY - drag.y; lx = e.clientX; ly = e.clientY; lt = performance.now(); drag.vx = drag.vy = 0;
+});
+addEventListener('pointermove', function(e){
+  if (!drag) return; var t = performance.now(), dt = Math.max(8, t - lt);
+  drag.vx = (e.clientX - lx) / dt * 16; drag.vy = (e.clientY - ly) / dt * 16; drag.vr = drag.vx * 0.25;
+  drag.x = e.clientX - ox; drag.y = e.clientY - oy; lx = e.clientX; ly = e.clientY; lt = t;
+});
+addEventListener('pointerup', function(){ if (drag){ drag.el.style.cursor = 'grab'; } drag = null; });
+function frame(){
+  P.forEach(function(p){
+    if (p !== drag){
+      p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      p.vx *= 0.93; p.vy *= 0.93; p.vr *= 0.9;
+      var w = p.el.offsetWidth, h = p.el.offsetHeight;
+      if (p.x < -w * 0.4){ p.x = -w * 0.4; p.vx *= -0.5; } if (p.x > innerWidth - w * 0.6){ p.x = innerWidth - w * 0.6; p.vx *= -0.5; }
+      if (p.y < 40){ p.y = 40; p.vy *= -0.5; } if (p.y > innerHeight - h * 0.5){ p.y = innerHeight - h * 0.5; p.vy *= -0.5; }
+    }
+    p.el.style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) rotate(' + p.r.toFixed(2) + 'deg)';
+  });
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>
