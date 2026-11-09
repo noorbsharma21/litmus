@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two days in Porto</title>
+<!-- 05b. A weekend guide to a city. Axis: worlds. This one: several worlds.
+     The weekend as four territories on one sheet, Saturday and Sunday, day
+     and night, each with its own sky. In every territory the sun or moon
+     sits at the height of the pointer. Same stops, palette and type as 05a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#EE5884;font-family:"Times New Roman",Times,serif}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:40px;color:#072493;z-index:2;background:#EE5884;padding:0 8px}
+#sheet{position:fixed;inset:76px 0 0 0;display:grid;grid-template-columns:1.2fr .8fr;grid-template-rows:1fr 1fr;gap:6px}
+.t{position:relative;overflow:hidden;padding:18px 22px}
+.t h2{margin:0;font-weight:normal;font-size:26px}
+.t p{margin:6px 0 0;font-size:20px;line-height:1.45}
+.orb{position:absolute;right:12%;width:12vmin;height:12vmin;border-radius:50%;transition:top .5s cubic-bezier(.2,.7,.2,1)}
+</style></head><body>
+<h1>Two days in Porto</h1>
+<div id="sheet"></div>
+<script src="kit.js"></script>
+<script>
+var T = [
+  { h:'Saturday, day',   s:['Bolhão market','Ribeira','ferry to Afurada'], bg:'#EE5884', fg:'#072493', orb:'#F4432D' },
+  { h:'Saturday, night', s:['grilled sardines'],                              bg:'#072493', fg:'#FFFFFF', orb:'#EE5884' },
+  { h:'Sunday, day',     s:['Serralves','Foz, by the sea'],                   bg:'#F4432D', fg:'#FFFFFF', orb:'#EE5884' },
+  { h:'Sunday, night',   s:['a late dinner in Miragaia','the last tram up the hill'],           bg:'#FFFFFF', fg:'#072493', orb:'#072493' }
+];
+var sheet = document.getElementById('sheet'), orbs = [];
+T.forEach(function(t){
+  var d = document.createElement('div'); d.className = 't'; d.style.background = t.bg; d.style.color = t.fg;
+  d.innerHTML = '<h2>' + t.h + '</h2><p>' + t.s.join('<br>') + '</p><span class="orb" style="background:' + t.orb + ';top:40%"></span>';
+  sheet.appendChild(d); orbs.push(d.querySelector('.orb'));
+});
+addEventListener('pointermove', function(e){
+  if (!sized()) return;
+  var f = e.clientY / innerHeight;
+  orbs.forEach(function(o, i){ o.style.top = (10 + f * 70 + (i % 2) * 6) + '%'; });
+});
+</script></body></html>

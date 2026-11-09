@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Nuit</title>
+<!-- 14b. A dance company's season. Axis: route. This one: immersive. A dark
+     stage seen from the stalls, the floor running away from you. The pointer
+     is the follow spot: where it falls, the season written on the boards
+     comes up out of the dark; everywhere else stays black. Same season, palette and type as 14a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#1A1614;font-family:"Times New Roman",Times,serif;color:#FDFF70}
+h1{position:fixed;left:calc(7vw + 18px);top:14px;margin:0;font-weight:normal;font-size:52px;z-index:4}
+#view{position:fixed;inset:0;perspective:500px}
+#floor{position:absolute;left:-20vw;right:-20vw;top:44vh;height:110vh;background:#1A1614;transform:rotateX(62deg);transform-origin:top center;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6vh}
+#floor p{margin:0;font-size:7vw;color:#FDFF70}
+#spot{position:fixed;width:38vmin;height:26vmin;border-radius:50%;background:transparent;box-shadow:0 0 0 300vmax rgba(26,22,20,.96);pointer-events:none;transform:translate(-50%,-50%);left:50%;top:70%;z-index:2}
+.curtain{position:fixed;top:0;bottom:0;width:7vw;background:#FDFF70;z-index:3}
+</style></head><body>
+<h1>Company Nuit</h1>
+<div class="curtain" style="left:0"></div><div class="curtain" style="right:0"></div>
+<div id="view"><div id="floor"><p>Stillwater, 3 to 8 February</p><p>Four Walls, 14 to 19 April</p><p>Late Hours, 9 to 14 June</p></div></div>
+<div id="spot" aria-hidden="true"></div>
+<script src="kit.js"></script>
+<script>
+var spot = document.getElementById('spot'), tx = innerWidth / 2, ty = innerHeight * 0.7, x = tx, y = ty;
+addEventListener('pointermove', function(e){ tx = e.clientX; ty = Math.max(innerHeight * 0.44, e.clientY); });
+function frame(){ x += (tx - x) * 0.14; y += (ty - y) * 0.14; spot.style.left = x + 'px'; spot.style.top = y + 'px'; requestAnimationFrame(frame); }
+requestAnimationFrame(frame);
+</script></body></html>

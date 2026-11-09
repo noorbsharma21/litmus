@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide Records</title>
+<!-- 11a. An independent record label. Axis: worlds. This one: one idea. One
+     record, filling the page. Moving around it turns it by hand, and every
+     sixth of a turn brings the next release onto the label. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:44px}
+#rec{position:fixed;left:50%;top:52%;width:min(78vmin,700px);height:min(78vmin,700px);transform:translate(-50%,-50%)}
+#now{position:fixed;left:24px;bottom:4vh;margin:0;font-size:26px}
+</style></head><body>
+<h1>Low Tide Records</h1>
+<svg id="rec" viewBox="-100 -100 200 200" role="img" aria-label="A record turned by the pointer"></svg>
+<p id="now" aria-live="polite"></p>
+<script src="kit.js"></script>
+<script>
+var R = [['Ama Bell','Night Ferry'],['Corran','Field Recordings 2'],['Sile & Ott','Glass House'],['Mo Arendt','Tidewater'],['Nils Pa','Low Light'],['Hester','Salt Road']];
+var rec = document.getElementById('rec'), now = document.getElementById('now');
+var grooves = '';
+for (var i = 34; i < 98; i += 2.2) grooves += '<circle r="' + i + '" fill="none" stroke="#2b2522" stroke-width=".6"/>';
+function draw(angle){
+  var k = Math.floor(((angle % 360) + 360) % 360 / 60), r = R[k];
+  rec.innerHTML = '<g transform="rotate(' + angle.toFixed(1) + ')"><circle r="99" fill="#1A1614"/>' + grooves +
+    '<circle r="32" fill="#F64FB2"/><rect x="-24" y="-5" width="' + (16 + k * 5) + '" height="4" fill="#FCF02A"/>' +
+    '<rect x="-24" y="4" width="30" height="3" fill="#0F6E2B"/><circle r="2.5" fill="#FCF02A"/></g>';
+  now.textContent = r[0] + ', ' + r[1];
+}
+addEventListener('pointermove', function(e){
+  if (!sized()) return;
+  draw(Math.atan2(e.clientY - innerHeight * 0.52, e.clientX - innerWidth / 2) * 180 / Math.PI + 180);
+});
+draw(0);
+</script></body></html>

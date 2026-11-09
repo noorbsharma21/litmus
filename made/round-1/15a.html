@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small Objects, Large Rooms</title>
+<!-- 15a. A museum exhibition of small objects. Axis: density. This one:
+     packed. One hundred and twenty objects laid out in one drawer, every one
+     drawn for this page. Pointing at one lifts it and pins its name and
+     accession number. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:10px;margin:0;font-weight:normal;font-size:34px}
+p.w{position:fixed;left:24px;top:52px;margin:0;font-size:18px}
+#d{position:fixed;left:2vw;right:2vw;top:90px;bottom:2vh;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(8,1fr);gap:4px;background:#0F6E2B;padding:6px}
+.o{position:relative;min-height:0;display:flex;align-items:center;justify-content:center;transition:transform .25s;background:#FCF02A}
+.o svg{width:70%;height:70%}
+.o:hover{transform:scale(1.6);z-index:2;outline:3px solid #F64FB2}
+#chip{position:fixed;right:24px;top:14px;font-size:22px;background:#F64FB2;color:#fff;padding:6px 12px}
+</style></head><body>
+<h1>Small Objects, Large Rooms</h1><p class="w">Until 4 May. Gallery 3, free</p>
+<div id="d"></div>
+<p id="chip" hidden></p>
+<script src="kit.js"></script>
+<script>
+var KIND = ['button','key','thimble','spoon','coin','die','bead','nail','shell','seed','ring','whistle'];
+var d = document.getElementById('d'), chip = document.getElementById('chip'), h = '';
+function obj(k, r){
+  var c = ['#1A1614','#F64FB2','#0F6E2B'][Math.floor(r() * 3)], s = '<svg viewBox="-50 -50 100 100">';
+  switch (k % 6){
+    case 0: s += '<circle r="38" fill="' + c + '"/><circle r="5" cx="-10" cy="-8" fill="#FCF02A"/><circle r="5" cx="10" cy="8" fill="#FCF02A"/>'; break;
+    case 1: s += '<circle cx="-22" r="18" fill="none" stroke="' + c + '" stroke-width="8"/><rect x="-6" y="-5" width="52" height="10" fill="' + c + '"/><rect x="30" y="4" width="8" height="14" fill="' + c + '"/>'; break;
+    case 2: s += '<path d="M-26,30 L-20,-24 Q0,-40 20,-24 L26,30 Z" fill="' + c + '"/>'; break;
+    case 3: s += '<ellipse cx="-20" rx="20" ry="14" fill="' + c + '"/><rect x="-2" y="-4" width="50" height="8" fill="' + c + '"/>'; break;
+    case 4: s += '<circle r="' + (24 + r() * 14) + '" fill="' + c + '"/><circle r="' + (14 + r() * 6) + '" fill="none" stroke="#FCF02A" stroke-width="3"/>'; break;
+    default: s += '<rect x="-30" y="-30" width="60" height="60" rx="8" fill="' + c + '"/><circle r="6" fill="#FCF02A"/>';
+  }
+  return s + '</svg>';
+}
+for (var i = 0; i < 120; i++){
+  var r = rng(i * 11 + 1), k = Math.floor(r() * 12);
+  h += '<div class="o" tabindex="0" data-n="' + KIND[k] + ', ' + (1890 + Math.floor(r() * 120)) + '.' + (1 + Math.floor(r() * 90)) + '">' + obj(k, r) + '</div>';
+}
+d.innerHTML = h;
+d.addEventListener('pointerover', function(e){ var o = e.target.closest('.o'); if (!o) return; chip.textContent = o.dataset.n; chip.hidden = false; });
+d.addEventListener('focusin', function(e){ var o = e.target.closest('.o'); if (o){ chip.textContent = o.dataset.n; chip.hidden = false; } });
+d.addEventListener('pointerleave', function(){ chip.hidden = true; });
+</script></body></html>

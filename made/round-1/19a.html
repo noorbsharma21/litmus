@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spoke and Chain</title>
+<!-- 19a. A bicycle repair workshop. Axis: division. This one: a regular grid.
+     Six services in six equal cells, a gear in each, and the gears mesh
+     across the cells: moving across the page turns them all, each the
+     opposite way to its neighbour, the way a train of gears does. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:12px;margin:0;font-weight:normal;font-size:42px}
+p.w{position:fixed;left:24px;top:62px;margin:0;font-size:18px}
+#g{position:fixed;left:3vw;right:3vw;top:100px;bottom:3vh;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:6px}
+.c{position:relative;min-height:0;background:#F64FB2;overflow:hidden}
+.c svg{position:absolute;inset:0;width:100%;height:100%}
+.c p{position:absolute;left:14px;bottom:10px;margin:0;font-size:22px;background:#F64FB2;padding:2px 6px}
+</style></head><body>
+<h1>Spoke and Chain</h1><p class="w">Under the railway arch, Mill Lane. Tuesday to Saturday</p>
+<div id="g"></div>
+<script src="kit.js"></script>
+<script>
+var S = [['Puncture',8],['Brake bleed',25],['Wheel true',15],['Full service',60],['New chain',20],['Bearings',30]];
+var g = document.getElementById('g'), gears = [];
+function gear(teeth){
+  var out = '', R = 46, r0 = 38;
+  for (var i = 0; i < teeth * 2; i++){
+    var a0 = i / (teeth * 2) * Math.PI * 2, a1 = (i + 1) / (teeth * 2) * Math.PI * 2, rr = i % 2 ? r0 : R;
+    out += (i ? ' L' : 'M') + (Math.cos(a0) * rr).toFixed(1) + ',' + (Math.sin(a0) * rr).toFixed(1) + ' L' + (Math.cos(a1) * rr).toFixed(1) + ',' + (Math.sin(a1) * rr).toFixed(1);
+  }
+  return '<path d="' + out + ' Z" fill="#1A1614"/><circle r="16" fill="#FCF02A"/><circle r="5" fill="#1A1614"/>';
+}
+S.forEach(function(s, i){
+  var d = document.createElement('div'); d.className = 'c'; var teeth = 10 + (i % 3) * 4;
+  d.innerHTML = '<svg viewBox="-60 -60 120 120" role="img" aria-label="' + s[0] + '"><g class="gr">' + gear(teeth) + '</g></svg><p>' + s[0] + ', £' + s[1] + '</p>';
+  g.appendChild(d); gears.push({ g:d.querySelector('.gr'), dir:(i % 2 ? -1 : 1) * (i < 3 ? 1 : -1), ratio:12 / teeth });
+});
+addEventListener('pointermove', function(e){
+  var t = e.clientX * 0.8;
+  gears.forEach(function(gg){ gg.g.setAttribute('transform', 'rotate(' + (t * gg.dir * gg.ratio).toFixed(1) + ')'); });
+});
+</script></body></html>

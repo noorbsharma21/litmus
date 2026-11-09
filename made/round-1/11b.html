@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide Records</title>
+<!-- 11b. An independent record label. Axis: worlds. This one: several worlds.
+     Six sleeves on one sheet, each with its own pattern drawn for it, and
+     every pattern turns to face the pointer. Same releases, palette and type
+     as 11a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:44px}
+#g{position:fixed;left:4vw;right:4vw;top:90px;bottom:3vh;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:2.4vw}
+.s{min-height:0;display:flex;flex-direction:column}
+svg{flex:1;min-height:0;width:100%}
+.s p{margin:6px 0 0;font-size:19px}
+</style></head><body>
+<h1>Low Tide Records</h1>
+<div id="g"></div>
+<script src="kit.js"></script>
+<script>
+var R = [['Ama Bell','Night Ferry'],['Corran','Field Recordings 2'],['Sile & Ott','Glass House'],['Mo Arendt','Tidewater'],['Nils Pa','Low Light'],['Hester','Salt Road']];
+var COL = ['#F64FB2','#0F6E2B','#1A1614'], g = document.getElementById('g'), pats = [];
+R.forEach(function(r, k){
+  var d = document.createElement('div'); d.className = 's';
+  var rr = rng(k * 37 + 3), bg = COL[k % 3], fg = COL[(k + 1) % 3], kind = k % 3, inner = '';
+  for (var i = 0; i < 9; i++){
+    if (kind === 0) inner += '<rect x="-120" y="' + (-100 + i * 24) + '" width="240" height="' + (6 + rr() * 8) + '" fill="' + fg + '"/>';
+    else if (kind === 1) inner += '<circle r="' + (10 + i * 10) + '" fill="none" stroke="' + fg + '" stroke-width="' + (2 + rr() * 5) + '"/>';
+    else inner += '<rect x="' + (-90 + (i % 3) * 60) + '" y="' + (-90 + Math.floor(i / 3) * 60) + '" width="' + (20 + rr() * 30) + '" height="' + (20 + rr() * 30) + '" fill="' + fg + '"/>';
+  }
+  d.innerHTML = '<svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + r[0] + ', ' + r[1] + '">' +
+    '<rect x="-100" y="-100" width="200" height="200" fill="' + bg + '"/><g class="pt">' + inner + '</g></svg><p>' + r[0] + ', ' + r[1] + '</p>';
+  g.appendChild(d); pats.push({ svg:d.querySelector('svg'), g:d.querySelector('.pt') });
+});
+addEventListener('pointermove', function(e){
+  pats.forEach(function(p){
+    var b = p.svg.getBoundingClientRect();
+    var a = Math.atan2(e.clientY - (b.top + b.height / 2), e.clientX - (b.left + b.width / 2)) * 180 / Math.PI;
+    p.g.setAttribute('transform', 'rotate(' + a.toFixed(1) + ')');
+  });
+});
+</script></body></html>

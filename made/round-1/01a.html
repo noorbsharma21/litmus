@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bottle Hours</title>
+<!-- 01a. A natural wine shop. Axis: route. This one: made for it. Every bottle
+     is drawn from its own wine: the colour of the glass from the wine, the
+     shape from a seed of its name, so no two bottles on the shelf match.
+     Pointing at one lifts it off the shelf and pins its name and price. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:40px}
+p.where{position:fixed;left:24px;top:62px;margin:0;font-size:18px}
+#shelf{position:fixed;left:0;right:0;bottom:16vh;display:flex;justify-content:center;align-items:flex-end;gap:1.4vw}
+svg.b{display:block;cursor:pointer;transition:transform .45s cubic-bezier(.2,.7,.2,1);overflow:visible}
+svg.b:hover, svg.b:focus{transform:translateY(-26px)}
+svg.b:focus{outline:none}
+#over{position:fixed;inset:0;pointer-events:none}
+.chip{position:fixed;font-size:20px;padding:5px 10px 6px;background:#0F6E2B;color:#fff;pointer-events:none;white-space:nowrap}
+</style></head><body>
+<h1>Bottle Hours</h1><p class="where">12 Ardley Street, open Thursday to Sunday</p>
+<div id="shelf" role="list"></div>
+<svg id="over" width="100%" height="100%" aria-hidden="true"></svg>
+<div class="chip" id="chip" hidden></div>
+<script src="kit.js"></script>
+<script>
+var WINES = [['Gamay, Beaujolais','r',24],['Ribolla Gialla, Friuli','o',31],['Pet nat, Loire','w',22],['Trousseau, Jura','r',38],
+  ['Riesling, Mosel','w',27],['Cinsault, Swartland','r',21],['Zibibbo, Sicily','o',29],['Chenin, Anjou','w',33],
+  ['Frappato, Vittoria','r',26],['Gruner, Kamptal','w',19],['Rkatsiteli, Kakheti','o',35],['Poulsard, Arbois','r',41]];
+var GLASS = { r:'#F64FB2', w:'#0F6E2B', o:'#1A1614' };
+function seedOf(s){ var h = 7; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h; }
+var shelf = document.getElementById('shelf'), over = document.getElementById('over'), chip = document.getElementById('chip');
+function bottle(w, i){
+  var r = rng(seedOf(w[0])), H = 200 + r() * 110, Wd = 54 + r() * 30, nk = 0.18 + r() * 0.14, sh = 0.36 + r() * 0.16;
+  var n0 = Wd * (0.36 + r() * 0.06), n1 = Wd - n0;
+  var d = 'M0,' + (H - 6) + ' Q0,' + H + ' 6,' + H + ' L' + (Wd - 6) + ',' + H + ' Q' + Wd + ',' + H + ' ' + Wd + ',' + (H - 6) +
+          ' L' + Wd + ',' + (H * sh) + ' C' + Wd + ',' + (H * (sh - 0.12)) + ' ' + n1 + ',' + (H * (nk + 0.06)) + ' ' + n1 + ',' + (H * nk) +
+          ' L' + n1 + ',0 L' + n0 + ',0 L' + n0 + ',' + (H * nk) +
+          ' C' + n0 + ',' + (H * (nk + 0.06)) + ' 0,' + (H * (sh - 0.12)) + ' 0,' + (H * sh) + ' Z';
+  var label = H * (sh + 0.12), lh = H * (0.16 + r() * 0.1);
+  var s = '<svg class="b" role="listitem" tabindex="0" width="' + Wd + '" height="' + H + '" viewBox="0 0 ' + Wd + ' ' + H +
+          '" aria-label="' + w[0] + ', ' + w[2] + ' pounds" data-i="' + i + '">' +
+          '<path d="' + d + '" fill="' + GLASS[w[1]] + '"/>' +
+          '<rect x="' + Wd * 0.12 + '" y="' + label + '" width="' + Wd * 0.76 + '" height="' + lh + '" fill="#FCF02A"/>' +
+          '<rect x="' + Wd * 0.2 + '" y="' + (label + lh * 0.3) + '" width="' + Wd * (0.25 + r() * 0.35) + '" height="' + lh * 0.18 + '" fill="' + GLASS[w[1]] + '"/></svg>';
+  return s;
+}
+shelf.innerHTML = WINES.map(bottle).join('');
+function show(el){
+  var w = WINES[+el.dataset.i], r = el.getBoundingClientRect();
+  chip.textContent = w[0] + ', £' + w[2]; chip.hidden = false;
+  var cw = chip.offsetWidth, x = r.left + r.width / 2, y = r.top - 26;
+  var left = Math.max(12, Math.min(innerWidth - cw - 12, x - cw / 2)), top = Math.max(110, y - 110);
+  chip.style.left = left + 'px'; chip.style.top = top + 'px';
+  over.innerHTML = marker(over, x, y + 20, left + cw / 2, top + chip.offsetHeight, '#0F6E2B');
+}
+function hide(){ chip.hidden = true; over.innerHTML = ''; }
+shelf.addEventListener('pointerover', function(e){ var b = e.target.closest('svg.b'); if (b) setTimeout(function(){ show(b); }, 460); });
+shelf.addEventListener('pointerleave', hide);
+shelf.addEventListener('focusin', function(e){ var b = e.target.closest('svg.b'); if (b) setTimeout(function(){ show(b); }, 460); });
+</script></body></html>

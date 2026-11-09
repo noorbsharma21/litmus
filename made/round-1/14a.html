@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Nuit</title>
+<!-- 14a. A dance company's season. Axis: route. This one: made for it. Your
+     movement is drawn as the dance: the pointer leaves a ribbon on the stage
+     that slowly fades, so every visitor dances a different piece. The season
+     sits still around it. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FDFF70;font-family:"Times New Roman",Times,serif;color:#1A1614}
+canvas{position:fixed;inset:0;width:100vw;height:100vh}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:52px;z-index:2;pointer-events:none}
+#season{position:fixed;left:24px;bottom:4vh;margin:0;font-size:24px;line-height:1.5;z-index:2;pointer-events:none;background:#FDFF70;padding:4px 10px 4px 0}
+</style></head><body>
+<canvas id="c" role="img" aria-label="A ribbon drawn by the pointer"></canvas>
+<h1>Company Nuit</h1>
+<p id="season">Stillwater, 3 to 8 February<br>Four Walls, 14 to 19 April<br>Late Hours, 9 to 14 June</p>
+<script src="kit.js"></script>
+<script>
+var c = document.getElementById('c'), g = c.getContext('2d'), pts = [], dpr = 1;
+function size(){ dpr = Math.min(2, devicePixelRatio || 1); c.width = innerWidth * dpr; c.height = innerHeight * dpr; g.setTransform(dpr,0,0,dpr,0,0); }
+size(); addEventListener('resize', size);
+addEventListener('pointermove', function(e){ pts.push({ x:e.clientX, y:e.clientY, life:1 }); if (pts.length > 420) pts.shift(); });
+function frame(){
+  if (c.width !== Math.round(innerWidth * dpr)) size();
+  g.fillStyle = '#FDFF70'; g.fillRect(0, 0, innerWidth, innerHeight);
+  for (var i = 1; i < pts.length; i++){
+    var a = pts[i - 1], b = pts[i];
+    var w = Math.min(40, 4 + Math.hypot(b.x - a.x, b.y - a.y) * 0.9);
+    g.strokeStyle = 'rgba(26,22,20,' + b.life.toFixed(3) + ')'; g.lineWidth = w; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
+  }
+  pts.forEach(function(p){ p.life -= 0.0035; });
+  while (pts.length && pts[0].life <= 0) pts.shift();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>

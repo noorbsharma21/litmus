@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bottle Hours</title>
+<!-- 01b. A natural wine shop. Axis: route. This one: immersive. You stand in
+     the cellar between two racks of bottle ends. The pointer walks you along
+     the racks and turns your head; pointing at a bottle end pins its name
+     and price. Same wines, palette and type as 01a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:40px;z-index:3;background:#FCF02A;padding:0 8px}
+p.where{position:fixed;left:24px;top:62px;margin:0;font-size:18px;z-index:3;background:#FCF02A;padding:2px 8px}
+#view{position:fixed;inset:0;perspective:700px;perspective-origin:50% 50%}
+#hall{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.wall{position:absolute;width:2400px;height:520px;top:-260px;display:grid;grid-template-columns:repeat(30,1fr);
+  grid-template-rows:repeat(6,1fr);gap:10px;padding:10px;box-sizing:border-box;background:#F64FB2}
+.wall.l{left:-1200px;transform:translateX(-380px) rotateY(90deg)}
+.wall.r{left:-1200px;transform:translateX(380px) rotateY(-90deg)}
+.end{border-radius:50%;background:#0F6E2B;cursor:pointer}
+.end.r{background:#1A1614}.end.o{background:#FCF02A}
+.end:hover{outline:4px solid #FCF02A;outline-offset:2px}
+#over{position:fixed;inset:0;pointer-events:none;z-index:4}
+.chip{position:fixed;font-size:20px;padding:5px 10px 6px;background:#0F6E2B;color:#fff;pointer-events:none;white-space:nowrap;z-index:5}
+</style></head><body>
+<h1>Bottle Hours</h1><p class="where">12 Ardley Street, open Thursday to Sunday</p>
+<div id="view"><div id="hall"><div class="wall l" id="L"></div><div class="wall r" id="R"></div></div></div>
+<svg id="over" width="100%" height="100%" aria-hidden="true"></svg>
+<div class="chip" id="chip" hidden></div>
+<script src="kit.js"></script>
+<script>
+var WINES = [['Gamay, Beaujolais','r',24],['Ribolla Gialla, Friuli','o',31],['Pet nat, Loire','w',22],['Trousseau, Jura','r',38],
+  ['Riesling, Mosel','w',27],['Cinsault, Swartland','r',21],['Zibibbo, Sicily','o',29],['Chenin, Anjou','w',33],
+  ['Frappato, Vittoria','r',26],['Gruner, Kamptal','w',19],['Rkatsiteli, Kakheti','o',35],['Poulsard, Arbois','r',41]];
+var hall = document.getElementById('hall'), over = document.getElementById('over'), chip = document.getElementById('chip');
+['L','R'].forEach(function(id, side){
+  var r = rng(side + 3), h = '';
+  for (var i = 0; i < 180; i++){
+    var k = Math.floor(r() * WINES.length);
+    h += '<div class="end ' + WINES[k][1] + '" data-k="' + k + '" title="' + WINES[k][0] + '"></div>';
+  }
+  document.getElementById(id).innerHTML = h;
+});
+var walk = 0, look = 0;
+addEventListener('pointermove', function(e){
+  if (!sized()) return;
+  walk = (e.clientX / innerWidth - 0.5) * 1700;
+  look = (e.clientY / innerHeight - 0.5) * -10;
+  hall.style.transform = 'translateZ(' + (200) + 'px) rotateX(' + look + 'deg) translateX(0) translateZ(0) ' +
+                         'rotateY(0deg) translate3d(0,0,' + 0 + 'px) translateZ(0) translate3d(' + 0 + 'px,0,' + (-walk) + 'px)';
+});
+document.addEventListener('pointerover', function(e){
+  var el = e.target.closest('.end'); if (!el){ chip.hidden = true; over.innerHTML = ''; return; }
+  var w = WINES[+el.dataset.k], r = el.getBoundingClientRect();
+  chip.textContent = w[0] + ', £' + w[2]; chip.hidden = false;
+  var cw = chip.offsetWidth, left = Math.max(12, Math.min(innerWidth - cw - 12, innerWidth / 2 - cw / 2)), top = innerHeight - 70;
+  chip.style.left = left + 'px'; chip.style.top = top + 'px';
+  over.innerHTML = marker(over, r.left + r.width / 2, r.top + r.height / 2, left + cw / 2, top, '#0F6E2B');
+});
+</script></body></html>

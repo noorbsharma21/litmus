@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Rye</title>
+<!-- 16b. A bakery. Axis: worlds. This one: several worlds. The day's six bakes
+     as six territories of one sheet, each with its bake drawn in it, and in
+     every territory the steam leans toward the pointer. Same bakes, palette
+     and type as 16a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"Times New Roman",Times,serif;color:#1A1614}
+header{position:fixed;left:24px;top:14px}
+h1{margin:0;font-weight:normal;font-size:46px}
+p.w{margin:2px 0 0;font-size:19px}
+#g{position:fixed;left:3vw;right:3vw;top:110px;bottom:3vh;display:grid;grid-template-columns:1.3fr 1fr .8fr;grid-template-rows:1fr 1fr;gap:6px}
+.t{position:relative;min-height:0;overflow:hidden}
+.t svg{position:absolute;inset:0;width:100%;height:100%}
+.t p{position:absolute;left:14px;top:10px;margin:0;font-size:22px}
+</style></head><body>
+<header><h1>Daily Rye</h1><p class="w">Tuesday to Sunday from 7, until it runs out</p></header>
+<div id="g"></div>
+<script src="kit.js"></script>
+<script>
+var B = [['Rye',4.5],['Sourdough',5],['Cardamom bun',3.2],['Focaccia',6],['Baguette',3],['Croissant',2.8]];
+var BG = ['#A40603','#FFFFFF','#1A1614','#FFFFFF','#A40603','#1A1614'];
+var g = document.getElementById('g'), T = [];
+B.forEach(function(b, i){
+  var d = document.createElement('div'); d.className = 't'; d.style.background = BG[i];
+  var fg = inkOn(BG[i]), crust = BG[i] === '#A40603' ? '#FFFFFF' : '#A40603';
+  d.style.color = fg; d.innerHTML = '<svg viewBox="0 0 200 140" preserveAspectRatio="xMidYMid meet" role="img" aria-label="' + b[0] + '"></svg><p>' + b[0] + ', £' + b[1].toFixed(2) + '</p>';
+  g.appendChild(d); T.push({ el:d, svg:d.querySelector('svg'), crust:crust, fg:fg, shape:i, lean:0 });
+});
+function bake(t){
+  var s = '', c = t.crust;
+  switch (t.shape){
+    case 0: s = '<rect x="50" y="78" width="100" height="40" rx="10" fill="' + c + '"/>'; break;
+    case 1: s = '<ellipse cx="100" cy="98" rx="56" ry="26" fill="' + c + '"/>'; break;
+    case 2: s = '<circle cx="100" cy="98" r="22" fill="' + c + '"/>'; break;
+    case 3: s = '<rect x="40" y="94" width="120" height="22" rx="4" fill="' + c + '"/>'; break;
+    case 4: s = '<rect x="24" y="96" width="152" height="16" rx="8" fill="' + c + '"/>'; break;
+    default: s = '<path d="M60,112 Q100,64 140,112 Z" fill="' + c + '"/>';
+  }
+  for (var k = 0; k < 3; k++){
+    var x0 = 80 + k * 20, L = t.lean * 40;
+    s += '<path d="M' + x0 + ',70 C' + (x0 + L * 0.3) + ',55 ' + (x0 - 8 + L * 0.6) + ',42 ' + (x0 + L) + ',24" fill="none" stroke="' + t.fg + '" stroke-width="3" stroke-linecap="round"/>';
+  }
+  t.svg.innerHTML = s;
+}
+var mx = innerWidth / 2;
+function frame(){
+  T.forEach(function(t){
+    var r = t.el.getBoundingClientRect(), target = Math.max(-1, Math.min(1, (mx - (r.left + r.width / 2)) / (r.width)));
+    t.lean += (target - t.lean) * 0.1; bake(t);
+  });
+  requestAnimationFrame(frame);
+}
+addEventListener('pointermove', function(e){ mx = e.clientX; });
+requestAnimationFrame(frame);
+</script></body></html>

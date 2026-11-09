@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slow Hours</title>
+<!-- 20b. A podcast about sleep. Axis: preweb. This one: print. A page from an
+     almanac: the moon in its phases across the top, the episodes set as
+     almanac entries beneath. Moving across the page moves the night through
+     the month, and the large moon waxes and wanes with it. Same episodes,
+     palette and type as 20a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#88B7D3;font-family:"Times New Roman",Times,serif;color:#3866C1}
+h1{position:fixed;left:6vw;top:5vh;margin:0;font-weight:normal;font-size:60px}
+p.w{position:fixed;left:6vw;top:calc(5vh + 72px);margin:0;font-size:20px}
+#phases{position:fixed;left:6vw;right:6vw;top:24vh;display:flex;justify-content:space-between}
+#phases svg{width:5.5vw;height:5.5vw}
+#moon{position:fixed;right:7vw;bottom:8vh;width:min(36vh,30vw);height:min(36vh,30vw)}
+#ep{position:fixed;left:6vw;top:38vh;margin:0;columns:2;column-gap:4vw;width:min(54vw,720px);font-size:21px;line-height:1.8}
+#ep span{color:#E47937}
+.fo{position:fixed;left:6vw;bottom:4vh;margin:0;font-size:16px}
+</style></head><body>
+<h1>Slow Hours</h1><p class="w">A podcast about sleep. New episode every Sunday night, around forty minutes each.</p>
+<div id="phases" aria-hidden="true"></div>
+<p id="ep"></p>
+<svg id="moon" viewBox="-50 -50 100 100" role="img" aria-label="The moon"></svg>
+<p class="fo">The almanac, page 11</p>
+<script src="kit.js"></script>
+<script>
+var E = [['Tide','41 min'],['Radiator','38 min'],['Night bus','44 min'],['Fog','36 min'],['Sleeper train','47 min'],['Lighthouse','40 min'],['Snow','39 min'],['Ferry','43 min']];
+document.getElementById('ep').innerHTML = E.map(function(e, i){ return '<span>' + (i + 1) + '</span> ' + e[0] + ', ' + e[1]; }).join('<br>');
+/* a phase from 0 to 1: lit disc with a terminator ellipse */
+function moon(f, size){
+  var lit = '#FFFFFF', dark = '#3866C1', k = Math.cos(f * Math.PI * 2), rx = Math.abs(k) * 46;
+  var waxing = f < 0.5;
+  var s = '<circle r="46" fill="' + dark + '"/>';
+  s += '<path d="M0,-46 A46,46 0 0 ' + (waxing ? 1 : 0) + ' 0,46 A' + rx.toFixed(1) + ',46 0 0 ' + ((k > 0) === waxing ? 0 : 1) + ' 0,-46 Z" fill="' + lit + '"/>';
+  return s;
+}
+document.getElementById('phases').innerHTML = [0,1,2,3,4,5,6,7].map(function(i){ return '<svg viewBox="-50 -50 100 100">' + moon(i / 8 + 0.0001) + '</svg>'; }).join('');
+var m = document.getElementById('moon');
+function set(f){ m.innerHTML = moon(f); }
+addEventListener('pointermove', function(e){ if (sized()) set(Math.min(0.999, Math.max(0.001, e.clientX / innerWidth))); });
+set(0.3);
+</script></body></html>

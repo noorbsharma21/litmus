@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stem and Hour</title>
+<!-- 13a. A florist. Axis: division. This one: a regular grid. Sixteen beds in
+     even rows, a flower drawn in each, and every flower opens as the pointer
+     comes near and closes as it goes. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#EE5884;font-family:"Times New Roman",Times,serif;color:#072493}
+h1{position:fixed;left:24px;top:12px;margin:0;font-weight:normal;font-size:40px}
+#g{position:fixed;left:3vw;right:3vw;top:72px;bottom:3vh;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:6px}
+.b{position:relative;background:#072493;min-height:0}
+.b svg{position:absolute;inset:0;width:100%;height:100%}
+.b p{position:absolute;left:10px;bottom:4px;margin:0;font-size:17px;color:#fff}
+</style></head><body>
+<h1>Stem and Hour</h1>
+<div id="g"></div>
+<script src="kit.js"></script>
+<script>
+var FL = ['tulip','ranunculus','anemone','sweet pea','peony','cosmos','dahlia','iris','hellebore','narcissus','poppy','scabious','foxglove','freesia','aster','lisianthus'];
+var g = document.getElementById('g'), beds = [];
+FL.forEach(function(name, k){
+  var r = rng(k * 23 + 7), d = document.createElement('div'); d.className = 'b';
+  d.innerHTML = '<svg viewBox="-50 -50 100 100" role="img" aria-label="' + name + '"></svg><p>' + name + '</p>';
+  g.appendChild(d); beds.push({ el:d, svg:d.querySelector('svg'), n:4 + Math.floor(r() * 6), len:16 + r() * 14, col:['#F4432D','#EE5884','#FFFFFF'][k % 3], open:0, t:0 });
+});
+function draw(b){
+  var out = '', o = b.open;
+  for (var i = 0; i < b.n; i++){
+    var a = i / b.n * 360, L = b.len * (0.25 + o * 0.75), W = b.len * (0.12 + o * 0.28);
+    out += '<ellipse cx="0" cy="' + (-L / 2) + '" rx="' + W + '" ry="' + (L / 2) + '" fill="' + b.col + '" transform="rotate(' + a + ')"/>';
+  }
+  out += '<circle r="' + (3 + o * 4) + '" fill="#FCF02A"/>';
+  b.svg.innerHTML = out;
+}
+var mx = -9999, my = -9999;
+function frame(){
+  beds.forEach(function(b){
+    var r = b.el.getBoundingClientRect(), d = Math.hypot(mx - (r.left + r.width / 2), my - (r.top + r.height / 2));
+    var target = Math.max(0, 1 - d / Math.max(220, innerWidth * 0.22));
+    b.open += (target - b.open) * 0.12;
+    draw(b);
+  });
+  requestAnimationFrame(frame);
+}
+addEventListener('pointermove', function(e){ mx = e.clientX; my = e.clientY; });
+requestAnimationFrame(frame);
+</script></body></html>

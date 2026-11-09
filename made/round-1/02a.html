@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arda</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English&display=swap" rel="stylesheet">
+<!-- 02a. A chef's eight course tasting menu. Axis: worlds. This one: one idea.
+     One plate. Move around it and the courses arrive on it one after another,
+     each an arrangement of its own. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#3866C1;font-family:"IM Fell English",serif;color:#fff}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:44px}
+p.when{position:fixed;left:24px;top:68px;margin:0;font-size:19px}
+#plate{position:fixed;left:50%;top:48%;width:min(62vmin,560px);height:min(62vmin,560px);transform:translate(-50%,-50%);
+  border-radius:50%;background:#88B7D3}
+.f{position:absolute;transition:all .7s cubic-bezier(.2,.7,.2,1)}
+#course{position:fixed;left:0;right:0;bottom:7vh;text-align:center;font-size:34px;margin:0}
+</style></head><body>
+<h1>Arda</h1><p class="when">Wednesday to Saturday, evenings. Eight courses, £95</p>
+<div id="plate" role="img" aria-label="The plate"></div>
+<p id="course" aria-live="polite"></p>
+<script src="kit.js"></script>
+<script>
+document.querySelector('.when').textContent = 'Wednesday to Saturday, evenings. Eight courses, £95';
+var C = ['Oyster, fennel','Beetroot, rye','Mackerel, rhubarb','Leek, hazelnut','Lamb, anchovy','Sheep’s curd, honey','Plum, bay','Chocolate, salt'];
+var plate = document.getElementById('plate'), course = document.getElementById('course');
+var parts = [];
+for (var i = 0; i < 9; i++){ var d = document.createElement('div'); d.className = 'f'; plate.appendChild(d); parts.push(d); }
+function arrange(k){
+  var r = rng(k * 977 + 13);
+  parts.forEach(function(p, i){
+    var size = 6 + r() * 26, ang = r() * Math.PI * 2, rad = r() * 30, round = r() < 0.6;
+    p.style.width = size + '%'; p.style.height = (round ? size : size * (0.3 + r() * 0.5)) + '%';
+    p.style.left = (50 + Math.cos(ang) * rad - size / 2) + '%'; p.style.top = (50 + Math.sin(ang) * rad - size / 2) + '%';
+    p.style.borderRadius = round ? '50%' : '2px';
+    p.style.background = i % 3 === 0 ? '#1A1614' : (i % 3 === 1 ? '#E47937' : '#3866C1');
+    p.style.transform = 'rotate(' + Math.floor(r() * 180) + 'deg)';
+    p.style.opacity = i < 3 + (k % 6) ? 1 : 0;
+  });
+  course.textContent = C[k];
+}
+var now = -1;
+addEventListener('pointermove', function(e){
+  if (!sized()) return;
+  var a = Math.atan2(e.clientY - innerHeight * 0.48, e.clientX - innerWidth / 2) + Math.PI;
+  var k = Math.floor(a / (Math.PI * 2) * 8) % 8;
+  if (k !== now){ now = k; arrange(k); }
+});
+addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ now = (now + (e.key === 'ArrowRight' ? 1 : 7)) % 8; arrange(now); } });
+now = 0; arrange(0);
+</script></body></html>

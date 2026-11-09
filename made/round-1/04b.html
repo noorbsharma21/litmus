@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ines Moreau</title>
+<!-- 04b. A photographer's portfolio. Axis: route. This one: immersive. A
+     darkroom under the red safelight, prints pegged on a line across the
+     room. The pointer is the lamp: prints near it come up out of the dark,
+     prints away from it sink back. Same pictures, palette and type as 04a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#A40603;font-family:"Times New Roman",Times,serif;color:#fff}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:40px;z-index:2}
+p.s{position:fixed;left:24px;top:62px;margin:0;font-size:18px;z-index:2}
+#room{position:fixed;inset:0;perspective:900px}
+#line{position:absolute;left:-10vw;right:-10vw;top:34vh;transform-style:preserve-3d;transform:rotateX(8deg) rotateY(-14deg)}
+.p{position:absolute;top:0;width:15vw;aspect-ratio:3/4;background:#1A1614;transform-origin:top center;transition:filter .3s}
+.p svg{width:100%;height:100%;display:block}
+.peg{position:absolute;left:50%;top:-10px;width:6px;height:18px;margin-left:-3px;background:#FFFFFF}
+svg.wire{position:absolute;left:0;top:-4px;width:100%;height:20px;overflow:visible}
+</style></head><body>
+<h1>Ines Moreau</h1><p class="s">Low Tide, Night Kitchens, Rooftops in March</p>
+<div id="room"><div id="line"><svg class="wire" aria-hidden="true"><path id="w" stroke="#1A1614" stroke-width="2" fill="none"/></svg></div></div>
+<script src="kit.js"></script>
+<script>
+function picture(seed){
+  var r = rng(seed), s = '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="' + (r() < 0.5 ? '#FFFFFF' : '#A40603') + '"/>';
+  var hz = 120 + r() * 200; s += '<rect y="' + hz + '" width="300" height="' + (400 - hz) + '" fill="#1A1614"/>';
+  for (var i = 0; i < 3 + Math.floor(r() * 4); i++){
+    var c = ['#FFFFFF','#A40603','#1A1614'][Math.floor(r() * 3)];
+    if (r() < 0.5) s += '<circle cx="' + r() * 300 + '" cy="' + r() * 400 + '" r="' + (8 + r() * 60) + '" fill="' + c + '"/>';
+    else s += '<rect x="' + r() * 280 + '" y="' + r() * 380 + '" width="' + (10 + r() * 120) + '" height="' + (6 + r() * 80) + '" fill="' + c + '"/>';
+  }
+  return s + '</svg>';
+}
+var line = document.getElementById('line'), prints = [];
+for (var i = 0; i < 9; i++){
+  var p = document.createElement('div'); p.className = 'p';
+  p.style.left = (6 + i * 14) + 'vw';
+  p.style.top = (Math.sin(i / 8 * Math.PI) * 4) + 'vh';
+  p.style.transform = 'rotate(' + ((i % 3) - 1) * 2 + 'deg)';
+  p.innerHTML = picture(i * 7 + 2) + '<span class="peg"></span>';
+  p.setAttribute('role', 'img'); p.setAttribute('aria-label', 'A print on the line');
+  line.appendChild(p); prints.push(p);
+}
+function lamp(x, y){
+  prints.forEach(function(p){
+    var r = p.getBoundingClientRect(), d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
+    var lit = Math.max(0, 1 - d / (innerWidth * 0.32));
+    p.style.filter = 'brightness(' + (0.08 + lit * 0.92) + ')';
+  });
+}
+addEventListener('pointermove', function(e){ lamp(e.clientX, e.clientY); });
+lamp(innerWidth * 0.5, innerHeight * 0.5);
+</script></body></html>

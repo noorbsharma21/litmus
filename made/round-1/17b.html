@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keel, from Foundry Nine</title>
+<!-- 17b. A typeface foundry selling one face. Axis: density. This one: nearly
+     empty. One glyph of Keel at a time, very large. Across the page chooses
+     the glyph, up and down chooses the weight. Same face, palette and type
+     as 17a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#3866C1;font-family:"Times New Roman",Times,serif;color:#fff}
+header{position:fixed;left:24px;top:12px}
+h1{margin:0;font-weight:normal;font-size:24px}
+p.w{margin:2px 0 0;font-size:16px;color:#88B7D3}
+#k{position:fixed;left:50%;top:52%;width:min(46vw,58vh);height:min(66vh,82vw);transform:translate(-50%,-50%)}
+</style></head><body>
+<header><h1>Keel, from Foundry Nine</h1><p class="w">One family, 36 glyphs, every weight between a pip and a block. Desktop licence &pound;60</p></header>
+<div id="k" role="img" aria-live="polite"></div>
+<script src="kit.js"></script><script src="glyphs.js"></script>
+<script>
+var CH = Object.keys(KEEL), k = document.getElementById('k'), i = 0, W = 0.5;
+function draw(){ k.innerHTML = keel(CH[i], W, 1, '#E47937'); k.setAttribute('aria-label', CH[i]); }
+addEventListener('pointermove', function(e){ if (!sized()) return; i = Math.min(CH.length - 1, Math.floor(e.clientX / innerWidth * CH.length)); W = 1 - e.clientY / innerHeight; draw(); });
+addEventListener('keydown', function(e){ if (e.key === 'ArrowRight') i = Math.min(CH.length - 1, i + 1); if (e.key === 'ArrowLeft') i = Math.max(0, i - 1); draw(); });
+draw();
+</script></body></html>

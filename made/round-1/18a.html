@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mara Varn, tattoo</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<!-- 18a. A tattoo artist. Axis: route. This one: made for it. A flash sheet
+     of twelve designs drawn for this page from curves, and each one draws
+     itself line by line when the pointer rests on it, the way it would go
+     onto skin. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:6px;margin:0;font-weight:normal;font-size:52px;font-family:"UnifrakturMaguntia",serif;color:#A40603}
+p.w{position:fixed;left:24px;top:70px;margin:0;font-size:18px}
+#g{position:fixed;left:3vw;right:3vw;top:108px;bottom:3vh;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:1.6vw}
+.d{min-height:0}
+.d svg{width:100%;height:100%}
+.d path{stroke-dasharray:var(--l);stroke-dashoffset:0}
+.d.go path{animation:ink 1.6s ease-out forwards}
+@keyframes ink{from{stroke-dashoffset:var(--l)}to{stroke-dashoffset:0}}
+</style></head><body>
+<h1>Mara Varn</h1><p class="w">Booking Tuesdays. Walk ins from the flash sheet, Saturday afternoons</p>
+<div id="g"></div>
+<script src="kit.js"></script>
+<script>
+var g = document.getElementById('g');
+for (var n = 0; n < 12; n++){
+  var r = rng(n * 61 + 8), k = 2 + Math.floor(r() * 6), m = 1 + Math.floor(r() * 3), pts = [];
+  for (var t = 0; t <= 720; t++){
+    var a = t / 720 * Math.PI * 2 * m, rr = 40 * Math.cos(k * a / m) * (0.6 + 0.4 * Math.cos(a * 0.5));
+    pts.push([(Math.cos(a) * rr).toFixed(1), (Math.sin(a) * rr).toFixed(1)]);
+  }
+  var d = 'M' + pts.map(function(p){ return p.join(','); }).join(' L');
+  var el = document.createElement('div'); el.className = 'd';
+  el.innerHTML = '<svg viewBox="-50 -50 100 100" role="img" aria-label="Flash design ' + (n + 1) + '"><circle r="' + (8 + r() * 10) + '" fill="#A40603"/>' +
+    '<path d="' + d + '" fill="none" stroke="#1A1614" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+  g.appendChild(el);
+  var p = el.querySelector('path'); var L = p.getTotalLength ? p.getTotalLength() : 3000; p.style.setProperty('--l', L);
+  el.addEventListener('pointerenter', function(){ var e2 = this; e2.classList.remove('go'); void e2.offsetWidth; e2.classList.add('go'); });
+}
+</script></body></html>

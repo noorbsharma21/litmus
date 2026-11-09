@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slow Hours</title>
+<!-- 20a. A podcast about sleep. Axis: preweb. This one: the early web. A raw
+     page set the old way, link and vlink colours as attributes, a plain list
+     of episodes under a night sky made of asterisks. The asterisks drift away
+     from the pointer, the way a night sky would if you could brush it. -->
+<style>
+#sky{position:fixed;inset:0;pointer-events:none;font-size:22px;overflow:hidden}
+#sky span{position:absolute;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+h1{font-size:56px;margin:.3em 0 .2em;position:relative}
+li{font-size:24px;line-height:1.7}
+p{font-size:22px;position:relative}
+ul{position:relative}
+</style></head>
+<body bgcolor="#3866C1" text="#88B7D3" link="#E47937" vlink="#FFFFFF">
+<div id="sky" aria-hidden="true"></div>
+<h1>Slow Hours</h1>
+<p>A podcast about sleep. New episode every Sunday night, around forty minutes each.</p>
+<ul id="ul"></ul>
+<script src="kit.js"></script>
+<script>
+var E = [['Tide','41 min'],['Radiator','38 min'],['Night bus','44 min'],['Fog','36 min'],['Sleeper train','47 min'],['Lighthouse','40 min'],['Snow','39 min'],['Ferry','43 min']];
+document.getElementById('ul').innerHTML = E.map(function(e){ return '<li><a href="#">' + e[0] + '</a>, ' + e[1] + '</li>'; }).join('');
+var sky = document.getElementById('sky'), r = rng(20), stars = [];
+for (var i = 0; i < 90; i++){
+  var s = document.createElement('span'); s.textContent = '*';
+  s.style.left = (r() * 100) + '%'; s.style.top = (r() * 100) + '%'; s.style.color = r() < 0.2 ? '#E47937' : '#88B7D3';
+  sky.appendChild(s); stars.push(s);
+}
+addEventListener('pointermove', function(e){
+  stars.forEach(function(s){
+    var b = s.getBoundingClientRect(), dx = b.left - e.clientX, dy = b.top - e.clientY, d = Math.hypot(dx, dy) || 1;
+    var push = Math.max(0, 140 - d);
+    s.style.transform = push ? 'translate(' + (dx / d * push) + 'px,' + (dy / d * push) + 'px)' : '';
+  });
+});
+</script></body></html>

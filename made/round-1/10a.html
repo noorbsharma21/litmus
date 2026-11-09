@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night Frames</title>
+<!-- 10a. A film festival, one week. Axis: route. This one: made for it. Each
+     film is a frame drawn for this page, and it runs only while the pointer
+     holds it. Let go and it stops where it is. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#072493;font-family:"Times New Roman",Times,serif;color:#fff}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:44px}
+p.w{position:fixed;left:24px;top:68px;margin:0;font-size:20px}
+#g{position:fixed;left:3vw;right:3vw;top:120px;bottom:3vh;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:2vw}
+.f{position:relative;min-height:0;display:flex;flex-direction:column}
+canvas{flex:1;width:100%;min-height:0;background:#EE5884;display:block}
+.f p{margin:8px 0 0;font-size:19px}
+</style></head><body>
+<h1>Night Frames</h1><p class="w">12 to 18 March, the Regal, Sheffield Road</p>
+<div id="g"></div>
+<script src="kit.js"></script>
+<script>
+var F = [['The Long Shift','Thursday 9pm'],['Salt Flats','Friday 7pm'],['Nine Rooms','Friday 10pm'],['Low Sun','Saturday 6pm'],
+  ['The Diver','Saturday 9pm'],['Harbour Lights','Sunday 5pm'],['After the Rain','Sunday 8pm'],['Closing night','Monday 8pm']];
+var g = document.getElementById('g'), films = [];
+F.forEach(function(f, k){
+  var d = document.createElement('div'); d.className = 'f';
+  d.innerHTML = '<canvas role="img" aria-label="' + f[0] + '"></canvas><p>' + f[0] + ', ' + f[1] + '</p>';
+  g.appendChild(d);
+  var r = rng(k * 29 + 4), shapes = [];
+  for (var i = 0; i < 5; i++) shapes.push({ x:r(), y:r(), s:0.05 + r() * 0.25, vx:(r() - .5) * 0.004, vy:(r() - .5) * 0.004, c:['#072493','#F4432D','#FFFFFF'][i % 3], round:r() < .5 });
+  films.push({ el:d, cv:d.querySelector('canvas'), shapes:shapes, on:false });
+  d.addEventListener('pointerenter', function(){ films[k].on = true; });
+  d.addEventListener('pointerleave', function(){ films[k].on = false; });
+});
+function frame(){
+  films.forEach(function(f){
+    var c = f.cv, w = c.clientWidth, h = c.clientHeight; if (!w || !h) return;
+    if (c.width !== w) { c.width = w; c.height = h; }
+    var g2 = c.getContext('2d'); g2.fillStyle = '#EE5884'; g2.fillRect(0, 0, w, h);
+    f.shapes.forEach(function(s){
+      if (f.on){ s.x += s.vx; s.y += s.vy; if (s.x < 0 || s.x > 1) s.vx *= -1; if (s.y < 0 || s.y > 1) s.vy *= -1; }
+      g2.fillStyle = s.c; var R = s.s * Math.min(w, h);
+      if (s.round){ g2.beginPath(); g2.arc(s.x * w, s.y * h, R, 0, Math.PI * 2); g2.fill(); }
+      else g2.fillRect(s.x * w - R, s.y * h - R * 0.4, R * 2, R * 0.8);
+    });
+  });
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>

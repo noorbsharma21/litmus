@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keel, from Foundry Nine</title>
+<!-- 17a. A typeface foundry selling one face. Axis: density. This one: packed.
+     Every glyph of Keel on the page at once, drawn in code from its grid.
+     Up and down the page changes the weight, across changes the width, so
+     the whole family is under one pointer. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#3866C1;font-family:"Times New Roman",Times,serif;color:#fff}
+header{position:fixed;left:24px;top:12px;z-index:2}
+h1{margin:0;font-weight:normal;font-size:30px}
+p.w{margin:2px 0 0;font-size:18px;color:#88B7D3}
+#g{position:fixed;left:2vw;right:2vw;top:86px;bottom:2vh;display:grid;grid-template-columns:repeat(9,1fr);grid-template-rows:repeat(4,1fr);gap:1.4vw}
+.k{min-height:0;min-width:0}
+</style></head><body>
+<header><h1>Keel, from Foundry Nine</h1><p class="w">One family, 36 glyphs, every weight between a pip and a block. Desktop licence &pound;60</p></header>
+<div id="g"></div>
+<script src="kit.js"></script><script src="glyphs.js"></script>
+<script>
+var CH = Object.keys(KEEL), g = document.getElementById('g');
+g.innerHTML = CH.map(function(c){ return '<div class="k"></div>'; }).join('');
+var cells = Array.prototype.slice.call(g.children), W = 0.5, Wd = 1;
+function draw(){ cells.forEach(function(el, i){ el.innerHTML = keel(CH[i], W, Wd, i % 7 === 3 ? '#E47937' : '#FFFFFF'); }); }
+addEventListener('pointermove', function(e){ if (!sized()) return; W = 1 - e.clientY / innerHeight; Wd = 0.7 + e.clientX / innerWidth * 0.8; draw(); });
+draw();
+</script></body></html>

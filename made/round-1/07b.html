@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ola Bente Architects</title>
+<!-- 07b. An architecture practice. Axis: division. This one: uneven land. The
+     same nine projects as plots on one site plan, every plot a different size
+     and shape, and each building rises out of its plot when the pointer is
+     over it. Same projects, palette and type as 07a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:12px;margin:0;font-weight:normal;font-size:36px;z-index:2}
+svg{position:fixed;inset:0;width:100vw;height:100vh}
+</style></head><body>
+<h1>Ola Bente Architects</h1>
+<svg id="s" aria-label="Nine projects as plots on a site plan"></svg>
+<script src="kit.js"></script>
+<script>
+var P = ['Housing, Ghent','School, Ostend','Bathhouse, Bergen','Library, Cork','Market hall, Lyon','Chapel, Turku','Ferry terminal, Bilbao','Studios, Basel','Pavilion, Aarhus'];
+var s = document.getElementById('s'), plots = [], hot = -1, rise = P.map(function(){ return 0; });
+function layout(){
+  /* recursive uneven cuts, like land divided over time rather than drawn on a grid */
+  var r = rng(77), boxes = [[innerWidth * 0.03, 80, innerWidth * 0.97, innerHeight * 0.97]];
+  while (boxes.length < P.length){
+    boxes.sort(function(a, b){ return (b[2]-b[0])*(b[3]-b[1]) - (a[2]-a[0])*(a[3]-a[1]); });
+    var b = boxes.shift(), vert = (b[2]-b[0]) > (b[3]-b[1]), t = 0.3 + r() * 0.4;
+    if (vert){ var x = b[0] + (b[2]-b[0]) * t; boxes.push([b[0],b[1],x,b[3]],[x,b[1],b[2],b[3]]); }
+    else { var y = b[1] + (b[3]-b[1]) * t; boxes.push([b[0],b[1],b[2],y],[b[0],y,b[2],b[3]]); }
+  }
+  plots = boxes.map(function(b, i){ var q = rng(i * 13 + 2); return { b:b, fw:0.3 + q() * 0.35, fd:0.3 + q() * 0.35 }; });
+}
+function draw(){
+  if (!sized()){ requestAnimationFrame(draw); return; }
+  if (!plots.length) layout();
+  var out = '';
+  plots.forEach(function(p, i){
+    rise[i] += ((i === hot ? 1 : 0) - rise[i]) * 0.15;
+    var b = p.b, pad = 6, w = b[2]-b[0], h = b[3]-b[1];
+    out += '<rect x="' + (b[0] + pad) + '" y="' + (b[1] + pad) + '" width="' + (w - pad * 2) + '" height="' + (h - pad * 2) + '" fill="#A40603"/>';
+    var fw = w * p.fw, fd = h * p.fd, cx = b[0] + w / 2 - fw / 2, cy = b[1] + h / 2 - fd / 2, z = rise[i] * Math.min(w, h) * 0.35;
+    out += '<rect x="' + (cx + z * 0.6) + '" y="' + (cy + z * 0.4) + '" width="' + fw + '" height="' + fd + '" fill="#1A1614" opacity=".35"/>';
+    out += '<rect x="' + cx + '" y="' + cy + '" width="' + fw + '" height="' + fd + '" fill="#FFFFFF" stroke="#1A1614"/>';
+    out += '<text x="' + (b[0] + 16) + '" y="' + (b[3] - 16) + '" font-size="19" font-family="Times New Roman, Times, serif" fill="#FFFFFF">' + P[i] + '</text>';
+  });
+  s.innerHTML = out;
+  requestAnimationFrame(draw);
+}
+addEventListener('pointermove', function(e){
+  hot = -1;
+  plots.forEach(function(p, i){ var b = p.b; if (e.clientX > b[0] && e.clientX < b[2] && e.clientY > b[1] && e.clientY < b[3]) hot = i; });
+});
+addEventListener('resize', function(){ plots = []; });
+requestAnimationFrame(draw);
+</script></body></html>

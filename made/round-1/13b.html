@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stem and Hour</title>
+<!-- 13b. A florist. Axis: division. This one: uneven land. The same sixteen
+     flowers in a garden plan: beds of every size, cut the way a garden is
+     dug rather than ruled, and the flowers open as the pointer comes near.
+     Same flowers, palette and type as 13a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#EE5884;font-family:"Times New Roman",Times,serif;color:#072493}
+h1{position:fixed;left:24px;top:12px;margin:0;font-weight:normal;font-size:40px;z-index:2;background:#EE5884;padding:0 8px}
+svg#s{position:fixed;inset:0;width:100vw;height:100vh}
+</style></head><body>
+<h1>Stem and Hour</h1>
+<svg id="s" aria-label="A garden plan of sixteen beds"></svg>
+<script src="kit.js"></script>
+<script>
+var FL = ['tulip','ranunculus','anemone','sweet pea','peony','cosmos','dahlia','iris','hellebore','narcissus','poppy','scabious','foxglove','freesia','aster','lisianthus'];
+var s = document.getElementById('s'), beds = [], mx = -9999, my = -9999;
+function layout(){
+  var r = rng(55), boxes = [[innerWidth * 0.03, 70, innerWidth * 0.97, innerHeight * 0.97]];
+  while (boxes.length < FL.length){
+    boxes.sort(function(a, b){ return (b[2]-b[0])*(b[3]-b[1]) - (a[2]-a[0])*(a[3]-a[1]); });
+    var b = boxes.shift(), vert = (b[2]-b[0]) > (b[3]-b[1]) * (0.7 + r() * 0.6), t = 0.28 + r() * 0.44;
+    if (vert){ var x = b[0] + (b[2]-b[0]) * t; boxes.push([b[0],b[1],x,b[3]],[x,b[1],b[2],b[3]]); }
+    else { var y = b[1] + (b[3]-b[1]) * t; boxes.push([b[0],b[1],b[2],y],[b[0],y,b[2],b[3]]); }
+  }
+  beds = boxes.map(function(b, k){ var q = rng(k * 23 + 7); return { b:b, n:4 + Math.floor(q() * 6), len:16 + q() * 14, col:['#F4432D','#EE5884','#FFFFFF'][k % 3], open:0, name:FL[k] }; });
+}
+function frame(){
+  if (!sized()){ requestAnimationFrame(frame); return; }
+  if (!beds.length) layout();
+  var out = '';
+  beds.forEach(function(d){
+    var b = d.b, pad = 4, cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2, sc = Math.min(b[2]-b[0], b[3]-b[1]) / 100;
+    var t = Math.max(0, 1 - Math.hypot(mx - cx, my - cy) / Math.max(220, innerWidth * 0.22));
+    d.open += (t - d.open) * 0.12;
+    out += '<rect x="' + (b[0] + pad) + '" y="' + (b[1] + pad) + '" width="' + (b[2]-b[0]-pad*2) + '" height="' + (b[3]-b[1]-pad*2) + '" rx="' + (4 + sc * 6) + '" fill="#072493"/>';
+    out += '<g transform="translate(' + cx + ',' + cy + ') scale(' + sc + ')">';
+    for (var i = 0; i < d.n; i++){
+      var L = d.len * (0.25 + d.open * 0.75), W = d.len * (0.12 + d.open * 0.28);
+      out += '<ellipse cx="0" cy="' + (-L / 2) + '" rx="' + W + '" ry="' + (L / 2) + '" fill="' + d.col + '" transform="rotate(' + (i / d.n * 360) + ')"/>';
+    }
+    out += '<circle r="' + (3 + d.open * 4) + '" fill="#FCF02A"/></g>';
+    out += '<text x="' + (b[0] + 12) + '" y="' + (b[3] - 10) + '" font-size="17" font-family="Times New Roman, Times, serif" fill="#fff">' + d.name + '</text>';
+  });
+  s.innerHTML = out;
+  requestAnimationFrame(frame);
+}
+addEventListener('pointermove', function(e){ mx = e.clientX; my = e.clientY; });
+addEventListener('resize', function(){ beds = []; });
+requestAnimationFrame(frame);
+</script></body></html>

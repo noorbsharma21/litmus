@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night Frames</title>
+<!-- 10b. A film festival, one week. Axis: route. This one: immersive. You
+     sit in the cinema: rows of seats below you, the screen ahead with the
+     week's programme on it. The pointer moves your head, and the room moves
+     the way a room does. Same films, palette and type as 10a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#072493;font-family:"Times New Roman",Times,serif;color:#fff}
+#room{position:fixed;inset:0;perspective:700px}
+#hall{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+#screen{position:absolute;left:14%;right:14%;top:8%;height:52%;background:#EE5884;transform:translateZ(-260px);padding:22px 30px;box-sizing:border-box;color:#072493}
+#screen h1{margin:0;font-weight:normal;font-size:46px}
+#screen p{margin:4px 0 12px;font-size:20px}
+#screen ul{margin:0;padding:0;list-style:none;columns:2;font-size:20px;line-height:1.55}
+.row{position:absolute;left:-10%;right:-10%;height:12%;display:flex;justify-content:center;gap:6px}
+.seat{width:5.4%;background:#F4432D;border-radius:40% 40% 0 0}
+</style></head><body>
+<div id="room"><div id="hall">
+  <div id="screen"><h1>Night Frames</h1><p>12 to 18 March, the Regal, Sheffield Road</p><ul id="ul"></ul></div>
+</div></div>
+<script src="kit.js"></script>
+<script>
+var F = [['The Long Shift','Thursday 9pm'],['Salt Flats','Friday 7pm'],['Nine Rooms','Friday 10pm'],['Low Sun','Saturday 6pm'],
+  ['The Diver','Saturday 9pm'],['Harbour Lights','Sunday 5pm'],['After the Rain','Sunday 8pm'],['Closing night','Monday 8pm']];
+document.getElementById('ul').innerHTML = F.map(function(f){ return '<li>' + f[0] + ', ' + f[1] + '</li>'; }).join('');
+var hall = document.getElementById('hall');
+for (var i = 0; i < 4; i++){
+  var r = document.createElement('div'); r.className = 'row';
+  r.style.top = (64 + i * 9) + '%'; r.style.transform = 'translateZ(' + (i * 70) + 'px)';
+  r.innerHTML = new Array(16).join('<div class="seat"></div>');
+  hall.appendChild(r);
+}
+addEventListener('pointermove', function(e){
+  if (!sized()) return;
+  var x = (e.clientX / innerWidth - 0.5), y = (e.clientY / innerHeight - 0.5);
+  hall.style.transform = 'rotateY(' + (x * -14) + 'deg) rotateX(' + (y * 8) + 'deg) translateX(' + (x * -60) + 'px)';
+});
+</script></body></html>

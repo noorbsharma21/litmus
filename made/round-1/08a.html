@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Margin Press</title>
+<!-- 08a. A small press and bookshop. Axis: preweb. This one: the early web.
+     A list of links down the left, a pane on the right, the browser's own
+     type and link colours. Pointing at a title fills the pane with that
+     book, the way a frameset did. -->
+<style>
+body{margin:0;display:flex;min-height:100vh}
+#list{width:34%;padding:16px 22px;box-sizing:border-box;border-right:3px ridge #F64FB2}
+#pane{flex:1;padding:16px 28px}
+h1{font-size:40px;margin:0 0 12px}
+li{font-size:22px;line-height:1.7}
+#cover{width:min(240px,60%);aspect-ratio:2/3;background:#F64FB2;margin:10px 0 18px;position:relative}
+#cover span{position:absolute;left:14px;right:14px;top:18px;font-size:30px;color:#FCF02A}
+#pane p{font-size:22px}
+</style></head>
+<body bgcolor="#FCF02A" text="#1A1614" link="#0000EE" vlink="#551A8B">
+<div id="list"><h1>Margin Press</h1><ul id="ul"></ul></div>
+<div id="pane"><div id="cover"><span id="ct"></span></div><p id="info"></p></div>
+<script src="kit.js"></script>
+<script>
+var B = [['Salt','Ana Reis',14],['Ferry','Tomás Ilves',12],['Orchard','Mira Holt',16],['Weather','J. Okafor',11],
+  ['Kiln','Saar Vinter',15],['Harbour','Ilse Brand',13],['Ledger','Ruth Oyelaran',18],['Lantern','Pia Moss',12],['Thaw','Eero Lind',14]];
+var COV = ['#F64FB2','#0F6E2B','#1A1614'];
+document.getElementById('ul').innerHTML = B.map(function(b, i){ return '<li><a href="#" data-i="' + i + '">' + b[0] + '</a></li>'; }).join('');
+function show(i){
+  var b = B[i]; document.getElementById('cover').style.background = COV[i % 3];
+  document.getElementById('ct').textContent = b[0];
+  document.getElementById('info').innerHTML = b[0] + '<br>' + b[1] + '<br>&pound;' + b[2];
+}
+document.getElementById('ul').addEventListener('pointerover', function(e){ var a = e.target.closest('a'); if (a) show(+a.dataset.i); });
+document.getElementById('ul').addEventListener('focusin', function(e){ var a = e.target.closest('a'); if (a) show(+a.dataset.i); });
+show(0);
+</script></body></html>

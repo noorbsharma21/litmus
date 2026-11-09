@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ines Moreau</title>
+<!-- 04a. A photographer's portfolio. Axis: route. This one: made for it. The
+     work arrives as a contact sheet: four strips of negatives, frames dark
+     until you pass over them, then each one develops into its picture and
+     stays. The pictures are drawn for this page, standing in for hers. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#A40603;font-family:"Times New Roman",Times,serif;color:#fff}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:40px}
+p.s{position:fixed;left:24px;top:62px;margin:0;font-size:18px}
+#sheet{position:fixed;left:4vw;right:4vw;top:120px;bottom:4vh;display:flex;flex-direction:column;justify-content:space-between}
+.strip{background:#1A1614;display:flex;gap:1.2vw;padding:16px 1.2vw;position:relative}
+.strip::before,.strip::after{content:'';position:absolute;left:0;right:0;height:8px;
+  background-image:linear-gradient(90deg,#A40603 0 10px,transparent 10px 24px);background-size:24px 8px}
+.strip::before{top:4px}.strip::after{bottom:4px}
+.fr{flex:1;aspect-ratio:3/2;max-height:15vh;position:relative;overflow:hidden;background:#1A1614;outline:1px solid #2c2522}
+.fr svg{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.4s}
+.fr.dev svg{opacity:1}
+.lab{position:absolute;left:0;bottom:-2px;font-size:13px;color:#FFFFFF;background:#1A1614;padding:0 4px}
+</style></head><body>
+<h1>Ines Moreau</h1><p class="s">Low Tide, Night Kitchens, Rooftops in March</p>
+<div id="sheet"></div>
+<script src="kit.js"></script>
+<script>
+var sheet = document.getElementById('sheet');
+var SER = ['Low Tide','Night Kitchens','Rooftops in March','Low Tide'];
+function picture(seed){
+  var r = rng(seed), s = '<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><rect width="300" height="200" fill="' + (r() < 0.5 ? '#FFFFFF' : '#A40603') + '"/>';
+  var hz = 60 + r() * 100; s += '<rect y="' + hz + '" width="300" height="' + (200 - hz) + '" fill="#1A1614"/>';
+  for (var i = 0; i < 3 + Math.floor(r() * 4); i++){
+    var c = ['#FFFFFF','#A40603','#1A1614'][Math.floor(r() * 3)];
+    if (r() < 0.5) s += '<circle cx="' + r() * 300 + '" cy="' + r() * 200 + '" r="' + (6 + r() * 40) + '" fill="' + c + '"/>';
+    else s += '<rect x="' + r() * 280 + '" y="' + r() * 180 + '" width="' + (8 + r() * 90) + '" height="' + (4 + r() * 50) + '" fill="' + c + '"/>';
+  }
+  return s + '</svg>';
+}
+SER.forEach(function(name, k){
+  var st = document.createElement('div'); st.className = 'strip'; st.setAttribute('aria-label', name);
+  for (var i = 0; i < 6; i++){
+    var f = document.createElement('div'); f.className = 'fr'; f.innerHTML = picture(k * 31 + i * 7 + 2) +
+      (i === 0 ? '<span class="lab">' + name + '</span>' : '');
+    st.appendChild(f);
+  }
+  sheet.appendChild(st);
+});
+sheet.addEventListener('pointerover', function(e){ var f = e.target.closest('.fr'); if (f) f.classList.add('dev'); });
+</script></body></html>

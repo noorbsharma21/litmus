@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiln 4</title>
+<!-- 09b. A ceramics studio selling pots. Axis: route. This one: immersive.
+     You are inside the kiln: shelves of pots in perspective around you, the
+     orange of the firing. The pointer turns you to look along the shelves.
+     Same pots, palette and type as 09a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#E47937;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:44px;z-index:3;background:#E47937;padding:0 8px}
+#view{position:fixed;inset:0;perspective:1000px}
+#kiln{position:absolute;left:50%;top:55%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.shelf{position:absolute;width:760px;height:200px;left:-380px;top:-100px;transform-style:preserve-3d;display:flex;align-items:flex-end;justify-content:space-around;border-bottom:16px solid #88B7D3}
+.pot{background:#3866C1;border-radius:40% 40% 18% 18%;position:relative}
+.pot span{position:absolute;left:50%;bottom:-44px;transform:translateX(-50%);font-size:18px;white-space:nowrap}
+</style></head><body>
+<h1>Kiln 4</h1>
+<div id="view"><div id="kiln"></div></div>
+<script src="kit.js"></script>
+<script>
+var POTS = [['Jug',48],['Bowl',36],['Vase',64],['Cup',22],['Jar',52],['Bottle',58]];
+var kiln = document.getElementById('kiln');
+/* the back wall and the two sides; a shelf behind the viewer would sit
+   between the eye and the scene and fill it */
+[0, 1, 3].forEach(function(s){
+  var sh = document.createElement('div'); sh.className = 'shelf';
+  sh.style.transform = 'rotateY(' + (s * 90) + 'deg) translateZ(-620px)';
+  sh.innerHTML = POTS.map(function(p, k){
+    var r = rng(s * 17 + k * 5 + 1), w = 50 + r() * 50, h = 70 + r() * 110;
+    return '<div class="pot" style="width:' + w + 'px;height:' + h + 'px"><span>' + p[0] + ', &pound;' + p[1] + '</span></div>';
+  }).join('');
+  kiln.appendChild(sh);
+});
+addEventListener('pointermove', function(e){
+  if (!sized()) return;
+  var yaw = (e.clientX / innerWidth - 0.5) * 120, pitch = (e.clientY / innerHeight - 0.5) * -14;
+  kiln.style.transform = 'rotateX(' + pitch + 'deg) rotateY(' + yaw + 'deg)';
+});
+</script></body></html>

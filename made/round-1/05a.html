@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two days in Porto</title>
+<!-- 05a. A weekend guide to a city. Axis: worlds. This one: one idea. The
+     whole weekend is one route across the screen. The pointer walks it, and
+     each stop names itself as you reach it, with a marker. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#EE5884;font-family:"Times New Roman",Times,serif;color:#072493}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:40px}
+svg{position:fixed;inset:0;width:100vw;height:100vh}
+</style></head><body>
+<h1>Two days in Porto</h1>
+<svg id="s" aria-label="A route through two days in Porto"></svg>
+<script src="kit.js"></script>
+<script>
+var STOPS = ['Bolhão market','Ribeira','ferry to Afurada','grilled sardines','Serralves','Foz, by the sea','Sunday lunch','Livraria Lello'];
+var s = document.getElementById('s'), pts = [], prog = 0, target = 0;
+function build(){
+  pts = [];
+  for (var i = 0; i <= 200; i++){
+    var t = i / 200;
+    pts.push([innerWidth * (0.06 + 0.88 * t), innerHeight * (0.56 + Math.sin(t * 9.5) * 0.18 + Math.sin(t * 3.1) * 0.08)]);
+  }
+}
+function draw(){
+  if (!sized()){ requestAnimationFrame(draw); return; }
+  if (!pts.length) build();
+  prog += (target - prog) * 0.12;
+  var upto = Math.max(1, Math.round(prog * 200));
+  var d = 'M' + pts.map(function(p){ return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L');
+  var walked = 'M' + pts.slice(0, upto + 1).map(function(p){ return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L');
+  var out = '<path d="' + d + '" stroke="#072493" stroke-width="2" fill="none" stroke-dasharray="4 7"/>' +
+            '<path d="' + walked + '" stroke="#F4432D" stroke-width="6" fill="none" stroke-linecap="round"/>';
+  STOPS.forEach(function(name, k){
+    var idx = Math.round((k + 0.5) / STOPS.length * 200), p = pts[idx], reached = upto >= idx;
+    out += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + (reached ? 9 : 5) + '" fill="' + (reached ? '#F4432D' : '#072493') + '"/>';
+    if (reached){
+      var up = k % 2 === 0, lx = p[0] + 10, ly = p[1] + (up ? -70 : 70);
+      out += marker(null, p[0], p[1], lx, ly, '#072493');
+      out += '<text x="' + (lx + 6) + '" y="' + (ly + (up ? -6 : 18)) + '" font-size="22" font-family="Times New Roman, Times, serif" fill="#072493">' + name + '</text>';
+    }
+  });
+  var cur = pts[upto];
+  out += '<circle cx="' + cur[0] + '" cy="' + cur[1] + '" r="13" fill="none" stroke="#F4432D" stroke-width="3"/>';
+  s.innerHTML = out;
+  requestAnimationFrame(draw);
+}
+addEventListener('pointermove', function(e){ if (sized()) target = Math.max(0, Math.min(1, (e.clientX / innerWidth - 0.06) / 0.88)); });
+addEventListener('resize', build);
+requestAnimationFrame(draw);
+</script></body></html>

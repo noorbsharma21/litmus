@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Margin Press</title>
+<!-- 08b. A small press and bookshop. Axis: preweb. This one: print. The books
+     stand on a shelf as spines, titles running up them, each spine its own
+     height and width. Pointing at one draws it out and shows its cover
+     beside the shelf. Same books, palette and type as 08a. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:44px}
+#shelf{position:fixed;left:6vw;bottom:14vh;display:flex;align-items:flex-end;gap:3px}
+.sp{position:relative;cursor:pointer;transition:transform .4s cubic-bezier(.2,.7,.2,1);display:flex;align-items:flex-end;justify-content:center}
+.sp span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:20px;padding:12px 0;color:#FCF02A}
+.sp:hover,.sp:focus{transform:translateY(-34px);outline:none}
+#cover{position:fixed;right:8vw;bottom:14vh;width:min(26vw,300px);aspect-ratio:2/3;transition:background .3s}
+#cover p{position:absolute;left:18px;right:18px;top:20px;margin:0;font-size:36px;color:#FCF02A;line-height:1.05}
+#cover small{position:absolute;left:18px;bottom:18px;font-size:19px;color:#FCF02A}
+</style></head><body>
+<h1>Margin Press</h1>
+<div id="shelf" role="list"></div>
+<div id="cover"><p id="ct"></p><small id="cb"></small></div>
+<script src="kit.js"></script>
+<script>
+var B = [['Salt','Ana Reis',14],['Ferry','Tomás Ilves',12],['Orchard','Mira Holt',16],['Weather','J. Okafor',11],
+  ['Kiln','Saar Vinter',15],['Harbour','Ilse Brand',13],['Ledger','Ruth Oyelaran',18],['Lantern','Pia Moss',12],['Thaw','Eero Lind',14]];
+var COV = ['#F64FB2','#0F6E2B','#1A1614'];
+var shelf = document.getElementById('shelf');
+shelf.innerHTML = B.map(function(b, i){
+  var r = rng(i * 19 + 3), w = 34 + r() * 30, h = 240 + r() * 150;
+  return '<div class="sp" role="listitem" tabindex="0" data-i="' + i + '" style="width:' + w + 'px;height:' + h + 'px;background:' + COV[i % 3] + '"><span>' + b[0] + '</span></div>';
+}).join('');
+function show(i){
+  var b = B[i]; document.getElementById('cover').style.background = COV[i % 3];
+  document.getElementById('ct').textContent = b[0];
+  document.getElementById('cb').innerHTML = b[1] + '<br>&pound;' + b[2];
+}
+shelf.addEventListener('pointerover', function(e){ var s = e.target.closest('.sp'); if (s) show(+s.dataset.i); });
+shelf.addEventListener('focusin', function(e){ var s = e.target.closest('.sp'); if (s) show(+s.dataset.i); });
+show(0);
+</script></body></html>

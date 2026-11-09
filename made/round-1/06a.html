@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Halm, 1979 to 2010</title>
+<!-- 06a. A studio archive, 1979 to 2010. Axis: density. This one: packed.
+     Every year and every project on the screen at once, small. Pointing at
+     a year brings its projects forward and lets the rest recede. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#3866C1;font-family:"Times New Roman",Times,serif;color:#88B7D3}
+h1{position:fixed;left:18px;top:10px;margin:0;font-weight:normal;font-size:34px;color:#fff}
+#grid{position:fixed;left:18px;right:18px;top:62px;bottom:14px;display:grid;grid-template-columns:repeat(16,1fr);grid-template-rows:repeat(2,1fr);gap:6px 12px}
+.y{min-width:0;transition:color .25s, opacity .25s;cursor:default}
+.y b{display:block;font-weight:normal;font-size:20px;color:#fff}
+.y span{display:block;font-size:13px;line-height:1.35}
+#grid.on .y{opacity:.28}
+#grid.on .y.hot{opacity:1;color:#E47937}
+#grid.on .y.hot b{color:#E47937;font-size:26px}
+</style></head><body>
+<h1>Studio Halm, 1979 to 2010</h1>
+<div id="grid"></div>
+<script src="kit.js"></script>
+<script>
+var KIND = ['House','School','Bathhouse','Library','Bridge','Market','Chapel','Housing','Studio','Pavilion','Ferry terminal','Garden'];
+var PLACE = ['Porto','Ghent','Bergen','Trieste','Aarhus','Lyon','Cork','Basel','Bilbao','Utrecht','Turku','Ljubljana'];
+var grid = document.getElementById('grid'), r = rng(1979), h = '';
+for (var y = 1979; y <= 2010; y++){
+  var n = 2 + Math.floor(r() * 5), list = [];
+  for (var i = 0; i < n; i++) list.push(KIND[Math.floor(r() * KIND.length)] + ', ' + PLACE[Math.floor(r() * PLACE.length)]);
+  h += '<div class="y" tabindex="0"><b>' + y + '</b>' + list.map(function(t){ return '<span>' + t + '</span>'; }).join('') + '</div>';
+}
+grid.innerHTML = h;
+grid.addEventListener('pointerover', function(e){
+  var y = e.target.closest('.y'); if (!y) return;
+  grid.classList.add('on');
+  Array.prototype.forEach.call(grid.children, function(c){ c.classList.toggle('hot', c === y); });
+});
+grid.addEventListener('focusin', function(e){ var y = e.target.closest('.y'); if (y) y.dispatchEvent(new PointerEvent('pointerover', { bubbles:true })); });
+grid.addEventListener('pointerleave', function(){ grid.classList.remove('on'); });
+</script></body></html>

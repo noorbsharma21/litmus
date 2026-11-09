@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ola Bente Architects</title>
+<!-- 07a. An architecture practice. Axis: division. This one: a regular grid.
+     Nine projects in nine equal cells, each a building drawn in projection
+     that turns to face the pointer. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"Times New Roman",Times,serif;color:#1A1614}
+h1{position:fixed;left:24px;top:12px;margin:0;font-weight:normal;font-size:36px}
+#g{position:fixed;left:3vw;right:3vw;top:70px;bottom:3vh;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:8px}
+.c{position:relative;background:#A40603;overflow:hidden;min-height:0}
+.c svg{position:absolute;inset:0;width:100%;height:100%}
+.c p{position:absolute;left:12px;bottom:8px;margin:0;font-size:19px;color:#fff}
+</style></head><body>
+<h1>Ola Bente Architects</h1>
+<div id="g"></div>
+<script src="kit.js"></script>
+<script>
+var P = ['Housing, Ghent','School, Ostend','Bathhouse, Bergen','Library, Cork','Market hall, Lyon','Chapel, Turku','Ferry terminal, Bilbao','Studios, Basel','Pavilion, Aarhus'];
+var g = document.getElementById('g'), cells = [];
+P.forEach(function(name, k){
+  var r = rng(k * 41 + 5), c = document.createElement('div'); c.className = 'c';
+  c.dataset.w = 0.8 + r() * 1.4; c.dataset.d = 0.8 + r() * 1.4; c.dataset.h = 0.6 + r() * 1.8;
+  c.innerHTML = '<svg viewBox="-100 -100 200 200" aria-label="' + name + '"></svg><p>' + name + '</p>';
+  g.appendChild(c); cells.push(c);
+});
+function block(c, yaw){
+  var w = +c.dataset.w * 40, d = +c.dataset.d * 40, h = +c.dataset.h * 40;
+  var cs = Math.cos(yaw), sn = Math.sin(yaw);
+  function p(x, y, z){ var X = x * cs - y * sn, Y = x * sn + y * cs; return [X * 0.87, (Y * 0.5) - z + 30]; }
+  var b = [p(-w,-d,0),p(w,-d,0),p(w,d,0),p(-w,d,0)], t = [p(-w,-d,h),p(w,-d,h),p(w,d,h),p(-w,d,h)];
+  function poly(a, f){ return '<polygon points="' + a.map(function(q){ return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') + '" fill="' + f + '" stroke="#1A1614" stroke-width="1"/>'; }
+  var faces = [[b[0],b[1],t[1],t[0]],[b[1],b[2],t[2],t[1]],[b[2],b[3],t[3],t[2]],[b[3],b[0],t[0],t[3]]];
+  faces.sort(function(A, B){ return (A[0][1] + A[1][1]) - (B[0][1] + B[1][1]); });
+  c.querySelector('svg').innerHTML = faces.map(function(f, i){ return poly(f, i % 2 ? '#FFFFFF' : '#A40603'); }).join('') + poly(t, '#FFFFFF');
+}
+function turn(x, y){
+  cells.forEach(function(c){
+    var r = c.getBoundingClientRect();
+    block(c, Math.atan2(y - (r.top + r.height / 2), x - (r.left + r.width / 2)) * 0.6);
+  });
+}
+addEventListener('pointermove', function(e){ turn(e.clientX, e.clientY); });
+turn(innerWidth / 2, innerHeight);
+</script></body></html>

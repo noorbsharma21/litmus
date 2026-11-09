@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiln 4</title>
+<!-- 09a. A ceramics studio selling pots. Axis: route. This one: made for it.
+     Every pot is turned from its own profile, a curve seeded by its name, so
+     the shapes on the page exist nowhere else. Moving across the page turns
+     the wheel: the glaze bands slide round each pot. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#3866C1;font-family:"Times New Roman",Times,serif;color:#fff}
+h1{position:fixed;left:24px;top:14px;margin:0;font-weight:normal;font-size:44px}
+#row{position:fixed;left:4vw;right:4vw;bottom:12vh;display:flex;justify-content:space-around;align-items:flex-end}
+figure{margin:0;text-align:center}
+figcaption{font-size:20px;margin-top:10px}
+</style></head><body>
+<h1>Kiln 4</h1>
+<div id="row"></div>
+<script src="kit.js"></script>
+<script>
+var POTS = [['Jug',48],['Bowl',36],['Vase',64],['Cup',22],['Jar',52],['Bottle',58]];
+var row = document.getElementById('row'), pots = [];
+POTS.forEach(function(p, k){
+  var r = rng(k * 53 + 9), H = 150 + r() * 130, n = 9, prof = [];
+  var base = 0.35 + r() * 0.3, belly = 0.7 + r() * 0.3, neck = 0.18 + r() * 0.3, lip = neck + r() * 0.2;
+  for (var i = 0; i <= n; i++){
+    var t = i / n, w = t < 0.5 ? base + (belly - base) * Math.sin(t / 0.5 * Math.PI / 2) : belly + (neck - belly) * Math.sin((t - 0.5) / 0.4 * Math.PI / 2);
+    if (t > 0.9) w = neck + (lip - neck) * ((t - 0.9) / 0.1);
+    prof.push([w * 60, H - t * H]);
+  }
+  var right = prof.map(function(q){ return (70 + q[0]).toFixed(1) + ',' + q[1].toFixed(1); });
+  var left = prof.slice().reverse().map(function(q){ return (70 - q[0]).toFixed(1) + ',' + q[1].toFixed(1); });
+  var id = 'c' + k;
+  var f = document.createElement('figure');
+  f.innerHTML = '<svg width="140" height="' + H + '" viewBox="0 0 140 ' + H + '" role="img" aria-label="' + p[0] + '">' +
+    '<defs><clipPath id="' + id + '"><polygon points="' + right.concat(left).join(' ') + '"/></clipPath></defs>' +
+    '<g clip-path="url(#' + id + ')"><rect width="140" height="' + H + '" fill="#E47937"/><g class="bands"></g></g></svg>' +
+    '<figcaption>' + p[0] + ', &pound;' + p[1] + '</figcaption>';
+  row.appendChild(f); pots.push({ g:f.querySelector('.bands'), H:H, r:rng(k * 7 + 1) });
+});
+function turn(phase){
+  pots.forEach(function(p, k){
+    var out = '', H = p.H;
+    for (var i = 0; i < 5; i++){
+      var x = ((i * 34 + phase * (1 + k * 0.2)) % 170) - 30;
+      out += '<rect x="' + x.toFixed(1) + '" y="0" width="' + (6 + i * 3) + '" height="' + H + '" fill="' + (i % 2 ? '#88B7D3' : '#1A1614') + '" opacity=".85"/>';
+    }
+    out += '<rect y="' + (H * 0.62) + '" width="140" height="' + (H * 0.06) + '" fill="#88B7D3"/>';
+    p.g.innerHTML = out;
+  });
+}
+addEventListener('pointermove', function(e){ turn(e.clientX * 0.6); });
+turn(0);
+</script></body></html>
