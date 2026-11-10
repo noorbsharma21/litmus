@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night Frames</title>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&display=swap" rel="stylesheet">
+<!-- 10d. A film festival, one week. Round three, from 10b, whose cinema seats
+     cr6 liked though its text could not be read, and 10c, refused as basic.
+     The programme is the seat plan: a row for each film, its night and time
+     at the end of the row in the dark where it can be read. Pass over a row
+     and that film comes up on the screen; click a seat and it is yours,
+     written under the screen. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0C0909;font-family:"Limelight",Georgia,serif;color:#E2B65A;user-select:none;-webkit-user-select:none}
+.top{position:fixed;left:40px;right:40px;top:22px;display:flex;justify-content:space-between;align-items:baseline;font-size:15px;letter-spacing:.04em}
+.top h1{margin:0;font-weight:normal;font-size:24px;letter-spacing:.06em}
+/* the screen, lit, with the house dark around it */
+#screen{position:fixed;left:50%;top:64px;width:min(70vw,calc(40vh * 2.1));aspect-ratio:2.1/1;transform:translateX(-50%) perspective(900px) rotateX(4deg);background-size:cover;background-position:center;
+  box-shadow:0 0 120px 20px rgba(226,182,90,.12);transition:filter .5s}
+#screen::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.45))}
+#now{position:fixed;left:0;right:0;top:calc(64px + min(70vw,calc(40vh * 2.1)) / 2.1 + 20px);margin:0;text-align:center;font-size:17px;letter-spacing:.03em;min-height:1.3em}
+#now i{font-style:normal;color:#F3E4BF}
+/* the house: rows of seats, the film for each row at its end */
+#house{position:fixed;left:40px;right:40px;bottom:30px;display:flex;flex-direction:column;gap:7px}
+.row{display:grid;grid-template-columns:1fr minmax(200px,26%);column-gap:28px;align-items:center;cursor:pointer}
+.seats{display:flex;justify-content:center;gap:5px}
+.seat{width:min(24px,2.3vw);aspect-ratio:1/0.82;border-radius:6px 6px 3px 3px;background:linear-gradient(#C23A34,#8E1D1A);box-shadow:inset 0 -3px 0 rgba(0,0,0,.35);transition:background .2s,transform .2s}
+.seat.taken{background:#2B1716;box-shadow:none}
+.seat.mine{background:#E2B65A;transform:translateY(-2px)}
+.row:hover .seat:not(.taken):not(.mine),.row.on .seat:not(.taken):not(.mine){background:linear-gradient(#E0504A,#A82622)}
+.lab{margin:0;font-size:15px;line-height:1.2;color:#C9A257;transition:color .2s}
+.lab small{display:block;font-size:12px;opacity:.7;letter-spacing:.04em}
+.row:hover .lab,.row.on .lab{color:#F3E4BF}
+.aisle{width:min(26px,2.2vw)}
+</style></head><body>
+<div class="top"><h1>NIGHT FRAMES</h1><span>A week of films at the Regent, 12 to 18 March</span></div>
+<div id="screen" role="img" aria-label="The film for the row you are on"></div>
+<p id="now" aria-live="polite"></p>
+<div id="house"></div>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+grainOver(0.1, 'overlay');
+var F = [['The Long Shift','Thursday 12, 9pm'],['Salt Flats','Friday 13, 7pm'],['Nine Rooms','Friday 13, 10pm'],['Low Sun','Saturday 14, 6pm'],
+  ['The Diver','Saturday 14, 9pm'],['Harbour Lights','Sunday 15, 5pm'],['After the Rain','Sunday 15, 8pm'],['Closing night','Wednesday 18, 8pm']];
+F.forEach(function(f, i){ var im = new Image(); im.src = U(IMG.cinema[i % IMG.cinema.length], 1600); });
+var house = document.getElementById('house'), screen = document.getElementById('screen'), now = document.getElementById('now'), R = seeded(3), mine = null, cur = -1;
+F.forEach(function(f, i){
+  var row = document.createElement('div'); row.className = 'row'; row.dataset.i = i;
+  var html = '<div class="seats">';
+  for (var s = 1; s <= 18; s++){ if (s === 5 || s === 15) html += '<span class="aisle"></span>'; html += '<span class="seat' + (R() < 0.22 + i * 0.05 ? ' taken' : '') + '" data-s="' + s + '"></span>'; }
+  html += '</div><p class="lab">' + f[0] + '<small>' + f[1] + '</small></p>';
+  row.innerHTML = html; house.appendChild(row);
+});
+function show(i){
+  if (i === cur) return; cur = i;
+  [].forEach.call(house.children, function(r, k){ r.classList.toggle('on', k === i); });
+  screen.style.backgroundImage = 'url(' + U(IMG.cinema[i % IMG.cinema.length], 1600) + ')';
+  screen.style.filter = i % 2 ? 'grayscale(1) contrast(1.15)' : 'none';
+  if (!mine) now.innerHTML = 'Row ' + String.fromCharCode(65 + i) + ', <i>' + F[i][0] + '</i>, ' + F[i][1];
+}
+house.addEventListener('pointerover', function(e){ var r = e.target.closest('.row'); if (r) show(+r.dataset.i); });
+house.addEventListener('click', function(e){
+  var seat = e.target.closest('.seat'), r = e.target.closest('.row'); if (!seat || !r || seat.classList.contains('taken')) return;
+  if (mine) mine.classList.remove('mine');
+  mine = seat === mine ? null : seat; if (mine) mine.classList.add('mine');
+  var i = +r.dataset.i; show(i);
+  now.innerHTML = mine ? 'Your seat: row ' + String.fromCharCode(65 + i) + ', seat ' + seat.dataset.s + ', <i>' + F[i][0] + '</i>, ' + F[i][1] : '';
+});
+show(1);
+</script></body></html>

@@ -15,7 +15,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#EE5884;font-family:"L
 .head p{margin:8px 0 0;font-size:17px;line-height:1.4}
 .head i{font-style:italic}
 .st{position:fixed;left:0;top:0;width:8px;background:#0F6E2B;transform-origin:50% 0;pointer-events:none;z-index:1}
-.fl{position:fixed;left:0;top:0;border-radius:50%;object-fit:cover;pointer-events:none;box-shadow:0 0 0 4px #EE5884;z-index:1}
+.fl{position:fixed;left:0;top:0;border-radius:50%;object-fit:cover;pointer-events:none;box-shadow:0 0 0 4px #EE5884;z-index:3}
 #vase{position:fixed;pointer-events:none;background:#072493;z-index:2}
 /* the name of a stem, written where it lands, then fading */
 .say{position:fixed;left:0;top:0;margin:0;font-family:"Zeyada",cursive;font-size:30px;color:#072493;pointer-events:none;z-index:4;white-space:nowrap;transition:opacity 1.6s 1.2s}
@@ -52,7 +52,8 @@ var walls = [
 M.Composite.add(world, walls);
 var k = 0;
 function drop(x){
-  var kind = k % TODAY.length, r = 34 + Math.random() * 18, len = 170 + Math.random() * 120;
+  /* stems longer than the vase is deep, so the heads stand above its rim */
+  var kind = k % TODAY.length, r = 34 + Math.random() * 18, len = vh + 90 + Math.random() * 140;
   var body = M.Bodies.rectangle(x, -len, 10, len, { density:0.0016, friction:0.6, frictionAir:0.02, chamfer:{ radius:4 } });
   M.Body.setAngle(body, (Math.random() - .5) * 0.6);
   M.Composite.add(world, body);
@@ -80,10 +81,16 @@ M.Composite.add(world, mc);
 var downAt = null;
 addEventListener('pointerdown', function(e){ downAt = [e.clientX, e.clientY, M.Query.point(parts.map(function(p){ return p.b; }), { x:e.clientX, y:e.clientY }).length]; });
 addEventListener('pointerup', function(e){ if (downAt && !downAt[2] && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) < 6) drop(e.clientX); downAt = null; });
-for (var i = 0; i < 3; i++) setTimeout(function(){ drop(vx + (Math.random() - .5) * vw * 0.5); }, 300 + i * 450);
-var last = 0;
+/* ?still settles the first stems before the page shows, for photographing it */
+if (new URLSearchParams(location.search).has('still')){
+  for (var i = 0; i < 5; i++){ drop(vx + (i - 2) * vw * 0.12); for (var j = 0; j < 90; j++) M.Engine.update(eng, 1000 / 60); }
+  for (var j = 0; j < 240; j++) M.Engine.update(eng, 1000 / 60);
+} else for (var i = 0; i < 3; i++) setTimeout(function(){ drop(vx + (Math.random() - .5) * vw * 0.5); }, 300 + i * 450);
+var last = 0, prev = 0;
 (function tick(t){
-  M.Engine.update(eng, 1000 / 60);
+  /* physics on the clock, so a slow machine sees the stems land at the same pace */
+  var steps = prev ? Math.max(1, Math.min(6, Math.round((t - prev) / 16.67))) : 1; prev = t;
+  for (var s = 0; s < steps; s++) M.Engine.update(eng, 1000 / 60);
   parts.forEach(function(p){
     var a = p.b.angle, c = p.b.position, tx = c.x + Math.sin(a) * p.len / 2, ty = c.y - Math.cos(a) * p.len / 2;
     p.st.style.transform = 'translate(' + (tx - 4) + 'px,' + ty + 'px) rotate(' + (a * 180 / Math.PI) + 'deg)';

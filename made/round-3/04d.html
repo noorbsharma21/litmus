@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ines Moreau, contact sheets</title>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@500;800&family=Rock+Salt&display=swap" rel="stylesheet">
+<!-- 04d. A photographer's portfolio. Round three, from 04a, which cr6 preferred
+     to 04c ("the Polaroid looks cheap"), with the font and the images
+     refined. The work is a contact sheet: four strips of film printed on
+     paper, black rebates with the film's own edge numbers, the photographs
+     placeholders for hers. She has gone over it in red grease pencil the way
+     photographers do: each strip named in the margin, a few frames circled.
+     A loupe follows the pointer and shows any frame up close; click a frame
+     to circle it or rub the circle out. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#F3F3F0;font-family:"Doto",monospace;color:#1A1614;cursor:none}
+.top{position:fixed;left:40px;right:40px;top:26px;display:flex;justify-content:space-between;align-items:baseline}
+h1{margin:0;font-family:"Rock Salt",cursive;font-weight:normal;font-size:26px;color:#C2261D;transform:rotate(-2deg);transform-origin:0 50%}
+.top p{margin:0;font-size:15px;font-weight:800;letter-spacing:.06em}
+#sheet{position:fixed;left:250px;right:40px;top:96px;bottom:40px;display:flex;flex-direction:column;justify-content:space-between}
+.strip{position:relative;background:#0E0D0C;padding:20px 0;display:flex;gap:6px;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.strip .edge{position:absolute;left:0;right:0;height:20px;display:flex;align-items:center;justify-content:space-around;font-size:11px;font-weight:800;color:#E9E2CF;letter-spacing:.08em;pointer-events:none}
+.strip .edge.t{top:0}.strip .edge.b{bottom:0;justify-content:space-between;padding:0 14px}
+.fr{flex:1;aspect-ratio:3/2;background-size:100% 100%;position:relative}
+.fr svg{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);overflow:visible;pointer-events:none;filter:url(#wax)}
+.lab{position:absolute;right:calc(100% + 18px);top:50%;transform:translateY(-50%) rotate(-3deg);margin:0;font-family:"Rock Salt",cursive;font-size:15px;line-height:1.3;color:#C2261D;text-align:right;width:190px}
+#loupe{position:fixed;left:0;top:0;width:230px;height:230px;border-radius:50%;pointer-events:none;z-index:9;background-repeat:no-repeat;box-shadow:0 0 0 7px #151515,0 0 0 8px #444,0 12px 30px rgba(0,0,0,.35);opacity:0;transition:opacity .2s}
+#dot{position:fixed;left:0;top:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#C2261D;pointer-events:none;z-index:10}
+@media (max-width:860px){ #sheet{left:24px;right:24px} .lab{right:auto;left:8px;top:-30px;transform:rotate(-2deg);width:auto;text-align:left} }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wax"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg>
+<div class="top"><h1>Ines Moreau</h1><p>CONTACT SHEETS, 2019 TO 2025. COMMISSIONS OPEN</p></div>
+<div id="sheet"></div>
+<div id="loupe" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+grainOver(0.05, 'multiply');
+/* four strips, a series to each, frames re-cropped the way a roll repeats a subject */
+var SERIES = [['Low Tide', [0, 1, 6, 0, 1, 6]], ['Night Kitchens', [3, 4, 5, 3, 4, 5]], ['Rooftops in March', [2, 7, 2, 7, 2, 7]], ['Low Tide, again', [6, 0, 1, 6, 1, 0]]];
+var CIRCLED = { '0-2':1, '1-1':1, '2-4':1, '3-0':1 };
+/* each frame cropped exactly 3 by 2 around its own focal point and zoom, so a
+   repeated subject reads as another exposure on the roll */
+var FP = [[0.5, 0.5, 1], [0.32, 0.42, 1.5], [0.68, 0.56, 1.3], [0.45, 0.3, 1.8], [0.6, 0.68, 1.2], [0.38, 0.6, 1.6]];
+function F(id, w, f){ return 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&crop=focalpoint&w=' + w + '&h=' + Math.round(w * 2 / 3) + '&fp-x=' + f[0] + '&fp-y=' + f[1] + '&fp-z=' + f[2] + '&sat=-100&con=18&q=80'; }
+var sheet = document.getElementById('sheet'), n = 8;
+SERIES.forEach(function(s, si){
+  var st = document.createElement('div'); st.className = 'strip';
+  var top = '<div class="edge t">' + '<span>&#9654; ' + (n) + '</span><span>' + (n + 1) + 'A</span><span>SAFETY FILM 400</span><span>' + (n + 3) + '</span><span>&#9654; ' + (n + 4) + 'A</span>'.repeat(1) + '</div>';
+  var bot = '<div class="edge b">' + s[1].map(function(_, k){ return '<span>' + (n + k) + '</span>'; }).join('') + '</div>';
+  st.innerHTML = top + s[1].map(function(img, k){
+    return '<div class="fr" data-k="' + si + '-' + k + '" data-big="' + F(IMG.prints[img], 1500, FP[(k + si) % FP.length]) + '" style="background-image:url(' + F(IMG.prints[img], 600, FP[(k + si) % FP.length]) + ')" role="img" aria-label="' + s[0] + ', frame ' + (n + k) + '"></div>';
+  }).join('') + bot + '<p class="lab">' + s[0] + '</p>';
+  sheet.appendChild(st); n += 6;
+});
+/* the grease pencil circle, drawn a little unevenly, never quite closing */
+function circle(){
+  var p = '', a0 = Math.random() * 6.28, turns = 1.12;
+  for (var i = 0; i <= 48; i++){ var a = a0 + i / 48 * Math.PI * 2 * turns, rx = 50 + Math.sin(i * 0.7) * 2, ry = 48 + Math.cos(i * 0.5) * 2;
+    p += (i ? 'L' : 'M') + (50 + Math.cos(a) * rx).toFixed(1) + ' ' + (50 + Math.sin(a) * ry).toFixed(1); }
+  return '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="' + p + '" fill="none" stroke="#C2261D" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:5px;opacity:.9"/></svg>';
+}
+function mark(fr, on){ var s = fr.querySelector('svg'); if (on && !s) fr.insertAdjacentHTML('beforeend', circle()); if (!on && s) s.remove(); }
+document.querySelectorAll('.fr').forEach(function(fr){ if (CIRCLED[fr.dataset.k]) mark(fr, true); });
+sheet.addEventListener('click', function(e){ var fr = e.target.closest('.fr'); if (fr) mark(fr, !fr.querySelector('svg')); });
+/* the loupe: the frame under the pointer, three times up */
+var loupe = document.getElementById('loupe'), dot = document.getElementById('dot'), Z = 3;
+addEventListener('pointermove', function(e){
+  dot.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+  var fr = document.elementFromPoint(e.clientX, e.clientY); fr = fr && fr.closest ? fr.closest('.fr') : null;
+  if (!fr){ loupe.style.opacity = 0; return; }
+  var r = fr.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+  loupe.style.opacity = 1;
+  loupe.style.transform = 'translate(' + (e.clientX - 115) + 'px,' + (e.clientY - 115) + 'px)';
+  loupe.style.backgroundImage = 'url(' + fr.dataset.big + ')';
+  var bw = r.width * Z, bh = r.height * Z;
+  loupe.style.backgroundSize = bw + 'px ' + bh + 'px';
+  loupe.style.backgroundPosition = (115 - fx * bw) + 'px ' + (115 - fy * bh) + 'px';
+});
+addEventListener('pointerleave', function(){ loupe.style.opacity = 0; });
+</script></body></html>

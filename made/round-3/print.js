@@ -160,7 +160,7 @@ function grainOver(opacity, blend){
   g.putImageData(im, 0, 0);
   var el = document.createElement('div');
   el.setAttribute('aria-hidden', 'true');
-  el.style.cssText = 'position:fixed;inset:-50%;pointer-events:none;z-index:50;opacity:' + (opacity || 0.08) + ';mix-blend-mode:' + (blend || 'overlay') + ';background:url(' + c.toDataURL() + ');';
+  el.style.cssText = 'position:fixed;inset:-256px;pointer-events:none;z-index:50;opacity:' + (opacity || 0.08) + ';mix-blend-mode:' + (blend || 'overlay') + ';background:url(' + c.toDataURL() + ');';
   document.body.appendChild(el);
   var t = 0;
   (function move(){ t++; if (t % 3 === 0) el.style.transform = 'translate(' + ((t * 37) % 256) + 'px,' + ((t * 71) % 256) + 'px)'; requestAnimationFrame(move); })();
