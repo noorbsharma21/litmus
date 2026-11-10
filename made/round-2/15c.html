@@ -9,8 +9,8 @@
      into the light. Let go and it stays where you left it. -->
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#0F6E2B;font-family:"Libre Caslon Text",Georgia,serif;color:#FCF02A;touch-action:none}
-h1{position:fixed;left:28px;top:18px;margin:0;font-weight:normal;font-size:36px;z-index:2;pointer-events:none}
-p.w{position:fixed;left:28px;top:66px;margin:0;font-size:17px;z-index:2;pointer-events:none;font-style:italic}
+h1{position:fixed;left:28px;top:18px;margin:0;font-weight:normal;font-size:36px;z-index:2;pointer-events:none;background:#0F6E2B;padding:0 10px}
+p.w{position:fixed;left:28px;top:66px;margin:0;font-size:17px;z-index:2;pointer-events:none;font-style:italic;background:#0F6E2B;padding:0 10px}
 canvas{cursor:grab}
 </style></head><body>
 <h1>Small Objects, Large Rooms</h1><p class="w">Until 4 May. Gallery 3, free</p>
@@ -19,7 +19,7 @@ canvas{cursor:grab}
 import { stage } from './three-kit.js';
 const S = stage({ bg:'#0F6E2B', key:2.8, fill:0.45, exposure:1.05, fov:32 });
 const { THREE, scene, camera } = S;
-camera.position.set(0, 7.2, 9); camera.lookAt(0, 0.4, 0.6);
+camera.position.set(0, 10.5, 6.2); camera.lookAt(0, 0.2, 1.6);
 S.key.position.set(2, 10, 6);
 const wood = new THREE.MeshStandardMaterial({ color:'#6b4a2e', roughness:0.6 });
 const felt = new THREE.MeshStandardMaterial({ color:'#1d2a4a', roughness:1 });
@@ -52,6 +52,6 @@ addEventListener('pointerdown', (e) => { drag = true; ly = e.clientY; });
 addEventListener('pointermove', (e) => { if (!drag) return; target = Math.max(0, Math.min(5.2, target + (e.clientY - ly) * 0.018)); ly = e.clientY; });
 addEventListener('pointerup', () => { drag = false; });
 addEventListener('keydown', (e) => { if (e.key === 'ArrowDown') target = Math.min(5.2, target + 0.6); if (e.key === 'ArrowUp') target = Math.max(0, target - 0.6); });
-target = 1.2;
+target = 5.0;
 S.loop(() => { open += (target - open) * 0.12; drawer.position.z = -3.4 + 0.6 + open; });
 </script></body></html>

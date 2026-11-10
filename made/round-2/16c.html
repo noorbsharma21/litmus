@@ -31,7 +31,11 @@ var B = [['Rye',4.5,16],['Sourdough',5,13],['Cardamom bun',3.2,10.5],['Focaccia'
 var g = document.getElementById('g');
 g.innerHTML = B.map(function(b, i){ return '<div class="b"><img alt="' + b[0] + '" src="' + U(IMG.bread[i], 900) + '"><p>' + b[0] + ', &pound;' + b[1].toFixed(2) + '</p></div>'; }).join('');
 function tick(){
-  var d = new Date(), h = d.getHours() + d.getMinutes() / 60, cells = g.children, left = 0;
+  /* ?at=9 opens the page at nine in the morning, so it can be reviewed at
+     any hour; without it the page follows the real clock */
+  var d = new Date(), at = parseFloat(new URLSearchParams(location.search).get('at'));
+  if (!isNaN(at)){ d.setHours(Math.floor(at), Math.round((at % 1) * 60)); }
+  var h = d.getHours() + d.getMinutes() / 60, cells = g.children, left = 0;
   var open = h >= 7 && h < 18;
   B.forEach(function(b, i){ var gone = !open || h >= b[2]; cells[i].classList.toggle('gone', gone); if (!gone) left++; });
   var hh = d.getHours(), mm = d.getMinutes();

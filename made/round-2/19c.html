@@ -23,7 +23,7 @@ canvas{cursor:grab}
 import { stage } from './three-kit.js';
 const S = stage({ bg:'#FCF02A', key:2.4, fill:0.6, exposure:1.0, fov:30 });
 const { THREE, scene, camera } = S;
-camera.position.set(-2.2, 1.2, 12.5); camera.lookAt(0, 0.2, 0);
+camera.position.set(-4.5, 1.0, 17); camera.lookAt(-2.2, 0.2, 0);
 S.catcher(-3.9, 40, 0.25);
 const steel = new THREE.MeshStandardMaterial({ color:'#cfd2d4', metalness:1, roughness:0.22 });
 const black = new THREE.MeshStandardMaterial({ color:'#161616', roughness:0.85 });
