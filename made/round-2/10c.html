@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Night Frames</title>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Spectral&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital@0;1&display=swap" rel="stylesheet">
 <!-- 10c. A film festival, one week. Round two. Material: real photographs of
      cinemas, placeholders for film stills, run as a filmstrip. Behaviour: pull
      the film. Drag the strip along the bottom through the gate; it carries on
@@ -9,20 +9,21 @@
      projected large above, with that film's night and time. -->
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#0B0A09;font-family:"Spectral",Georgia,serif;color:#fff;touch-action:none;user-select:none;-webkit-user-select:none}
-#proj{position:fixed;left:0;right:0;top:0;height:66vh;background-size:cover;background-position:center;transition:background-image .2s}
-h1{position:fixed;left:28px;top:18px;margin:0;font-family:"Big Shoulders Display",Impact,sans-serif;font-weight:800;font-size:64px;line-height:1;z-index:2;background:#0B0A09;padding:4px 12px}
-#film{position:fixed;left:28px;top:calc(66vh - 92px);margin:0;z-index:2;background:#0B0A09;padding:8px 14px;font-size:24px}
-#film b{font-weight:normal;display:block;font-size:30px}
+#proj{position:fixed;left:30px;right:30px;top:62px;height:calc(66vh - 76px);background-size:cover;background-position:center;transition:background-image .2s}
+h1{position:fixed;left:30px;top:24px;margin:0;font-weight:normal;font-style:italic;font-size:19px;z-index:2}
+.dates{position:fixed;right:30px;top:28px;margin:0;font-size:14px;opacity:.7;z-index:2}
+#film{position:fixed;left:30px;right:30px;top:calc(66vh - 2px);margin:0;z-index:2;display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
+#film b{font-weight:normal;font-style:italic;font-size:19px}
 #strip{position:fixed;left:0;right:0;bottom:4vh;height:22vh;cursor:grab}
 #reel{position:absolute;left:0;top:0;height:100%;display:flex;gap:0;will-change:transform}
 .fr{height:100%;aspect-ratio:3/2;background:#0B0A09;padding:16px 6px;box-sizing:border-box;position:relative}
 .fr::before,.fr::after{content:'';position:absolute;left:0;right:0;height:9px;background-image:linear-gradient(90deg,#3a342e 0 12px,transparent 12px 22px);background-size:22px 9px}
 .fr::before{top:3px}.fr::after{bottom:3px}
 .fr div{width:100%;height:100%;background-size:cover;background-position:center}
-#gate{position:fixed;left:50%;bottom:4vh;height:22vh;aspect-ratio:3/2;transform:translateX(-50%);outline:3px solid #FCF02A;pointer-events:none}
+#gate{position:fixed;left:50%;bottom:4vh;height:22vh;aspect-ratio:3/2;transform:translateX(-50%);outline:2px solid #FCF02A;pointer-events:none}
 </style></head><body>
 <div id="proj" role="img" aria-label="The frame in the gate, projected"></div>
-<h1>Night Frames</h1>
+<h1>Night Frames</h1><p class="dates">12 to 18 March, the Regent</p>
 <p id="film" aria-live="polite"><b></b><span></span></p>
 <div id="strip"><div id="reel"></div></div><div id="gate" aria-hidden="true"></div>
 <script src="images.js"></script>

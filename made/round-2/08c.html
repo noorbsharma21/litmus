@@ -9,22 +9,24 @@
      comes off a hand press. The books are listed underneath. -->
 <style>
 html,body{margin:0;min-height:100%;background:#FCF02A;font-family:"Libre Caslon Text",Georgia,serif;color:#1A1614}
-#ph{position:fixed;inset:0;background-size:cover;background-position:center;filter:grayscale(1) contrast(1.4) brightness(1.3);mix-blend-mode:multiply;opacity:.55}
-header{position:relative;padding:22px 28px 0;z-index:2}
-h1{margin:0;font-weight:normal;font-size:30px;display:inline-block;background:#FCF02A;padding:0 8px}
-#proof{position:relative;z-index:2;margin:6vh 0 0;padding:0 4vw;min-height:46vh}
-#proof .ink{position:absolute;left:4vw;right:4vw;top:0;font-family:"Ultra",serif;font-size:min(17vw,210px);line-height:.92;word-break:break-word;mix-blend-mode:multiply;pointer-events:none}
+body{display:grid;grid-template-columns:1fr 34vw;column-gap:5vw;padding:30px;box-sizing:border-box;min-height:100vh;align-content:start}
+/* the wood type photograph as a plate with its own edges, printed down to one ink */
+#ph{grid-column:2;grid-row:1 / span 4;position:sticky;top:30px;height:calc(100vh - 60px);background-size:cover;background-position:center;filter:grayscale(1) contrast(1.35) brightness(1.1);mix-blend-mode:multiply}
+header{grid-column:1}
+h1{margin:0;font-weight:normal;font-size:16px}
+header p{margin:4px 0 0;font-size:14px;font-style:italic;opacity:.75}
+#proof{grid-column:1;position:relative;min-height:40vh;margin-top:9vh}
+#proof .ink{position:absolute;left:0;right:0;top:0;font-family:"Ultra",serif;font-size:min(9.5vw,150px);line-height:.92;word-break:break-word;mix-blend-mode:multiply;pointer-events:none}
 #proof .a{color:#F64FB2}
 #proof .b{color:#0F6E2B;transform:translate(.045em,.03em)}
-#t{position:relative;z-index:3;display:block;width:min(92vw,820px);margin:0 4vw;font:inherit;font-size:22px;padding:10px 12px;border:2px solid #1A1614;background:#FCF02A;color:#1A1614}
-#t:focus{outline:3px solid #F64FB2;outline-offset:2px}
-ul{position:relative;z-index:2;list-style:none;margin:5vh 4vw 6vh;padding:0;columns:3;column-gap:4vw;font-size:20px;line-height:1.8}
-ul li{background:#FCF02A;display:inline-block;padding:0 6px}
-ul i{font-size:17px}
-@media (max-width:760px){ ul{columns:1} }
+#t{grid-column:1;display:block;width:min(100%,360px);box-sizing:border-box;font:inherit;font-size:16px;font-style:italic;padding:6px 0;border:0;border-bottom:1px solid #1A1614;border-radius:0;background:transparent;color:#1A1614}
+#t:focus{outline:none;border-bottom:2px solid #F64FB2;padding-bottom:5px}
+ul{grid-column:1;list-style:none;margin:7vh 0 0;padding:0;columns:2;column-gap:3vw;font-size:15px;line-height:1.85}
+ul i{font-size:14px}
+@media (max-width:760px){ body{grid-template-columns:1fr;padding:16px} #ph{grid-column:1;grid-row:auto;position:relative;top:0;height:36vh;order:-1;margin-bottom:20px} ul{columns:1} #proof .ink{font-size:20vw} }
 </style></head><body>
 <div id="ph" aria-hidden="true"></div>
-<header><h1>Margin Press</h1></header>
+<header><h1>Margin Press</h1><p class="w">Books, set and printed here</p></header>
 <div id="proof" aria-hidden="true"><div class="ink a" id="ia"></div><div class="ink b" id="ib"></div></div>
 <label class="sr" for="t" style="position:absolute;left:-9999px">Set a line of type</label>
 <input id="t" value="Salt" maxlength="40" autocomplete="off" spellcheck="false">

@@ -1,18 +1,20 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kiln 4</title>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&display=swap" rel="stylesheet">
 <!-- 09c. A ceramics studio selling pots. Round two. Material: real 3D clay on a
      turning wheel, glazed. Behaviour: shaping. The pot turns on the wheel; press
      on it and pull, and the clay at that height follows your hand out or in,
      the way a pot is thrown. Every visitor leaves a different pot. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#88B7D3;font-family:"Young Serif",Georgia,serif;color:#1A1614;touch-action:none}
-h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:40px;z-index:2;pointer-events:none}
-p.w{position:fixed;left:28px;top:72px;margin:0;font-size:18px;z-index:2;pointer-events:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#88B7D3;font-family:"Goudy Bookletter 1911",Georgia,serif;color:#1A1614;touch-action:none}
+h1{position:fixed;left:30px;top:26px;margin:0;font-weight:normal;font-size:22px;z-index:2;pointer-events:none}
+p.w{position:fixed;left:30px;top:58px;margin:0;font-size:15px;opacity:.8;z-index:2;pointer-events:none}
+.line{position:fixed;left:30px;right:30px;bottom:26px;margin:0;display:flex;justify-content:space-between;font-size:15px;letter-spacing:.04em;z-index:2;pointer-events:none}
 canvas{cursor:grab}
 </style></head><body>
-<h1>Kiln 4</h1><p class="w">Thrown to order, from &pound;22. Jugs, bowls, vases, cups, jars</p>
+<h1>Kiln 4</h1><p class="w">Thrown to order, from &pound;22</p>
+<p class="line"><span>Jugs</span><span>Bowls</span><span>Vases</span><span>Cups</span><span>Jars</span></p>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import { stage } from './three-kit.js';
