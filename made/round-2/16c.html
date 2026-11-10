@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Rye</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
+<!-- 16c. A bakery. Round two. Material: real photographs of bread,
+     placeholders. Behaviour: the real day. The page answers the clock, not the
+     pointer: it is full at seven in the morning and empties through the day
+     the way the counter does, each bake going when it usually sells out, until
+     what is left in the afternoon is what is left. Come back later and it is
+     different. -->
+<style>
+html,body{margin:0;min-height:100%;background:#A40603;font-family:"Young Serif",Georgia,serif;color:#fff}
+header{padding:22px 28px 0;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
+h1{margin:0;font-weight:normal;font-size:42px}
+#clock{margin:0;font-size:22px}
+#g{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:22px 28px 28px}
+.b{position:relative;aspect-ratio:4/3;overflow:hidden;background:#1A1614}
+.b img{width:100%;height:100%;object-fit:cover;display:block;transition:filter 1s,opacity 1s}
+.b p{position:absolute;left:0;bottom:0;margin:0;background:#A40603;padding:6px 10px;font-size:20px}
+.b.gone img{filter:grayscale(1) brightness(.35)}
+.b.gone p{background:#1A1614}
+.b.gone p::after{content:', gone';}
+@media (max-width:760px){ #g{grid-template-columns:1fr 1fr} }
+</style></head><body>
+<header><h1>Daily Rye</h1><p id="clock" aria-live="polite"></p></header>
+<div id="g"></div>
+<script src="images.js"></script>
+<script>
+/* when each bake usually sells out, in hours of the day */
+var B = [['Rye',4.5,16],['Sourdough',5,13],['Cardamom bun',3.2,10.5],['Focaccia',6,14.5],['Baguette',3,12],['Croissant',2.8,9.5]];
+var g = document.getElementById('g');
+g.innerHTML = B.map(function(b, i){ return '<div class="b"><img alt="' + b[0] + '" src="' + U(IMG.bread[i], 900) + '"><p>' + b[0] + ', &pound;' + b[1].toFixed(2) + '</p></div>'; }).join('');
+function tick(){
+  var d = new Date(), h = d.getHours() + d.getMinutes() / 60, cells = g.children, left = 0;
+  var open = h >= 7 && h < 18;
+  B.forEach(function(b, i){ var gone = !open || h >= b[2]; cells[i].classList.toggle('gone', gone); if (!gone) left++; });
+  var hh = d.getHours(), mm = d.getMinutes();
+  document.getElementById('clock').textContent = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm + ', ' +
+    (!open ? 'closed, back at 7' : left === B.length ? 'everything is in' : left === 0 ? 'all gone for today' : left + ' of ' + B.length + ' still on the counter');
+}
+tick(); setInterval(tick, 20000);
+</script></body></html>

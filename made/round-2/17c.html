@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keel, from Foundry Nine</title>
+<!-- 17c. A typeface foundry selling one face. Round two. Material: real 3D,
+     the modular face Keel built as solid cells, glossy, standing on a floor.
+     Behaviour: type, then turn. Type a word and it is built letter by letter
+     out of cells that drop into place; drag to walk round it. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"Times New Roman",Times,serif;color:#1A1614;touch-action:none}
+h1{position:fixed;left:28px;top:18px;margin:0;font-weight:normal;font-size:34px;z-index:2;pointer-events:none}
+p.w{position:fixed;left:28px;top:62px;margin:0;font-size:17px;z-index:2;pointer-events:none}
+#t{position:fixed;left:28px;bottom:5vh;z-index:3;font:inherit;font-size:24px;padding:8px 12px;border:2px solid #1A1614;background:#fff;width:min(70vw,420px);text-transform:uppercase}
+#t:focus{outline:3px solid #E47937;outline-offset:2px}
+</style></head><body>
+<h1>Keel, from Foundry Nine</h1><p class="w">One family, 36 glyphs. Desktop licence &pound;60</p>
+<label for="t" style="position:absolute;left:-9999px">Type a word in Keel</label>
+<input id="t" value="KEEL" maxlength="10" autocomplete="off" spellcheck="false">
+<script src="../round-1/glyphs.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from './three-kit.js';
+const S = stage({ bg:'#FFFFFF', key:2.6, fill:0.55, exposure:1.0, fov:30 });
+const { THREE, scene, camera } = S;
+S.catcher(0, 80, 0.2);
+const mats = [new THREE.MeshPhysicalMaterial({ color:'#3866C1', roughness:0.15, clearcoat:1, clearcoatRoughness:0.1 }),
+              new THREE.MeshPhysicalMaterial({ color:'#E47937', roughness:0.15, clearcoat:1, clearcoatRoughness:0.1 })];
+const cell = new THREE.SphereGeometry(0.46, 32, 20);
+let cells = [];
+function build(word){
+  cells.forEach((c) => scene.remove(c.m)); cells = [];
+  const chars = word.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10).split('');
+  const total = chars.length * 6 - 1;
+  chars.forEach((ch, ci) => {
+    const rows = KEEL[ch]; if (!rows) return;
+    rows.forEach((row, y) => { for (let x = 0; x < 5; x++) if (row[x] === '1'){
+      const m = new THREE.Mesh(cell, mats[ci % 2]); m.castShadow = true;
+      const tx = (ci * 6 + x - total / 2), ty = (6 - y) + 0.5;
+      m.position.set(tx, ty + 8 + Math.random() * 6, 0); scene.add(m);
+      cells.push({ m, ty, v:0 });
+    }});
+  });
+  const span = Math.max(8, total + 4);
+  dist = span / (2 * Math.tan(camera.fov * Math.PI / 360) * Math.max(0.6, camera.aspect)) + 4;
+}
+let yaw = -0.35, pitch = 0.22, dist = 30, drag = false, lx = 0, ly = 0;
+const input = document.getElementById('t');
+input.addEventListener('input', () => build(input.value));
+addEventListener('pointerdown', (e) => { if (e.target === input) return; drag = true; lx = e.clientX; ly = e.clientY; });
+addEventListener('pointermove', (e) => { if (!drag) return; yaw -= (e.clientX - lx) * 0.006; pitch = Math.max(0.02, Math.min(1.1, pitch + (e.clientY - ly) * 0.004)); lx = e.clientX; ly = e.clientY; });
+addEventListener('pointerup', () => { drag = false; });
+build(input.value);
+S.loop(() => {
+  cells.forEach((c) => { c.v -= 0.02; c.m.position.y += c.v; if (c.m.position.y < c.ty){ c.m.position.y = c.ty; c.v = -c.v * 0.35; if (Math.abs(c.v) < 0.02) c.v = 0; } });
+  camera.position.set(Math.sin(yaw) * Math.cos(pitch) * dist, 3.5 + Math.sin(pitch) * dist, Math.cos(yaw) * Math.cos(pitch) * dist);
+  camera.lookAt(0, 3.5, 0);
+});
+</script></body></html>
