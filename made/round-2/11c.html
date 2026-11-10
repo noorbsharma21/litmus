@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide Records</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Spectral&display=swap" rel="stylesheet">
+<!-- 11c. An independent record label. Round two. Material: a real 3D
+     turntable on magenta. Behaviour: sound. Press the record and the needle
+     drops and it plays; drag across the record and it scratches, the pitch
+     following your hand; choose a release below and the label changes and so
+     does what you hear. The music is generated here, a placeholder for the
+     label's own. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#F64FB2;font-family:"Spectral",Georgia,serif;color:#1A1614;touch-action:none}
+h1{position:fixed;left:28px;top:18px;margin:0;font-family:"Rubik Mono One",sans-serif;font-weight:normal;font-size:28px;z-index:2;pointer-events:none}
+#rel{position:fixed;left:28px;bottom:4vh;display:flex;flex-wrap:wrap;gap:8px;z-index:2;max-width:92vw}
+#rel button{font:inherit;font-size:18px;border:0;background:#FCF02A;color:#1A1614;padding:8px 12px;cursor:pointer;min-height:44px}
+#rel button[aria-pressed="true"]{background:#1A1614;color:#FCF02A}
+#st{position:fixed;right:28px;top:22px;margin:0;font-size:20px;z-index:2}
+</style></head><body>
+<h1>Low Tide Records</h1><p id="st" aria-live="polite">quiet</p>
+<div id="rel" role="group" aria-label="Releases"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from './three-kit.js';
+const S = stage({ bg:'#F64FB2', key:2.6, fill:0.6, exposure:1.0, fov:30 });
+const { THREE, scene, camera } = S;
+camera.position.set(0, 9.5, 8.5); camera.lookAt(0, 0, 0.3);
+S.catcher(0, 40, 0.25);
+const R = [['Ama Bell','Night Ferry','#FCF02A',[0,3,7,10]],['Corran','Field Recordings 2','#0F6E2B',[0,2,7,9]],['Sile and Ott','Glass House','#FFFFFF',[0,4,7,11]],
+           ['Mo Arendt','Tidewater','#88B7D3',[0,3,5,10]],['Nils Pa','Low Light','#E47937',[0,5,7,12]],['Hester','Salt Road','#F64FB2',[0,3,8,10]]];
+const plinth = new THREE.Mesh(new THREE.BoxGeometry(7.4, 0.6, 5.6), new THREE.MeshStandardMaterial({ color:'#FBFBF8', roughness:0.5 }));
+plinth.position.y = 0.3; plinth.castShadow = plinth.receiveShadow = true; scene.add(plinth);
+function grooves(label){
+  const c = document.createElement('canvas'); c.width = c.height = 1024; const g = c.getContext('2d');
+  g.fillStyle = '#141210'; g.beginPath(); g.arc(512, 512, 512, 0, 7); g.fill();
+  for (let r = 190; r < 505; r += 3){ g.strokeStyle = r % 9 ? '#22201d' : '#2e2a26'; g.lineWidth = 1.4; g.beginPath(); g.arc(512, 512, r, 0, 7); g.stroke(); }
+  g.fillStyle = label; g.beginPath(); g.arc(512, 512, 170, 0, 7); g.fill();
+  g.fillStyle = '#1A1614'; g.fillRect(400, 470, 224, 16); g.fillRect(430, 500, 164, 10);
+  g.beginPath(); g.arc(512, 512, 9, 0, 7); g.fillStyle = '#ccc'; g.fill();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+const recMat = new THREE.MeshStandardMaterial({ map:grooves(R[0][2]), roughness:0.35, metalness:0.1 });
+const record = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.3, 0.06, 96), [new THREE.MeshStandardMaterial({ color:'#141210' }), recMat, recMat]);
+record.position.set(-0.7, 0.66, 0); record.castShadow = true; scene.add(record);
+const arm = new THREE.Group(); arm.position.set(2.6, 0.75, -1.8); scene.add(arm);
+const steel = new THREE.MeshStandardMaterial({ color:'#d8d8d8', metalness:0.9, roughness:0.25 });
+const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 3.2, 16), steel); tube.rotation.z = Math.PI / 2; tube.position.x = -1.6; arm.add(tube);
+const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.12, 0.25), new THREE.MeshStandardMaterial({ color:'#1A1614' })); head.position.x = -3.2; arm.add(head);
+const pivot = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 0.3, 32), steel); pivot.position.set(2.6, 0.75, -1.8); scene.add(pivot);
+
+/* the sound: a small loop per release, generated, with its speed and pitch
+   tied to how fast the record is turning */
+let A = null, master = null, step = 0, next = 0, playing = false, current = 0;
+function audio(){ if (A) return; A = new (window.AudioContext || window.webkitAudioContext)(); master = A.createGain(); master.gain.value = 0.35; master.connect(A.destination); }
+function note(freq, when, len, type, vol){
+  const o = A.createOscillator(), g = A.createGain(); o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(vol, when + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, when + len);
+  o.connect(g); g.connect(master); o.start(when); o.stop(when + len + 0.02);
+}
+let speed = 0, target = 0, angle = 0, scratching = false, lastA = 0, scratchV = 0;
+function schedule(){
+  if (!A || !playing) return;
+  const rate = Math.max(0.05, speed / 3.5);
+  while (next < A.currentTime + 0.1){
+    const sc = R[current][3], base = 110 * Math.pow(2, (step % 16 < 8 ? 0 : -2) / 12);
+    if (step % 4 === 0) note(base / 2 * rate, next, 0.35, 'sine', 0.5);
+    note(base * 2 * Math.pow(2, sc[step % 4] / 12) * rate, next, 0.18, 'triangle', 0.18);
+    step++; next += 0.16 / rate;
+  }
+}
+const st = document.getElementById('st');
+addEventListener('pointerdown', (e) => {
+  if (e.target.closest('#rel')) return;
+  const hit = S.pick(e, [record]); if (!hit) return;
+  audio(); A.resume();
+  if (!playing){ playing = true; target = 3.5; next = A.currentTime + 0.05; st.textContent = 'playing ' + R[current][1]; }
+  scratching = true; lastA = Math.atan2(e.clientY - innerHeight * 0.5, e.clientX - innerWidth * 0.5);
+});
+addEventListener('pointermove', (e) => {
+  if (!scratching) return;
+  const a = Math.atan2(e.clientY - innerHeight * 0.5, e.clientX - innerWidth * 0.5);
+  let d = a - lastA; if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2;
+  scratchV = d * 60; lastA = a;
+});
+addEventListener('pointerup', () => { scratching = false; scratchV = 0; });
+const rel = document.getElementById('rel');
+rel.innerHTML = R.map((r, i) => '<button type="button" data-i="' + i + '" aria-pressed="' + (i === 0) + '">' + r[0] + ', ' + r[1] + '</button>').join('');
+rel.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  current = +b.dataset.i; recMat.map = grooves(R[current][2]); recMat.needsUpdate = true;
+  rel.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+  if (playing) st.textContent = 'playing ' + R[current][1];
+});
+S.loop(() => {
+  speed += ((scratching ? -scratchV : target) - speed) * (scratching ? 0.4 : 0.03);
+  angle -= speed * 0.016; record.rotation.y = angle;
+  arm.rotation.y += ((playing ? -0.42 : 0) - arm.rotation.y) * 0.05;
+  schedule();
+});
+</script></body></html>

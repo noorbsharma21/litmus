@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stem and Hour</title>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+<!-- 13c. A florist. Round two. Material: real photographs of single flowers,
+     placeholders, as heads on stems, with real physics. Behaviour: drop and
+     throw. Click anywhere above the vase and a stem falls; it lands, tips and
+     leans on the others. Pick one up and throw it. The vase fills the way a
+     vase does, not the way a grid does. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#EE5884;font-family:"Italiana",Georgia,serif;color:#072493;touch-action:none;user-select:none;-webkit-user-select:none}
+h1{position:fixed;left:28px;top:18px;margin:0;font-weight:normal;font-size:58px;z-index:3;pointer-events:none}
+p.w{position:fixed;left:30px;top:86px;margin:0;font-size:22px;z-index:3;pointer-events:none}
+.st{position:fixed;left:0;top:0;width:8px;background:#0F6E2B;transform-origin:50% 0;pointer-events:none}
+.fl{position:fixed;left:0;top:0;border-radius:50%;object-fit:cover;pointer-events:none;box-shadow:0 0 0 4px #EE5884}
+#vase{position:fixed;pointer-events:none;background:#072493}
+</style></head><body>
+<h1>Stem and Hour</h1><p class="w">Cut this morning. Tuesday to Saturday, 8 until 6</p>
+<div id="vase" aria-hidden="true"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script src="images.js"></script>
+<script>
+var M = Matter, eng = M.Engine.create(), world = eng.world;
+eng.gravity.y = 1.1;
+var W = innerWidth, H = innerHeight, vase = document.getElementById('vase'), parts = [];
+var vw = Math.min(360, W * 0.36), vh = Math.min(300, H * 0.36), vx = W * 0.62, vy = H - vh;
+vase.style.cssText += ';left:' + (vx - vw / 2) + 'px;top:' + vy + 'px;width:' + vw + 'px;height:' + vh + 'px;border-radius:0 0 46% 46% / 0 0 30% 30%';
+var walls = [
+  M.Bodies.rectangle(vx - vw / 2, vy + vh / 2, 16, vh, { isStatic:true }),
+  M.Bodies.rectangle(vx + vw / 2, vy + vh / 2, 16, vh, { isStatic:true }),
+  M.Bodies.rectangle(vx, H + 8, vw, 30, { isStatic:true }),
+  M.Bodies.rectangle(W / 2, H + 60, W * 3, 100, { isStatic:true }),
+  M.Bodies.rectangle(-50, H / 2, 100, H * 3, { isStatic:true }),
+  M.Bodies.rectangle(W + 50, H / 2, 100, H * 3, { isStatic:true })
+];
+M.Composite.add(world, walls);
+var k = 0;
+function drop(x){
+  var r = 34 + Math.random() * 20, len = 170 + Math.random() * 120;
+  /* a stem is a long thin body with the flower at its top end */
+  var body = M.Bodies.rectangle(x, -len, 10, len, { density:0.0016, friction:0.6, frictionAir:0.02, chamfer:{ radius:4 } });
+  M.Body.setAngle(body, (Math.random() - .5) * 0.6);
+  M.Composite.add(world, body);
+  var st = document.createElement('div'); st.className = 'st'; st.style.height = len + 'px'; document.body.appendChild(st);
+  var fl = document.createElement('img'); fl.className = 'fl'; fl.alt = ''; fl.src = U(IMG.flower[k++ % IMG.flower.length], 300);
+  fl.style.width = fl.style.height = (r * 2) + 'px'; document.body.appendChild(fl);
+  parts.push({ b:body, st:st, fl:fl, r:r, len:len });
+}
+var mouse = M.Mouse.create(document.body), mc = M.MouseConstraint.create(eng, { mouse:mouse, constraint:{ stiffness:0.2 } });
+M.Composite.add(world, mc);
+var downAt = null;
+addEventListener('pointerdown', function(e){ downAt = [e.clientX, e.clientY, M.Query.point(parts.map(function(p){ return p.b; }), { x:e.clientX, y:e.clientY }).length]; });
+addEventListener('pointerup', function(e){ if (downAt && !downAt[2] && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) < 6) drop(e.clientX); downAt = null; });
+for (var i = 0; i < 4; i++) setTimeout(function(){ drop(vx + (Math.random() - .5) * vw * 0.5); }, 300 + i * 350);
+(function tick(){
+  M.Engine.update(eng, 1000 / 60);
+  parts.forEach(function(p){
+    var a = p.b.angle, c = p.b.position, tx = c.x + Math.sin(a) * p.len / 2, ty = c.y - Math.cos(a) * p.len / 2;
+    p.st.style.transform = 'translate(' + (tx - 4) + 'px,' + ty + 'px) rotate(' + (a * 180 / Math.PI) + 'deg)';
+    p.fl.style.transform = 'translate(' + (tx - p.r) + 'px,' + (ty - p.r) + 'px)';
+  });
+  requestAnimationFrame(tick);
+})();
+</script></body></html>
