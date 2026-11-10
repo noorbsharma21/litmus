@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halde Duo</title>
+<link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Texturina:ital,opsz,wght@0,12..72,400;1,12..72,400&display=swap" rel="stylesheet">
+<!-- 03d. A poster for one night of music. Round three, from 03c. cr6: keep
+     the hold, where the crowd comes up out of the yellow; give it a frame;
+     present the facts more creatively; a gothic or experimental face. The
+     photograph is now a print inside a ruled frame, the four facts run round
+     the frame's four sides, one to a side, and the name sits under it in a
+     woven blackletter. Behaviour as before: press and hold, a low chord swells
+     and the crowd comes up; let go and both fall away. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FDFF70;font-family:"Texturina",Georgia,serif;color:#1A1614;user-select:none;-webkit-user-select:none;touch-action:none}
+/* the frame: a double rule, the way a printed poster rules its picture */
+#fr{position:fixed;left:9vw;right:9vw;top:9vh;height:58vh;outline:1px solid #1A1614;outline-offset:7px;border:2px solid #1A1614}
+#ph{position:absolute;inset:0;background-size:cover;background-position:center 30%;filter:grayscale(1) contrast(var(--c,1.9)) brightness(var(--b,1.25));mix-blend-mode:multiply;transition:filter .2s}
+/* one fact to each side of the frame */
+.f{position:fixed;margin:0;font-size:15px;letter-spacing:.04em;white-space:nowrap}
+.f.t{left:50%;top:calc(9vh - 34px);transform:translateX(-50%)}
+.f.b{left:50%;top:calc(67vh + 18px);transform:translateX(-50%)}
+.f.l{left:calc(9vw - 22px);top:38vh;transform:translate(-50%,-50%) rotate(-90deg)}
+.f.r{right:calc(9vw - 22px);top:38vh;transform:translate(50%,-50%) rotate(90deg)}
+.f i{font-style:italic}
+/* the name: the one large element, set under the frame like a poster's foot */
+h1{position:fixed;left:0;right:0;bottom:2vh;margin:0;text-align:center;font-family:"Jacquard 24",serif;font-weight:normal;font-size:min(21vh,15vw);line-height:.9;letter-spacing:.01em}
+@media (max-width:700px){ #fr{left:12vw;right:12vw} .f{font-size:13px} }
+</style></head><body>
+<div id="fr"><div id="ph" role="img" aria-label="A crowd facing a lit stage"></div></div>
+<p class="f t">Friday <i>21 November</i></p>
+<p class="f r">The Lantern Room</p>
+<p class="f b">&pound;12 on the door</p>
+<p class="f l">Doors at <i>eight</i></p>
+<h1>Halde Duo</h1>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+grainOver(0.16, 'overlay');
+var ph = document.getElementById('ph');
+ph.style.backgroundImage = 'url(' + U(IMG.gig[0], 1800) + ')';
+var A = null, gain = null, held = false, level = 0;
+function sound(){
+  if (A) return;
+  A = new (window.AudioContext || window.webkitAudioContext)();
+  gain = A.createGain(); gain.gain.value = 0; gain.connect(A.destination);
+  [55, 82.4, 110, 164.8].forEach(function(f, i){
+    var o = A.createOscillator(); o.type = i % 2 ? 'sawtooth' : 'triangle'; o.frequency.value = f;
+    var lp = A.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 500;
+    var g = A.createGain(); g.gain.value = 0.12; o.connect(lp); lp.connect(g); g.connect(gain); o.start();
+  });
+}
+addEventListener('pointerdown', function(){ sound(); held = true; A.resume(); });
+addEventListener('pointerup', function(){ held = false; });
+addEventListener('keydown', function(e){ if (e.key === ' '){ sound(); held = true; A.resume(); } });
+addEventListener('keyup', function(e){ if (e.key === ' ') held = false; });
+function frame(){
+  level += ((held ? 1 : 0) - level) * (held ? 0.03 : 0.06);
+  ph.style.setProperty('--c', (1.9 + level * 1.6).toFixed(2));
+  ph.style.setProperty('--b', (1.25 - level * 0.55).toFixed(2));
+  if (gain) gain.gain.value = level * 0.5;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>

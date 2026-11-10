@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Margin Press</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica:ital@0;1&display=swap" rel="stylesheet">
+<!-- 08d. A small press and bookshop. Round three, from 08c. cr6 refused the
+     font and the effect, and asked for screen printing or cyanotype,
+     texturally rich formats. This is a cyanotype. The sheet is brushed with
+     sensitiser over a photograph of wood type; whatever you type is laid on
+     it like cut letters, and the sheet is put in the sun: the blue comes up
+     around the letters over a few seconds and the letters stay paper white,
+     the way a photogram does. Type again and a fresh sheet goes out. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:"IM Fell DW Pica",Georgia,serif;color:#16294F}
+body{background:#F3F2EE}
+#sheet{position:fixed;left:30px;top:30px;bottom:30px;width:min(60vw,calc((100vh - 60px) * 0.82));box-shadow:0 1px 1px rgba(0,0,0,.06),0 10px 30px rgba(20,30,60,.10)}
+#sheet canvas{width:100%;height:100%;display:block}
+aside{position:fixed;top:30px;bottom:30px;right:30px;left:calc(30px + min(60vw,calc((100vh - 60px) * 0.82)) + 5vw);display:flex;flex-direction:column}
+h1{margin:0;font-weight:normal;font-size:30px;line-height:1}
+.w{margin:6px 0 0;font-size:16px;font-style:italic}
+#t{margin-top:7vh;display:block;width:100%;max-width:300px;box-sizing:border-box;font:inherit;font-size:22px;padding:4px 0;border:0;border-bottom:1px solid #16294F;border-radius:0;background:transparent;color:#16294F}
+#t:focus{outline:none;border-bottom-width:2px;padding-bottom:3px}
+#st{margin:8px 0 0;font-size:14px;font-style:italic;min-height:1.2em;opacity:.8}
+ul{margin:auto 0 0;padding:0;list-style:none;font-size:17px;line-height:1.7}
+ul i{font-size:16px}
+@media (max-width:760px){ #sheet{left:16px;right:16px;bottom:auto;width:auto;height:52vh} aside{left:16px;right:16px;top:calc(52vh + 46px);bottom:16px} ul{font-size:15px;line-height:1.5} }
+</style></head><body>
+<div id="sheet"><canvas id="c" aria-label="A cyanotype print of the word you typed"></canvas></div>
+<aside>
+<h1>Margin Press</h1><p class="w">Books, set and printed here</p>
+<label for="t" style="position:absolute;left:-9999px">A word to print</label>
+<input id="t" value="Salt" maxlength="14" autocomplete="off" spellcheck="false">
+<p id="st" aria-live="polite"></p>
+<ul>
+<li>Salt, <i>Ana Reis</i>, &pound;14</li><li>Ferry, <i>Tom&aacute;s Ilves</i>, &pound;12</li><li>Orchard, <i>Mira Holt</i>, &pound;16</li>
+<li>Weather, <i>J. Okafor</i>, &pound;11</li><li>Kiln, <i>Saar Vinter</i>, &pound;15</li><li>Harbour, <i>Ilse Brand</i>, &pound;13</li>
+<li>Ledger, <i>Ruth Oyelaran</i>, &pound;18</li><li>Lantern, <i>Pia Moss</i>, &pound;12</li><li>Thaw, <i>Eero Lind</i>, &pound;14</li>
+</ul>
+</aside>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+document.body.style.background = '#F3F2EE url(' + paperURL('#F3F2EE', { tooth:12 }) + ')';
+grainOver(0.06, 'multiply');
+var c = document.getElementById('c'), g = c.getContext('2d'), t = document.getElementById('t'), st = document.getElementById('st');
+var exposed = null, paper = null, W = 0, H = 0, start = performance.now(), word = t.value, img = null;
+var PAPER = '#F4F2EC';
+function build(){
+  var r = c.parentNode.getBoundingClientRect(); if (!r.width || !r.height) return false;
+  var k = Math.min(1.5, devicePixelRatio || 1), w = Math.round(r.width * k), h = Math.round(r.height * k);
+  if (w === W && h === H && exposed) return true;
+  W = c.width = w; H = c.height = h;
+  /* paper: the sheet itself, with tooth */
+  paper = document.createElement('canvas'); paper.width = W; paper.height = H;
+  var pg = paper.getContext('2d'), pat = new Image(); pat.src = paperURL(PAPER, { tooth:18, cloud:6, seed:5 });
+  pg.fillStyle = PAPER; pg.fillRect(0, 0, W, H);
+  pat.onload = function(){ pg.fillStyle = pg.createPattern(pat, 'repeat'); pg.fillRect(0, 0, W, H); };
+  /* the fully exposed print, worked out at a smaller size for speed and drawn up */
+  if (img){ var s = 0.6; exposed = PRINT.cyanotype(img, Math.round(W * s), Math.round(H * s), { contrast:0.75, lift:-0.22, gamma:0.7 }); }
+  return true;
+}
+var settled = false;
+function draw(){
+  if (!build()) return;
+  var e = Math.min(1, (performance.now() - start) / 5200), ease = 1 - Math.pow(1 - e, 2.2);
+  /* once the print is dry there is nothing to redraw until the word changes */
+  if (e === 1 && settled) return; settled = e === 1;
+  g.globalAlpha = 1; g.drawImage(paper, 0, 0);
+  if (exposed){ g.globalAlpha = ease; g.imageSmoothingQuality = 'high'; g.drawImage(exposed, 0, 0, W, H); g.globalAlpha = 1; }
+  /* the letters held the light off, so they stay paper; a soft edge where
+     they lifted a little from the sheet */
+  var fs = Math.min(H * 0.34, W * 1.5 / Math.max(3, word.length));
+  g.save(); g.font = fs + 'px "IM Fell DW Pica", Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.filter = 'blur(' + (1.2 * (W / 800)).toFixed(2) + 'px)';
+  g.fillStyle = PAPER; g.globalAlpha = 0.25 + 0.75 * ease;
+  g.translate(W / 2, H * 0.5); g.rotate(-0.03); g.fillText(word, 0, 0);
+  g.restore();
+  st.textContent = e < 1 ? 'in the sun' : 'washed and dried, ' + word;
+}
+(function loop(){ draw(); requestAnimationFrame(loop); })();
+loadImg(U(IMG.type[0], 1400)).then(function(i){ img = i; W = 0; settled = false; start = performance.now(); });
+t.addEventListener('input', function(){ word = t.value || ' '; settled = false; start = performance.now(); });
+if (document.fonts) document.fonts.ready.then(function(){ settled = false; start = performance.now(); });
+</script></body></html>

@@ -7,6 +7,10 @@
    that bare name, resolve to the same copy. */
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 export { THREE };
 
 export function stage(o){
@@ -41,9 +45,50 @@ export function stage(o){
     const W = window.innerWidth, H = window.innerHeight;
     if (!W || !H || (W === w && H === h)) return;
     w = W; h = H; renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
+    if (composer){ composer.setSize(W, H); const pr = renderer.getPixelRatio(); post.uniforms.res.value.set(W * pr, H * pr); }
+  }
+  /* Round three, from cr6: 3D that reaches for realism and falls short reads
+     as old internet. o.analog takes the render through a process instead:
+     'grain' (film), 'xerox' (photocopy toner on paper), 'riso' (two inks,
+     grainy screen, out of register). */
+  let composer = null, post = null;
+  if (o.analog){
+    const a = o.analog, v3 = (hx) => { hx = hx.replace('#', ''); return new THREE.Vector3(parseInt(hx.slice(0, 2), 16) / 255, parseInt(hx.slice(2, 4), 16) / 255, parseInt(hx.slice(4, 6), 16) / 255); };
+    composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples:4, type:THREE.HalfFloatType }));
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new OutputPass());
+    post = new ShaderPass({
+      uniforms:{ tDiffuse:{ value:null }, res:{ value:new THREE.Vector2(1, 1) }, time:{ value:0 },
+        mode:{ value:{ grain:0, xerox:1, riso:2 }[a.mode || 'grain'] }, grain:{ value:a.grain === undefined ? 0.09 : a.grain },
+        vignette:{ value:a.vignette === undefined ? 0.25 : a.vignette }, paper:{ value:v3(a.paper || '#EDEBE6') },
+        ink:{ value:v3(a.ink || '#141311') }, inkB:{ value:v3(a.inkB || '#F64FB2') }, lo:{ value:a.lo || 0.38 }, hi:{ value:a.hi || 0.62 } },
+      vertexShader:'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader:`uniform sampler2D tDiffuse; uniform vec2 res; uniform float time, mode, grain, vignette, lo, hi; uniform vec3 paper, ink, inkB; varying vec2 vUv;
+        float hash(vec2 p){ p = mod(p, 1031.0); return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+        void main(){
+          vec3 c = texture2D(tDiffuse, vUv).rgb; vec2 px = floor(vUv * res);
+          float f = floor(time * 18.0), n = hash(px + f * vec2(17.0, 31.0)), l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+          if (mode < 0.5){
+            c += (n - 0.5) * grain;
+          } else if (mode < 1.5){
+            float s = hash(px * 0.5);
+            float t = smoothstep(hi, lo, l + (s - 0.5) * 0.3 + (hash(vec2(px.x, 3.0)) - 0.5) * 0.04);
+            c = mix(paper, ink, t * 0.95) + (hash(px + 7.0) - 0.5) * grain;
+          } else {
+            vec3 c2 = texture2D(tDiffuse, vUv + vec2(4.0, 3.0) / res).rgb; float l2 = dot(c2, vec3(0.2126, 0.7152, 0.0722));
+            float s = hash(px), s2 = hash(px + vec2(7.0, 3.0));
+            float da = smoothstep(hi, lo * 0.3, l), db = smoothstep(0.97, lo, l2) * 0.9;
+            da = s < da ? 0.94 : da * 0.1; db = s2 < db ? 0.9 : db * 0.12;
+            c = paper * (1.0 - db * (1.0 - inkB)) * (1.0 - da * (1.0 - ink)) + (n - 0.5) * grain * 0.5;
+          }
+          vec2 q = vUv - 0.5; c *= 1.0 - vignette * dot(q, q) * 2.0;
+          gl_FragColor = vec4(c, 1.0);
+        }`
+    });
+    composer.addPass(post);
   }
   function loop(fn){
-    renderer.setAnimationLoop(function(t){ fit(); if (w && h){ fn && fn(t / 1000); renderer.render(scene, camera); } });
+    renderer.setAnimationLoop(function(t){ fit(); if (w && h){ fn && fn(t / 1000); if (composer){ post.uniforms.time.value = t / 1000; composer.render(); } else renderer.render(scene, camera); } });
   }
   /* a floor that only shows the shadows falling on it */
   function catcher(y, size, opacity){

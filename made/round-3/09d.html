@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiln 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&display=swap" rel="stylesheet">
+<!-- 09d. A ceramics studio selling pots. Round three, from 09c. cr6 liked the
+     pot; asked for a print on the wheel platform to break the monotony, a
+     different ground, and the information gathered rather than spread to the
+     corners. The wheel head now wears a hand block print, indigo and madder
+     on cloth, stamped slightly out of true; the ground is paper; the facts sit
+     together in one block. Was: 09c. Round two. Material: real 3D clay on a
+     turning wheel, glazed. Behaviour: shaping. The pot turns on the wheel; press
+     on it and pull, and the clay at that height follows your hand out or in,
+     the way a pot is thrown. Every visitor leaves a different pot. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#ECEBE6;font-family:"Goudy Bookletter 1911",Georgia,serif;color:#1A1614;touch-action:none}
+/* everything a visitor needs, in one block, like the card propped by a pot at a market */
+.card{position:fixed;left:34px;top:30px;margin:0;z-index:2;pointer-events:none;max-width:260px}
+.card h1{margin:0;font-weight:normal;font-size:26px;line-height:1}
+.card p{margin:8px 0 0;font-size:16px;line-height:1.45}
+.card .k{color:#22336B}
+canvas{cursor:grab}
+</style></head><body>
+<div class="card"><h1>Kiln 4</h1><p>Jugs, bowls, vases, cups and jars, thrown to order.<br><span class="k">From &pound;22.</span></p></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from '../round-2/three-kit.js';
+const S = stage({ bg:'#ECEBE6', key:2.6, fill:0.6, exposure:1.05, fov:30, analog:{ mode:'grain', grain:0.07, vignette:0.12 } });
+const { THREE, scene, camera } = S;
+camera.position.set(0, 4.4, 11); camera.lookAt(0, 1.6, 0);
+S.catcher(0, 40, 0.25);
+/* the print on the wheel head: a hand block print, stamped in rings, indigo
+   first and madder over it, each stamp a little out of true, on unbleached cloth */
+function blockPrint(){
+  const N = 1024, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d');
+  let x = 11; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
+  g.fillStyle = '#E9E2D2'; g.fillRect(0, 0, N, N);
+  const ring = (rad, n, draw) => { for (let i = 0; i < n; i++){ const a = i / n * Math.PI * 2; g.save(); g.translate(N / 2 + Math.cos(a) * rad + (r() - .5) * 4, N / 2 + Math.sin(a) * rad + (r() - .5) * 4); g.rotate(a + (r() - .5) * 0.08); g.globalAlpha = 0.72 + r() * 0.28; draw(); g.restore(); } };
+  const leaf = (s, col) => () => { g.fillStyle = col; g.beginPath(); g.ellipse(0, 0, s, s * 0.42, 0, 0, Math.PI * 2); g.fill(); };
+  const dot = (s, col) => () => { g.fillStyle = col; g.beginPath(); g.arc(0, 0, s, 0, Math.PI * 2); g.fill(); };
+  const IND = '#1F2D6B', MAD = '#A8322A';
+  g.fillStyle = IND; g.beginPath(); g.arc(N / 2, N / 2, 120, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#E9E2D2'; g.beginPath(); g.arc(N / 2, N / 2, 86, 0, Math.PI * 2); g.fill();
+  ring(103, 28, dot(8, '#E9E2D2'));
+  ring(170, 18, leaf(34, IND)); ring(170, 18, dot(7, MAD));
+  ring(236, 40, dot(10, MAD));
+  ring(300, 26, leaf(42, IND)); ring(300, 26, leaf(16, '#E9E2D2'));
+  ring(372, 52, dot(9, IND));
+  ring(430, 34, leaf(36, MAD)); ring(430, 34, dot(6, '#E9E2D2'));
+  ring(492, 64, dot(7, IND));
+  /* ink that did not take everywhere */
+  const im = g.getImageData(0, 0, N, N), d = im.data;
+  for (let i = 0; i < d.length; i += 4){ const n = (r() - 0.5) * 26; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+  g.putImageData(im, 0, 0);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+const cloth = new THREE.MeshStandardMaterial({ map:blockPrint(), roughness:0.95 });
+const rim = new THREE.MeshStandardMaterial({ color:'#1F2D6B', roughness:0.8 });
+const wheel = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.3, 0.3, 96), [rim, cloth, rim]);
+wheel.position.y = 0.15; wheel.castShadow = wheel.receiveShadow = true; scene.add(wheel);
+const N = 28, H = 3.2, R = [];
+for (let i = 0; i <= N; i++){ const t = i / N; R.push(0.55 + Math.sin(t * Math.PI) * 0.5); }
+const glaze = new THREE.MeshPhysicalMaterial({ color:'#E47937', roughness:0.32, clearcoat:0.8, clearcoatRoughness:0.2, side:THREE.DoubleSide });
+let pot = null;
+function build(){
+  const pts = [new THREE.Vector2(0, 0)];
+  for (let i = 0; i <= N; i++) pts.push(new THREE.Vector2(R[i], i / N * H));
+  pts.push(new THREE.Vector2(R[N] - 0.12, H), new THREE.Vector2(R[N] - 0.12, H * 0.9));
+  const g = new THREE.LatheGeometry(pts, 72);
+  if (pot){ pot.geometry.dispose(); pot.geometry = g; }
+  else { pot = new THREE.Mesh(g, glaze); pot.position.y = 0.3; pot.castShadow = true; scene.add(pot); }
+}
+build();
+let pulling = false;
+const tmp = new THREE.Vector3();
+function project(y){ tmp.set(0, y + 0.3, 0).project(camera); return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight]; }
+addEventListener('pointerdown', () => { pulling = true; });
+addEventListener('pointerup', () => { pulling = false; });
+addEventListener('pointermove', (e) => {
+  if (!pulling) return;
+  /* which height of the pot the hand is at, and how far out from the axis */
+  const top = project(H), bot = project(0);
+  const t = Math.max(0, Math.min(1, (bot[1] - e.clientY) / (bot[1] - top[1])));
+  const axis = bot[0], pxPerUnit = Math.abs(bot[1] - top[1]) / H;
+  const want = Math.max(0.18, Math.min(2.0, Math.abs(e.clientX - axis) / pxPerUnit));
+  for (let i = 0; i <= N; i++){
+    const w = Math.exp(-Math.pow((i / N - t) / 0.09, 2));
+    R[i] += (want - R[i]) * w * 0.35;
+  }
+  build();
+});
+S.loop((t) => { pot.rotation.y = t * 2.4; wheel.rotation.y = t * 2.4; });
+</script></body></html>
