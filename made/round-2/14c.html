@@ -1,21 +1,22 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Company Nuit</title>
-<link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fanwood+Text:ital@0;1&display=swap" rel="stylesheet">
 <!-- 14c. A dance company's season. Round two. Material: a real photograph of
      a dancer, a placeholder, on black. Behaviour: speed. Hold still and the
      picture is still. Move, and the dancer smears in the direction you are
      moving, the faster the further, the way a long exposure records a body.
      Stop and she settles back into one. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#0B0A09;font-family:"Italiana",Georgia,serif;color:#fff}
+html,body{margin:0;height:100%;overflow:hidden;background:#0B0A09;font-family:"Fanwood Text",Georgia,serif;color:#fff}
 .l{position:fixed;inset:-4vh -4vw;background-size:contain;background-repeat:no-repeat;background-position:62% center;will-change:transform,opacity;mix-blend-mode:screen}
-h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:64px;z-index:3}
-#season{position:fixed;left:30px;bottom:5vh;margin:0;font-size:26px;line-height:1.5;z-index:3;background:#0B0A09;padding:8px 12px}
+h1{position:fixed;left:30px;top:26px;margin:0;font-weight:normal;font-size:24px;font-style:italic;z-index:3}
+#season{position:fixed;left:30px;bottom:28px;margin:0;font-size:16px;line-height:1.75;z-index:3}
+#season i{font-size:17px}
 </style></head><body>
 <div id="stack" role="img" aria-label="A dancer in a long exposure"></div>
 <h1>Company Nuit</h1>
-<p id="season">Stillwater, 3 to 8 February<br>Four Walls, 14 to 19 April<br>Late Hours, 9 to 14 June</p>
+<p id="season"><i>Stillwater</i>, 3 to 8 February<br><i>Four Walls</i>, 14 to 19 April<br><i>Late Hours</i>, 9 to 14 June</p>
 <script src="images.js"></script>
 <script>
 var stack = document.getElementById('stack'), L = [], N = 6, url = 'url(' + U(IMG.dance[0], 1600) + ')';

@@ -9,15 +9,16 @@
      dims slowly over the minutes you stay on it. -->
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#05070d;font-family:"Spectral",Georgia,serif;color:#88B7D3;user-select:none;-webkit-user-select:none;touch-action:none;cursor:pointer}
-#ph{position:fixed;inset:0;background-size:cover;background-position:center;transition:filter .3s}
-h1{position:fixed;left:28px;top:20px;margin:0;font-weight:normal;font-size:48px;z-index:2;background:#05070d;padding:2px 12px}
-#ep{position:fixed;left:28px;bottom:5vh;margin:0;z-index:2;font-size:20px;line-height:1.6;background:#05070d;padding:10px 14px}
-#ep i{color:#E47937;font-style:normal}
+#ph{position:fixed;left:30px;right:30px;top:66px;bottom:100px;background-size:cover;background-position:center;transition:filter .3s}
+h1{position:fixed;left:30px;top:26px;margin:0;font-weight:normal;font-style:italic;font-size:20px}
+.sub{position:fixed;right:30px;top:30px;margin:0;font-size:14px;opacity:.8}
+#ep{position:fixed;left:30px;right:30px;bottom:24px;margin:0;display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;column-gap:24px;font-size:14px;line-height:1.9}
+#ep i{color:#E47937;font-style:italic;font-size:13px;margin-left:.3em}
+@media (max-width:760px){ #ep{grid-template-columns:repeat(2,auto)} #ph{bottom:150px} }
 </style></head><body>
 <div id="ph" role="img" aria-label="A lit window at night"></div>
-<h1>Slow Hours</h1>
-<p id="ep">A podcast about sleep, every Sunday night.<br>
-Tide <i>41</i>, Radiator <i>38</i>, Night bus <i>44</i>, Fog <i>36</i><br>Sleeper train <i>47</i>, Lighthouse <i>40</i>, Snow <i>39</i>, Ferry <i>43</i></p>
+<h1>Slow Hours</h1><p class="sub">a podcast about sleep, Sunday nights</p>
+<p id="ep"><span>Tide <i>41 min</i></span><span>Radiator <i>38 min</i></span><span>Night bus <i>44 min</i></span><span>Fog <i>36 min</i></span><span>Sleeper train <i>47 min</i></span><span>Lighthouse <i>40 min</i></span><span>Snow <i>39 min</i></span><span>Ferry <i>43 min</i></span></p>
 <script src="images.js"></script>
 <script>
 var ph = document.getElementById('ph');

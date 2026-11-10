@@ -8,34 +8,38 @@
      point, into the fog, and the contents of the issue come up out of it.
      Click again and you come back out to the cover. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#C9CCCB;font-family:"Old Standard TT",Georgia,serif;color:#1A1614;cursor:zoom-in}
-#ph{position:fixed;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.55,.05,.2,1),filter 1.4s}
-body.in #ph{filter:blur(6px) brightness(1.15)}
+html,body{margin:0;height:100%;overflow:hidden;background:#EEEFED;font-family:"Old Standard TT",Georgia,serif;color:#1A1614;cursor:zoom-in}
 body.in{cursor:zoom-out}
-#cover{position:fixed;left:4vw;top:3vh;z-index:2;transition:opacity .6s}
-#cover h1{margin:0;font-weight:normal;font-size:min(13vw,150px);line-height:.88;letter-spacing:-.02em}
-#cover p{margin:10px 0 0;font-size:22px;font-style:italic;display:inline-block;background:#F4F5F4;padding:2px 8px}
-body.in #cover{opacity:0}
-#toc{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%);width:min(88vw,720px);z-index:3;opacity:0;pointer-events:none;transition:opacity .8s .7s,transform .8s .7s;background:#F4F5F4;padding:28px 34px}
+/* the one large element: the masthead, set in the top margin like a printed cover */
+h1{position:fixed;left:30px;right:30px;top:2vh;margin:0;font-weight:normal;font-size:min(10.5vw,16vh);line-height:1;letter-spacing:-.02em;white-space:nowrap}
+#frame{position:fixed;left:30px;right:30px;top:calc(2vh + min(10.5vw,16vh) + 12px);bottom:50px;overflow:hidden}
+#ph{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.55,.05,.2,1),filter 1.4s}
+body.in #ph{filter:blur(8px) brightness(1.32)}
+.line{position:fixed;left:30px;right:30px;bottom:18px;margin:0;display:flex;justify-content:space-between;font-size:14px}
+/* the contents come up out of the fog, set straight onto it, no panel */
+#toc{position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);width:min(84%,540px);opacity:0;pointer-events:none;transition:opacity .8s .7s,transform .8s .7s}
 body.in #toc{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
-#toc h2{margin:0 0 14px;font-weight:normal;font-size:28px}
-#toc ol{margin:0;padding-left:1.2em;font-size:22px;line-height:1.55}
-#toc span{font-style:italic;font-size:18px}
+#toc h2{margin:0 0 18px;font-weight:normal;font-size:14px;font-style:italic}
+#toc ol{margin:0;padding:0;list-style:none;font-size:19px;line-height:1.75}
+#toc b{display:inline-block;width:3em;font-weight:normal;font-size:14px}
+#toc span{font-style:italic;font-size:15px;margin-left:.4em}
 </style></head><body>
-<div id="ph" role="img" aria-label="A lighthouse in thick fog"></div>
-<div id="cover"><h1>Weather<br>Report</h1><p>Issue 9, winter. 112 pages. &pound;9</p></div>
+<h1>Weather Report</h1>
+<div id="frame"><div id="ph" role="img" aria-label="A lighthouse in thick fog"></div>
 <div id="toc" aria-live="polite"><h2>In this issue</h2><ol>
-<li>On walking in the rain <span>Ines Arko</span></li><li>The night bus <span>Tom Weller</span></li>
-<li>A field of radio masts <span>Maija Lund</span></li><li>Letters from a lighthouse <span>Sol Adeyemi</span></li>
-<li>Interview: the last ferry pilot <span>Rua Byrne</span></li><li>Twelve kinds of fog <span>Okke Vos</span></li>
-<li>Recipes for a cold kitchen <span>Lin Hart</span></li><li>Letters</li></ol></div>
+<li><b>6</b>On walking in the rain <span>Ines Arko</span></li><li><b>14</b>The night bus <span>Tom Weller</span></li>
+<li><b>27</b>A field of radio masts <span>Maija Lund</span></li><li><b>40</b>Letters from a lighthouse <span>Sol Adeyemi</span></li>
+<li><b>58</b>The last ferry pilot <span>Rua Byrne</span></li><li><b>73</b>Twelve kinds of fog <span>Okke Vos</span></li>
+<li><b>90</b>Recipes for a cold kitchen <span>Lin Hart</span></li><li><b>108</b>Letters</li></ol></div></div>
+<p class="line"><span>Issue 9</span><span>Winter</span><span>112 pages</span><span>&pound;9</span></p>
 <script src="images.js"></script>
 <script>
 var ph = document.getElementById('ph');
 ph.style.backgroundImage = 'url(' + U(IMG.fog[0], 2200) + ')';
 addEventListener('click', function(e){
   if (document.body.classList.contains('in')){ document.body.classList.remove('in'); ph.style.transform = 'scale(1)'; return; }
-  ph.style.transformOrigin = e.clientX + 'px ' + e.clientY + 'px';
+  var r = ph.getBoundingClientRect();
+  ph.style.transformOrigin = Math.max(0, Math.min(r.width, e.clientX - r.left)) + 'px ' + Math.max(0, Math.min(r.height, e.clientY - r.top)) + 'px';
   ph.style.transform = 'scale(3.4)';
   document.body.classList.add('in');
 });

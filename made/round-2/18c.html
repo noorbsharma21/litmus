@@ -8,36 +8,42 @@
      it settles into the skin rather than sitting on top. The flash she draws
      from is listed at the side. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#1A1614;font-family:"Times New Roman",Times,serif;color:#fff;touch-action:none;cursor:crosshair}
-#ph{position:fixed;inset:0;background-size:cover;background-position:center}
-canvas{position:fixed;inset:0;width:100vw;height:100vh;mix-blend-mode:multiply}
-h1{position:fixed;left:28px;top:12px;margin:0;font-weight:normal;font-size:60px;font-family:"UnifrakturMaguntia",serif;color:#A40603;z-index:2;background:#FFFFFF;padding:0 12px}
-p.w{position:fixed;left:28px;top:96px;margin:0;font-size:18px;z-index:2;background:#1A1614;padding:4px 10px}
-#clear{position:fixed;right:28px;bottom:5vh;z-index:2;font:inherit;font-size:18px;border:0;background:#FFFFFF;color:#1A1614;padding:8px 14px;cursor:pointer;min-height:44px}
+html,body{margin:0;height:100%;overflow:hidden;background:#1A1614;font-family:"Times New Roman",Times,serif;color:#fff;touch-action:none}
+#frame{position:fixed;left:34vw;right:30px;top:30px;bottom:30px;overflow:hidden;cursor:crosshair}
+#ph{position:absolute;inset:0;background-size:cover;background-position:center}
+canvas{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply}
+aside{position:fixed;left:30px;top:30px;bottom:30px;width:calc(34vw - 70px);display:flex;flex-direction:column}
+h1{margin:0;font-weight:normal;font-size:min(4.6vw,54px);line-height:1;font-family:"UnifrakturMaguntia",serif}
+p.w{margin:18px 0 0;font-size:15px;line-height:1.55;font-style:italic;max-width:20em;opacity:.85}
+#clear{margin-top:auto;align-self:flex-start;font:inherit;font-size:15px;border:0;background:none;color:#fff;padding:6px 0;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+#clear:focus-visible{outline:1px solid #fff;outline-offset:3px}
+@media (max-width:760px){ #frame{left:16px;right:16px;top:32vh;bottom:16px} aside{left:16px;right:16px;top:16px;bottom:auto;width:auto;height:calc(32vh - 32px)} }
 </style></head><body>
-<div id="ph" role="img" aria-label="Two forearms"></div>
-<canvas id="c" aria-hidden="true"></canvas>
-<h1>Mara Varn</h1><p class="w">Booking Tuesdays. Walk ins from the flash sheet, Saturday afternoons</p>
-<button id="clear" type="button">wash it off</button>
+<div id="frame"><div id="ph" role="img" aria-label="Two forearms"></div><canvas id="c" aria-hidden="true"></canvas></div>
+<aside><h1>Mara Varn</h1><p class="w">Booking Tuesdays. Walk ins from the flash sheet, Saturday afternoons</p>
+<button id="clear" type="button">wash it off</button></aside>
 <script src="images.js"></script>
 <script>
 document.getElementById('ph').style.backgroundImage = 'url(' + U(IMG.arm[0], 2000) + ')';
-var c = document.getElementById('c'), g = c.getContext('2d'), dpr = 1, down = false, lx = 0, ly = 0, lt = 0;
-function size(){ dpr = Math.min(2, devicePixelRatio || 1); var keep = c.width ? g.getImageData(0, 0, c.width, c.height) : null;
-  c.width = innerWidth * dpr; c.height = innerHeight * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); if (keep) g.putImageData(keep, 0, 0); }
+var c = document.getElementById('c'), fr = document.getElementById('frame'), g = c.getContext('2d'), dpr = 1, down = false, lx = 0, ly = 0, lt = 0;
+function size(){ dpr = Math.min(2, devicePixelRatio || 1); var w = fr.clientWidth, h = fr.clientHeight; if (!w || !h) return;
+  var keep = c.width && c.height ? g.getImageData(0, 0, c.width, c.height) : null;
+  c.width = w * dpr; c.height = h * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); if (keep) g.putImageData(keep, 0, 0); }
 size(); addEventListener('resize', size);
-addEventListener('pointerdown', function(e){ if (e.target.id === 'clear') return; down = true; lx = e.clientX; ly = e.clientY; lt = performance.now(); });
+function at(e){ var r = fr.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+fr.addEventListener('pointerdown', function(e){ size(); down = true; var p = at(e); lx = p[0]; ly = p[1]; lt = performance.now(); });
 addEventListener('pointerup', function(){ down = false; });
 addEventListener('pointermove', function(e){
   if (!down) return;
-  var t = performance.now(), d = Math.hypot(e.clientX - lx, e.clientY - ly), sp = d / Math.max(8, t - lt);
+  var p = at(e), ex = p[0], ey = p[1];
+  var t = performance.now(), d = Math.hypot(ex - lx, ey - ly), sp = d / Math.max(8, t - lt);
   /* slow is heavy, fast is fine, the way a needle line behaves */
   var w = Math.max(1.2, 9 - sp * 6);
   g.strokeStyle = 'rgba(20,24,32,.9)'; g.lineWidth = w; g.lineCap = g.lineJoin = 'round';
-  g.beginPath(); g.moveTo(lx, ly); g.lineTo(e.clientX, e.clientY); g.stroke();
+  g.beginPath(); g.moveTo(lx, ly); g.lineTo(ex, ey); g.stroke();
   /* a little bleed, so it sits in the skin */
-  g.strokeStyle = 'rgba(20,24,32,.12)'; g.lineWidth = w * 2.6; g.beginPath(); g.moveTo(lx, ly); g.lineTo(e.clientX, e.clientY); g.stroke();
-  lx = e.clientX; ly = e.clientY; lt = t;
+  g.strokeStyle = 'rgba(20,24,32,.12)'; g.lineWidth = w * 2.6; g.beginPath(); g.moveTo(lx, ly); g.lineTo(ex, ey); g.stroke();
+  lx = ex; ly = ey; lt = t;
 });
 document.getElementById('clear').addEventListener('click', function(){ g.clearRect(0, 0, c.width, c.height); });
 </script></body></html>
