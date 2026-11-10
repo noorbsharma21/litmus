@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mara Varn, tattoo</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<!-- 18c. A tattoo artist. Round two. Material: a real photograph of forearms,
+     a placeholder. Behaviour: drawing. Press and draw on the skin and the line
+     goes down like ink: dark where you are slow, fine where you are fast, and
+     it settles into the skin rather than sitting on top. The flash she draws
+     from is listed at the side. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#1A1614;font-family:"Times New Roman",Times,serif;color:#fff;touch-action:none;cursor:crosshair}
+#ph{position:fixed;inset:0;background-size:cover;background-position:center}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;mix-blend-mode:multiply}
+h1{position:fixed;left:28px;top:12px;margin:0;font-weight:normal;font-size:60px;font-family:"UnifrakturMaguntia",serif;color:#A40603;z-index:2;background:#FFFFFF;padding:0 12px}
+p.w{position:fixed;left:28px;top:96px;margin:0;font-size:18px;z-index:2;background:#1A1614;padding:4px 10px}
+#clear{position:fixed;right:28px;bottom:5vh;z-index:2;font:inherit;font-size:18px;border:0;background:#FFFFFF;color:#1A1614;padding:8px 14px;cursor:pointer;min-height:44px}
+</style></head><body>
+<div id="ph" role="img" aria-label="Two forearms"></div>
+<canvas id="c" aria-hidden="true"></canvas>
+<h1>Mara Varn</h1><p class="w">Booking Tuesdays. Walk ins from the flash sheet, Saturday afternoons</p>
+<button id="clear" type="button">wash it off</button>
+<script src="images.js"></script>
+<script>
+document.getElementById('ph').style.backgroundImage = 'url(' + U(IMG.arm[0], 2000) + ')';
+var c = document.getElementById('c'), g = c.getContext('2d'), dpr = 1, down = false, lx = 0, ly = 0, lt = 0;
+function size(){ dpr = Math.min(2, devicePixelRatio || 1); var keep = c.width ? g.getImageData(0, 0, c.width, c.height) : null;
+  c.width = innerWidth * dpr; c.height = innerHeight * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); if (keep) g.putImageData(keep, 0, 0); }
+size(); addEventListener('resize', size);
+addEventListener('pointerdown', function(e){ if (e.target.id === 'clear') return; down = true; lx = e.clientX; ly = e.clientY; lt = performance.now(); });
+addEventListener('pointerup', function(){ down = false; });
+addEventListener('pointermove', function(e){
+  if (!down) return;
+  var t = performance.now(), d = Math.hypot(e.clientX - lx, e.clientY - ly), sp = d / Math.max(8, t - lt);
+  /* slow is heavy, fast is fine, the way a needle line behaves */
+  var w = Math.max(1.2, 9 - sp * 6);
+  g.strokeStyle = 'rgba(20,24,32,.9)'; g.lineWidth = w; g.lineCap = g.lineJoin = 'round';
+  g.beginPath(); g.moveTo(lx, ly); g.lineTo(e.clientX, e.clientY); g.stroke();
+  /* a little bleed, so it sits in the skin */
+  g.strokeStyle = 'rgba(20,24,32,.12)'; g.lineWidth = w * 2.6; g.beginPath(); g.moveTo(lx, ly); g.lineTo(e.clientX, e.clientY); g.stroke();
+  lx = e.clientX; ly = e.clientY; lt = t;
+});
+document.getElementById('clear').addEventListener('click', function(){ g.clearRect(0, 0, c.width, c.height); });
+</script></body></html>
