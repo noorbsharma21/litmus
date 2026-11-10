@@ -222,5 +222,32 @@ const CRITIQUES = [
       'Colour: all five palettes were loud and flat. Colour also has to range.'
     ],
     cause:'Mine. Each rule added to keep slop out became part of one house style: no images because his paintings were refused, everything drawn in code, five saturated palettes, one kind of interaction. The guard rails converged into a look. The universe test checked structure and never checked material or behaviour, so it passed while the style collapsed.'
+  },
+  { id:'cr5', of:'made/round-2, twenty pages, commit 8587b48', date:'2026-11-10',
+    said:'I prefer the third versions for almost all of them. I think the only thing that\u2019s missing right now is the fonts, their placement, and their visibility, which I think can be worked upon. I\u2019m asking a few questions because I feel like just highlighting feels a bit rudimentary. These have to be cleaner and more elegant, and things kind of have to be more human. See how I added the Pinterest references about how they kind of are more cohesive? This feels very done up, like you\u2019re trying to fit information.',
+    confirms:['Round two over round one on almost every brief. Real material, real photographs and varied behaviour are his taste, not range for its own sake.'],
+    refuses:['Text on a solid block of colour laid over an image, the highlighting. It was my cheapest way to pass the legibility rule and it makes every page read as labelling itself.',
+             'Fitting the information in: addresses, hours, prices, taglines and headings stacked onto every page.'],
+    changes:['Typography follows his references, which he pointed to as the model for cohesion. See TYPE below.']
   }
+];
+
+/* ---------------------------------------------------------------
+   TYPE. Read off the references he pointed to in cr5 (P03 P07 P09 P22
+   S03 S05 S07 S08 S10 S18 S20 S21), 10 November 2026, for how type is
+   handled, not what it says. Pointed to by him, so these stand.
+   --------------------------------------------------------------- */
+const TYPE = [
+  { id:'t1', rule:'No block behind type. Type sits in clear space beside the image, or at a seam where two areas meet. Where it has to cross a picture, the picture is cropped or placed so the type lands on a calm part of it.',
+    from:['S08','S18','S20','S21','S03','P07'] },
+  { id:'t2', rule:'Small and few. Most type is caption size. At most one large element, and a large element behaves as image (cropped, running off the edge, script) rather than as a headline.',
+    from:['P22','S05','P09','P07'] },
+  { id:'t3', rule:'Type is placed on the composition\u2019s own geometry: a grid cell, a seam, an orbit, a margin, a corner. Aligned precisely, with air around it.',
+    from:['S05','P09','S03','S20'] },
+  { id:'t4', rule:'The photograph keeps its edges. Images are placed with margins and the type lives in the margins, the way a printed page holds a picture.',
+    from:['S08','S18','S20','P03'] },
+  { id:'t5', rule:'Say less. Keep what a visitor needs to act; let the rest go or sit in one quiet block. A line set across the full width, word spaced, can carry a whole set of facts.',
+    from:['S03','P07','S21'] },
+  { id:'t6', rule:'Human over corporate: italics for voice, page numbers and folios, captions like a book, the occasional hand.',
+    from:['S07','S18','S08'] }
 ];
