@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spoke and Chain</title>
+<link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+<!-- 19d. A bicycle repair workshop. Round three, from 19c. cr6: the prices
+     sat on the wheel at their window size and could not be read, and the 3D
+     looked half real. The wheel now turns in a frame of its own, printed as
+     a two ink riso, black and pink on the yellow; the shop and its prices are
+     a repair ticket in a column the wheel never enters. Was: 19c. Round two. Material: real 3D, a wheel in a
+     truing stand: rim, hub, thirty-two spokes, tyre. Behaviour: flick it.
+     Drag across the wheel and let go and it spins with the speed you gave
+     it, then slows on its bearings; the faster you flick, the longer it runs.
+     The services hang on the wall behind. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#FCF02A;font-family:"Stardos Stencil",Impact,serif;color:#1A1614;touch-action:none}
+#view{position:fixed;left:calc(min(380px,34vw) + 60px);right:30px;top:30px;bottom:30px;cursor:grab}
+aside{position:fixed;left:30px;top:30px;bottom:30px;width:min(380px,34vw);display:flex;flex-direction:column;gap:26px}
+h1{margin:0;font-weight:700;font-size:44px;line-height:.92;letter-spacing:.01em}
+p.w{margin:0;font-size:17px;line-height:1.35}
+/* the repair ticket: the prices, gathered, with a torn top edge */
+.ticket{margin-top:auto;background:#FFFDF2;padding:22px 22px 18px;font-size:17px;box-shadow:0 2px 0 rgba(26,22,20,.12);
+  -webkit-mask:radial-gradient(circle 5px at 50% 0,transparent 98%,#000) top/14px 100% repeat-x;mask:radial-gradient(circle 5px at 50% 0,transparent 98%,#000) top/14px 100% repeat-x}
+.ticket h2{margin:0 0 12px;font-weight:400;font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+.ticket ul{margin:0;padding:0;list-style:none;line-height:1.75}
+.ticket li{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(26,22,20,.35)}
+#rpm{margin:10px 0 0;font-size:14px;min-height:1.2em}
+@media (max-width:760px){ aside{right:16px;left:16px;width:auto;top:16px;bottom:auto} #view{left:16px;right:16px;top:44vh;bottom:16px} .ticket{display:none} }
+</style></head><body>
+<aside><h1>Spoke<br>and Chain</h1><p class="w">Under the railway arch, Mill Lane.<br>Tuesday to Saturday, walk in.</p>
+<div class="ticket"><h2>Repairs</h2><ul><li><span>Puncture</span><span>&pound;8</span></li><li><span>Brake bleed</span><span>&pound;25</span></li><li><span>Wheel true</span><span>&pound;15</span></li><li><span>Full service</span><span>&pound;60</span></li><li><span>New chain</span><span>&pound;20</span></li><li><span>Bearings</span><span>&pound;30</span></li></ul>
+<p id="rpm" aria-live="off"></p></div></aside>
+<div id="view"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from '../round-2/three-kit.js';
+const S = stage({ el:document.getElementById('view'), bg:'#FFFFFF', key:2.4, fill:0.6, exposure:1.0, fov:30, analog:{ mode:'riso', paper:'#FCF02A', ink:'#1A1614', inkB:'#F64FB2', lo:0.5, hi:0.78, grain:0.06, vignette:0 } });
+const { THREE, scene, camera } = S;
+camera.position.set(-1.2, 1.0, 17); camera.lookAt(0, -0.2, 0);
+S.catcher(-3.9, 40, 0.25);
+const steel = new THREE.MeshStandardMaterial({ color:'#cfd2d4', metalness:1, roughness:0.22 });
+const black = new THREE.MeshStandardMaterial({ color:'#161616', roughness:0.85 });
+const pink = new THREE.MeshStandardMaterial({ color:'#F64FB2', roughness:0.4, metalness:0.2 });
+const wheel = new THREE.Group(); scene.add(wheel);
+const tyre = new THREE.Mesh(new THREE.TorusGeometry(3.3, 0.22, 24, 120), black); tyre.castShadow = true; wheel.add(tyre);
+const rim = new THREE.Mesh(new THREE.TorusGeometry(3.05, 0.09, 12, 120), steel); wheel.add(rim);
+const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.9, 32), steel); hub.rotation.x = Math.PI / 2; wheel.add(hub);
+for (let i = 0; i < 32; i++){
+  const side = i % 2 ? 0.32 : -0.32, a = i / 32 * Math.PI * 2 + (i % 2 ? 0.2 : -0.2);
+  const from = new THREE.Vector3(Math.cos(i / 32 * Math.PI * 2) * 0.2, Math.sin(i / 32 * Math.PI * 2) * 0.2, side);
+  const to = new THREE.Vector3(Math.cos(a) * 3.0, Math.sin(a) * 3.0, 0);
+  const len = from.distanceTo(to), sp = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, len, 6), steel);
+  sp.position.copy(from).add(to).multiplyScalar(0.5); sp.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
+  wheel.add(sp);
+}
+const valve = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.4, 12), pink); valve.position.set(0, 2.9, 0); wheel.add(valve);
+/* the stand */
+[[-1, 1], [1, 1]].forEach(([s]) => { const leg = new THREE.Mesh(new THREE.BoxGeometry(0.18, 4.2, 0.18), pink); leg.position.set(0, -1.8, s * 0.7); leg.castShadow = true; scene.add(leg); });
+const foot = new THREE.Mesh(new THREE.BoxGeometry(3, 0.2, 2), pink); foot.position.set(0, -3.8, 0); foot.castShadow = foot.receiveShadow = true; scene.add(foot);
+let w = 0, drag = false, la = 0, lt = 0, flick = 0;
+const view = document.getElementById('view');
+function ang(e){ const r = view.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)); }
+view.addEventListener('pointerdown', (e) => { drag = true; la = ang(e); lt = performance.now(); flick = 0; });
+addEventListener('pointermove', (e) => { if (!drag) return; const a = ang(e), t = performance.now(); let d = a - la; if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2;
+  flick = -d / Math.max(8, t - lt) * 16; wheel.rotation.z -= d; la = a; lt = t; });
+addEventListener('pointerup', () => { if (drag) w = flick; drag = false; });
+const rpm = document.getElementById('rpm');
+S.loop(() => { if (!drag){ wheel.rotation.z += w; w *= 0.992; } rpm.textContent = Math.abs(w) > 0.003 ? Math.round(Math.abs(w) * 60 * 60 / (Math.PI * 2)) + ' rpm' : ''; });
+</script></body></html>

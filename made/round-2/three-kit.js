@@ -22,8 +22,11 @@ export function stage(o){
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = o.exposure || 1;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.domElement.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;display:block;touch-action:none';
-  document.body.prepend(renderer.domElement);
+  /* o.el: render inside a frame on the page rather than across the whole
+     window, so type can have space of its own that the scene never enters */
+  const host = o.el || null;
+  if (host){ renderer.domElement.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none'; host.appendChild(renderer.domElement); }
+  else { renderer.domElement.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;display:block;touch-action:none'; document.body.prepend(renderer.domElement); }
 
   const scene = new THREE.Scene();
   if (o.bg) scene.background = new THREE.Color(o.bg);
@@ -42,7 +45,7 @@ export function stage(o){
      size is checked every frame rather than trusted once. */
   let w = 0, h = 0;
   function fit(){
-    const W = window.innerWidth, H = window.innerHeight;
+    const W = host ? host.clientWidth : window.innerWidth, H = host ? host.clientHeight : window.innerHeight;
     if (!W || !H || (W === w && H === h)) return;
     w = W; h = H; renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
     if (composer){ composer.setSize(W, H); const pr = renderer.getPixelRatio(); post.uniforms.res.value.set(W * pr, H * pr); }
@@ -77,7 +80,7 @@ export function stage(o){
           } else {
             vec3 c2 = texture2D(tDiffuse, vUv + vec2(4.0, 3.0) / res).rgb; float l2 = dot(c2, vec3(0.2126, 0.7152, 0.0722));
             float s = hash(px), s2 = hash(px + vec2(7.0, 3.0));
-            float da = smoothstep(hi, lo * 0.3, l), db = smoothstep(0.97, lo, l2) * 0.9;
+            float da = smoothstep(hi, lo * 0.3, l), db = smoothstep(0.9, lo, l2) * 0.9;
             da = s < da ? 0.94 : da * 0.1; db = s2 < db ? 0.9 : db * 0.12;
             c = paper * (1.0 - db * (1.0 - inkB)) * (1.0 - da * (1.0 - ink)) + (n - 0.5) * grain * 0.5;
           }
@@ -97,7 +100,8 @@ export function stage(o){
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   function pick(e, objects){
-    ndc.set(e.clientX / window.innerWidth * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+    const r = host ? host.getBoundingClientRect() : { left:0, top:0, width:window.innerWidth, height:window.innerHeight };
+    ndc.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     ray.setFromCamera(ndc, camera);
     return ray.intersectObjects(objects, true)[0] || null;
   }

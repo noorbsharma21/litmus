@@ -12,10 +12,10 @@
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#ECEDEA;font-family:"Newsreader",Georgia,serif;color:#1A1614;cursor:zoom-in}
 body.in{cursor:zoom-out}
-h1{position:fixed;left:30px;right:30px;top:2.2vh;margin:0;font-family:"Climate Crisis",sans-serif;font-weight:normal;font-size:min(8.6vw,14vh);line-height:1;white-space:nowrap;
+h1{position:fixed;left:30px;right:30px;top:2.2vh;margin:0;font-family:"Climate Crisis",sans-serif;font-weight:normal;font-size:min(6.9vw,12vh);line-height:1;white-space:nowrap;
    font-variation-settings:"YEAR" var(--yr,1979);transition:font-variation-settings 1.6s cubic-bezier(.55,.05,.2,1)}
 body.in h1{--yr:2025}
-#frame{position:fixed;left:30px;right:30px;top:calc(2.2vh + min(8.6vw,14vh) + 14px);bottom:52px;overflow:hidden;background:#ECEDEA}
+#frame{position:fixed;left:30px;right:30px;top:calc(2.2vh + min(6.9vw,12vh) + 16px);bottom:52px;overflow:hidden;background:#ECEDEA}
 #ph{position:absolute;inset:0;width:100%;height:100%;transition:transform 1.4s cubic-bezier(.55,.05,.2,1),filter 1.4s;transform-origin:50% 50%}
 body.in #ph{filter:blur(3px) brightness(1.18) contrast(.8)}
 .line{position:fixed;left:30px;right:30px;bottom:18px;margin:0;display:flex;justify-content:space-between;font-size:15px}
@@ -45,7 +45,7 @@ function build(){
   /* printed at a size that still holds detail when you are three times in */
   var k = Math.min(2, (devicePixelRatio || 1) * 1.5), w = Math.round(r.width * k), h = Math.round(r.height * k), key = w + 'x' + h;
   if (key === built) return; built = key;
-  var p = PRINT.screen(img, w, h, { cell:Math.max(5, Math.round(w / 210)), angle:45, contrast:1.5, lift:0.05, ink:'#1A1614', paper:'#ECEDEA' });
+  var p = PRINT.screen(img, w, h, { cell:Math.max(5, Math.round(w / 210)), angle:45, contrast:1.05, lift:0.14, ink:'#1A1614', paper:'#ECEDEA' });
   ph.width = w; ph.height = h; ph.getContext('2d').drawImage(p, 0, 0);
 }
 loadImg(U(IMG.fog[0], 1800)).then(function(i){ img = i; build(); });
