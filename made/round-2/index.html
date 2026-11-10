@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round two</title>
+<!-- A viewing frame for judging round two against round one. Not a design.
+     Each row: the new version large, and the two flat versions from round
+     one beside it, live. -->
+<style>
+body{margin:0;background:#FFFFFF;font-family:"Times New Roman",Times,serif;color:#1A1614}
+.row{display:grid;grid-template-columns:220px 2fr 1fr;gap:10px;padding:10px;min-height:56vh}
+.row:nth-child(even){background:#F3F3F3}
+.lab h2{margin:0;font-weight:normal;font-size:44px}
+.lab p{margin:4px 0 0;font-size:18px;line-height:1.35}
+.lab .m{margin-top:12px;font-size:16px}
+.v{position:relative;min-height:52vh}
+.v iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.k{position:absolute;right:0;top:0;z-index:2;background:#1A1614;color:#FFFFFF;font-size:22px;padding:2px 12px 4px;text-decoration:none}
+.old{display:grid;grid-template-rows:1fr 1fr;gap:6px}
+.old .v{min-height:0}
+@media (max-width:900px){ .row{grid-template-columns:1fr} .v{min-height:70vh} .old{grid-template-rows:40vh 40vh} }
+</style></head><body>
+<div id="rows"></div>
+<script src="round.js"></script>
+<script>
+document.getElementById('rows').innerHTML = ROUND2.map(function(r){
+  return '<div class="row"><div class="lab"><h2>' + r.n + '</h2><p>' + r.brief + '</p><p class="m">' + r.mat + '<br>' + r.does + '</p></div>' +
+    '<div class="v"><iframe loading="lazy" src="' + r.n + 'c.html" title="' + r.n + 'c" allow="autoplay"></iframe><a class="k" href="' + r.n + 'c.html" target="_blank">' + r.n + 'c</a></div>' +
+    '<div class="old">' + ['a','b'].map(function(k){
+      return '<div class="v"><iframe loading="lazy" src="../round-1/' + r.n + k + '.html" title="round one ' + r.n + k + '"></iframe><a class="k" href="../round-1/' + r.n + k + '.html" target="_blank">' + r.n + k + '</a></div>';
+    }).join('') + '</div></div>';
+}).join('');
+</script></body></html>
