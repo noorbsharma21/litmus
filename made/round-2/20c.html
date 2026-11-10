@@ -42,7 +42,7 @@ addEventListener('keyup', function(e){ if (e.key === ' ') held = false; });
   /* a slow inhale while held, a slower exhale after */
   breath += ((held ? 1 : 0) - breath) * (held ? 0.012 : 0.008);
   var mins = (performance.now() - start) / 60000, dim = Math.min(0.55, mins * 0.06);
-  ph.style.filter = 'brightness(' + (0.55 - dim + breath * 0.55).toFixed(3) + ') saturate(' + (0.8 + breath * 0.4).toFixed(2) + ')';
+  ph.style.filter = 'brightness(' + (0.75 - dim + breath * 0.5).toFixed(3) + ') saturate(' + (0.8 + breath * 0.4).toFixed(2) + ')';
   if (noiseGain) noiseGain.gain.value = breath * 0.22;
   requestAnimationFrame(frame);
 })();

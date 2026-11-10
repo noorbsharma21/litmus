@@ -24,7 +24,7 @@ h1{position:fixed;left:30px;top:26px;margin:0;font-weight:normal;font-size:17px;
 import { stage } from './three-kit.js';
 const S = stage({ bg:'#F64FB2', key:2.6, fill:0.6, exposure:1.0, fov:30 });
 const { THREE, scene, camera } = S;
-camera.position.set(0, 9.5, 8.5); camera.lookAt(0, 0, 0.3);
+camera.position.set(-1.7, 11, 10.2); camera.lookAt(-1.7, 0, 0.3);
 S.catcher(0, 40, 0.25);
 const R = [['Ama Bell','Night Ferry','#FCF02A',[0,3,7,10]],['Corran','Field Recordings 2','#0F6E2B',[0,2,7,9]],['Sile and Ott','Glass House','#FFFFFF',[0,4,7,11]],
            ['Mo Arendt','Tidewater','#88B7D3',[0,3,5,10]],['Nils Pa','Low Light','#E47937',[0,5,7,12]],['Hester','Salt Road','#F64FB2',[0,3,8,10]]];
@@ -69,16 +69,18 @@ function schedule(){
   }
 }
 const st = document.getElementById('st');
+/* where the middle of the record is on screen, so a scratch turns about it */
+function centre(){ const v = record.position.clone().project(camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; }
 addEventListener('pointerdown', (e) => {
   if (e.target.closest('#rel')) return;
   const hit = S.pick(e, [record]); if (!hit) return;
   audio(); A.resume();
   if (!playing){ playing = true; target = 3.5; next = A.currentTime + 0.05; st.textContent = 'playing ' + R[current][1]; }
-  scratching = true; lastA = Math.atan2(e.clientY - innerHeight * 0.5, e.clientX - innerWidth * 0.5);
+  scratching = true; const c0 = centre(); lastA = Math.atan2(e.clientY - c0[1], e.clientX - c0[0]);
 });
 addEventListener('pointermove', (e) => {
   if (!scratching) return;
-  const a = Math.atan2(e.clientY - innerHeight * 0.5, e.clientX - innerWidth * 0.5);
+  const c0 = centre(), a = Math.atan2(e.clientY - c0[1], e.clientX - c0[0]);
   let d = a - lastA; if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2;
   scratchV = d * 60; lastA = a;
 });

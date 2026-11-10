@@ -35,7 +35,7 @@ function build(word){
     rows.forEach((row, y) => { for (let x = 0; x < 5; x++) if (row[x] === '1'){
       const m = new THREE.Mesh(cell, mats[ci % 2]); m.castShadow = true;
       const tx = (ci * 6 + x - total / 2), ty = (6 - y) + 0.5;
-      m.position.set(tx, ty + 8 + Math.random() * 6, 0); scene.add(m);
+      m.position.set(tx, ty + 4 + Math.random() * 5, 0); scene.add(m);
       cells.push({ m, ty, v:0 });
     }});
   });
@@ -49,8 +49,11 @@ addEventListener('pointerdown', (e) => { if (e.target === input) return; drag = 
 addEventListener('pointermove', (e) => { if (!drag) return; yaw -= (e.clientX - lx) * 0.006; pitch = Math.max(0.02, Math.min(1.1, pitch + (e.clientY - ly) * 0.004)); lx = e.clientX; ly = e.clientY; });
 addEventListener('pointerup', () => { drag = false; });
 build(input.value);
-S.loop(() => {
-  cells.forEach((c) => { c.v -= 0.02; c.m.position.y += c.v; if (c.m.position.y < c.ty){ c.m.position.y = c.ty; c.v = -c.v * 0.35; if (Math.abs(c.v) < 0.02) c.v = 0; } });
+/* the fall runs on the clock, not on frames, so a slow machine sees the same word land */
+let last = null;
+S.loop((t) => {
+  const k = last === null ? 1 : Math.min(6, (t - last) * 60); last = t;
+  cells.forEach((c) => { c.v -= 0.02 * k; c.m.position.y += c.v * k; if (c.m.position.y < c.ty){ c.m.position.y = c.ty; c.v = -c.v * 0.35; if (Math.abs(c.v) < 0.02) c.v = 0; } });
   camera.position.set(Math.sin(yaw) * Math.cos(pitch) * dist, 3.5 + Math.sin(pitch) * dist, Math.cos(yaw) * Math.cos(pitch) * dist);
   camera.lookAt(0, 3.5, 0);
 });

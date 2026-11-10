@@ -34,6 +34,9 @@ var reel = document.getElementById('reel'), proj = document.getElementById('proj
 var html = '';
 for (var rep = 0; rep < 3; rep++) F.forEach(function(f, i){ html += '<div class="fr" data-i="' + i + '"><div style="background-image:url(' + U(IMG.cinema[i % IMG.cinema.length], 600) + ')"></div></div>'; });
 reel.innerHTML = html;
+/* load every projection up front so the picture changes the moment the frame does */
+IMG.cinema.forEach(function(id){ var im = new Image(); im.src = U(id, 1800); });
+proj.style.backgroundImage = 'url(' + U(IMG.cinema[0], 1800) + ')';
 var x = 0, v = 0, drag = false, lx = 0, cur = -1;
 var strip = document.getElementById('strip');
 strip.addEventListener('pointerdown', function(e){ drag = true; lx = e.clientX; v = 0; strip.setPointerCapture(e.pointerId); strip.style.cursor = 'grabbing'; });
