@@ -239,10 +239,10 @@ const CRITIQUES = [
       '04c':'refused: font, and the polaroids look cheap. 04a better but its font is lame and the images need refining',
       '05c':'keep the sun; bring in the journey path from 05a; font reads as AI; framing and effects stuck at the basics',
       '06c':'refused: 3D too fake and too basic; wants grain, analog, not flat',
-      '07c':'refused: not his taste, did not understand it',
+      '07c':'refused: not their taste, did not understand it',
       '08c':'refused: font and effect. Suggests screen print, cyanotype, texturally rich formats',
       '09c':'liked: the pot. Wants a print on the wheel platform, a different background, and the information less spread out',
-      '10c':'(he wrote 09, the description is 10) too basic, font not fun. 10b’s cinema seats are good but their text was not visible',
+      '10c':'(written as 09, the description is 10) too basic, font not fun. 10b’s cinema seats are good but their text was not visible',
       '11c':'likes the record player, not impressed; 3D realistic but imperfect reads as old internet; fonts too consistent across pages; feels AI; text near or on the object again; play with placement',
       '12c':'keep the zoom; the font still does not work',
       '13c':'liked; unclear what the movement tells you',
@@ -256,10 +256,10 @@ const CRITIQUES = [
     },
     refuses:[
       'Half realistic 3D. Objects that reach for realism and fall short read as old internet and fake (01 shelf, 06, 11, 15). Either finished to today’s standard or pushed into a made, analog look: grain, print, photocopy. Never the middle.',
-      'Flat. Even after round two, surfaces with no grain or texture look lame to him.',
+      'Flat. Even after round two, surfaces with no grain or texture look lame to them.',
       'A small set of faces reused across a batch. Spectral, Libre Caslon and Times all came back again and again.',
       'White type by default on a photograph. Type takes its colour from the picture it sits with.',
-      'Text that can land on the object. Fixed type over a full screen canvas will hit the object at some window size, as 19 did on his screen.',
+      'Text that can land on the object. Fixed type over a full screen canvas will hit the object at some window size, as 19 did on their screen.',
       'Information scattered across the edges of the page (09c: corners and a spaced line along the foot). It does not guide.'
     ],
     changes:[
@@ -268,7 +268,7 @@ const CRITIQUES = [
       'Information gets a frame or a vessel: a ticket, a border it runs around, a tag, a sleeve. Creative, gathered, not scattered.',
       'Every page in a batch gets its own face, and the faces range: gothic, experimental, hand, alongside the book serifs.'
     ],
-    images:'He expects generated images. I have no image model in this session; there is no API key or local model on this machine. What I can do in code is take a photograph through a print process (cyanotype, riso, screen print, photocopy) so it reads as made. A real image model needs his decision: a key for one and the cost that comes with it.',
+    images:'They expect generated images. I have no image model in this session; there is no API key or local model on this machine. What I can do in code is take a photograph through a print process (cyanotype, riso, screen print, photocopy) so it reads as made. A real image model needs their decision: a key for one and the cost that comes with it.',
     open:[
       '09c: "the background for this and the front, the pot itself, are really good" and then "I also don’t like the background too much". Read as: the pot is good, the blue ground is not. Not confirmed.',
       'Whether "Put them all like 3C" means drop the a and b versions from now on (my reading) or make every page like 03c.'
@@ -277,7 +277,7 @@ const CRITIQUES = [
 ];
 
 /* ---------------------------------------------------------------
-   SURFACE. From cr6, 10 November 2026. His words: grainier, analog,
+   SURFACE. From cr6, 10 November 2026. Their words: grainier, analog,
    screen printing, cyanotype, texturally rich formats; flat looks lame.
    --------------------------------------------------------------- */
 const SURFACE = [
