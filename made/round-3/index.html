@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round three</title>
+<!-- A viewing frame for judging round three against round two. Not a design.
+     Each row: the new version large, live, and the round two version beside
+     it, with what the critique (cr6) asked for and what changed. -->
+<style>
+body{margin:0;background:#FFFFFF;font-family:"Times New Roman",Times,serif;color:#1A1614}
+.row{display:grid;grid-template-columns:240px 2fr 1fr;gap:10px;padding:10px;min-height:58vh}
+.row:nth-child(even){background:#F3F3F3}
+.lab h2{margin:0;font-weight:normal;font-size:44px}
+.lab p{margin:4px 0 0;font-size:17px;line-height:1.35}
+.lab .m{margin-top:12px;font-size:15px}
+.lab .m i{display:block;margin-bottom:6px}
+.v{position:relative;min-height:54vh}
+.v iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.k{position:absolute;right:0;top:0;z-index:2;background:#1A1614;color:#FFFFFF;font-size:22px;padding:2px 12px 4px;text-decoration:none}
+@media (max-width:900px){ .row{grid-template-columns:1fr} .v{min-height:70vh} }
+</style></head><body>
+<div id="rows"></div>
+<script src="../round-2/round.js"></script>
+<script>
+var CH = {
+  '01':['shelf looked fake; mix the polish with a hand','No shelf. A note scratched on the floor in front of each bottle. Film grain on the render.'],
+  '02':['too basic, colour changes, too much scroll; 02a could be fun','One screen, one plate. The courses ring the plate; move round it and each arrives.'],
+  '03':['needs framing; facts more creative; gothic or experimental face','Ruled frame, one fact to each side, the name in a woven blackletter.'],
+  '04':['the polaroids look cheap; 04a better, its font lame','A contact sheet: film strips, edge numbers, red grease pencil, a loupe.'],
+  '05':['keep the sun; add 05a’s path; font reads as AI; more framing','A tile border, the route drawn on the city, the itinerary beside it.'],
+  '06':['too fake, too basic; grainier, analog','The walk down the models, printed as a photocopy. Typed index card.'],
+  '07':['not their taste','New start: the drawings on tracing paper, spread across a desk.'],
+  '08':['font and effect refused; try screen print or cyanotype','A cyanotype. What you type is exposed onto the sheet in the sun.'],
+  '09':['print on the platform, another ground, information gathered','A hand block print on the wheel head, a paper ground, one card of facts.'],
+  '10':['too basic; 10b’s seats good but its text unreadable','The programme as a seat plan. Pass a row to see its film; pick a seat.'],
+  '11':['3D read as old internet; type on the player; fonts the same','No 3D. Riso printed sleeves in a crate; the record slides out and plays.'],
+  '12':['keep the zoom; the font still does not work','Climate Crisis, which melts as you go in; the cover printed as a halftone.'],
+  '13':['liked; what does the movement tell you?','It builds a bunch: each stem is named, the tag on the vase tallies the order.'],
+  '14':['too basic; white type; type should match the picture','Type coloured from the stage light; the name smears with the dancer.'],
+  '15':['too green shut; the drawer broke through the cabinet','A real carcass, a gallery light, labels beside it that light with their objects.'],
+  '16':['basic; better images for the bread; same fonts','Each loaf a woodcut cut into pieces, one per loaf left; they go with the day.'],
+  '17':['liked: Keel is very cool','Kept as it was.'],
+  '18':['the skin was too small a part of the page','The skin is the page. Her name and hours are tattooed into it.'],
+  '19':['text sat on the wheel; wants better images','The wheel printed as a riso in its own frame; the prices on a repair ticket.'],
+  '20':['same font and placements; made no sense','Choose tonight’s sound; the page goes to sleep with you.']
+};
+document.getElementById('rows').innerHTML = ROUND2.map(function(r){
+  var c = CH[r.n] || ['', ''], now = r.n === '17' ? '../round-2/17c.html' : r.n + 'd.html', key = r.n === '17' ? '17c, kept' : r.n + 'd';
+  return '<div class="row"><div class="lab"><h2>' + r.n + '</h2><p>' + r.brief + '</p><p class="m"><i>asked: ' + c[0] + '</i>' + c[1] + '</p></div>' +
+    '<div class="v"><iframe loading="lazy" src="' + now + '" title="' + key + '" allow="autoplay"></iframe><a class="k" href="' + now + '" target="_blank">' + key + '</a></div>' +
+    '<div class="v"><iframe loading="lazy" src="../round-2/' + r.n + 'c.html" title="round two ' + r.n + 'c"></iframe><a class="k" href="../round-2/' + r.n + 'c.html" target="_blank">' + r.n + 'c</a></div></div>';
+}).join('');
+</script></body></html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small Objects, Large Rooms</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<!-- 15d. A museum exhibition of small objects. Round three, from 15c. cr6:
+     too green with the drawer shut, and the 3D broke, the drawer showing
+     through the cabinet. Rebuilt: a real carcass with an open slot the drawer
+     slides into, flush when shut. Lit like a gallery, one warm light in a dark
+     room. The labels sit beside the cabinet, never on it: pull the drawer and
+     they come up with their objects; point at an object and its label lights. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#2B2926;font-family:"Libre Baskerville",Georgia,serif;color:#E9E1D2}
+#view{position:fixed;left:min(380px,32vw);right:0;top:0;bottom:0;cursor:grab}
+aside{position:fixed;left:40px;top:40px;bottom:40px;width:calc(min(380px,32vw) - 70px);display:flex;flex-direction:column}
+h1{margin:0;font-weight:normal;font-size:24px;line-height:1.2}
+.w{margin:10px 0 0;font-size:14px;font-style:italic;line-height:1.5;opacity:.8}
+ol{margin:auto 0 0;padding:0;list-style:none;font-size:13px;line-height:1.45}
+ol li{display:grid;grid-template-columns:1.8em 1fr;padding:7px 0;border-top:1px solid rgba(233,225,210,.18);opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s,color .3s}
+ol.open li{opacity:.75;transform:none}
+ol li.lit{opacity:1;color:#F6D58E}
+ol li i{display:block;opacity:.8}
+</style></head><body>
+<aside><h1>Small Objects,<br>Large Rooms</h1><p class="w">Things that fit in a hand, from the stores.<br>Until 4 May, Gallery 3, free.</p>
+<ol id="labels">
+<li data-o="key"><span>1</span><span>Door key<i>brass, Antwerp, about 1700</i></span></li>
+<li data-o="cup"><span>2</span><span>Tea bowl<i>porcelain, Jingdezhen, 1780s</i></span></li>
+<li data-o="bead"><span>3</span><span>Bead<i>glass, Murano, 1600s</i></span></li>
+<li data-o="coins"><span>4</span><span>Five coins<i>brass tokens, a ferry crossing, 1840</i></span></li>
+<li data-o="thimble"><span>5</span><span>Thimble<i>enamelled copper, Birmingham</i></span></li>
+<li data-o="spoon"><span>6</span><span>Spoon<i>bone, found in the Thames</i></span></li>
+</ol></aside>
+<div id="view"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import { stage } from '../round-2/three-kit.js';
+const view = document.getElementById('view');
+const S = stage({ el:view, bg:'#2B2926', key:0.5, fill:0.18, exposure:1.1, fov:30, analog:{ mode:'grain', grain:0.05, vignette:0 } });
+const { THREE, scene, camera } = S;
+camera.position.set(0, 8.6, 10.5); const look = new THREE.Vector3(0, 0.2, 0.6); camera.lookAt(look);
+/* one warm gallery light from above and in front */
+const spot = new THREE.SpotLight(0xffe2b8, 260, 40, 0.42, 0.55, 1.6); spot.position.set(1.5, 13, 6); spot.target.position.set(0, 0.6, 0.5);
+spot.castShadow = true; spot.shadow.mapSize.set(2048, 2048); spot.shadow.bias = -0.0003; spot.shadow.radius = 5; scene.add(spot, spot.target);
+/* wood with grain, drawn rather than plain brown */
+function woodTex(base, line){
+  const c = document.createElement('canvas'); c.width = 512; c.height = 512; const g = c.getContext('2d');
+  g.fillStyle = base; g.fillRect(0, 0, 512, 512);
+  let x = 7; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 140; i++){ const y = r() * 512, a = 0.04 + r() * 0.1; g.strokeStyle = line; g.globalAlpha = a; g.lineWidth = 0.6 + r() * 2.2; g.beginPath(); g.moveTo(0, y);
+    for (let k = 0; k <= 8; k++) g.lineTo(k * 64, y + Math.sin(k * 0.9 + i) * (2 + r() * 5)); g.stroke(); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8; return t;
+}
+const wood = new THREE.MeshStandardMaterial({ map:woodTex('#5a3c26', '#2a1a10'), roughness:0.55 });
+const woodLight = new THREE.MeshStandardMaterial({ map:woodTex('#7a5636', '#3a2414'), roughness:0.5 });
+const felt = new THREE.MeshStandardMaterial({ color:'#1d2a4a', roughness:1 });
+function box(w, h, d, x, y, z, m, parent){ const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); b.position.set(x, y, z); b.castShadow = b.receiveShadow = true; (parent || scene).add(b); return b; }
+/* the carcass: top, bottom, sides and back, open at the front for the drawer */
+const W = 9, D = 6, Y0 = 0.4, Y1 = 1.75, T = 0.16;
+box(W, T, D, 0, Y1 + T / 2, -D / 2, wood); box(W, T, D, 0, Y0 - T / 2, -D / 2, wood);
+box(T, Y1 - Y0 + T * 2, D, -W / 2 + T / 2, (Y0 + Y1) / 2, -D / 2, wood); box(T, Y1 - Y0 + T * 2, D, W / 2 - T / 2, (Y0 + Y1) / 2, -D / 2, wood);
+box(W, Y1 - Y0, T, 0, (Y0 + Y1) / 2, -D + T / 2, wood);
+box(W + 0.3, 2.6, D + 0.3, 0, Y0 - T - 1.3, -D / 2, wood);             /* the stand it sits on, more drawers inside */
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color:'#26241f', roughness:0.9 })); floor.rotation.x = -Math.PI / 2; floor.position.y = Y0 - T - 2.6; floor.receiveShadow = true; scene.add(floor);
+/* the drawer: a tray that fits the slot, and a front that closes it flush */
+const drawer = new THREE.Group(); scene.add(drawer);
+const iw = W - T * 2 - 0.08, id = D - 0.3, ih = Y1 - Y0 - 0.12;
+box(iw, 0.08, id, 0, Y0 + 0.04, 0, felt, drawer);
+box(iw, ih, 0.1, 0, Y0 + ih / 2, -id / 2 + 0.05, woodLight, drawer);
+box(0.1, ih, id, -iw / 2 + 0.05, Y0 + ih / 2, 0, woodLight, drawer); box(0.1, ih, id, iw / 2 - 0.05, Y0 + ih / 2, 0, woodLight, drawer);
+box(W - 0.02, Y1 - Y0 - 0.02, 0.18, 0, (Y0 + Y1) / 2, id / 2 + 0.09, woodLight, drawer);
+const knob = new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 16), new THREE.MeshStandardMaterial({ color:'#c9a24a', metalness:1, roughness:0.25 })); knob.position.set(0, (Y0 + Y1) / 2, id / 2 + 0.28); drawer.add(knob);
+/* the objects, each in its own material */
+const brass = new THREE.MeshStandardMaterial({ color:'#c9a24a', metalness:1, roughness:0.3 });
+const glass = new THREE.MeshPhysicalMaterial({ color:'#9fd0c8', transmission:0.85, thickness:0.6, roughness:0.05 });
+const ceramic = new THREE.MeshPhysicalMaterial({ color:'#F2EEE9', roughness:0.25, clearcoat:0.7 });
+const bone = new THREE.MeshStandardMaterial({ color:'#e8dcc4', roughness:0.7 });
+const red = new THREE.MeshStandardMaterial({ color:'#8f2b1e', roughness:0.4, metalness:0.3 });
+const objs = [], Yf = Y0 + 0.08;
+function put(mesh, name, x, z, ry, lift){ mesh.position.set(x, Yf + (lift || 0), z); mesh.rotation.y = ry || 0; mesh.traverse((m) => { m.castShadow = true; m.userData.name = name; }); drawer.add(mesh); objs.push(mesh); }
+const key = new THREE.Group(); const ring = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.08, 16, 32), brass); ring.rotation.x = Math.PI / 2; key.add(ring);
+const shaft = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.08, 0.12), brass); shaft.position.x = 0.9; key.add(shaft);
+const bit = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.08, 0.32), brass); bit.position.set(1.4, 0, 0.14); key.add(bit); put(key, 'key', -2.6, -1.2, 0.4, 0.04);
+const cup = new THREE.Mesh(new THREE.LatheGeometry([0,1,2,3,4,5,6].map((i) => new THREE.Vector2(i === 0 ? 0 : 0.28 + i * 0.05, i * 0.12)).concat([new THREE.Vector2(0.55, 0.72)]), 48), ceramic); put(cup, 'cup', 0.1, -1.2);
+const bead = new THREE.Mesh(new THREE.SphereGeometry(0.34, 48, 32), glass); put(bead, 'bead', 2.3, -1.3, 0, 0.34);
+const coins = new THREE.Group(); for (let i = 0; i < 5; i++){ const c = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.05, 48), brass); c.position.set((i % 2) * 0.05, 0.03 + i * 0.055, 0); c.rotation.y = i * 0.3; coins.add(c); } put(coins, 'coins', -2.2, 1.0);
+const thimble = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.26, 0.5, 32), red); put(thimble, 'thimble', -0.2, 1.1, 0, 0.25);
+const spoon = new THREE.Group(); const bowl = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), bone); bowl.scale.set(1, 0.4, 0.7); bowl.rotation.x = Math.PI; spoon.add(bowl);
+const handle = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.05, 0.1), bone); handle.position.x = 0.85; spoon.add(handle); put(spoon, 'spoon', 1.5, 1.0, -0.3, 0.08);
+/* pull: drag toward you and the drawer slides out on its runners */
+const closedZ = -D / 2 + 0.15 - 0.02, labels = document.getElementById('labels');
+let open = 0, target = 0, drag = false, ly = 0;
+view.addEventListener('pointerdown', (e) => { drag = true; ly = e.clientY; });
+addEventListener('pointermove', (e) => {
+  if (drag){ target = Math.max(0, Math.min(5.0, target + (e.clientY - ly) * 0.02)); ly = e.clientY; }
+  const hit = S.pick(e, objs), name = hit ? hit.object.userData.name : null;
+  [].forEach.call(labels.children, (li) => li.classList.toggle('lit', li.dataset.o === name));
+});
+addEventListener('pointerup', () => { drag = false; });
+addEventListener('keydown', (e) => { if (e.key === 'ArrowDown') target = Math.min(5.0, target + 0.6); if (e.key === 'ArrowUp') target = Math.max(0, target - 0.6); });
+setTimeout(() => { target = 4.6; }, 500);
+let aspect = 0;
+S.loop(() => { if (camera.aspect !== aspect){ aspect = camera.aspect; S.frameWidth(13.5, look); }
+  open += (target - open) * 0.1; drawer.position.z = closedZ + open; labels.classList.toggle('open', open > 2.2); });
+</script></body></html>

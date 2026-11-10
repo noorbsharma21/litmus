@@ -117,6 +117,29 @@ var PRINT = {
     return c;
   },
 
+  /* Woodcut: one ink, cut. Light areas are carved away in strokes that run
+     with the grain of the block, so the tone becomes lines, not dots. */
+  woodcut: function(img, w, h, o){
+    o = o || {};
+    var px = coverPixels(img, w, h, o.fx, o.fy), L = lumArr(px, o.contrast || 1.4, o.lift || 0.02);
+    var grain = field(w, h, 1, 3), long = field(w, Math.max(2, Math.round(h / (o.lines || 5))), Math.max(6, w / 60), 7);
+    var c = out(w, h), g = c.getContext('2d'), im = g.createImageData(w, h), d = im.data, ink = hexRGB(o.ink || '#3B1A0E'), P = hexRGB(o.paper || '#F4F3EF'), r = seeded(o.seed || 8);
+    var lh = o.lines || 5;
+    for (var y = 0; y < h; y++){
+      var band = (y % lh) / lh, row = Math.floor(y / lh), ly = Math.min(long.length / w - 1, row);
+      for (var x = 0; x < w; x++){
+        var i = y * w + x, wob = long[ly * w + x] - 0.5;
+        /* the gouge: a line is cut where the tone is light; lighter, wider cut */
+        var cut = Math.abs(band - 0.5 + wob * 0.5) * 2, keep = cut > L[i] * 1.15 - 0.08;
+        if (r() < 0.004) keep = !keep;
+        var t = keep ? 1 : 0;
+        for (var k = 0; k < 3; k++) d[i * 4 + k] = clamp(P[k] + (ink[k] - P[k]) * t * (0.9 + grain[i] * 0.1) + (grain[i] - 0.5) * 10);
+        d[i * 4 + 3] = 255;
+      }
+    }
+    g.putImageData(im, 0, 0); return c;
+  },
+
   /* Photocopy: toner on cheap paper. Hard contrast, toner specks, the
      faint streak a drum leaves. */
   xerox: function(img, w, h, o){

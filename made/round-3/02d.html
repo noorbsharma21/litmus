@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arda</title>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&display=swap" rel="stylesheet">
+<!-- 02d. A chef's eight course tasting menu. Round three, from 02a, which cr6
+     thought could have been fun, after 02c was refused: too basic, the colour
+     changing from course to course, too much scroll. One screen, one plate,
+     one palette. The eight courses are written round the rim of the table in
+     a ring, like the hours on a clock; move round the plate and each course
+     arrives on it in turn, its name darkening on the ring. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#EFEDE8;font-family:"Bodoni Moda",Georgia,serif;color:#211A16;user-select:none;-webkit-user-select:none}
+#plate{position:fixed;left:50%;top:50%;width:var(--d);height:var(--d);transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;box-shadow:0 30px 60px rgba(33,26,22,.18),0 4px 10px rgba(33,26,22,.12)}
+#plate img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s;transform:scale(1.06)}
+#plate img.on{opacity:1}
+#ring{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
+#ring text{font-size:var(--fs);font-style:italic;fill:#211A16;opacity:.32;transition:opacity .4s}
+#ring text.on{opacity:1}
+.c{position:fixed;margin:0;font-size:15px;line-height:1.5}
+.c.tl{left:40px;top:34px}.c.tl b{display:block;font-weight:normal;font-size:30px;letter-spacing:.02em;line-height:1.1}
+.c.bl{left:40px;bottom:34px;font-style:italic}
+.c.br{right:40px;bottom:34px;text-align:right}
+</style></head><body>
+<div class="c tl"><b>Arda</b>eight courses, one sitting</div>
+<div id="plate" role="img" aria-live="polite" aria-label="The course on the plate"></div>
+<svg id="ring" aria-hidden="true"><defs><path id="orbit"/></defs></svg>
+<p class="c bl">Wednesday to Saturday, from seven.<br>&pound;95, wine to follow it &pound;60.</p>
+<p class="c br" id="cur"></p>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+grainOver(0.06, 'multiply');
+var C = ['Oyster, fennel', 'Bread, cultured butter', 'Beetroot, smoked eel', 'Leeks, hazelnut', 'Turbot, brown shrimp', 'Lamb, anchovy, greens', 'Cheese from the Jura', 'Rhubarb, custard'];
+var plate = document.getElementById('plate'), ring = document.getElementById('ring'), cur = document.getElementById('cur'), idx = -1, texts = [];
+C.forEach(function(c, i){ var im = document.createElement('img'); im.alt = c; im.src = U(IMG.plate[i], 1100); plate.appendChild(im); });
+var NS = 'http://www.w3.org/2000/svg';
+function layout(){
+  var W = innerWidth, H = innerHeight; if (!W) return;
+  var d = Math.min(H * 0.62, W * 0.46), R = d / 2 + Math.max(26, d * 0.09), cx = W / 2, cy = H / 2;
+  document.documentElement.style.setProperty('--d', d + 'px');
+  document.documentElement.style.setProperty('--fs', Math.max(13, Math.min(20, d * 0.04)) + 'px');
+  ring.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  /* the ring starts at the top and runs clockwise */
+  document.getElementById('orbit').setAttribute('d', 'M ' + cx + ' ' + (cy - R) + ' A ' + R + ' ' + R + ' 0 1 1 ' + (cx - 0.01) + ' ' + (cy - R) + ' Z');
+  if (!texts.length) C.forEach(function(c, i){
+    var t = document.createElementNS(NS, 'text'), tp = document.createElementNS(NS, 'textPath');
+    tp.setAttribute('href', '#orbit'); tp.setAttribute('startOffset', ((i + 0.5) / C.length * 100) + '%'); tp.setAttribute('text-anchor', 'middle'); tp.textContent = c;
+    t.appendChild(tp); ring.appendChild(t); texts.push(t);
+  });
+}
+function show(i){
+  if (i === idx) return; idx = i;
+  [].forEach.call(plate.children, function(im, k){ im.classList.toggle('on', k === i); });
+  texts.forEach(function(t, k){ t.classList.toggle('on', k === i); });
+  cur.innerHTML = ['one','two','three','four','five','six','seven','eight'][i] + ' of eight<br><i>' + C[i] + '</i>';
+}
+addEventListener('pointermove', function(e){
+  var a = Math.atan2(e.clientY - innerHeight / 2, e.clientX - innerWidth / 2) + Math.PI / 2;
+  a = (a + Math.PI * 2) % (Math.PI * 2);
+  show(Math.floor(a / (Math.PI * 2) * C.length) % C.length);
+});
+addEventListener('keydown', function(e){ if (e.key === 'ArrowRight') show((idx + 1) % C.length); if (e.key === 'ArrowLeft') show((idx + C.length - 1) % C.length); });
+addEventListener('resize', layout);
+(function wait(){ if (innerWidth){ layout(); show(0); } else requestAnimationFrame(wait); })();
+</script></body></html>

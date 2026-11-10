@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ola Bente Architects</title>
+<link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet">
+<!-- 07d. An architecture practice. Round three, a new start: cr6 said 07c was
+     not their taste at all. The practice shows one building the way it is
+     worked on: a stack of drawings on tracing paper on the desk, site plan,
+     plan, section, elevation, each drawn in pencil and ink with its title
+     block, the sheets underneath showing faintly through the ones on top.
+     Drag across the desk to spread the stack out; click a sheet to pull it
+     to the top. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#C9CFCB;font-family:"Architects Daughter",cursive;color:#2A2F33;user-select:none;-webkit-user-select:none;touch-action:none}
+.top{position:fixed;left:40px;top:28px;margin:0;font-size:18px;line-height:1.35;z-index:50;max-width:340px}
+.top b{display:block;font-weight:normal;font-size:28px;line-height:1.1}
+.sh{position:fixed;left:50%;top:52%;width:min(58vw,86vh);aspect-ratio:1.414;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.1),0 6px 18px rgba(0,0,0,.08)}
+.sh canvas{width:100%;height:100%;display:block}
+.hint{display:none}
+</style></head><body>
+<p class="top"><b>Ola Bente Architects</b>Ghent. Schools, housing and one ferry terminal. This is the school at Ostend, finished 2024.</p>
+<script src="print.js"></script>
+<script>
+grainOver(0.06, 'multiply');
+document.body.style.background = '#C9CFCB url(' + paperURL('#C9CFCB', { tooth:10, cloud:10, fibres:0 }) + ')';
+var SHEETS = ['Site plan', 'Ground floor plan', 'Section A', 'South elevation'], els = [], order = [0, 1, 2, 3], spread = 0, target = 0.18;
+var PEN = 'rgba(30,36,42,', PENCIL = 'rgba(70,74,80,';
+function sheet(n){
+  var el = document.createElement('div'); el.className = 'sh'; el.setAttribute('role', 'img'); el.setAttribute('aria-label', SHEETS[n] + ', school at Ostend');
+  var c = document.createElement('canvas'); el.appendChild(c); document.body.appendChild(el); els.push(el); return c;
+}
+function draw(c, n){
+  var W = c.width = 1414, H = c.height = 1000, g = c.getContext('2d'), r = seeded(n + 4);
+  /* tracing paper: milky, not quite white, lets the sheet below through */
+  g.fillStyle = 'rgba(246,247,243,0.84)'; g.fillRect(0, 0, W, H);
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  function ln(x1, y1, x2, y2, w, col){ g.strokeStyle = col || PEN + '.9)'; g.lineWidth = w || 1.5; g.beginPath(); g.moveTo(x1 + (r() - .5), y1 + (r() - .5)); g.lineTo(x2 + (r() - .5), y2 + (r() - .5)); g.stroke(); }
+  function rect(x, y, w, h, lw, col){ ln(x, y, x + w, y, lw, col); ln(x + w, y, x + w, y + h, lw, col); ln(x + w, y + h, x, y + h, lw, col); ln(x, y + h, x, y, lw, col); }
+  function hatch(x, y, w, h, gap){ g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); for (var k = -h; k < w; k += gap) ln(x + k, y + h, x + k + h, y, 0.7, PENCIL + '.55)'); g.restore(); }
+  function label(t, x, y, s, a){ g.save(); g.translate(x, y); g.rotate(a || 0); g.fillStyle = PENCIL + '.95)'; g.font = (s || 22) + 'px "Architects Daughter"'; g.fillText(t, 0, 0); g.restore(); }
+  function dim(x1, y1, x2, y2, t){ ln(x1, y1, x2, y2, 0.8, PENCIL + '.8)'); ln(x1, y1 - 8, x1, y1 + 8, 0.8, PENCIL + '.8)'); ln(x2, y2 - 8, x2, y2 + 8, 0.8, PENCIL + '.8)'); label(t, (x1 + x2) / 2 - 18, y1 - 10, 18); }
+  /* the border and the title block every sheet carries */
+  rect(30, 30, W - 60, H - 60, 2.2);
+  var tx = W - 430, ty = H - 170; rect(tx, ty, 400, 140, 1.6); ln(tx, ty + 46, tx + 400, ty + 46, 1); ln(tx + 260, ty + 46, tx + 260, ty + 140, 1);
+  label('OLA BENTE ARCHITECTS', tx + 16, ty + 32, 22); label(SHEETS[n].toUpperCase(), tx + 16, ty + 80, 24); label('School, Ostend', tx + 16, ty + 116, 19);
+  label(['1:500', '1:100', '1:100', '1:100'][n], tx + 280, ty + 80, 22); label('0' + (n + 1) + ' / 04', tx + 280, ty + 116, 19);
+  if (n === 0){ /* site: streets, neighbouring blocks, the school hatched, north */
+    ln(60, 620, W - 470, 560, 2.4); ln(60, 690, W - 470, 630, 2.4); label('Kapellestraat', 400, 650, 22, -0.07);
+    for (var b = 0; b < 5; b++){ var bx = 90 + b * 190, by = 180 + r() * 60; rect(bx, by, 140 + r() * 30, 150 + r() * 120, 1.1); }
+    rect(300, 330, 480, 200, 2.6); hatch(300, 330, 480, 200, 12); label('the school', 470, 445, 28);
+    g.strokeStyle = PEN + '.9)'; g.beginPath(); g.arc(W - 160, 140, 46, 0, 6.283); g.stroke(); ln(W - 160, 180, W - 160, 96, 2); label('N', W - 168, 86, 26);
+    label('sea, 400 m', W - 470, 330, 22, 0.02); ln(W - 470, 340, W - 300, 340, 1, PENCIL + '.7)');
+  } else if (n === 1){ /* plan: walls, doors swinging, rooms named */
+    var X = 140, Y = 150, L = 900, D = 520; rect(X, Y, L, D, 5);
+    for (var k = 1; k < 4; k++) ln(X + k * L / 4, Y, X + k * L / 4, Y + D * 0.62, 4);
+    ln(X, Y + D * 0.62, X + L, Y + D * 0.62, 4);
+    for (var k = 0; k < 4; k++){ var dx = X + k * L / 4 + 40; g.strokeStyle = PEN + '.8)'; g.lineWidth = 1; g.beginPath(); g.arc(dx, Y + D * 0.62, 50, Math.PI, Math.PI * 1.5); g.stroke(); ln(dx, Y + D * 0.62, dx, Y + D * 0.62 - 50, 1.4);
+      label(['class 1', 'class 2', 'class 3', 'library'][k], X + k * L / 4 + 60, Y + 120, 26); }
+    label('the long bench, corridor', X + 300, Y + D * 0.82, 26); hatch(X + 40, Y + D * 0.74, L - 80, 30, 9);
+    rect(X + L, Y + 30, 120, 120, 3); for (var s = 0; s < 8; s++) ln(X + L, Y + 30 + s * 15, X + L + 120, Y + 30 + s * 15, 0.8); label('stair', X + L + 20, Y + 180, 22);
+    dim(X, Y - 40, X + L, Y - 40, '28.0'); dim(X, Y + D + 50, X + L / 4, Y + D + 50, '7.0');
+  } else if (n === 2){ /* section: three floors, the stair, the roof light, people for scale */
+    var X = 130, B = 760, F = 170, L = 980; for (var f = 0; f <= 3; f++){ ln(X, B - f * F, X + L, B - f * F, 4); hatch(X, B - f * F, L, 14, 7); }
+    ln(X, B, X, B - 3 * F, 4); ln(X + L, B, X + L, B - 3 * F, 4);
+    for (var f = 0; f < 3; f++) for (var s = 0; s < 9; s++) ln(X + 700 + s * 18, B - f * F - s * 18, X + 718 + s * 18, B - f * F - s * 18, 1.6);
+    ln(X + 300, B - 3 * F, X + 420, B - 3 * F - 70, 2); ln(X + 420, B - 3 * F - 70, X + 540, B - 3 * F, 2); label('roof light', X + 380, B - 3 * F - 90, 22);
+    for (var p = 0; p < 4; p++){ var px = X + 140 + p * 150, py = B - (p % 3) * F; g.strokeStyle = PENCIL + '.9)'; g.lineWidth = 1.2; g.beginPath(); g.arc(px, py - 62, 8, 0, 6.283); g.stroke(); ln(px, py - 54, px, py - 24, 1.2, PENCIL + '.9)'); ln(px, py - 24, px - 8, py, 1.2, PENCIL + '.9)'); ln(px, py - 24, px + 8, py, 1.2, PENCIL + '.9)'); }
+    label('sea wind comes through here', X + 40, B - 2 * F + 60, 22, -0.03); dim(X - 50, B, X - 50, B - 3 * F, '');
+  } else { /* elevation: the facade's rhythm of windows, the brick drawn in */
+    var X = 130, B = 780, L = 980, Ht = 520; rect(X, B - Ht, L, Ht, 3.4);
+    for (var row = 0; row < 3; row++) for (var col = 0; col < 9; col++){ var wx = X + 50 + col * 104, wy = B - Ht + 50 + row * 160; rect(wx, wy, 62, 100, 1.6); ln(wx + 31, wy, wx + 31, wy + 100, 0.8); }
+    for (var k = 0; k < 40; k++) ln(X, B - Ht + k * 13, X + L, B - Ht + k * 13, 0.35, PENCIL + '.35)');
+    ln(40, B, W - 40, B, 3); label('brick from the old harbour wall', X + 20, B + 50, 24); label('+12.40', X + L + 20, B - Ht + 6, 20);
+  }
+  /* a smudge or two, the way pencil sheets pick them up */
+  for (var k = 0; k < 6; k++){ g.fillStyle = 'rgba(60,64,70,' + (0.02 + r() * 0.03) + ')'; g.beginPath(); g.ellipse(r() * W, r() * H, 40 + r() * 90, 20 + r() * 40, r() * 3, 0, 6.283); g.fill(); }
+}
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(function(){ SHEETS.forEach(function(_, n){ draw(sheet(n), n); }); lay(); });
+function lay(){
+  order.forEach(function(n, k){
+    var el = els[n]; if (!el) return;
+    var off = (k - 1.5) * spread, rot = [-2.2, 1.4, -0.8, 1.9][n];
+    el.style.zIndex = 10 + k;
+    el.style.transform = 'translate(-50%,-50%) translate(' + (off * innerWidth * 0.55) + 'px,' + (off * 40) + 'px) rotate(' + (rot + off * 6) + 'deg)';
+  });
+}
+var dragX = null, moved = 0;
+addEventListener('pointerdown', function(e){ dragX = e.clientX; moved = 0; });
+addEventListener('pointermove', function(e){ if (dragX === null) return; var d = e.clientX - dragX; moved += Math.abs(d); target = Math.max(0, Math.min(0.42, target + d / innerWidth)); dragX = e.clientX; });
+addEventListener('pointerup', function(e){
+  if (moved < 6){ var el = e.target.closest && e.target.closest('.sh'); if (el){ var n = els.indexOf(el); order = order.filter(function(x){ return x !== n; }).concat([n]); lay(); } }
+  dragX = null;
+});
+(function ease(){ var s = spread; spread += (target - spread) * 0.12; if (Math.abs(s - spread) > 0.0005) lay(); requestAnimationFrame(ease); })();
+addEventListener('resize', lay);
+</script></body></html>

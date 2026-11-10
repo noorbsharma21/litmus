@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slow Hours</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+<!-- 20d. A podcast about sleep. Round three, from 20c. cr6: the same face and
+     the same corner placements as everything else, and it made no sense. Now
+     it does one thing a sleep podcast should: you choose tonight's sound and
+     the page goes to sleep with you. The episodes are set large in the middle
+     of a dark room; the only light is one small window above them. Choose
+     one and its sound starts (made here, a placeholder for the episode), the
+     window comes on, the other titles go, and over the next minute the whole
+     page dims to nothing. Choose it again to stop. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#06080E;font-family:"Nanum Myeongjo",Georgia,serif;color:#9DB4D6;user-select:none;-webkit-user-select:none}
+#room{position:fixed;inset:0;transition:opacity 4s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vh}
+#win{width:min(150px,16vh);aspect-ratio:3/4;background-size:cover;background-position:center;filter:brightness(.35) saturate(.6);transition:filter 3s;box-shadow:0 0 0 1px rgba(157,180,214,.15)}
+#win.on{filter:brightness(1.05) saturate(1);box-shadow:0 0 80px 10px rgba(242,180,90,.18)}
+h1{margin:0;font-size:14px;font-weight:400;letter-spacing:.3em;opacity:.7}
+ol{margin:0;padding:0;list-style:none;text-align:center;font-size:min(4.2vw,5.2vh);line-height:1.22}
+ol li{cursor:pointer;transition:opacity 2.5s,color .6s;outline:none}
+ol li span{font-size:.36em;margin-left:.6em;opacity:.6;vertical-align:.5em;letter-spacing:.04em}
+ol li:hover,ol li:focus-visible{color:#DCE6F4}
+body.playing ol li{opacity:.0}
+body.playing ol li.on{opacity:1;color:#F2C98A}
+.foot{position:fixed;left:0;right:0;bottom:4vh;margin:0;text-align:center;font-size:13px;letter-spacing:.06em;opacity:.55;transition:opacity 2s}
+body.playing .foot{opacity:0}
+</style></head><body>
+<div id="room">
+  <div id="win" role="img" aria-label="A lit window at night"></div>
+  <h1>SLOW HOURS</h1>
+  <ol id="ep"></ol>
+</div>
+<p class="foot">A podcast about sleep. A new sound every Sunday night.</p>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+grainOver(0.09, 'overlay');
+document.getElementById('win').style.backgroundImage = 'url(' + U(IMG.night[0], 600) + ')';
+/* each episode, its length, and the sound it is made of */
+var E = [['Tide', 41, 'tide'], ['Radiator', 38, 'tick'], ['Night bus', 44, 'hum'], ['Fog', 36, 'soft'], ['Sleeper train', 47, 'rail'], ['Snow', 39, 'hiss']];
+var ol = document.getElementById('ep'), room = document.getElementById('room'), win = document.getElementById('win');
+E.forEach(function(e, i){ ol.insertAdjacentHTML('beforeend', '<li tabindex="0" data-i="' + i + '">' + e[0] + '<span>' + e[1] + ' min</span></li>'); });
+var A = null, nodes = [], playing = -1, startedAt = 0;
+function noise(seconds, brown){
+  var len = A.sampleRate * seconds, buf = A.createBuffer(1, len, A.sampleRate), d = buf.getChannelData(0), last = 0;
+  for (var i = 0; i < len; i++){ var w = Math.random() * 2 - 1; if (brown){ last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w * 0.4; }
+  var s = A.createBufferSource(); s.buffer = buf; s.loop = true; return s;
+}
+function stopAll(){ nodes.forEach(function(n){ try { n.stop ? n.stop() : n.disconnect(); } catch(e){} }); nodes = []; }
+function sound(kind){
+  if (!A) A = new (window.AudioContext || window.webkitAudioContext)(); A.resume(); stopAll();
+  var out = A.createGain(); out.gain.value = 0; out.connect(A.destination); out.gain.linearRampToValueAtTime(0.5, A.currentTime + 3); nodes.push(out);
+  var src = noise(4, kind !== 'hiss' && kind !== 'tick'), f = A.createBiquadFilter(); f.type = 'lowpass';
+  f.frequency.value = { tide:600, hum:220, soft:900, rail:400, hiss:5000, tick:1200 }[kind];
+  var g = A.createGain(); g.gain.value = kind === 'tick' ? 0.04 : 0.6; src.connect(f); f.connect(g); g.connect(out); src.start(); nodes.push(src);
+  if (kind === 'tide' || kind === 'soft'){ /* slow swells */ var l = A.createOscillator(), lg = A.createGain(); l.frequency.value = kind === 'tide' ? 0.08 : 0.04; lg.gain.value = 0.45; l.connect(lg); lg.connect(g.gain); l.start(); nodes.push(l); }
+  if (kind === 'hum' || kind === 'rail'){ var o = A.createOscillator(), og = A.createGain(); o.type = 'sine'; o.frequency.value = kind === 'hum' ? 55 : 72; og.gain.value = 0.08; o.connect(og); og.connect(out); o.start(); nodes.push(o); }
+  if (kind === 'tick' || kind === 'rail'){ /* a pipe ticking, or wheels over the joints */
+    var gap = kind === 'tick' ? 1.7 : 0.9, t0 = A.currentTime + 0.5;
+    for (var k = 0; k < 400; k++){ var t = t0 + k * gap + (kind === 'tick' ? Math.random() * 0.8 : (k % 2) * 0.12); var c = A.createOscillator(), cg = A.createGain();
+      c.type = 'triangle'; c.frequency.value = kind === 'tick' ? 1800 : 140; cg.gain.setValueAtTime(0, t); cg.gain.linearRampToValueAtTime(kind === 'tick' ? 0.05 : 0.12, t + 0.005); cg.gain.exponentialRampToValueAtTime(0.0001, t + (kind === 'tick' ? 0.04 : 0.18));
+      c.connect(cg); cg.connect(out); c.start(t); c.stop(t + 0.25); nodes.push(c); } }
+}
+function choose(i){
+  if (playing === i){ playing = -1; stopAll(); document.body.classList.remove('playing'); win.classList.remove('on'); room.style.opacity = 1; [].forEach.call(ol.children, function(li){ li.classList.remove('on'); }); return; }
+  playing = i; startedAt = performance.now(); sound(E[i][2]);
+  document.body.classList.add('playing'); win.classList.add('on');
+  [].forEach.call(ol.children, function(li, k){ li.classList.toggle('on', k === i); });
+}
+ol.addEventListener('click', function(e){ var li = e.target.closest('li'); if (li) choose(+li.dataset.i); });
+ol.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ var li = e.target.closest('li'); if (li){ e.preventDefault(); choose(+li.dataset.i); } } });
+/* going to sleep: over a minute the room dims, the window last */
+(function dim(){
+  if (playing >= 0){ var m = (performance.now() - startedAt) / 60000; room.style.transition = 'opacity 1s'; room.style.opacity = Math.max(0.04, 1 - m).toFixed(3); }
+  requestAnimationFrame(dim);
+})();
+</script></body></html>

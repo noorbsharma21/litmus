@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Rye</title>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital@0;1&family=Homemade+Apple&display=swap" rel="stylesheet">
+<!-- 16d. A bakery. Round three, from 16c. cr6: basic, the bread pieces idea
+     would work with better images, and the same three faces again. Each bake
+     is printed as a woodcut, one brown ink cut into lines, and cut into
+     pieces, a piece for every loaf on the counter. The page follows the real
+     clock: through the day the pieces go, one by one, the way the counter
+     empties, and the count is written in pencil under each. ?at=11 opens it
+     at eleven in the morning. -->
+<style>
+html,body{margin:0;min-height:100%;background:#F4F3EF;font-family:"Old Standard TT",Georgia,serif;color:#3B1A0E}
+header{padding:30px 40px 0;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
+h1{margin:0;font-weight:normal;font-size:40px;line-height:1;letter-spacing:-.01em}
+header p{margin:0;font-size:16px;font-style:italic}
+#g{display:grid;grid-template-columns:repeat(3,1fr);column-gap:34px;row-gap:22px;padding:24px 40px 34px}
+.b{margin:0}
+.pieces{display:flex;gap:5px;aspect-ratio:4/3}
+.pc{flex:1;background-repeat:no-repeat;transition:opacity 1.2s,transform 1.2s}
+.pc.gone{opacity:0;transform:translateY(-10px)}
+.b figcaption{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;font-size:17px}
+.b figcaption i{font-family:"Homemade Apple",cursive;font-style:normal;font-size:14px;color:#8A3A1E;transform:rotate(-3deg);display:inline-block}
+@media (max-width:760px){ #g{grid-template-columns:1fr 1fr} }
+</style></head><body>
+<header><h1>Daily Rye</h1><p id="clock" aria-live="polite"></p></header>
+<div id="g"></div>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+grainOver(0.07, 'multiply');
+/* name, price, loaves at seven in the morning, the hour it usually sells out */
+var B = [['Rye',4.5,8,16],['Sourdough',5,10,13],['Cardamom bun',3.2,12,10.5],['Focaccia',6,6,14.5],['Baguette',3,9,12],['Croissant',2.8,12,9.5]];
+var g = document.getElementById('g');
+B.forEach(function(b, i){
+  var f = document.createElement('figure'); f.className = 'b';
+  var pcs = ''; for (var k = 0; k < b[2]; k++) pcs += '<span class="pc"></span>';
+  f.innerHTML = '<div class="pieces" role="img" aria-label="' + b[0] + '">' + pcs + '</div><figcaption><span>' + b[0] + ', &pound;' + b[1].toFixed(2) + '</span><i></i></figcaption>';
+  g.appendChild(f);
+  /* print the photograph as a woodcut, then deal it out across the pieces */
+  loadImg(U(IMG.bread[i], 1000)).then(function(img){
+    var box = f.querySelector('.pieces').getBoundingClientRect(), W = Math.max(300, Math.round(box.width * 1.5)), H = Math.round(W * 3 / 4);
+    var url = PRINT.woodcut(img, W, H, { lines:Math.max(4, Math.round(W / 120)), seed:i + 2 }).toDataURL('image/jpeg', 0.9);
+    var ps = f.querySelectorAll('.pc'), n = ps.length;
+    ps.forEach(function(p, k){ p.style.backgroundImage = 'url(' + url + ')'; p.style.backgroundSize = (n * 100) + '% 100%'; p.style.backgroundPosition = (n > 1 ? k / (n - 1) * 100 : 0) + '% 0'; });
+  }).catch(function(){});
+});
+function tick(){
+  var d = new Date(), at = parseFloat(new URLSearchParams(location.search).get('at'));
+  if (!isNaN(at)) d.setHours(Math.floor(at), Math.round((at % 1) * 60));
+  var h = d.getHours() + d.getMinutes() / 60, open = h >= 7 && h < 18, total = 0;
+  B.forEach(function(b, i){
+    var f = g.children[i], left = !open ? 0 : Math.max(0, Math.ceil(b[2] * (1 - (h - 7) / (b[3] - 7))));
+    if (h >= b[3]) left = 0; total += left;
+    f.querySelectorAll('.pc').forEach(function(p, k){ p.classList.toggle('gone', k >= left); });
+    f.querySelector('i').textContent = !open ? '' : left === 0 ? 'all gone' : left === b[2] ? 'all ' + left + ' in' : left + ' left';
+  });
+  var hh = d.getHours(), mm = d.getMinutes();
+  document.getElementById('clock').textContent = !open ? 'Closed now, open again at seven' : 'Open until six, it is ' + hh + '.' + (mm < 10 ? '0' : '') + mm;
+}
+tick(); setInterval(tick, 20000);
+</script></body></html>

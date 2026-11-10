@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mara Varn, tattoo</title>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+<!-- 18d. A tattoo artist. Round three, from 18c. cr6: the skin was a small part
+     of the page, so the idea did not land. Now the skin is the page: a back,
+     edge to edge. Her name and her hours are not laid on top, they are
+     tattooed in, blue black ink that has settled into the skin. Press and draw
+     anywhere and your line goes in the same way: heavy where you are slow,
+     fine where you are fast, bleeding a little. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#d9d6d2;font-family:"Pirata One",serif;color:#1B2130;touch-action:none;cursor:crosshair}
+#ph{position:fixed;inset:0;background-size:cover;background-position:50% 30%;filter:contrast(1.05) brightness(1.04)}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;mix-blend-mode:multiply}
+#clear{position:fixed;right:34px;top:24px;z-index:2;font:inherit;font-size:22px;border:0;background:none;color:#1B2130;cursor:pointer;opacity:.75;padding:4px 0}
+#clear:hover,#clear:focus-visible{opacity:1;outline:none;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.sr{position:absolute;left:-9999px}
+</style></head><body>
+<div id="ph" role="img" aria-label="A bare back, in black and white"></div>
+<canvas id="c" aria-hidden="true"></canvas>
+<h1 class="sr">Mara Varn, tattoo</h1><p class="sr">Booking Tuesdays. Walk ins from the flash sheet, Saturday afternoons.</p>
+<button id="clear" type="button">wash it off</button>
+<script src="print.js"></script>
+<script>
+grainOver(0.08, 'overlay');
+document.getElementById('ph').style.backgroundImage = 'url(https://images.unsplash.com/photo-1635276300348-76e23a4a9942?auto=format&fit=crop&w=2000&q=80)';
+var c = document.getElementById('c'), g = c.getContext('2d'), dpr = 1, down = false, lx = 0, ly = 0, lt = 0, INK = 'rgba(27,33,48,';
+/* lettering put into the skin: a soft bleed under it, then the line, a little uneven */
+function tattoo(text, x, y, size, rot){
+  g.save(); g.translate(x, y); g.rotate(rot || 0); g.font = size + 'px "Pirata One"'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.filter = 'blur(' + (size / 28).toFixed(1) + 'px)'; g.fillStyle = INK + '.22)'; g.fillText(text, 0, 1);
+  g.filter = 'blur(' + (size / 140).toFixed(2) + 'px)'; g.fillStyle = INK + '.88)'; g.fillText(text, 0, 0);
+  g.restore();
+}
+function lettering(){
+  var W = innerWidth, H = innerHeight, s = Math.min(W * 0.12, H * 0.17);
+  tattoo('Mara Varn', W * 0.5, H * 0.44, s, -0.02);
+  tattoo('booking tuesdays', W * 0.5, H * 0.44 + s * 0.78, s * 0.24, -0.02);
+  tattoo('walk ins saturday afternoon, from the flash', W * 0.5, H * 0.44 + s * 1.08, s * 0.2, -0.02);
+}
+function size(){ dpr = Math.min(2, devicePixelRatio || 1); if (!innerWidth) return; c.width = innerWidth * dpr; c.height = innerHeight * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); lettering(); }
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(size);
+addEventListener('resize', size);
+addEventListener('pointerdown', function(e){ if (e.target.id === 'clear') return; down = true; lx = e.clientX; ly = e.clientY; lt = performance.now(); });
+addEventListener('pointerup', function(){ down = false; });
+addEventListener('pointermove', function(e){
+  if (!down) return;
+  var t = performance.now(), d = Math.hypot(e.clientX - lx, e.clientY - ly), sp = d / Math.max(8, t - lt);
+  var w = Math.max(1.2, 9 - sp * 6);
+  g.lineCap = g.lineJoin = 'round';
+  g.strokeStyle = INK + '.12)'; g.lineWidth = w * 2.8; g.beginPath(); g.moveTo(lx, ly); g.lineTo(e.clientX, e.clientY); g.stroke();
+  g.strokeStyle = INK + '.9)'; g.lineWidth = w; g.beginPath(); g.moveTo(lx, ly); g.lineTo(e.clientX, e.clientY); g.stroke();
+  lx = e.clientX; ly = e.clientY; lt = t;
+});
+document.getElementById('clear').addEventListener('click', function(){ g.clearRect(0, 0, c.width, c.height); lettering(); });
+</script></body></html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Nuit</title>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+<!-- 14d. A dance company's season. Round three, from 14c. cr6: too basic, and
+     white type laid on the photograph; the type's colour has to belong to the
+     picture, a beige here. The colour of the type is now taken from the
+     stage light in the photograph itself. The name is part of the long
+     exposure: move and it smears with the dancer, the faster the further;
+     stop and both settle. The season sits in the dark beside her, still. -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0B0A09;font-family:"Gloock",Georgia,serif;color:var(--ink,#D9C6A5)}
+.l{position:fixed;top:-4vh;bottom:-4vh;left:24vw;right:-4vw;background-size:contain;background-repeat:no-repeat;background-position:60% center;will-change:transform,opacity;mix-blend-mode:screen}
+.nm{position:fixed;left:3.2vw;top:3vh;margin:0;font-weight:normal;font-size:min(11vw,20vh);line-height:.82;letter-spacing:-.01em;white-space:nowrap;will-change:transform,opacity,filter;pointer-events:none;mix-blend-mode:screen}
+#season{position:fixed;left:3.6vw;bottom:5vh;margin:0;font-size:17px;line-height:1.5;z-index:3}
+#season li{list-style:none;margin:0 0 14px}
+#season b{display:block;font-weight:normal;font-size:24px;line-height:1.1}
+#season ol{margin:0;padding:0}
+#season p{margin:0 0 22px;font-size:14px;letter-spacing:.04em;opacity:.8}
+</style></head><body>
+<div id="stack" role="img" aria-label="A dancer in a long exposure"></div>
+<div id="name" aria-hidden="true"></div>
+<h1 style="position:absolute;left:-9999px">Company Nuit</h1>
+<div id="season"><p>Season, February to June</p><ol>
+<li><b>Stillwater</b>3 to 8 February</li>
+<li><b>Four Walls</b>14 to 19 April</li>
+<li><b>Late Hours</b>9 to 14 June</li></ol></div>
+<script src="../round-2/images.js"></script>
+<script src="print.js"></script>
+<script>
+grainOver(0.1, 'overlay');
+var N = 6, src = U(IMG.dance[0], 1600), L = [], T = [];
+var stack = document.getElementById('stack'), nameBox = document.getElementById('name');
+for (var i = 0; i < N; i++){
+  var d = document.createElement('div'); d.className = 'l'; d.style.backgroundImage = 'url(' + src + ')'; stack.appendChild(d); L.push(d);
+  var t = document.createElement('p'); t.className = 'nm'; t.textContent = 'Company Nuit'; nameBox.appendChild(t); T.push(t);
+}
+/* the type's colour: the brightest warm light in the photograph, the stage floor and her lit arm */
+loadImg(src).then(function(img){
+  try {
+    var c = document.createElement('canvas'); c.width = 64; c.height = 64; var g = c.getContext('2d'); g.drawImage(img, 0, 0, 64, 64);
+    var d = g.getImageData(0, 0, 64, 64).data, px = [];
+    for (var k = 0; k < d.length; k += 4) px.push([d[k], d[k + 1], d[k + 2], d[k] * 0.2126 + d[k + 1] * 0.7152 + d[k + 2] * 0.0722]);
+    px.sort(function(a, b){ return b[3] - a[3]; });
+    var top = px.slice(Math.floor(px.length * 0.04), Math.floor(px.length * 0.12)), r = 0, gg = 0, b = 0;
+    top.forEach(function(p){ r += p[0]; gg += p[1]; b += p[2]; });
+    r /= top.length; gg /= top.length; b /= top.length;
+    /* lift it to a readable light on black without losing its warmth */
+    var m = 215 / Math.max(r, gg, b);
+    document.documentElement.style.setProperty('--ink', 'rgb(' + Math.round(r * m) + ',' + Math.round(gg * m) + ',' + Math.round(b * m) + ')');
+  } catch(e){}
+});
+var vx = 0, vy = 0, sx = 0, sy = 0, lx = null, ly = null, lt = 0;
+addEventListener('pointermove', function(e){
+  var t = performance.now();
+  if (lx !== null){ var dt = Math.max(8, t - lt); vx = (e.clientX - lx) / dt * 16; vy = (e.clientY - ly) / dt * 16; }
+  lx = e.clientX; ly = e.clientY; lt = t;
+});
+(function frame(){
+  sx += (vx - sx) * 0.12; sy += (vy - sy) * 0.12; vx *= 0.9; vy *= 0.9;
+  var sp = Math.min(60, Math.hypot(sx, sy));
+  for (var i = 0; i < N; i++){
+    var k = i / (N - 1), tr = 'translate(' + (-sx * k * 3).toFixed(1) + 'px,' + (-sy * k * 3).toFixed(1) + 'px)';
+    var op = i === 0 ? 1 : (sp / 60 * (1 - k * 0.7)), bl = i === 0 ? 'none' : 'blur(' + (k * sp / 12).toFixed(1) + 'px)';
+    L[i].style.transform = tr; L[i].style.opacity = op.toFixed(3); L[i].style.filter = bl;
+    T[i].style.transform = tr; T[i].style.opacity = (i === 0 ? 1 : op * 0.8).toFixed(3); T[i].style.filter = bl;
+  }
+  requestAnimationFrame(frame);
+})();
+</script></body></html>
