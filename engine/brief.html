@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Litmus, start a brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- The intake. Before Litmus generates anything it needs the brief settled,
+     in the order Noor set out on 11 November 2026: the thing, the narrative
+     (all six answers required), what is real, the shape, the feel, what
+     must happen and what cannot change, references for this project, and
+     the output. It then writes the prompt or the skill, with the taste file
+     folded in. Everything typed is saved in this browser as it is typed
+     (images too), and the whole brief can be saved to a file and loaded
+     back, so nothing is lost the way the triad answers were. -->
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:#fff;color:#14130F;font-family:Nunito,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .page{max-width:1080px;margin:0 auto;padding:36px 24px 120px;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:48px;align-items:start}
+  h1{font-family:Archivo,sans-serif;font-size:34px;font-weight:900;letter-spacing:-.03em;text-transform:uppercase;line-height:.95;margin:0 0 8px}
+  .intro{grid-column:1 / -1;max-width:700px}
+  .intro p{margin:0 0 6px;color:#444}
+  a{color:#14130F}
+  section{padding:26px 0 30px;border-top:2px solid #14130F}
+  section:first-of-type{border-top:0}
+  h2{font-family:Archivo,sans-serif;font-size:15px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+  h2 .req{font-family:Nunito,sans-serif;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:none;color:#FF3E00}
+  .lede{margin:0 0 18px;color:#555;max-width:620px;font-size:15px}
+  .f{margin:0 0 18px}
+  .f label,.lab{display:block;font-weight:700;font-size:15px;margin:0 0 3px}
+  .f .hint{display:block;font-size:13px;color:#777;margin:0 0 6px}
+  input[type=text],input[type=url],textarea,select{font:inherit;font-size:15px;width:100%;padding:10px 12px;border:1px solid #bbb;background:#fff;border-radius:0}
+  textarea{resize:vertical;min-height:62px}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:#14130F;box-shadow:0 0 0 1px #14130F}
+  .f.need input,.f.need textarea{border-color:#FF3E00}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips button{font:inherit;font-size:14px;padding:8px 14px;min-height:40px;border:1px solid #bbb;background:#fff;cursor:pointer}
+  .chips button[aria-pressed="true"]{background:#14130F;color:#fff;border-color:#14130F}
+  .chips button:focus-visible,button:focus-visible{outline:2px solid #FF3E00;outline-offset:2px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tiny{font:inherit;font-size:13px;padding:6px 10px;border:1px solid #bbb;background:#fff;cursor:pointer}
+  /* images */
+  .drop{border:2px dashed #bbb;padding:22px;text-align:center;color:#666;cursor:pointer}
+  .drop.over{border-color:#14130F;color:#14130F}
+  .imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:14px}
+  .im{border:1px solid #ddd;padding:8px;display:flex;flex-direction:column;gap:8px}
+  .im img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#f2f2f2}
+  .im .chips button{font-size:12px;padding:5px 9px;min-height:30px}
+  .im input{font-size:13px;padding:7px 9px}
+  .im .x{align-self:flex-end;border:0;background:none;color:#999;font:inherit;font-size:12px;cursor:pointer}
+  /* shape */
+  .q{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee}
+  .q span{font-size:15px}
+  .q small{display:block;color:#999;font-size:12px}
+  .yn{display:flex;gap:6px;flex:none}
+  .yn button{font:inherit;font-size:13px;padding:6px 12px;min-height:34px;border:1px solid #bbb;background:#fff;cursor:pointer}
+  .yn button[aria-pressed="true"]{background:#14130F;color:#fff;border-color:#14130F}
+  .pick{margin-top:14px;padding:14px 16px;background:#14130F;color:#fff}
+  .pick b{font-family:Archivo,sans-serif;text-transform:uppercase;letter-spacing:.04em}
+  /* scales */
+  .sc{padding:12px 0 14px;border-bottom:1px solid #eee}
+  .sc .ends{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+  .sc .ends b{font-weight:700}
+  .sc input[type=range]{width:100%;margin:8px 0 2px;accent-color:#14130F}
+  .sc .val{font-size:13px;color:#777;display:flex;justify-content:space-between;gap:10px}
+  .sc.unset input[type=range]{accent-color:#ccc;opacity:.4}
+  .sc.unset .val span{color:#bbb}
+  /* side */
+  aside{position:sticky;top:20px;display:flex;flex-direction:column;gap:14px}
+  .bar{height:6px;background:#eee}
+  .bar i{display:block;height:100%;background:#FF3E00;transition:width .3s}
+  .todo{margin:0;padding:0;list-style:none;font-size:14px}
+  .todo li{padding:4px 0;color:#999}
+  .todo li.ok{color:#14130F}
+  .todo li.ok::before{content:"\2713  ";color:#FF3E00}
+  .todo li:not(.ok)::before{content:"\25CB  "}
+  .go{font:inherit;font-weight:700;font-size:16px;padding:14px 18px;min-height:48px;border:2px solid #14130F;background:#14130F;color:#fff;cursor:pointer;width:100%}
+  .go[disabled]{background:#fff;color:#aaa;border-color:#ddd;cursor:not-allowed}
+  .ghost{font:inherit;font-size:14px;padding:10px 14px;min-height:42px;border:1px solid #14130F;background:#fff;cursor:pointer;width:100%}
+  .saved{font-size:12px;color:#999;margin:0}
+  /* output */
+  #out{grid-column:1 / -1}
+  pre{font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.6;white-space:pre-wrap;margin:0;border:1px solid #14130F;padding:18px;max-height:70vh;overflow:auto}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 0}
+  .btns button{width:auto}
+  @media (max-width:860px){ .page{grid-template-columns:1fr} aside{position:static;order:-1} .row2{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="intro">
+    <h1>Start a brief</h1>
+    <p>Settle the brief before anything is made. The narrative is required; everything else sharpens it. Litmus then writes the prompt or the skill with your taste folded in.</p>
+    <p><a href="index.html">Back to the engine</a></p>
+  </div>
+
+  <main>
+    <section>
+      <h2>The thing</h2>
+      <div class="f"><span class="lab">What you're making</span><div class="chips" data-one="kind">
+        <button type="button" data-v="website">Website</button><button type="button" data-v="single page">Single page</button><button type="button" data-v="poster">Poster</button><button type="button" data-v="deck">Deck</button><button type="button" data-v="app screen">App screen</button></div></div>
+      <div class="f"><label for="what">What it's for, in a line</label><input type="text" id="what" data-k="what" placeholder="A site for a cello and synth duo, Halde Duo"></div>
+      <div class="f"><label for="start">Or start from one of the twenty briefs</label><select id="start"><option value="">Choose one to fill in the narrative</option></select></div>
+    </section>
+
+    <section>
+      <h2>The narrative <span class="req">all six required</span></h2>
+      <p class="lede">Who it is for and what it says. Everything else is decided from these.</p>
+      <div class="f" data-need="who"><label for="who">Who comes</label><span class="hint">The actual visitor, not the client.</span><input type="text" id="who" data-k="who" placeholder="Fans and curious locals"></div>
+      <div class="f" data-need="job"><label for="job">What they came to do</label><span class="hint">The job, in their words.</span><input type="text" id="job" data-k="job" placeholder="When and where is the next show; hear them; get a ticket"></div>
+      <div class="f" data-need="says"><label for="says">The one sentence it states</label><span class="hint">Every page is a scene in this sentence.</span><input type="text" id="says" data-k="says" placeholder="A duo you have to hear in a room, and this is the next room."></div>
+      <div class="f" data-need="first"><label for="first">First screen</label><span class="hint">What it is, who it's for, what you can do here.</span><input type="text" id="first" data-k="first" placeholder="The name, the next date and venue, the ticket"></div>
+      <div class="f" data-need="peak"><label for="peak">The peak</label><span class="hint">The one moment they'll remember.</span><input type="text" id="peak" data-k="peak" placeholder="Holding anywhere to hear them"></div>
+      <div class="f" data-need="end"><label for="end">The end</label><span class="hint">The action every page closes on.</span><input type="text" id="end" data-k="end" placeholder="Tickets"></div>
+    </section>
+
+    <section>
+      <h2>What's real</h2>
+      <div class="f"><label for="exists">What exists, with counts</label><span class="hint">So nothing is made up to fill space.</span><textarea id="exists" data-k="exists" placeholder="8 show dates with venues, 6 tracks with lengths, 2 band photos, no copy yet"></textarea></div>
+      <div class="f"><span class="lab">Never invent</span><div class="chips" data-many="never">
+        <button type="button" data-v="prices">Prices</button><button type="button" data-v="opening hours">Opening hours</button><button type="button" data-v="names">Names</button><button type="button" data-v="numbers">Numbers</button><button type="button" data-v="dates">Dates</button><button type="button" data-v="addresses">Addresses</button><button type="button" data-v="quotes or reviews">Quotes or reviews</button></div>
+        <input type="text" data-k="neverOther" placeholder="Anything else that must not be made up" style="margin-top:10px"></div>
+    </section>
+
+    <section>
+      <h2>Images</h2>
+      <p class="lede">Your own images to use, and images you want it to learn from. Say which, and why in a line.</p>
+      <div class="drop" id="drop" tabindex="0" role="button">Drop images here, or click to choose</div>
+      <input type="file" id="files" accept="image/*" multiple hidden>
+      <div class="imgs" id="imgs"></div>
+    </section>
+
+    <section>
+      <h2>The shape</h2>
+      <p class="lede">Read from your sentence. Confirm or change each one; the structure follows.</p>
+      <div id="shape"></div>
+      <div class="pick" id="pick"></div>
+    </section>
+
+    <section>
+      <h2>The feel</h2>
+      <p class="lede">Move a scale only if you mean it. One left alone is the engine's call.</p>
+      <div id="scales"></div>
+    </section>
+
+    <section>
+      <h2>Must do, can't change</h2>
+      <div class="f"><span class="lab">The action</span><div class="chips" data-one="action">
+        <button type="button" data-v="buy">Buy</button><button type="button" data-v="book">Book</button><button type="button" data-v="sign up">Sign up</button><button type="button" data-v="read">Read</button><button type="button" data-v="contact">Contact</button><button type="button" data-v="listen">Listen</button><button type="button" data-v="visit">Visit</button></div></div>
+      <div class="f"><span class="lab">Phone or desktop first</span><div class="chips" data-one="device">
+        <button type="button" data-v="phone first">Phone first</button><button type="button" data-v="desktop first">Desktop first</button><button type="button" data-v="both equally">Both equally</button></div></div>
+      <div class="f"><label for="fixed">Fixed</label><span class="hint">Logo, brand colours, typeface, legal text: anything that can't move.</span><textarea id="fixed" data-k="fixed" placeholder="Logo as supplied, the pink #D23A6E, no other fixed type"></textarea></div>
+    </section>
+
+    <section>
+      <h2>For this project only <span class="req" style="color:#999">optional</span></h2>
+      <div class="row2">
+        <div class="f"><label for="ref1">Excellent work, one</label><input type="text" id="ref1" data-k="ref1" placeholder="Ulli Lust, Today Is the Last Day of the Rest of Your Life"><input type="text" data-k="ref1why" placeholder="Why, in one sentence" style="margin-top:8px"></div>
+        <div class="f"><label for="ref2">Excellent work, two</label><input type="text" id="ref2" data-k="ref2" placeholder="A site, a book, a poster"><input type="text" data-k="ref2why" placeholder="Why, in one sentence" style="margin-top:8px"></div>
+      </div>
+      <div class="f"><label for="not">It must not look like</label><input type="text" id="not" data-k="not" placeholder="A festival site with a countdown and a hero video"><input type="text" data-k="notwhy" placeholder="Why, in one sentence" style="margin-top:8px"></div>
+      <div class="f"><span class="lab">From your file, any that fit</span><span class="hint">References you've already named.</span><div class="chips" data-many="fileRefs" id="fileRefs"></div></div>
+    </section>
+
+    <section>
+      <h2>Output</h2>
+      <div class="f"><span class="lab">What to make</span><div class="chips" data-one="output">
+        <button type="button" data-v="prompt">A prompt, one use</button><button type="button" data-v="skill">A skill, loads into a project folder</button></div></div>
+      <div class="f"><label for="tool">For which tool</label><select id="tool" data-k="tool">
+        <option>Claude Code</option><option>Claude.ai</option><option>Cursor</option><option>v0</option><option>Lovable</option><option>Figma Make</option><option>Other</option></select></div>
+    </section>
+  </main>
+
+  <aside>
+    <div class="bar"><i id="barFill" style="width:0"></i></div>
+    <ul class="todo" id="todo"></ul>
+    <button class="go" id="go" disabled>Write it</button>
+    <button class="ghost" id="example">Fill in an example</button>
+    <button class="ghost" id="saveFile">Save the brief to a file</button>
+    <button class="ghost" id="loadBtn">Load a brief file</button><input type="file" id="loadFile" accept="application/json" hidden>
+    <button class="ghost" id="clear">Start again</button>
+    <p class="saved" id="saved">Saved in this browser as you type.</p>
+  </aside>
+
+  <div id="out" hidden>
+    <section>
+      <h2 id="outTitle">The prompt</h2>
+      <pre id="text"></pre>
+      <div class="btns"><button class="go" id="copy" style="width:auto">Copy</button><button class="ghost" id="download" style="width:auto">Download</button></div>
+      <p class="saved" id="outNote" style="margin-top:10px"></p>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="data.js"></script>
+<script src="references.js"></script>
+<script src="palette.js"></script>
+<script src="profile.js"></script>
+<script src="site.js"></script>
+<script src="structure.js"></script>
+<script src="compare.js"></script>
+<script src="constructs.js"></script>
+<script src="people.js"></script>
+<script>
+/* ---------- the state, saved on every change ---------- */
+const KEY = 'litmus-brief-v1';
+let S = {};
+try { S = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ S = {}; }
+S.never = S.never || []; S.fileRefs = S.fileRefs || []; S.shape = S.shape || {}; S.scales = S.scales || {}; S.images = S.images || [];
+let savedAt = 0;
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); document.getElementById('saved').textContent = 'Saved in this browser, ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) + '.'; } catch(e){ document.getElementById('saved').textContent = 'Could not save in this browser. Save the brief to a file.'; } }
+
+/* images live in IndexedDB, since they are too big for localStorage */
+let db = null;
+const dbReady = new Promise((res) => { try { const r = indexedDB.open('litmus-brief', 1); r.onupgradeneeded = () => r.result.createObjectStore('images'); r.onsuccess = () => { db = r.result; res(); }; r.onerror = () => res(); } catch(e){ res(); } });
+const putImg = (id, blob) => dbReady.then(() => db && new Promise((res) => { const t = db.transaction('images', 'readwrite'); t.objectStore('images').put(blob, id); t.oncomplete = res; t.onerror = res; }));
+const getImg = (id) => dbReady.then(() => db ? new Promise((res) => { const q = db.transaction('images').objectStore('images').get(id); q.onsuccess = () => res(q.result); q.onerror = () => res(null); }) : null);
+const delImg = (id) => dbReady.then(() => db && db.transaction('images', 'readwrite').objectStore('images').delete(id));
+
+/* ---------- plain fields ---------- */
+document.querySelectorAll('[data-k]').forEach((el) => {
+  if (S[el.dataset.k] !== undefined) el.value = S[el.dataset.k];
+  el.addEventListener('input', () => { S[el.dataset.k] = el.value; save(); if (['what', 'says', 'exists', 'job'].includes(el.dataset.k)) readShapeIn(); update(); });
+});
+/* chips: one of, or many of */
+function syncChips(){
+  document.querySelectorAll('[data-one]').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', S[g.dataset.one] === b.dataset.v)));
+  document.querySelectorAll('[data-many]').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', (S[g.dataset.many] || []).includes(b.dataset.v))));
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-one] button, [data-many] button'); if (!b) return;
+  const one = b.parentNode.dataset.one, many = b.parentNode.dataset.many;
+  if (one) S[one] = S[one] === b.dataset.v ? '' : b.dataset.v;
+  if (many){ const a = S[many] || []; S[many] = a.includes(b.dataset.v) ? a.filter((x) => x !== b.dataset.v) : a.concat(b.dataset.v); }
+  syncChips(); save(); update();
+});
+
+/* ---------- start from one of the twenty ---------- */
+const BRIEFS = { '01':'A natural wine shop', '02':'A chef’s tasting menu', '03':'A poster for one night of music', '04':'A photographer’s portfolio', '05':'A weekend guide to a city', '06':'A studio archive, 1979 to 2010',
+  '07':'An architecture practice', '08':'A small press and bookshop', '09':'A ceramics studio selling pots', '10':'A film festival, one week', '11':'An independent record label', '12':'An independent magazine', '13':'A florist',
+  '14':'A dance company’s season', '15':'A museum exhibition of small objects', '16':'A bakery', '17':'A typeface foundry selling one face', '18':'A tattoo artist', '19':'A bicycle repair workshop', '20':'A podcast about sleep' };
+const startSel = document.getElementById('start');
+Object.keys(BRIEFS).forEach((k) => startSel.insertAdjacentHTML('beforeend', '<option value="' + k + '">' + k + '  ' + BRIEFS[k] + '</option>'));
+startSel.addEventListener('change', () => {
+  const k = startSel.value, N = NARRATIVES[k]; if (!N) return;
+  const set = (key, v) => { S[key] = v; const el = document.querySelector('[data-k="' + key + '"]'); if (el) el.value = v; };
+  set('what', BRIEFS[k]); set('who', N.who); set('job', N.job); set('says', N.says); set('peak', N.peak); set('end', N.end);
+  set('first', 'What it is, who it is for, and ' + N.end.charAt(0).toLowerCase() + N.end.slice(1));
+  if (!S.kind) S.kind = 'website';
+  save(); syncChips(); readShapeIn(true); update();
+});
+
+/* ---------- images ---------- */
+const drop = document.getElementById('drop'), files = document.getElementById('files'), imgs = document.getElementById('imgs');
+drop.addEventListener('click', () => files.click());
+drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); files.click(); } });
+['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', (e) => addFiles(e.dataTransfer.files));
+files.addEventListener('change', () => { addFiles(files.files); files.value = ''; });
+function addFiles(list){
+  [...list].filter((f) => f.type.startsWith('image/')).forEach((f) => {
+    const id = 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    S.images.push({ id, name:f.name, role:'ours', why:'' }); putImg(id, f).then(() => { save(); drawImages(); update(); });
+  });
+}
+function drawImages(){
+  imgs.innerHTML = '';
+  S.images.forEach((m) => {
+    const el = document.createElement('div'); el.className = 'im';
+    el.innerHTML = '<img alt=""><div class="chips"><button type="button" data-r="ours">Ours, use it</button><button type="button" data-r="ref">Learn from it</button></div><input type="text" placeholder="Why, in a line"><button type="button" class="x">Remove</button>';
+    getImg(m.id).then((b) => { if (b) el.querySelector('img').src = URL.createObjectURL(b); });
+    el.querySelector('img').alt = m.name;
+    el.querySelectorAll('[data-r]').forEach((b) => { b.setAttribute('aria-pressed', m.role === b.dataset.r); b.onclick = (e) => { e.stopPropagation(); m.role = b.dataset.r; save(); drawImages(); }; });
+    const w = el.querySelector('input'); w.value = m.why; w.oninput = () => { m.why = w.value; save(); };
+    el.querySelector('.x').onclick = () => { S.images = S.images.filter((x) => x !== m); delImg(m.id); save(); drawImages(); update(); };
+    imgs.appendChild(el);
+  });
+}
+
+/* ---------- the shape, read from the sentence, confirmed by hand ---------- */
+const SHAPE_SHORT = { space:'A space with parts', place:'A ground, a route, somewhere to go', relation:'Relations that matter more than the parts', many:'Many of one thing, all at once', mixed:'Lots of unlike things on one sheet', words:'Mostly words', announce:'One night, one thing, a date on it' };
+function readShapeIn(force){
+  const text = [S.what, S.says, S.job, S.exists].filter(Boolean).join('. '), r = readShape(text);
+  SHAPE.forEach((q) => { if (force || !S.shape[q.id] || S.shape[q.id].auto) S.shape[q.id] = { v:!!r.found[q.id], auto:true, word:r.words[q.id] || '' }; });
+  save(); drawShape();
+}
+function pickStructure(){
+  let best = null;
+  STRUCT_ORDER.forEach((k) => {
+    const T = STRUCTURES[k]; if (T.needs && !(S.shape[T.needs] || {}).v) return; if (T.blockedBy && (S.shape[T.blockedBy] || {}).v) return;
+    let sc = 0; Object.keys(T.wants).forEach((q) => { if ((S.shape[q] || {}).v) sc += T.wants[q]; });
+    if (!best || sc > best.sc) best = { k, sc };
+  });
+  return best && best.sc > 0 ? STRUCTURES[best.k] : null;
+}
+function drawShape(){
+  const box = document.getElementById('shape'); box.innerHTML = '';
+  SHAPE.forEach((q) => {
+    const a = S.shape[q.id] || { v:false, auto:true };
+    const el = document.createElement('div'); el.className = 'q';
+    el.innerHTML = '<span>' + SHAPE_SHORT[q.id] + '?<small>' + (a.auto ? (a.v ? 'read from "' + a.word + '"' : 'nothing in the sentence says so') : 'set by you') + '</small></span><div class="yn"><button type="button" data-v="1">Yes</button><button type="button" data-v="0">No</button></div>';
+    el.querySelectorAll('button').forEach((b) => { b.setAttribute('aria-pressed', (b.dataset.v === '1') === !!a.v); b.onclick = () => { S.shape[q.id] = { v:b.dataset.v === '1', auto:false }; save(); drawShape(); update(); }; });
+    box.appendChild(el);
+  });
+  const P = pickStructure();
+  document.getElementById('pick').innerHTML = P ? '<b>' + P.name + '</b>&nbsp; ' + P.says : '<b>No structure fits yet</b>&nbsp; Answer yes to at least one, or the engine will say so rather than default to a stack of bands.';
+}
+
+/* ---------- the feel: scales in Noor's words ---------- */
+const SCALES = [
+  ['order', 'Ordered, on a grid', 'Messy, off the square'], ['volume', 'Quiet', 'Loud'], ['surface', 'Flat', 'Material: 3D, print, grain'],
+  ['image', 'Photographs', 'Drawn by hand'], ['world', 'A normal page', 'Immersive, a world'], ['new', 'Familiar', 'Groundbreaking'],
+  ['words', 'Very few words', 'Reads like a book'], ['motion', 'Still', 'Answers every move'], ['colour', 'One ink', 'Experimental colour'], ['era', 'Of now', 'Pre-internet']
+];
+const STEP = ['strongly', 'leaning', 'between', 'leaning', 'strongly'];
+function scalePhrase(s, v){ return v === 3 ? 'between ' + s[1].toLowerCase() + ' and ' + s[2].toLowerCase() : STEP[v - 1] + ' ' + (v < 3 ? s[1] : s[2]).toLowerCase(); }
+function drawScales(){
+  const box = document.getElementById('scales'); box.innerHTML = '';
+  SCALES.forEach((s) => {
+    const v = S.scales[s[0]], el = document.createElement('div'); el.className = 'sc' + (v ? '' : ' unset');
+    el.innerHTML = '<div class="ends"><b>' + s[1] + '</b><b>' + s[2] + '</b></div><input type="range" min="1" max="5" step="1" aria-label="' + s[1] + ' to ' + s[2] + '"><div class="val"><span></span><button type="button" class="tiny">Leave it to the engine</button></div>';
+    const r = el.querySelector('input'), lab = el.querySelector('.val span'), reset = el.querySelector('.tiny');
+    r.value = v || 3; lab.textContent = v ? scalePhrase(s, v) : 'the engine decides'; r.setAttribute('aria-valuetext', lab.textContent); reset.hidden = !v;
+    r.oninput = () => { S.scales[s[0]] = +r.value; save(); el.classList.remove('unset'); lab.textContent = scalePhrase(s, +r.value); r.setAttribute('aria-valuetext', lab.textContent); reset.hidden = false; };
+    reset.onclick = () => { delete S.scales[s[0]]; save(); drawScales(); };
+    box.appendChild(el);
+  });
+}
+
+/* ---------- references already in the file ---------- */
+/* only the ones Noor has said they like (Lando, Studio Feixen and Teenage Engineering were refused; JODI is contested) */
+const FILE_REFS = ['bruno', 'raf', 'msg', 'petra', 'igloo', 'olia', 'll'].filter((k) => SITES[k]).map((k) => [k, SITES[k].name]).concat([['ulli', 'Ulli Lust, Today Is the Last Day of the Rest of Your Life']]);
+document.getElementById('fileRefs').innerHTML = FILE_REFS.map((r) => '<button type="button" data-v="' + r[0] + '">' + r[1] + '</button>').join('');
+
+/* ---------- what is still missing ---------- */
+const NEEDS = [['kind', 'What you’re making'], ['what', 'What it’s for'], ['who', 'Who comes'], ['job', 'What they came to do'], ['says', 'The one sentence'], ['first', 'First screen'], ['peak', 'The peak'], ['end', 'The end'], ['action', 'The action'], ['output', 'Prompt or skill']];
+function update(){
+  const done = NEEDS.filter((n) => (S[n[0]] || '').toString().trim());
+  document.getElementById('todo').innerHTML = NEEDS.map((n) => '<li class="' + (done.includes(n) ? 'ok' : '') + '">' + n[1] + '</li>').join('');
+  document.getElementById('barFill').style.width = (done.length / NEEDS.length * 100) + '%';
+  const go = document.getElementById('go'); go.disabled = done.length < NEEDS.length;
+  go.textContent = go.disabled ? (NEEDS.length - done.length) + ' still to answer' : (S.output === 'skill' ? 'Write the skill' : 'Write the prompt');
+  document.querySelectorAll('[data-need]').forEach((f) => f.classList.toggle('need', go.dataset.tried === '1' && !(S[f.dataset.need] || '').trim()));
+}
+
+/* ---------- writing it ---------- */
+function list(arr, pre){ return arr.map((x) => (pre || '- ') + x).join('\n'); }
+function compose(){
+  const P = pickStructure(), never = (S.never || []).concat(S.neverOther ? [S.neverOther] : []);
+  const scales = SCALES.filter((s) => S.scales[s[0]]).map((s) => s[1] + ' to ' + s[2].toLowerCase() + ': ' + scalePhrase(s, S.scales[s[0]]));
+  const ours = S.images.filter((m) => m.role === 'ours'), refs = S.images.filter((m) => m.role === 'ref');
+  const fileRefs = FILE_REFS.filter((r) => (S.fileRefs || []).includes(r[0])).map((r) => r[1]);
+  const T = [];
+  T.push('Make a ' + S.kind + ': ' + S.what + '.');
+  T.push('Read the whole brief before starting. The brief outranks the taste file on anything to do with function: who comes, what they came to do, and the action.');
+  T.push('\nTHE NARRATIVE\nWho comes: ' + S.who + '\nWhat they came to do: ' + S.job + '\nThe one sentence it states: ' + S.says + '\nFirst screen: ' + S.first + '\nThe peak: ' + S.peak + '\nThe end, on every page: ' + S.end);
+  T.push('\nWHAT’S REAL\n' + (S.exists ? 'What exists: ' + S.exists : 'Nothing supplied yet. Where content is missing, leave a clearly marked gap; do not fill it with invented material.') +
+    (never.length ? '\nNever invent: ' + never.join(', ') + '. If one is needed and missing, mark the gap.' : ''));
+  if (ours.length || refs.length) T.push('\nIMAGES' + (ours.length ? '\nUse these, they are ours:\n' + list(ours.map((m) => m.name + (m.why ? ': ' + m.why : ''))) : '') + (refs.length ? '\nLearn from these, do not copy them:\n' + list(refs.map((m) => m.name + (m.why ? ': ' + m.why : ''))) : ''));
+  T.push('\nTHE SHAPE\n' + list(SHAPE.filter((q) => (S.shape[q.id] || {}).v).map((q) => SHAPE_SHORT[q.id])) + '\n' + (P ? 'Structure: ' + P.name + '. ' + P.says + ' ' + (P.because || '') : 'No structure fits. Say so and propose one; do not default to a stack of bands.'));
+  if (scales.length) T.push('\nTHE FEEL\n' + list(scales) + '\nAnything not listed is your call, inside the taste file.');
+  T.push('\nMUST DO, CAN’T CHANGE\nThe action: ' + S.action + '. One primary action per page, one step away, where the eye already is.\n' + (S.device ? 'Design ' + S.device + '.\n' : '') + (S.fixed ? 'Fixed: ' + S.fixed : 'Nothing fixed.'));
+  if (S.ref1 || S.ref2 || S.not || fileRefs.length) T.push('\nFOR THIS PROJECT' + (S.ref1 ? '\nExcellent: ' + S.ref1 + (S.ref1why ? '. ' + S.ref1why : '') : '') + (S.ref2 ? '\nExcellent: ' + S.ref2 + (S.ref2why ? '. ' + S.ref2why : '') : '') +
+    (S.not ? '\nMust not look like: ' + S.not + (S.notwhy ? '. ' + S.notwhy : '') : '') + (fileRefs.length ? '\nFrom the taste file, these fit: ' + fileRefs.join('; ') + '. Take their method, never their drawings.' : ''));
+  T.push('\nTHE TASTE\n' + 'Standing: ' + STANDING.good.words + '. Never ' + STANDING.bad.words + '.\nImmersive only on some occasions. Otherwise, elements made for this piece specifically.\n' +
+    'Look to traditional artists (comics artists, printmakers, illustrators) for how a piece works, not only how it looks.');
+  T.push('\nTYPE\n' + list(TYPE.map((t) => t.rule)));
+  T.push('\nSURFACE\n' + list(SURFACE.map((s) => s.rule)));
+  T.push('\nNEVER, AND ALWAYS\n' + list(PROFILE.rules.map((r) => r.text)));
+  T.push('\nHOW PEOPLE ACT ON A PAGE (check every page against these)\n' + list(BEHAVIOUR_SCIENCE.map((b) => b.name + ': ' + b.rule)));
+  const TOOL = { 'Claude Code':'Write it as files in this folder. Open it in a browser at phone and desktop widths and check every page before calling it done.', 'Claude.ai':'Build it as one HTML artifact. Check it at phone and desktop widths.',
+    'Cursor':'Write it as files in this project. Run it and check it at phone and desktop widths.', 'v0':'Use only what the tool needs; keep every rule above even where the defaults pull the other way.',
+    'Lovable':'Use only what the tool needs; keep every rule above even where the defaults pull the other way.', 'Figma Make':'Keep every rule above even where the defaults pull the other way.', 'Other':'Check it at phone and desktop widths.' };
+  T.push('\nBEFORE YOU SAY IT IS DONE\n' + TOOL[S.tool || 'Claude Code'] + '\nNo text touches other text at any width. Every page ends on: ' + S.end + '.');
+  return T.join('\n');
+}
+function slug(){ return (S.what || 'brief').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'brief'; }
+function skillMd(){
+  return '---\nname: litmus-' + slug() + '\ndescription: Builds ' + (S.what || 'the piece') + ', in Noor’s taste from Litmus. Use when working on this project or asked to make, change or check any page of it.\n---\n\n' + compose() + '\n\nImages, if any, are in assets/. The brief as data is in brief.json.\n';
+}
+document.getElementById('go').addEventListener('click', () => {
+  const go = document.getElementById('go'); go.dataset.tried = '1';
+  if (go.disabled){ update(); return; }
+  const skill = S.output === 'skill';
+  document.getElementById('out').hidden = false;
+  document.getElementById('outTitle').textContent = skill ? 'The skill' : 'The prompt';
+  document.getElementById('text').textContent = skill ? skillMd() : compose();
+  document.getElementById('download').textContent = skill ? 'Download the skill (.zip)' : (S.images.length ? 'Download prompt and images (.zip)' : 'Download as a file');
+  document.getElementById('outNote').textContent = skill ? 'Unzip it into .claude/skills/litmus-' + slug() + '/ in the project folder, or upload the zip as a skill in Claude.ai.' : 'Paste it into ' + (S.tool || 'the tool') + (S.images.length ? ', and attach the images with it.' : '.');
+  document.getElementById('out').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+document.getElementById('copy').addEventListener('click', (e) => {
+  const t = document.getElementById('text').textContent, b = e.currentTarget;
+  navigator.clipboard.writeText(t).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1600); }).catch(() => { const r = document.createRange(); r.selectNodeContents(document.getElementById('text')); getSelection().removeAllRanges(); getSelection().addRange(r); b.textContent = 'Selected, copy it'; });
+});
+function saveAs(blob, name){ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+document.getElementById('download').addEventListener('click', async () => {
+  const skill = S.output === 'skill';
+  if (!skill && !S.images.length){ saveAs(new Blob([compose()], { type:'text/markdown' }), 'litmus-' + slug() + '.md'); return; }
+  const z = new JSZip(), root = skill ? z.folder('litmus-' + slug()) : z;
+  root.file(skill ? 'SKILL.md' : 'prompt.md', skill ? skillMd() : compose());
+  if (skill) root.file('brief.json', JSON.stringify(S, null, 2));
+  for (const m of S.images){ const b = await getImg(m.id); if (b) root.folder('assets').file(m.name, b); }
+  saveAs(await z.generateAsync({ type:'blob' }), 'litmus-' + slug() + (skill ? '-skill' : '') + '.zip');
+});
+
+/* ---------- save, load, example, start again ---------- */
+document.getElementById('saveFile').addEventListener('click', () => saveAs(new Blob([JSON.stringify(S, null, 2)], { type:'application/json' }), 'litmus-brief-' + slug() + '.json'));
+document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('loadFile').click());
+document.getElementById('loadFile').addEventListener('change', (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then((t) => { try { const o = JSON.parse(t); S = Object.assign({ never:[], fileRefs:[], shape:{}, scales:{}, images:[] }, o); save(); location.reload(); } catch(err){ document.getElementById('saved').textContent = 'That file is not a Litmus brief.'; } });
+});
+document.getElementById('example').addEventListener('click', () => {
+  S = { kind:'website', what:'A site for a cello and synthesizer duo, Halde Duo', who:'Fans and curious locals', job:'When and where is the next show; hear them; get a ticket',
+    says:'A duo you have to hear in a room, and this is the next room.', first:'The name, the next date and venue, and the ticket', peak:'Holding anywhere to hear them', end:'Tickets',
+    exists:'8 show dates with venues, 6 tracks with lengths, 2 photos of the band, no copy yet', never:['prices', 'dates', 'names'], neverOther:'', images:[], fileRefs:['ulli'],
+    shape:{}, scales:{ order:5, image:5, words:2, colour:2 }, action:'book', device:'phone first', fixed:'', ref1:'Ulli Lust, Today Is the Last Day of the Rest of Your Life', ref1why:'Pen and ink from life, one spot colour, hand lettering: the night as she saw it.',
+    not:'A festival site with a countdown and a hero video', notwhy:'It sells the event, not the sound.', output:'prompt', tool:'Claude Code' };
+  save(); location.reload();
+});
+document.getElementById('clear').addEventListener('click', (e) => {
+  const b = e.currentTarget;
+  if (b.dataset.sure !== '1'){ b.dataset.sure = '1'; b.textContent = 'Click again to clear everything'; setTimeout(() => { b.dataset.sure = ''; b.textContent = 'Start again'; }, 3000); return; }
+  S.images.forEach((m) => delImg(m.id)); S = { never:[], fileRefs:[], shape:{}, scales:{}, images:[] }; save(); location.reload();
+});
+
+syncChips(); drawImages(); drawScales();
+if (!Object.keys(S.shape).length) readShapeIn(); else drawShape();
+update();
+</script>
+</body>
+</html>
