@@ -140,6 +140,73 @@ var PRINT = {
     g.putImageData(im, 0, 0); return c;
   },
 
+  /* Ink. From cr12 (Ulli Lust, Today Is the Last Day of the Rest of Your
+     Life): a pen drawing over the photograph's shapes, one flat spot colour
+     for the darkest areas the way she floods a panel with green, and hatching
+     in the mid tones that wanders like a hand. Outlines come from a
+     difference of two blurs (the edges a pen would follow); tone becomes
+     strokes, not dots. The photograph itself never shows. */
+  ink: function(img, w, h, o){
+    o = o || {};
+    function blurred(px){
+      var c = out(w, h), g = c.getContext('2d'), s = Math.max(w / img.naturalWidth, h / img.naturalHeight), dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+      g.filter = 'grayscale(1) blur(' + px + 'px)';
+      g.drawImage(img, (w - dw) * (o.fx === undefined ? .5 : o.fx), (h - dh) * (o.fy === undefined ? .5 : o.fy), dw, dh);
+      var d = g.getImageData(0, 0, w, h).data, L = new Float32Array(w * h);
+      for (var i = 0; i < L.length; i++) L[i] = d[i * 4] / 255;
+      return L;
+    }
+    var k = w / 900, A = blurred(1.3 * k), B = blurred(3.2 * k), T = blurred(7 * k);
+    /* levels: every photograph is brought to the same range first, so a dark
+       stage and a bright room come out as the same kind of drawing */
+    var smp = []; for (var z = 0; z < T.length; z += 37) smp.push(T[z]); smp.sort(function(p, q){ return p - q; });
+    var lo = smp[Math.floor(smp.length * 0.04)], hi = smp[Math.floor(smp.length * 0.96)], sc = 1 / Math.max(0.05, hi - lo);
+    [A, B, T].forEach(function(L){ for (var i = 0; i < L.length; i++) L[i] = (L[i] - lo) * sc + (o.lift || 0); });
+    /* shares instead of thresholds: every drawing in a set gets the same amount
+       of spot colour and of hatching, whatever the photograph was like */
+    var pct = function(f){ return (smp[Math.min(smp.length - 1, Math.floor(smp.length * f))] - lo) * sc + (o.lift || 0); };
+    if (o.spotShare) o.spotAt = pct(o.spotShare);
+    if (o.hatchShare) o.hatchAt = pct((o.spotShare || 0) + o.hatchShare);
+    var c = out(w, h), g = c.getContext('2d'), r = seeded(o.seed || 9);
+    var P = hexRGB(o.paper || '#FFFFFF'), I = hexRGB(o.ink || '#141210'), S = o.spot ? hexRGB(o.spot) : null;
+    /* paper, then the spot colour flooded into the darks with a soft brush edge */
+    var im = g.createImageData(w, h), d = im.data, spotAt = o.spotAt || 0.3;
+    for (var i = 0; i < w * h; i++){
+      var f = S ? Math.max(0, Math.min(1, (spotAt - T[i]) / 0.04 + 0.5)) : 0;
+      for (var q = 0; q < 3; q++) d[i * 4 + q] = P[q] + ((S ? S[q] : P[q]) - P[q]) * f;
+      d[i * 4 + 3] = 255;
+    }
+    g.putImageData(im, 0, 0);
+    /* hatching in the mid tones only: long, slightly wandering strokes, far apart */
+    g.strokeStyle = 'rgb(' + I.join(',') + ')'; g.lineCap = 'round'; g.lineJoin = 'round';
+    function hatch(angle, from, below, gap, wt){
+      var ca = Math.cos(angle), sa = Math.sin(angle), R = Math.hypot(w, h), st = 3 * k;
+      for (var v = -R; v < R; v += gap * (0.85 + r() * 0.3)){
+        var wob = 0, down = false; g.beginPath(); g.lineWidth = wt * (0.8 + r() * 0.5);
+        for (var u = -R; u < R; u += st){
+          var x = w / 2 + u * ca - v * sa, y = h / 2 + u * sa + v * ca;
+          if (x < 0 || y < 0 || x >= w || y >= h){ down = false; continue; }
+          var t = T[(y | 0) * w + (x | 0)], on = t < below && t >= from;
+          wob += (r() - .5) * 0.7 * k; wob *= 0.9;
+          var px = x - sa * wob, py = y + ca * wob;
+          if (on && !down){ g.moveTo(px, py); down = true; } else if (on) g.lineTo(px, py); else down = false;
+        }
+        g.stroke();
+      }
+    }
+    hatch((o.angle || 58) * Math.PI / 180, S ? spotAt - 0.02 : 0.08, o.hatchAt || 0.55, (o.gap || 9) * k, 1.25 * k);
+    /* the pen's outlines over everything; solid black only in the very darkest */
+    im = g.getImageData(0, 0, w, h); d = im.data;
+    var tau = o.edge || 0.035;
+    for (var j = 0; j < w * h; j++){
+      var e = A[j] - B[j], a = e < -tau ? Math.min(1, (-tau - e) / (tau * 0.7)) : 0;
+      if (T[j] < (o.solid === undefined ? -0.02 : o.solid)) a = 1;
+      if (a > 0) for (var p = 0; p < 3; p++) d[j * 4 + p] = d[j * 4 + p] + (I[p] - d[j * 4 + p]) * a;
+    }
+    g.putImageData(im, 0, 0);
+    return c;
+  },
+
   /* Photocopy: toner on cheap paper. Hard contrast, toner specks, the
      faint streak a drum leaves. */
   xerox: function(img, w, h, o){

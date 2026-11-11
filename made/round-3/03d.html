@@ -1,264 +1,264 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Halde Duo</title>
-<link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Texturina:opsz,wght@12..72,400;12..72,600&display=swap" rel="stylesheet">
-<!-- 03d. A site for a cello and synthesizer duo, Halde Duo. Rebuilt after cr10, and after cr11 ("very straight lines... they have to look
-     like scribbles") every visible line is drawn by hand: the underlines, the
-     rules under the tracks and on the stub, the crossing out, the circle. Rebuilt after cr10:
-     "This is plain... this can be so much more ambitious. I think there are
-     more pages this will have... more personality... the outline outside of
-     the image doesn't work here at all. This has to be messier, more
-     asymmetric." Kept: Jacquard 24 for the name (liked), Texturina for the
-     words, the highlighter yellow, and the hold: press and hold anywhere and a
-     low chord swells while the photocopies darken, let go and both fall away.
-     Now four pages, each its own idea, all built from one material: photos
-     photocopied onto white, pink or yellow paper, torn, taped and pasted over
-     each other off the square, the way a gig wall gets papered.
-       Next   the next show, pasted up as a poster with a ticket stub
-       Shows  every date as its own flyer on the wall; past ones crossed out
+<link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Patrick+Hand&display=swap" rel="stylesheet">
+<!-- 03d. A site for a cello and synthesizer duo, Halde Duo. Rebuilt after cr12:
+     "look at Ulli Lust['s] punk, it's so good... we look at organic,
+     traditional artists to function." Taken from her method in Today Is the
+     Last Day of the Rest of Your Life, not from her drawings: pen and ink over
+     observed scenes, one flat spot colour for the darks, hatching by hand,
+     smoke drawn as curls, small hand lettering in hand-ruled caption boxes,
+     panel borders ruled by hand. The site works like her book: each page is a
+     comic page, and people speak in balloons.
+       Next   the night itself, as a panorama, with the ticket
+       Shows  every date its own panel; past ones scribbled out
        Listen the record; hold a track to play it
-       Duo    who they are, and booking
-     Photographs are Unsplash placeholders, hotlinked, nothing downloaded. -->
+       Duo    the two of them, speaking for themselves, and booking
+     Kept from earlier rounds: Jacquard 24 for the name (liked in cr10), the
+     hand-drawn lines (cr11), press and hold anywhere for sound, while the
+     ruled lines boil the way drawn animation does.
+     Every picture is an Unsplash photograph redrawn in the page as ink;
+     the photograph itself never shows. -->
 <style>
-:root{--y:#FDFF70;--ink:#141210;--pink:#F64FB2;--white:#FBFBF6}
-html,body{margin:0;min-height:100%;background:var(--y);color:var(--ink);font-family:"Texturina",Georgia,serif;-webkit-user-select:none;user-select:none}
+:root{--paper:#FFFFFF;--ink:#141210;--spot:#D23A6E}
+html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:"Patrick Hand","Comic Sans MS",cursive;-webkit-user-select:none;user-select:none}
 body{overflow-x:hidden}
 a{color:inherit}
-/* the navigation: four words, not lined up, the current one scribbled under */
-nav{position:fixed;z-index:40;left:0;right:0;top:0;padding:18px 3vw 0;display:flex;gap:4.5vw;align-items:flex-start;pointer-events:none}
-nav a{pointer-events:auto;text-decoration:none;font-size:clamp(16px,1.6vw,22px);font-weight:600;position:relative;padding:4px 2px}
-nav a:nth-child(2){margin-top:14px;transform:rotate(-3deg)}
-nav a:nth-child(3){margin-top:4px;transform:rotate(2deg)}
-nav a:nth-child(4){margin-top:20px;transform:rotate(-1.5deg)}
-nav a .scrib{position:absolute;left:-8%;bottom:-7px;width:116%;height:13px;opacity:0;overflow:visible}
-nav a.on .scrib{opacity:1}
-nav a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-/* a scribble may wander outside its box; never clip it */
 .scrib,.cross{overflow:visible}
-section{display:none;position:relative;min-height:100vh}
+nav{position:relative;z-index:40;display:flex;flex-wrap:wrap;gap:4vw;align-items:flex-start;padding:22px 4vw 0}
+nav a{text-decoration:none;font-size:clamp(19px,1.7vw,24px);position:relative;padding:2px 2px}
+nav a:nth-child(2){margin-top:8px;transform:rotate(-2deg)}nav a:nth-child(3){margin-top:2px;transform:rotate(1.5deg)}nav a:nth-child(4){margin-top:12px;transform:rotate(-1deg)}
+nav a .scrib{position:absolute;left:-8%;bottom:-6px;width:116%;height:13px;opacity:0}
+nav a.on .scrib{opacity:1}
+nav a:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+section{display:none;padding:26px 4vw 70px}
 section.on{display:block}
-/* the material: paper, torn, with a photocopy on it */
-.paper{position:absolute;filter:drop-shadow(0 1px 1px rgba(20,18,16,.2)) drop-shadow(0 10px 14px rgba(20,18,16,.12))}
-/* the sheet carries the torn edge; the tape sits outside it on the paper so it is not torn too */
-.sheet{position:absolute;inset:0;background:var(--white)}
-.paper.pink .sheet{background:var(--pink)}.paper.yel .sheet{background:#F6F35A}
-.paper .ph{position:absolute;inset:7%;background-size:cover;background-position:center;filter:grayscale(1) contrast(var(--c,1.9)) brightness(var(--b,1.12));mix-blend-mode:multiply}
-.paper .ph.full{inset:0}
-.tape{position:absolute;width:30%;height:9%;min-height:18px;background:rgba(255,255,250,.55);box-shadow:0 1px 2px rgba(20,18,16,.08);z-index:3}
-.name{position:absolute;font-family:"Jacquard 24",serif;font-weight:normal;line-height:.8;margin:0;white-space:nowrap;z-index:5}
-.t{font-size:clamp(15px,1.25vw,18px);line-height:1.45}
-.big{font-family:"Jacquard 24",serif;font-weight:normal;line-height:.85}
-/* ---------- next ---------- */
-#next .name{left:-1.2vw;top:57vh;font-size:min(25vh,19vw);transform:rotate(-5deg)}
-.stub{position:absolute;right:6vw;bottom:9vh;width:min(330px,40vw);padding:18px 22px 20px;background:var(--white);transform:rotate(3deg);z-index:6;box-shadow:0 10px 24px rgba(20,18,16,.16)}
-.stub::before{content:"";position:absolute;left:0;right:0;top:-6px;height:12px;background:radial-gradient(circle at 6px 0,var(--y) 5px,transparent 5.5px) 0 0/14px 12px repeat-x}
-.stub .big{font-size:58px}
-.stub p{margin:6px 0 0}
-.stub .row{position:relative;display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:12px}
+.page{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px 20px;align-items:start}
+/* a panel: the drawing, its hand-ruled border, and whatever is said in it */
+.pn{position:relative;margin:0}
+.pn canvas{display:block;width:100%;height:100%;filter:contrast(var(--c,1))}
+.cap{position:absolute;z-index:3;background:var(--paper);padding:9px 13px 10px;font-size:clamp(15px,1.15vw,18px);line-height:1.25;max-width:min(330px,62%)}
+.cap b{font-family:"Jacquard 24",serif;font-weight:normal;font-size:1.9em;line-height:.9;display:block}
+.bal{position:absolute;z-index:3;padding:16px 20px 18px;font-size:clamp(15px,1.15vw,18px);line-height:1.22;text-align:center;max-width:min(260px,58%)}
+.bal .loop{position:absolute;pointer-events:none;z-index:-1;overflow:visible}
+h1.name,h2.name{font-family:"Jacquard 24",serif;font-weight:normal;line-height:.8;margin:0}
+.big{font-family:"Jacquard 24",serif;font-weight:normal}
+/* next */
+#next .pano{grid-column:1 / -1;aspect-ratio:2.5/1}
+#next .cello{grid-column:1 / span 4;aspect-ratio:1/1.1}
+#next .mid{grid-column:5 / span 5;align-self:center;padding:0 1vw}
+#next .mid h1{font-size:min(14vw,180px);transform:rotate(-4deg);margin-left:-1vw}
+#next .mid p{font-size:clamp(18px,1.45vw,22px);margin:18px 0 0;max-width:30ch;transform:rotate(-1deg)}
+.stub{grid-column:10 / span 3;position:relative;padding:18px 20px 20px;transform:rotate(3deg);margin-top:30px;background:var(--paper)}
+.stub .big{font-size:52px;line-height:.9}
+.stub p{margin:6px 0 0;font-size:18px;line-height:1.25}
+.stub .row{position:relative;display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;font-size:19px}
 .stub .row .scrib{position:absolute;left:-3%;top:-6px;width:106%;height:12px}
-.stub .row b{font-weight:600}
-.ringbox{position:absolute;left:-16px;top:4px;width:150px;height:78px;pointer-events:none}
-.ringbox .scrib{width:100%;height:100%;overflow:visible}
-.hold{position:absolute;left:3vw;bottom:4vh;margin:0;font-size:15px;transform:rotate(-2deg);z-index:6}
-/* ---------- shows ---------- */
-#shows{padding:120px 3vw 80px}
-#shows h2,#listen h2,#duo h2{font-family:"Jacquard 24",serif;font-weight:normal;font-size:min(16vw,170px);line-height:.8;margin:0;transform:rotate(-3deg);transform-origin:left}
-.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:34px 26px;margin-top:40px}
-.flyer{position:relative;aspect-ratio:3/4;transition:transform .25s}
-.flyer:hover{z-index:10}
-.flyer .paper{inset:0}
-.flyer .ph{inset:0 0 46% 0}
-.flyer .info{position:absolute;left:8%;right:8%;bottom:6%;z-index:2}
-.flyer .big{font-size:46px;display:block}
-.flyer .where{font-weight:600;margin:4px 0 0}
-.flyer .tix{display:inline-block;margin-top:8px;font-weight:600}
-.flyer.past .cross{position:absolute;left:6%;top:6%;width:88%;height:88%;z-index:4;pointer-events:none}
-.flyer.past .paper{filter:saturate(.6)}
-/* ---------- listen ---------- */
-#listen{padding:120px 3vw 80px}
-.record{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:5vw;align-items:start;margin-top:30px}
-.cover{position:relative;aspect-ratio:1;max-width:520px}
-.cover .paper{inset:0;transform:rotate(-2.5deg)}
-.cover .lp{position:absolute;left:7%;bottom:6%;font-family:"Jacquard 24",serif;font-size:clamp(40px,5vw,72px);line-height:.85;z-index:4;margin:0;transform:rotate(-2.5deg)}
-.tracks{list-style:none;margin:0;padding:0;counter-reset:n}
-.tracks li{counter-increment:n;display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:14px 4px 12px;cursor:pointer;position:relative}
-.tracks li .scrib{position:absolute;left:-1.5%;bottom:-6px;width:103%;height:12px;pointer-events:none}
-.tracks li:nth-child(odd){transform:rotate(-.6deg)}.tracks li:nth-child(even){transform:rotate(.5deg) translateX(10px)}
+.ringbox{position:absolute;left:4px;top:4px;width:150px;height:78px;pointer-events:none}
+.ringbox .scrib{width:100%;height:100%}
+/* shows */
+.title{grid-column:1 / -1;font-size:min(14vw,160px);transform:rotate(-2.5deg);transform-origin:left}
+.show{aspect-ratio:4/3}
+.show.w{grid-column:span 6;aspect-ratio:16/9}.show.n{grid-column:span 3;aspect-ratio:3/4}.show.m{grid-column:span 4}
+.show .cross{position:absolute;left:4%;top:4%;width:92%;height:92%;z-index:4;pointer-events:none}
+.show .cap a{display:inline-block;margin-top:4px;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+/* listen */
+#listen .cover{grid-column:1 / span 5;aspect-ratio:1}
+#listen .side{grid-column:7 / span 6}
+.tracks{list-style:none;margin:18px 0 0;padding:0;counter-reset:n}
+.tracks li{counter-increment:n;display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:12px 4px 12px;cursor:pointer;position:relative;font-size:clamp(19px,1.6vw,24px)}
 .tracks li::before{content:counter(n);font-family:"Jacquard 24",serif;font-size:30px;line-height:.8}
-.tracks li b{font-weight:600;font-size:clamp(18px,1.7vw,24px)}
-.tracks li span{font-size:15px}
-.tracks li.on b{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.tracks li .scrib{position:absolute;left:-1.5%;bottom:-6px;width:103%;height:12px;pointer-events:none}
+.tracks li.on span:first-child{color:var(--spot)}
 .tracks li:focus-visible{outline:2px solid var(--ink)}
-#wave{display:block;width:100%;height:90px;margin-top:18px}
-/* ---------- duo ---------- */
-#duo{padding:120px 3vw 80px}
-.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6vw;margin-top:40px}
-.who{position:relative}
-.who .pic{position:relative;aspect-ratio:4/5;max-width:440px}
-.who .pic .paper{inset:0}
-.who:nth-child(1) .pic{transform:rotate(-3deg)}
-.who:nth-child(2){margin-top:90px}.who:nth-child(2) .pic{transform:rotate(2.5deg)}
-.who h3{font-family:"Jacquard 24",serif;font-weight:normal;font-size:clamp(40px,4.6vw,64px);margin:22px 0 4px;line-height:.85}
-.who p{margin:0;max-width:34ch}
-.book{margin-top:70px;max-width:520px;transform:rotate(-1.5deg)}
-.book .big{font-size:clamp(40px,5vw,70px)}
+#wave{display:block;width:100%;height:90px;margin-top:14px}
+.blurb{font-size:clamp(18px,1.4vw,21px);line-height:1.3;max-width:44ch;margin:0}
+/* duo */
+#duo .who{grid-column:span 6;aspect-ratio:4/5}
+#duo .who:nth-of-type(2){margin-top:70px}
+.book{grid-column:2 / span 6;position:relative;padding:18px 22px;margin-top:20px;transform:rotate(-1.2deg);background:var(--paper)}
+.book .big{font-size:56px;line-height:.9;display:block}
+.book p{margin:6px 0 0;font-size:19px}
 @media (max-width:760px){
-  nav{gap:6vw;padding-top:12px}
-  #next .name{top:52vh;font-size:23vw}
-  .stub{right:4vw;bottom:5vh;width:64vw}
-  .record,.pair{grid-template-columns:1fr}
-  .who:nth-child(2){margin-top:20px}
-  .hold{display:none}
-  /* the papers start below the navigation on a phone, so no link sits on a photograph */
-  #p1{top:13vh!important;width:56vw!important} #p2{top:16vh!important} #p3{top:30vh!important}
+  .page{grid-template-columns:repeat(6,minmax(0,1fr));gap:18px 14px}
+  #next .cello{grid-column:1 / span 6}#next .mid{grid-column:1 / -1}.stub{grid-column:1 / -1;margin:0 8vw}
+  .show.w,.show.m{grid-column:1 / -1}.show.n{grid-column:span 3}
+  #listen .cover,#listen .side{grid-column:1 / -1}
+  #duo .who{grid-column:1 / -1}#duo .who:nth-of-type(2){margin-top:0}.book{grid-column:1 / -1}
+  .cap,.bal{max-width:78%}
 }
 </style></head><body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="marker"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter></svg>
-<nav aria-label="Pages">
-  <a href="#next">Next show</a>
-  <a href="#shows">Shows</a>
-  <a href="#listen">Listen</a>
-  <a href="#duo">The duo</a>
-</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="marker"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter></svg>
+<nav aria-label="Pages"><a href="#next">Next show</a><a href="#shows">Shows</a><a href="#listen">Listen</a><a href="#duo">The duo</a></nav>
 
-<section id="next" aria-label="Next show">
-  <div class="paper" id="p1" style="right:4vw;top:7vh;width:min(40vw,520px);aspect-ratio:4/3;transform:rotate(4deg)"><div class="ph full" data-img="photo-1546963128-ce695e989bac" role="img" aria-label="The duo in silhouette, cello and keys"></div></div>
-  <div class="paper pink" id="p2" style="left:7vw;top:11vh;width:min(27vw,340px);aspect-ratio:4/5;transform:rotate(-6deg)"><div class="ph" data-img="photo-1540039155733-5bb30b53aa14" role="img" aria-label="A crowd facing a lit stage"></div></div>
-  <div class="paper yel" id="p3" style="left:35vw;top:22vh;width:min(16vw,210px);aspect-ratio:1;transform:rotate(9deg)"><div class="ph" data-img="photo-1611927264378-faced7a32de9" role="img" aria-label="Hands bowing a cello"></div></div>
-  <h1 class="name">Halde Duo</h1>
+<section id="next" aria-label="Next show"><div class="page">
+  <figure class="pn pano" data-img="photo-1467140040812-3735753992cb" data-fy=".45" data-smoke="1" role="img" aria-label="A crowd outside the venue, drawn in ink">
+    <div class="cap" style="left:2.5%;bottom:5%">Friday 21 November, the Lantern Room on Leith Walk. Doors at eight and we go on at nine. Twelve pounds on the door.</div>
+  </figure>
+  <figure class="pn cello" data-img="photo-1497405417022-3fefbce30a70" data-fy=".4" role="img" aria-label="Teo on the cello, drawn in ink">
+    <div class="bal" data-tail="bl" style="right:4%;top:5%">We start quiet. Come early.</div>
+  </figure>
+  <div class="mid"><h1 class="name">Halde Duo</h1><p>Cello and two old synthesizers, from Edinburgh. Hold anywhere and turn it up.</p></div>
   <div class="stub">
     <span class="ringbox"></span>
     <span class="big">Fri 21 Nov</span>
-    <p class="t">The Lantern Room, Leith Walk</p>
-    <p class="t">Doors at eight, on at nine</p>
-    <div class="row t"><span>&pound;12 on the door</span><a href="#shows"><b>Tickets</b></a></div>
+    <p>The Lantern Room, Leith Walk</p>
+    <p>Doors 8, on at 9</p>
+    <div class="row"><span>&pound;12 on the door</span><a href="#shows">Tickets</a></div>
   </div>
-  <p class="hold">Hold anywhere to turn it up</p>
-</section>
+</div></section>
 
-<section id="shows" aria-label="Shows">
-  <h2>Shows</h2>
-  <div class="wall" id="wall"></div>
-</section>
+<section id="shows" aria-label="Shows"><div class="page" id="wall"><h2 class="name title">Shows</h2></div></section>
 
-<section id="listen" aria-label="Listen">
-  <h2>Low Water</h2>
-  <div class="record">
-    <div class="cover"><div class="paper"><div class="ph" style="inset:5% 5% 30% 5%" data-img="photo-1497405417022-3fefbce30a70" role="img" aria-label="A cellist, eyes down"></div></div><p class="lp">Low Water</p></div>
-    <div>
-      <p class="t" style="max-width:46ch;margin:0 0 18px">Their first record, six pieces for cello and two old synthesizers, recorded in one night in a church hall with the heating off. Hold a track to hear it.</p>
-      <ol class="tracks" id="tracks"></ol>
-      <canvas id="wave" aria-hidden="true"></canvas>
-    </div>
+<section id="listen" aria-label="Listen"><div class="page">
+  <h2 class="name title">Low Water</h2>
+  <figure class="pn cover" data-img="photo-1649365810362-a5bf4414f1dc" role="img" aria-label="The record cover, hands on a synthesizer, drawn in ink">
+    <div class="cap" style="left:5%;bottom:5%"><b>Low Water</b>Halde Duo, six pieces</div>
+  </figure>
+  <div class="side">
+    <p class="blurb">Our first record. Six pieces for cello and two old synthesizers, recorded in one night in a church hall with the heating off. Hold a track to hear it.</p>
+    <ol class="tracks" id="tracks"></ol>
+    <canvas id="wave" aria-hidden="true"></canvas>
   </div>
-</section>
+</div></section>
 
-<section id="duo" aria-label="The duo">
-  <h2>The duo</h2>
-  <div class="pair">
-    <div class="who"><div class="pic"><div class="paper pink"><div class="ph" data-img="photo-1611927264378-faced7a32de9" role="img" aria-label="Hands bowing a cello"></div></div></div><h3>Mira Halde</h3><p class="t">Cello. Plays it lying almost flat, bow close to the bridge, so it sounds more like a ship than a cello.</p></div>
-    <div class="who"><div class="pic"><div class="paper"><div class="ph" data-img="photo-1649365810362-a5bf4414f1dc" role="img" aria-label="Hands on a synthesizer"></div></div></div><h3>Ott Varga</h3><p class="t">Synthesizers. Two of them, both older than he is, one held together with gaffer tape.</p></div>
-  </div>
-  <div class="book"><span class="big">Booking</span><p class="t">Clubs, churches, odd rooms. Write to Saar at Lantern Agency, saar@lanternagency.co.uk</p></div>
-</section>
+<section id="duo" aria-label="The duo"><div class="page">
+  <h2 class="name title">The duo</h2>
+  <figure class="pn who" data-img="photo-1497405417022-3fefbce30a70" data-fx=".55" role="img" aria-label="Teo Halde with his cello, drawn in ink">
+    <div class="bal" data-tail="br" style="left:5%;top:4%">I'm Teo. I play the cello almost lying flat, bow right up by the bridge, so it sounds more like a ship.</div>
+    <div class="cap" style="right:4%;bottom:4%">Teo Halde, cello</div>
+  </figure>
+  <figure class="pn who" data-img="photo-1556715370-fd497bb82d5a" data-fx=".6" role="img" aria-label="Ott Varga, drawn in ink">
+    <div class="bal" data-tail="bl" style="right:5%;top:4%">Ott. Two synthesizers, both older than me. One is held together with gaffer tape.</div>
+    <div class="cap" style="left:4%;bottom:4%">Ott Varga, synthesizers</div>
+  </figure>
+  <div class="book" id="book"><span class="big">Booking</span><p>Clubs, churches, odd rooms. Write to Saar at Lantern Agency, saar@lanternagency.co.uk</p></div>
+</div></section>
 
 <script src="print.js"></script>
 <script>
-grainOver(0.12, 'overlay');
-const U = (id, w) => 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&w=' + (w || 1200) + '&q=75';
-let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-/* a torn edge: points walked round the rectangle, each nudged in or out a little */
-function torn(el, amt){
-  const pts = [], step = 3.2, a = amt || 1.6;
-  for (let x = 0; x <= 100; x += step) pts.push([x, rnd() * a]);
-  for (let y = 0; y <= 100; y += step) pts.push([100 - rnd() * a, y]);
-  for (let x = 100; x >= 0; x -= step) pts.push([x, 100 - rnd() * a]);
-  for (let y = 100; y >= 0; y -= step) pts.push([rnd() * a, y]);
-  el.style.clipPath = 'polygon(' + pts.map((p) => p[0].toFixed(1) + '% ' + p[1].toFixed(1) + '%').join(',') + ')';
+const SPOT = getComputedStyle(document.documentElement).getPropertyValue('--spot').trim() || '#D23A6E';
+const U = (id, w) => 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&w=' + (w || 1400) + '&q=80';
+let seedN = 1;
+/* ---------- drawn by hand: a ruled box, a balloon, smoke ---------- */
+function roughBox(w, h, amp, r){
+  const o = 3;
+  return [scribblePath(-o, r() * 2, w + o, r() * 2, amp, r), scribblePath(w - r() * 2, -o, w - r() * 2, h + o, amp, r),
+          scribblePath(w + o, h - r() * 2, -o, h - r() * 2, amp, r), scribblePath(r() * 2, h + o, r() * 2, -o, amp, r)];
 }
-function tape(el, n){
-  for (let i = 0; i < (n || 2); i++){
-    const t = document.createElement('span'); t.className = 'tape'; tornEnds(t);
-    const top = i % 2 === 0, left = rnd() < .5;
-    Object.assign(t.style, { [top ? 'top' : 'bottom']:'-3%', [left ? 'left' : 'right']:(4 + rnd() * 18) + '%', transform:'rotate(' + ((rnd() - .5) * 24).toFixed(1) + 'deg)' });
-    el.appendChild(t);
+function edgeFor(el, amp, weight, seed){
+  const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
+  const r = seeded(seed), old = el.querySelector(':scope > .edge'); if (old) old.remove();
+  const ws = [weight, weight * 0.9, weight * 1.1, weight];
+  el.insertAdjacentHTML('beforeend', '<svg class="edge" viewBox="-6 -6 ' + (w + 12) + ' ' + (h + 12) + '" style="position:absolute;left:-6px;top:-6px;width:' + (w + 12) + 'px;height:' + (h + 12) + 'px;pointer-events:none;overflow:visible;z-index:2" aria-hidden="true">' +
+    roughBox(w, h, amp, r).map((d, i) => '<path d="' + d + '" fill="none" stroke="#141210" stroke-width="' + ws[i] + '" stroke-linecap="round" filter="url(#marker)"/>').join('') + '</svg>');
+}
+function balloonFor(el, seed){
+  const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
+  const r = seeded(seed), cx = w / 2, cy = h / 2, rx = w / 2 + 6, ry = h / 2 + 4, tail = el.dataset.tail || 'bl';
+  const pass = (turns, a0) => { let d = '', k = 1; for (let i = 0; i <= 48; i++){ const a = a0 + i / 48 * Math.PI * 2 * turns; k += (r() - .5) * .04; k = Math.max(.95, Math.min(1.05, k));
+    d += (i ? ' L' : 'M') + (cx + Math.cos(a) * rx * k).toFixed(1) + ' ' + (cy + Math.sin(a) * ry * k).toFixed(1); } return d; };
+  const tx = tail[1] === 'l' ? w * 0.24 : w * 0.76, dir = tail[1] === 'l' ? -1 : 1;
+  const t = 'M' + (tx - 12) + ' ' + (h - 4) + ' Q ' + (tx + dir * 4) + ' ' + (h + 20) + ' ' + (tx + dir * 26) + ' ' + (h + 34) + ' Q ' + (tx + dir * 12) + ' ' + (h + 14) + ' ' + (tx + 12) + ' ' + (h - 3);
+  const old = el.querySelector('.loop'); if (old) old.remove();
+  el.insertAdjacentHTML('afterbegin', '<svg class="loop" viewBox="-30 -20 ' + (w + 60) + ' ' + (h + 70) + '" style="left:-30px;top:-20px;width:' + (w + 60) + 'px;height:' + (h + 70) + 'px" aria-hidden="true">' +
+    '<path d="' + t + '" fill="#FFFFFF" stroke="#141210" stroke-width="2" stroke-linejoin="round" filter="url(#marker)"/>' +
+    '<path d="' + pass(1, 0) + ' Z" fill="#FFFFFF" stroke="none"/>' +
+    '<path d="' + pass(1.08, r() * 6) + '" fill="none" stroke="#141210" stroke-width="2.2" stroke-linecap="round" filter="url(#marker)"/>' +
+    '<path d="' + pass(1.02, r() * 6) + '" fill="none" stroke="#141210" stroke-width="1.1" stroke-linecap="round" opacity=".8" filter="url(#marker)"/></svg>');
+}
+/* smoke, the way she draws it: billows with scalloped tops and a curl at the end */
+function smokeFor(el, seed){
+  const w = el.clientWidth, h = el.clientHeight, r = seeded(seed), paths = [];
+  for (let c = 0; c < 4; c++){
+    let x = w * (0.02 + c * 0.25 + r() * 0.08), y = h * (0.08 + r() * 0.12), end = x + w * (0.15 + r() * 0.14);
+    let top = 'M' + x.toFixed(1) + ' ' + y.toFixed(1), bot = top;
+    while (x < end){ const s = 12 + r() * 18, ny = y + (r() - .5) * 8;
+      top += ' Q' + (x + s / 2).toFixed(1) + ' ' + (Math.min(y, ny) - s * (0.55 + r() * .3)).toFixed(1) + ' ' + (x + s).toFixed(1) + ' ' + ny.toFixed(1);
+      bot += ' Q' + (x + s / 2).toFixed(1) + ' ' + (y + 6 + r() * 6).toFixed(1) + ' ' + (x + s).toFixed(1) + ' ' + ny.toFixed(1); x += s; y = ny; }
+    let sp = 'M' + x.toFixed(1) + ' ' + y.toFixed(1); for (let i = 1; i <= 26; i++){ const a = i * 0.5, rr = 14 - i * 0.5; sp += ' L' + (x + Math.cos(a) * rr).toFixed(1) + ' ' + (y - 8 + Math.sin(a) * rr).toFixed(1); }
+    paths.push(top + ' ' + bot.replace('M', 'L'), top, sp);
   }
+  const old = el.querySelector('.smoke'); if (old) old.remove();
+  el.insertAdjacentHTML('beforeend', '<svg class="smoke" viewBox="0 0 ' + w + ' ' + h + '" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2" aria-hidden="true">' +
+    paths.map((d, i) => '<path d="' + d + '" fill="' + (i % 3 === 0 ? 'rgba(255,255,255,.95)' : 'none') + '" stroke="' + (i % 3 === 0 ? 'none' : '#141210') + '" stroke-width="1.6" stroke-linecap="round" filter="url(#marker)"/>').join('') + '</svg>');
 }
-/* every paper gets a sheet inside it (torn), and its tape on top (not torn) */
-function prepare(p, tapes){
-  const sh = document.createElement('div'); sh.className = 'sheet';
-  while (p.firstChild) sh.appendChild(p.firstChild);
-  p.appendChild(sh); torn(sh);
-  if (tapes){ const box = document.createElement('div'); box.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:4'; p.appendChild(box); tape(box, tapes); }
+/* ---------- the drawings ---------- */
+const drawn = new WeakSet();
+function drawPanel(fig){
+  if (drawn.has(fig)) return;
+  if (!fig.clientWidth || !fig.clientHeight){ requestAnimationFrame(() => { if (fig.closest('section.on')) drawPanel(fig); }); return; }
+  drawn.add(fig);
+  const c = document.createElement('canvas'); c.setAttribute('aria-hidden', 'true'); fig.prepend(c);
+  const W = Math.min(1500, Math.round(fig.clientWidth * 1.6)), H = Math.round(W * fig.clientHeight / fig.clientWidth);
+  loadImg(U(fig.dataset.img, 1600)).then((img) => {
+    const p = PRINT.ink(img, W, H, { spot:SPOT, seed:seedN++, spotShare:.13, hatchShare:.24, solid:-0.06, gap:8, edge:.026, fx:+(fig.dataset.fx || .5), fy:+(fig.dataset.fy || .5) });
+    c.width = W; c.height = H; c.getContext('2d').drawImage(p, 0, 0);
+  }).catch(() => {});
+}
+function dress(root){
+  root.querySelectorAll('.pn').forEach((f, i) => { drawPanel(f); edgeFor(f, 2.2, 2.4, i + 3); if (f.dataset.smoke) smokeFor(f, 4); });
+  root.querySelectorAll('.cap').forEach((c, i) => edgeFor(c, 1.2, 1.5, i + 30));
+  root.querySelectorAll('.bal').forEach((b, i) => balloonFor(b, i + 50));
+  root.querySelectorAll('.stub, .book').forEach((b, i) => edgeFor(b, 1.6, 1.8, i + 70));
 }
 
-/* ---------- shows: each date its own flyer ---------- */
+/* ---------- shows ---------- */
 const SHOWS = [
-  ['14 Sep', 'Glasgow', 'The Hug and Pint', 1, 'photo-1565035010268-a3816f98589a'],
-  ['2 Oct', 'Newcastle', 'Cobalt Studios', 1, 'photo-1541002610386-cbea235ba989'],
-  ['19 Oct', 'Leeds', 'Hyde Park Book Club', 1, 'photo-1522158637959-30385a09e0da'],
-  ['21 Nov', 'Edinburgh', 'The Lantern Room', 0, 'photo-1546963128-ce695e989bac'],
-  ['29 Nov', 'Manchester', 'St Philip’s Church', 0, 'photo-1497405417022-3fefbce30a70'],
-  ['6 Dec', 'Bristol', 'The Cube', 0, 'photo-1733900606117-2522d8ed3a7b'],
-  ['12 Dec', 'London', 'Café Oto', 0, 'photo-1611927264378-faced7a32de9'],
-  ['17 Jan', 'Ghent', 'Kinky Star', 0, 'photo-1594495894542-a46cc73e081a']
+  ['14 Sep', 'Glasgow', 'The Hug and Pint', 1, 'photo-1787652157444-9f4e8f48a3a6', 'w'],
+  ['2 Oct', 'Newcastle', 'Cobalt Studios', 1, 'photo-1556715370-fd497bb82d5a', 'n'],
+  ['19 Oct', 'Leeds', 'Hyde Park Book Club', 1, 'photo-1732043018710-eed615edbc97', 'n'],
+  ['21 Nov', 'Edinburgh', 'The Lantern Room', 0, 'photo-1467140040812-3735753992cb', 'm'],
+  ['29 Nov', 'Manchester', 'St Philip’s Church', 0, 'photo-1497405417022-3fefbce30a70', 'm'],
+  ['6 Dec', 'Bristol', 'The Cube', 0, 'photo-1499788525931-7f071fd20117', 'm'],
+  ['12 Dec', 'London', 'Café Oto', 0, 'photo-1488841714725-bb4c32d1ac94', 'w'],
+  ['17 Jan', 'Ghent', 'Kinky Star', 0, 'photo-1754242081416-b544b14f132d', 'w']
 ];
-const PAPERS = ['', 'pink', 'yel'];
-document.getElementById('wall').innerHTML = SHOWS.map((s, i) => {
-  const rot = ((i * 37) % 9 - 4) * 1.1, dy = ((i * 53) % 5) * 9;
-  return '<article class="flyer' + (s[3] ? ' past' : '') + '" style="transform:translateY(' + dy + 'px) rotate(' + rot + 'deg)">' +
-    '<div class="paper ' + PAPERS[i % 3] + '"><div class="ph" style="background-image:url(' + U(s[4], 700) + ')"></div>' +
-    '<div class="info"><span class="big">' + s[0] + '</span><p class="where t">' + s[1] + '</p><p class="t" style="margin:0">' + s[2] + '</p>' +
-    (s[3] ? '' : '<a class="tix t" href="#next">Tickets</a>') + '</div></div>' +
-    (s[3] ? scribbleOut({ seed:i + 3, cls:'cross', weight:4.2, filter:'marker', colour:(i % 3 === 1 ? '#141210' : '#F64FB2') }) : '') +
-    '</article>';
-}).join('');
+document.getElementById('wall').insertAdjacentHTML('beforeend', SHOWS.map((s, i) =>
+  '<figure class="pn show ' + s[5] + '" data-img="' + s[4] + '" role="img" aria-label="' + s[1] + ', ' + s[0] + (s[3] ? ', played' : '') + '">' +
+  '<div class="cap" style="left:4%;top:5%"><b>' + s[0] + '</b>' + s[1] + ', ' + s[2] + (s[3] ? '' : '<br><a href="#next">Tickets</a>') + '</div>' +
+  (s[3] ? scribbleOut({ seed:i + 3, cls:'cross', weight:4.6, filter:'marker', colour:'#141210' }) : '') + '</figure>').join(''));
 
-/* ---------- listen: hold a track to play it ---------- */
+/* ---------- listen ---------- */
 const TRACKS = [['Harbour at four', '6:12', [55, 82.4, 110, 164.8]], ['Ship’s cello', '7:40', [49, 73.4, 98, 146.8]], ['Heating off', '4:58', [61.7, 92.5, 123.5, 185]],
   ['Leith Walk, late', '8:03', [52, 78, 104, 155.6]], ['Gaffer tape', '5:21', [58.3, 87.3, 116.5, 174.6]], ['Low water', '9:47', [43.7, 65.4, 87.3, 130.8]]];
-document.getElementById('tracks').innerHTML = TRACKS.map((t, i) => '<li tabindex="0" data-i="' + i + '"><b>' + t[0] + '</b><span>' + t[1] + '</span></li>').join('');
+document.getElementById('tracks').innerHTML = TRACKS.map((t, i) => '<li tabindex="0" data-i="' + i + '"><span>' + t[0] + '</span><span>' + t[1] + '</span></li>').join('');
 
-/* ---------- the sound and the darkening, shared by every page ---------- */
-let A = null, master = null, voices = [], held = false, level = 0, chord = TRACKS[0][2], playing = -1;
+/* ---------- sound, and the lines boiling while it plays ---------- */
+let A = null, master = null, voices = [], held = false, level = 0, chord = TRACKS[0][2];
 function sound(freqs){
   if (!A){ A = new (window.AudioContext || window.webkitAudioContext)(); master = A.createGain(); master.gain.value = 0; master.connect(A.destination); }
-  A.resume();
-  voices.forEach((v) => { try { v.stop(A.currentTime + 0.05); } catch(e){} }); voices = [];
-  freqs.forEach((f, i) => {
-    const o = A.createOscillator(); o.type = i % 2 ? 'sawtooth' : 'triangle'; o.frequency.value = f; o.detune.value = (i - 1.5) * 4;
-    const lp = A.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
-    const g = A.createGain(); g.gain.value = 0.12; o.connect(lp); lp.connect(g); g.connect(master); o.start(); voices.push(o);
-  });
+  A.resume(); voices.forEach((v) => { try { v.stop(A.currentTime + 0.05); } catch(e){} }); voices = [];
+  freqs.forEach((f, i) => { const o = A.createOscillator(); o.type = i % 2 ? 'sawtooth' : 'triangle'; o.frequency.value = f; o.detune.value = (i - 1.5) * 4;
+    const lp = A.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520; const g = A.createGain(); g.gain.value = 0.12; o.connect(lp); lp.connect(g); g.connect(master); o.start(); voices.push(o); });
 }
 function press(freqs){ sound(freqs || chord); held = true; }
-function release(){ held = false; }
 addEventListener('pointerdown', (e) => {
-  if (e.target.closest('nav a, a')) return;
+  if (e.target.closest('a')) return;
   const li = e.target.closest('.tracks li');
-  if (li){ playing = +li.dataset.i; [...li.parentNode.children].forEach((x) => x.classList.toggle('on', x === li)); press(TRACKS[playing][2]); return; }
+  if (li){ [...li.parentNode.children].forEach((x) => x.classList.toggle('on', x === li)); press(TRACKS[+li.dataset.i][2]); return; }
   press();
 });
-addEventListener('pointerup', release); addEventListener('pointercancel', release);
-addEventListener('keydown', (e) => { if (e.key === ' ' && !e.repeat){ const li = document.activeElement.closest && document.activeElement.closest('.tracks li'); if (li){ playing = +li.dataset.i; press(TRACKS[playing][2]); } else press(); e.preventDefault(); } });
-addEventListener('keyup', (e) => { if (e.key === ' ') release(); });
-const wave = document.getElementById('wave'), wg = wave.getContext('2d'); let wx = 0, last = [];
-function frame(){
+addEventListener('pointerup', () => { held = false; }); addEventListener('pointercancel', () => { held = false; });
+addEventListener('keydown', (e) => { if (e.key === ' ' && !e.repeat){ const li = document.activeElement && document.activeElement.closest && document.activeElement.closest('.tracks li'); press(li ? TRACKS[+li.dataset.i][2] : null); e.preventDefault(); } });
+addEventListener('keyup', (e) => { if (e.key === ' ') held = false; });
+const wave = document.getElementById('wave'), wg = wave.getContext('2d'); let wx = 0, wy = 0, boil = 0;
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function frame(t){
   level += ((held ? 1 : 0) - level) * (held ? 0.035 : 0.06);
-  document.documentElement.style.setProperty('--c', (1.9 + level * 1.7).toFixed(2));
-  document.documentElement.style.setProperty('--b', (1.12 - level * 0.5).toFixed(2));
+  document.documentElement.style.setProperty('--c', (1 + level * 0.5).toFixed(2));
   if (master) master.gain.value = level * 0.45;
-  /* on the record page, the held track scratches a line across the yellow */
-  if (document.getElementById('listen').classList.contains('on')){
+  const page = document.querySelector('section.on');
+  /* while it plays, every ruled line on the page is drawn again, a few times a second */
+  if (level > 0.25 && !still && t - boil > 110 && page){ boil = t; const s = Math.floor(t / 110);
+    page.querySelectorAll('.pn').forEach((f, i) => edgeFor(f, 2.2 + level * 1.5, 2.4, s * 7 + i));
+    page.querySelectorAll('.cap').forEach((c, i) => edgeFor(c, 1.2, 1.5, s * 11 + i)); }
+  if (page && page.id === 'listen' && level > 0.02){
     const w = wave.clientWidth, h = wave.clientHeight;
-    if (wave.width !== w * 2){ wave.width = w * 2; wave.height = h * 2; wg.setTransform(2, 0, 0, 2, 0, 0); wx = 0; }
-    if (level > 0.02){
-      const y = h / 2 + (Math.random() - .5) * h * 0.85 * level;
-      const py = last[1] || h / 2, mx = wx + 1.6; wx += 3.2;
-      wg.strokeStyle = '#141210'; wg.lineCap = 'round'; wg.lineWidth = 1.2 + Math.random() * 1.6;
-      wg.beginPath(); wg.moveTo(wx - 3.2, py); wg.quadraticCurveTo(mx, (py + y) / 2 + (Math.random() - .5) * 6, wx, y); wg.stroke(); last = [wx, y];
-      if (wx > w){ wg.clearRect(0, 0, w, h); wx = 0; }
-    }
+    if (wave.width !== w * 2){ wave.width = w * 2; wave.height = h * 2; wg.setTransform(2, 0, 0, 2, 0, 0); wx = 0; wy = h / 2; }
+    const y = h / 2 + (Math.random() - .5) * h * 0.85 * level; wg.strokeStyle = '#141210'; wg.lineCap = 'round'; wg.lineWidth = 1.2 + Math.random() * 1.6;
+    wg.beginPath(); wg.moveTo(wx, wy); wg.quadraticCurveTo(wx + 1.6, (wy + y) / 2 + (Math.random() - .5) * 6, wx + 3.2, y); wg.stroke(); wx += 3.2; wy = y;
+    if (wx > w){ wg.clearRect(0, 0, w, h); wx = 0; }
   }
   requestAnimationFrame(frame);
 }
@@ -266,24 +266,26 @@ requestAnimationFrame(frame);
 
 /* ---------- pages ---------- */
 function route(){
-  const id = (location.hash || '#next').slice(1), page = document.getElementById(id) ? id : 'next';
+  const id = (location.hash || '#next').slice(1), el = document.getElementById(id), page = el && el.tagName === 'SECTION' ? id : 'next';
   document.querySelectorAll('section').forEach((s) => s.classList.toggle('on', s.id === page));
   document.querySelectorAll('nav a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + page));
-  scrollTo(0, 0);
+  scrollTo(0, 0); requestAnimationFrame(() => dress(document.getElementById(page)));
 }
 addEventListener('hashchange', route);
-document.querySelectorAll('.ph[data-img]').forEach((p) => { p.style.backgroundImage = 'url(' + U(p.dataset.img, 1100) + ')'; });
-document.querySelectorAll('#next .paper, .cover .paper, .who .paper').forEach((p) => prepare(p, 2));
-document.querySelectorAll('.flyer .paper').forEach((p, i) => prepare(p, i % 3 === 1 ? 0 : 1));
+/* a panel draws itself as soon as it has a size on the page that is showing */
+const ro = new ResizeObserver((es) => es.forEach((e) => { const f = e.target; if (e.contentRect.width > 0 && f.closest('section.on') && !drawn.has(f)) drawPanel(f); }));
+document.querySelectorAll('.pn').forEach((f) => ro.observe(f));
+let rw = innerWidth;
+addEventListener('resize', () => { if (Math.abs(innerWidth - rw) < 60) return; rw = innerWidth; const p = document.querySelector('section.on');
+  p.querySelectorAll('.pn canvas').forEach((c) => c.remove()); p.querySelectorAll('.pn').forEach((f) => drawn.delete(f)); dress(p); });
 document.querySelectorAll('nav a').forEach((a, i) => a.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 21, weight:3, amp:7, filter:'marker' })));
-/* the circle round the date: a marker loop, gone round once and a bit, not closing on itself */
+document.querySelectorAll('.stub .row').forEach((r) => r.insertAdjacentHTML('afterbegin', scribbleLine({ seed:7, weight:2, amp:6, filter:'marker' })));
+document.querySelectorAll('.tracks li').forEach((li, i) => li.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 40, weight:2.6, amp:8, filter:'marker' })));
 (function(){
   let x = 5; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
   const pass = (turns, a0) => { let d = '', rad = 1; for (let i = 0; i <= 40; i++){ const a = a0 + i / 40 * Math.PI * 2 * turns; rad += (r() - .5) * .07; rad = Math.max(.86, Math.min(1.12, rad));
-    const px = 75 + Math.cos(a) * 66 * rad, py = 39 + Math.sin(a) * 30 * rad; d += (i ? ' L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1); } return d; };
-  document.querySelector('.ringbox').innerHTML = scrib([pass(1.18, 2.6), pass(1.05, 2.9)], '0 0 150 78', '#F64FB2', 3.6);
+    d += (i ? ' L' : 'M') + (75 + Math.cos(a) * 66 * rad).toFixed(1) + ' ' + (39 + Math.sin(a) * 30 * rad).toFixed(1); } return d; };
+  document.querySelector('.ringbox').innerHTML = scrib([pass(1.18, 2.6), pass(1.05, 2.9)], '0 0 150 78', SPOT, 3.6);
 })();
-document.querySelectorAll('.stub .row').forEach((r) => r.insertAdjacentHTML('afterbegin', scribbleLine({ seed:7, weight:2, amp:6, filter:'marker' })));
-document.querySelectorAll('.tracks li').forEach((li, i) => li.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 40, weight:3, amp:8, filter:'marker' })));
-route();
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(route);
 </script></body></html>

@@ -314,6 +314,16 @@ const CRITIQUES = [
     lessons:[
       'All pages: no ruled lines. CSS borders, dashed rules and straight SVG strokes read as measured. Lines are drawn the way a marker draws them: in two or three overlapping strokes, each at its own slant, running past the ends, gone over twice, with rough edges. Crossing out is a fast zigzag, not two clean diagonals. See t14, and scribbleLine, scribbleOut in made/round-3/print.js.'
     ]
+  },
+  { id:'cr12', of:'made/round-3/03d after cr11', date:'2026-11-11',
+    said:'okay  look at ulli lust punk its sooo good maybe inspired form that we looka t porganic tradiitonal artist sto function',
+    reference:'Ulli Lust, Today Is the Last Day of the Rest of Your Life (2009; Fantagraphics 2013). Pen and ink drawn from observed scenes, one flat spot colour (green) flooding the darks, patterns and hatching by hand, smoke drawn as scalloped curls, small hand lettering in hand-ruled caption boxes, panel borders ruled by hand. Method taken, not her drawings.',
+    lessons:[
+      'Direction: look to organic, traditional artists (comics artists, printmakers, illustrators) for how a site works, not only how it looks. Halde Duo became a comic: each page a comic page, panels in place of image blocks, captions in place of labels, people speaking in balloons.',
+      'Photographs can be redrawn as ink in the page (PRINT.ink in made/round-3/print.js): outlines from a difference of blurs, hand-wandering hatching in the mid tones, one spot colour in the darks. A set of drawings gets the same share of spot and hatching (spotShare, hatchShare) so they read as one hand (t13).',
+      'Works on photographs of people in daylight or mid-tone light; stage silhouettes and dense foliage come out as noise.'
+    ],
+    open:['The spot colour: Lust uses green. Halde Duo uses its own pink so it is not a copy of her palette. Not confirmed.']
   }
 ];
 
