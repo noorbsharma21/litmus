@@ -159,6 +159,68 @@ var PRINT = {
   }
 };
 
+/* Hand-drawn lines. From cr11: "very straight lines. They have to look like
+   scribbles, like hand-drawn stuff. This is too measured." A line goes down
+   the way a marker puts it down: it wanders a little, runs past its ends, and
+   is gone over twice, once heavy and once light, never quite on top of
+   itself. No ruled CSS borders where a line is meant to be seen. */
+function scribblePath(x0, y0, x1, y1, amp, r){
+  var dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy) || 1, nx = -dy / len, ny = dx / len;
+  /* it wanders (a random walk), sags or bows a little over its length, runs past
+     both ends, and the pen lifts off with a small hook */
+  var over = 0.02 + r() * 0.05, n = 7 + Math.floor(r() * 4), pts = [], w = 0, bow = (r() - 0.5) * amp * 1.2;
+  for (var i = 0; i <= n; i++){
+    var t = -over + (1 + over * 2) * i / n; w += (r() - 0.5) * amp; w *= 0.82;
+    var off = w + Math.sin(Math.PI * Math.max(0, Math.min(1, t))) * bow + (i === n ? (r() - 0.3) * amp * 1.4 : 0);
+    pts.push([x0 + dx * t + nx * off, y0 + dy * t + ny * off]);
+  }
+  var d = 'M' + pts[0][0].toFixed(2) + ' ' + pts[0][1].toFixed(2);
+  for (var k = 1; k < pts.length - 1; k++){
+    var mx = (pts[k][0] + pts[k + 1][0]) / 2, my = (pts[k][1] + pts[k + 1][1]) / 2;
+    d += ' Q' + pts[k][0].toFixed(2) + ' ' + pts[k][1].toFixed(2) + ' ' + mx.toFixed(2) + ' ' + my.toFixed(2);
+  }
+  var L = pts[pts.length - 1]; return d + ' L' + L[0].toFixed(2) + ' ' + L[1].toFixed(2);
+}
+function scrib(paths, view, colour, heavy, cls, widths, filter){
+  return '<svg class="' + (cls || 'scrib') + '" viewBox="' + view + '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
+    paths.map(function(p, i){ var w = widths ? widths[i] : (i % 2 ? heavy * 0.55 : heavy); return '<path d="' + p + '" fill="none" stroke="' + (colour || '#141210') + '" stroke-width="' + w.toFixed(2) + '" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"' + (filter ? ' filter="url(#' + filter + ')"' : '') + ' opacity="' + (i % 2 ? 0.85 : 1) + '"/>'; }).join('') + '</svg>';
+}
+/* a line across a box 100 wide and 12 high, stretched to whatever it underlines */
+function scribbleLine(o){
+  /* drawn in two or three strokes that overlap where the hand moved on, each
+     at its own slant, the first gone over once more */
+  o = o || {}; var r = seeded(o.seed || 1 + Math.floor(Math.random() * 99999)), a = o.amp || 6, heavy = o.weight || 2.4;
+  var parts = 2 + Math.floor(r() * 2), x = -2, paths = [], widths = [], y = 6 + (r() - 0.5) * 3;
+  for (var k = 0; k < parts; k++){
+    var len = (104 - x) / (parts - k) + (k < parts - 1 ? 6 + r() * 8 : 0), x1 = Math.min(103, x + len), y1 = y + (r() - 0.5) * 5;
+    paths.push(scribblePath(x, y, x1, y1, a, r)); widths.push(heavy * (0.8 + r() * 0.5));
+    if (k === 0){ paths.push(scribblePath(x + 3, y + 1.4, x1 - 4, y1 + 1, a, r)); widths.push(heavy * 0.5); }
+    x = x1 - (5 + r() * 9); y = y1 + (r() - 0.5) * 2;
+  }
+  return scrib(paths, '0 0 100 12', o.colour, heavy, o.cls, widths, o.filter);
+}
+/* a cross, two strokes each gone over twice, running past the corners */
+/* crossed out the way a hand does it: a fast zigzag back and forth over the thing */
+function scribbleOut(o){
+  o = o || {}; var r = seeded(o.seed || 1 + Math.floor(Math.random() * 99999)), a = o.amp || 7, paths = [], widths = [];
+  var ys = [12, 26, 42, 58, 72, 88], x0 = 8 + r() * 6, x1 = 90 - r() * 6;
+  for (var i = 0; i < ys.length - 1; i++){
+    var fromL = i % 2 === 0, xa = fromL ? x0 + r() * 6 : x1 - r() * 6, xb = fromL ? x1 - r() * 6 : x0 + r() * 6;
+    paths.push(scribblePath(xa, ys[i] + (r() - .5) * 6, xb, ys[i + 1] + (r() - .5) * 6, a, r)); widths.push((o.weight || 3.2) * (0.75 + r() * 0.5));
+  }
+  return scrib(paths, '0 0 100 100', o.colour, o.weight || 3.2, o.cls, widths, o.filter);
+}
+function scribbleX(o){
+  o = o || {}; var r = seeded(o.seed || 1 + Math.floor(Math.random() * 99999)), a = o.amp || 10;
+  return scrib([scribblePath(8, 10, 92, 88, a, r), scribblePath(12, 9, 89, 93, a, r), scribblePath(90, 12, 12, 90, a, r), scribblePath(86, 8, 13, 86, a, r)], '0 0 100 100', o.colour, o.weight || 3.4, o.cls);
+}
+/* tape with torn ends: the short sides zigzag where it was ripped off the roll */
+function tornEnds(el){
+  var r = seeded(Math.floor(Math.random() * 99999) + 1), L = [], R = [];
+  for (var y = 0; y <= 100; y += 12.5){ L.push([r() * 6, y]); R.push([100 - r() * 6, y]); }
+  el.style.clipPath = 'polygon(' + L.concat(R.reverse()).map(function(p){ return p[0].toFixed(1) + '% ' + p[1].toFixed(1) + '%'; }).join(',') + ')';
+}
+
 /* Paper: a sheet with tooth and the odd fibre, returned as a data URL to use
    as a background. */
 function paperURL(tone, o){

@@ -2,7 +2,9 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Halde Duo</title>
 <link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Texturina:opsz,wght@12..72,400;12..72,600&display=swap" rel="stylesheet">
-<!-- 03d. A site for a cello and synthesizer duo, Halde Duo. Rebuilt after cr10:
+<!-- 03d. A site for a cello and synthesizer duo, Halde Duo. Rebuilt after cr10, and after cr11 ("very straight lines... they have to look
+     like scribbles") every visible line is drawn by hand: the underlines, the
+     rules under the tracks and on the stub, the crossing out, the circle. Rebuilt after cr10:
      "This is plain... this can be so much more ambitious. I think there are
      more pages this will have... more personality... the outline outside of
      the image doesn't work here at all. This has to be messier, more
@@ -28,9 +30,11 @@ nav a{pointer-events:auto;text-decoration:none;font-size:clamp(16px,1.6vw,22px);
 nav a:nth-child(2){margin-top:14px;transform:rotate(-3deg)}
 nav a:nth-child(3){margin-top:4px;transform:rotate(2deg)}
 nav a:nth-child(4){margin-top:20px;transform:rotate(-1.5deg)}
-nav a svg{position:absolute;left:-6%;bottom:-6px;width:112%;height:12px;opacity:0;overflow:visible}
-nav a.on svg{opacity:1}
+nav a .scrib{position:absolute;left:-8%;bottom:-7px;width:116%;height:13px;opacity:0;overflow:visible}
+nav a.on .scrib{opacity:1}
 nav a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* a scribble may wander outside its box; never clip it */
+.scrib,.cross{overflow:visible}
 section{display:none;position:relative;min-height:100vh}
 section.on{display:block}
 /* the material: paper, torn, with a photocopy on it */
@@ -50,9 +54,11 @@ section.on{display:block}
 .stub::before{content:"";position:absolute;left:0;right:0;top:-6px;height:12px;background:radial-gradient(circle at 6px 0,var(--y) 5px,transparent 5.5px) 0 0/14px 12px repeat-x}
 .stub .big{font-size:58px}
 .stub p{margin:6px 0 0}
-.stub .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:10px;border-top:1px dashed rgba(20,18,16,.4)}
+.stub .row{position:relative;display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:12px}
+.stub .row .scrib{position:absolute;left:-3%;top:-6px;width:106%;height:12px}
 .stub .row b{font-weight:600}
-.ring{position:absolute;left:-14px;top:6px;width:150px;height:76px;pointer-events:none}
+.ringbox{position:absolute;left:-16px;top:4px;width:150px;height:78px;pointer-events:none}
+.ringbox .scrib{width:100%;height:100%;overflow:visible}
 .hold{position:absolute;left:3vw;bottom:4vh;margin:0;font-size:15px;transform:rotate(-2deg);z-index:6}
 /* ---------- shows ---------- */
 #shows{padding:120px 3vw 80px}
@@ -66,7 +72,7 @@ section.on{display:block}
 .flyer .big{font-size:46px;display:block}
 .flyer .where{font-weight:600;margin:4px 0 0}
 .flyer .tix{display:inline-block;margin-top:8px;font-weight:600}
-.flyer.past .cross{position:absolute;inset:6%;z-index:4;pointer-events:none}
+.flyer.past .cross{position:absolute;left:6%;top:6%;width:88%;height:88%;z-index:4;pointer-events:none}
 .flyer.past .paper{filter:saturate(.6)}
 /* ---------- listen ---------- */
 #listen{padding:120px 3vw 80px}
@@ -75,7 +81,8 @@ section.on{display:block}
 .cover .paper{inset:0;transform:rotate(-2.5deg)}
 .cover .lp{position:absolute;left:7%;bottom:6%;font-family:"Jacquard 24",serif;font-size:clamp(40px,5vw,72px);line-height:.85;z-index:4;margin:0;transform:rotate(-2.5deg)}
 .tracks{list-style:none;margin:0;padding:0;counter-reset:n}
-.tracks li{counter-increment:n;display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:14px 4px 12px;border-bottom:1.5px solid var(--ink);cursor:pointer;position:relative}
+.tracks li{counter-increment:n;display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:14px 4px 12px;cursor:pointer;position:relative}
+.tracks li .scrib{position:absolute;left:-1.5%;bottom:-6px;width:103%;height:12px;pointer-events:none}
 .tracks li:nth-child(odd){transform:rotate(-.6deg)}.tracks li:nth-child(even){transform:rotate(.5deg) translateX(10px)}
 .tracks li::before{content:counter(n);font-family:"Jacquard 24",serif;font-size:30px;line-height:.8}
 .tracks li b{font-weight:600;font-size:clamp(18px,1.7vw,24px)}
@@ -108,10 +115,10 @@ section.on{display:block}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="marker"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter></svg>
 <nav aria-label="Pages">
-  <a href="#next">Next show<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 7 C 30 2, 60 11, 98 4" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
-  <a href="#shows">Shows<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 5 C 35 10, 65 2, 98 8" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
-  <a href="#listen">Listen<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 8 C 30 3, 70 10, 98 5" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
-  <a href="#duo">The duo<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 6 C 40 1, 60 11, 98 6" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
+  <a href="#next">Next show</a>
+  <a href="#shows">Shows</a>
+  <a href="#listen">Listen</a>
+  <a href="#duo">The duo</a>
 </nav>
 
 <section id="next" aria-label="Next show">
@@ -120,7 +127,7 @@ section.on{display:block}
   <div class="paper yel" id="p3" style="left:35vw;top:22vh;width:min(16vw,210px);aspect-ratio:1;transform:rotate(9deg)"><div class="ph" data-img="photo-1611927264378-faced7a32de9" role="img" aria-label="Hands bowing a cello"></div></div>
   <h1 class="name">Halde Duo</h1>
   <div class="stub">
-    <svg class="ring" viewBox="0 0 150 76" aria-hidden="true"><path d="M20 40 C 18 12, 120 6, 136 30 C 150 54, 60 74, 24 58 C 8 50, 14 30, 40 20" fill="none" stroke="#F64FB2" stroke-width="4" stroke-linecap="round" filter="url(#marker)"/></svg>
+    <span class="ringbox"></span>
     <span class="big">Fri 21 Nov</span>
     <p class="t">The Lantern Room, Leith Walk</p>
     <p class="t">Doors at eight, on at nine</p>
@@ -171,7 +178,7 @@ function torn(el, amt){
 }
 function tape(el, n){
   for (let i = 0; i < (n || 2); i++){
-    const t = document.createElement('span'); t.className = 'tape';
+    const t = document.createElement('span'); t.className = 'tape'; tornEnds(t);
     const top = i % 2 === 0, left = rnd() < .5;
     Object.assign(t.style, { [top ? 'top' : 'bottom']:'-3%', [left ? 'left' : 'right']:(4 + rnd() * 18) + '%', transform:'rotate(' + ((rnd() - .5) * 24).toFixed(1) + 'deg)' });
     el.appendChild(t);
@@ -203,7 +210,7 @@ document.getElementById('wall').innerHTML = SHOWS.map((s, i) => {
     '<div class="paper ' + PAPERS[i % 3] + '"><div class="ph" style="background-image:url(' + U(s[4], 700) + ')"></div>' +
     '<div class="info"><span class="big">' + s[0] + '</span><p class="where t">' + s[1] + '</p><p class="t" style="margin:0">' + s[2] + '</p>' +
     (s[3] ? '' : '<a class="tix t" href="#next">Tickets</a>') + '</div></div>' +
-    (s[3] ? '<svg class="cross" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M8 10 L 92 88 M 90 12 L 12 90" stroke="#141210" stroke-width="3.2" stroke-linecap="round" fill="none" filter="url(#marker)"/></svg>' : '') +
+    (s[3] ? scribbleOut({ seed:i + 3, cls:'cross', weight:4.2, filter:'marker', colour:(i % 3 === 1 ? '#141210' : '#F64FB2') }) : '') +
     '</article>';
 }).join('');
 
@@ -247,7 +254,9 @@ function frame(){
     if (wave.width !== w * 2){ wave.width = w * 2; wave.height = h * 2; wg.setTransform(2, 0, 0, 2, 0, 0); wx = 0; }
     if (level > 0.02){
       const y = h / 2 + (Math.random() - .5) * h * 0.85 * level;
-      wg.strokeStyle = '#141210'; wg.lineWidth = 1.6; wg.beginPath(); wg.moveTo(wx, last[1] || h / 2); wx += 2.2; wg.lineTo(wx, y); wg.stroke(); last = [wx, y];
+      const py = last[1] || h / 2, mx = wx + 1.6; wx += 3.2;
+      wg.strokeStyle = '#141210'; wg.lineCap = 'round'; wg.lineWidth = 1.2 + Math.random() * 1.6;
+      wg.beginPath(); wg.moveTo(wx - 3.2, py); wg.quadraticCurveTo(mx, (py + y) / 2 + (Math.random() - .5) * 6, wx, y); wg.stroke(); last = [wx, y];
       if (wx > w){ wg.clearRect(0, 0, w, h); wx = 0; }
     }
   }
@@ -266,5 +275,15 @@ addEventListener('hashchange', route);
 document.querySelectorAll('.ph[data-img]').forEach((p) => { p.style.backgroundImage = 'url(' + U(p.dataset.img, 1100) + ')'; });
 document.querySelectorAll('#next .paper, .cover .paper, .who .paper').forEach((p) => prepare(p, 2));
 document.querySelectorAll('.flyer .paper').forEach((p, i) => prepare(p, i % 3 === 1 ? 0 : 1));
+document.querySelectorAll('nav a').forEach((a, i) => a.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 21, weight:3, amp:7, filter:'marker' })));
+/* the circle round the date: a marker loop, gone round once and a bit, not closing on itself */
+(function(){
+  let x = 5; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
+  const pass = (turns, a0) => { let d = '', rad = 1; for (let i = 0; i <= 40; i++){ const a = a0 + i / 40 * Math.PI * 2 * turns; rad += (r() - .5) * .07; rad = Math.max(.86, Math.min(1.12, rad));
+    const px = 75 + Math.cos(a) * 66 * rad, py = 39 + Math.sin(a) * 30 * rad; d += (i ? ' L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1); } return d; };
+  document.querySelector('.ringbox').innerHTML = scrib([pass(1.18, 2.6), pass(1.05, 2.9)], '0 0 150 78', '#F64FB2', 3.6);
+})();
+document.querySelectorAll('.stub .row').forEach((r) => r.insertAdjacentHTML('afterbegin', scribbleLine({ seed:7, weight:2, amp:6, filter:'marker' })));
+document.querySelectorAll('.tracks li').forEach((li, i) => li.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 40, weight:3, amp:8, filter:'marker' })));
 route();
 </script></body></html>

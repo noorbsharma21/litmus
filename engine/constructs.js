@@ -308,6 +308,12 @@ const CRITIQUES = [
       'Neat framing devices (a ruled double frame round a picture, symmetric borders) read as plain. This page wanted mess and asymmetry: torn edges, things pasted over each other, off-axis type.',
       'Personality over tidiness. Confirmed taste for the blackletter name; the frame around it was the problem.'
     ]
+  },
+  { id:'cr11', of:'made/round-3/03d after cr10', date:'2026-11-11',
+    said:'Very straight lines. They have to look like scribbles, like hand-drawn stuff. This is too measured, and I don\'t like it.',
+    lessons:[
+      'All pages: no ruled lines. CSS borders, dashed rules and straight SVG strokes read as measured. Lines are drawn the way a marker draws them: in two or three overlapping strokes, each at its own slant, running past the ends, gone over twice, with rough edges. Crossing out is a fast zigzag, not two clean diagonals. See t14, and scribbleLine, scribbleOut in made/round-3/print.js.'
+    ]
   }
 ];
 
@@ -349,5 +355,6 @@ const TYPE = [
   { id:'t10', rule:'Type that must stay readable gets space reserved for it in the layout. A canvas sits in a frame beside the type, so no window size can put the object under the words.', from:['cr6'] },
   { id:'t11', rule:'No automatic italics. Captions, addresses, subtitles and notes are set roman. Italic only where a face was chosen for its italic.', from:['cr7'] },
   { id:'t12', rule:'Text never collides with text. Anything placed against objects is measured against its neighbours at every window size, and wraps or shrinks before it touches.', from:['cr7'] },
-  { id:'t13', rule:'Repeated elements share one system: same size, same position, same ground, same face, aligned. Variation lives inside the frame, not in the frame.', from:['cr8'] }
+  { id:'t13', rule:'Repeated elements share one system: same size, same position, same ground, same face, aligned. Variation lives inside the frame, not in the frame.', from:['cr8'] },
+  { id:'t14', rule:'No ruled lines where a line is seen: underlines, dividers, crossings out and circles are drawn by hand, in overlapping strokes with rough edges.', from:['cr11'] }
 ];
