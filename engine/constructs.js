@@ -282,6 +282,15 @@ const CRITIQUES = [
       'All pages: text must never collide with other text, at any window size. See t12.',
       'Candidate construct: the objects in a scene carry their own made surfaces, a print or a drawing, not a text label standing in for one. First instance: 01, each bottle its own printed label.'
     ]
+  },
+  { id:'cr8', of:'made/round-3/01d after cr7', date:'2026-11-10',
+    said:'this is so dumb cause the images literaly are not allligned and they are cut up weirdly and the different backgrounds dont help / also the fotn is shit / lean aWAY from the beige bakcgorunds of these stupid sights',
+    lessons:[
+      'Repeated things share one system. Seven labels in a row had seven layouts, seven papers and sat at seven heights; they read as misaligned and cut up. Same size, same position, same paper, same face; the variation lives inside one window. See t13.',
+      'A picture is cropped around its subject and centred in its frame, never cut arbitrarily by a cover crop.',
+      'All pages: no beige, cream or off white paper grounds. I kept reaching for warm paper tones (F4F3EF, EFEDE8, ECEBE6 and others) even after cr1 refused beige. Grounds are white, black, or a committed colour. See s5.',
+      'The type on 01 was refused (Libre Caslon spaced capitals on the labels and page, Reenie Beanie notes). Which one was meant is not confirmed; both replaced.'
+    ]
   }
 ];
 
@@ -293,7 +302,8 @@ const SURFACE = [
   { id:'s1', rule:'No clean flat surface. Every page carries a material: paper grain, print texture, film grain, photocopy toner.' },
   { id:'s2', rule:'Photographs go through a process, not a filter: cyanotype, two colour riso with misregistration, screen print halftone, photocopy. The process is chosen for the brief (cyanotype for a press, riso for a record label), never the same one twice in a batch.' },
   { id:'s3', rule:'3D is either finished to today’s standard or rendered through an analog process (grain, dither, print). Never half realistic.' },
-  { id:'s4', rule:'Polish and hand together: a pencil note beside a rendered object, a scratched label on a clean page.' }
+  { id:'s4', rule:'Polish and hand together: a pencil note beside a rendered object, a scratched label on a clean page.' },
+  { id:'s5', rule:'No beige, cream or off white grounds, including paper tones. White, black, or a committed colour. (cr1, cr8)' }
 ];
 
 /* ---------------------------------------------------------------
@@ -320,5 +330,6 @@ const TYPE = [
   { id:'t9', rule:'Information is gathered into one vessel that guides: a ticket, a tag, a frame it runs around, a sleeve. Corners plus a spread line is scattered. This qualifies t5.', from:['cr6'] },
   { id:'t10', rule:'Type that must stay readable gets space reserved for it in the layout. A canvas sits in a frame beside the type, so no window size can put the object under the words.', from:['cr6'] },
   { id:'t11', rule:'No automatic italics. Captions, addresses, subtitles and notes are set roman. Italic only where a face was chosen for its italic.', from:['cr7'] },
-  { id:'t12', rule:'Text never collides with text. Anything placed against objects is measured against its neighbours at every window size, and wraps or shrinks before it touches.', from:['cr7'] }
+  { id:'t12', rule:'Text never collides with text. Anything placed against objects is measured against its neighbours at every window size, and wraps or shrinks before it touches.', from:['cr7'] },
+  { id:'t13', rule:'Repeated elements share one system: same size, same position, same ground, same face, aligned. Variation lives inside the frame, not in the frame.', from:['cr8'] }
 ];

@@ -1,8 +1,13 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bottle Hours</title>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital@0;1&family=Reenie+Beanie&display=swap" rel="stylesheet">
-<!-- 01d. A natural wine shop. Round three, from 01c. Revised after cr7: no
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Cedarville+Cursive&display=swap" rel="stylesheet">
+<!-- 01d. A natural wine shop. Round three, from 01c. Revised after cr8: the
+     labels were cut up and out of line, each on a different paper, and the
+     type was refused. Now every label is one system: same size, same height,
+     white paper, the picture centred in the same window, the name in one
+     face under it, the bottles standing square. Only the print changes.
+     Before that, cr7: no
      automatic italics, the notes can no longer run into each other, and every
      bottle wears its own printed label (woodcut, riso, cyanotype, halftone,
      photocopy, a stamped pattern, a drawn one) the way natural wine labels
@@ -14,12 +19,12 @@
      bottle and it comes off the shelf toward you; drag to turn it in your hand
      and read the label; let go and it goes back. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#12100E;font-family:"Libre Caslon Text",Georgia,serif;color:#F2EEE9}
-h1{position:fixed;left:32px;top:30px;margin:0;font-weight:normal;font-size:13px;letter-spacing:.24em;text-transform:uppercase;z-index:2;pointer-events:none}
-p.w{position:fixed;left:32px;bottom:30px;margin:0;font-size:14px;opacity:.7;z-index:2;pointer-events:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#0E0D0C;font-family:"Rozha One",Georgia,serif;color:#F4F2EE}
+h1{position:fixed;left:32px;top:26px;margin:0;font-weight:normal;font-size:30px;line-height:1;z-index:2;pointer-events:none}
+p.w{position:fixed;left:32px;bottom:30px;margin:0;font-size:16px;opacity:.75;z-index:2;pointer-events:none}
 /* the scratched notes: a hand face roughened by the pencil filter */
-.n{position:fixed;left:0;top:0;margin:0;font-family:"Reenie Beanie",cursive;font-size:24px;line-height:.95;color:#CFC8BC;white-space:normal;text-align:center;pointer-events:none;z-index:2;filter:url(#pencil);transition:opacity .3s;transform-origin:50% 0}
-#held{position:fixed;right:32px;top:28px;margin:0;font-size:15px;z-index:2;pointer-events:none;text-align:right}
+.n{position:fixed;left:0;top:0;margin:0;font-family:"Cedarville Cursive",cursive;font-size:20px;line-height:1.1;color:#E8E5E0;white-space:normal;text-align:center;pointer-events:none;z-index:2;filter:url(#pencil);transition:opacity .3s;transform-origin:50% 0}
+#held{position:fixed;right:32px;top:30px;margin:0;font-size:18px;z-index:2;pointer-events:none;text-align:right}
 </style></head><body>
 <h1>Bottle Hours</h1><p class="w">12 Ardley Street, Thursday to Sunday</p>
 <p id="held" aria-live="polite"></p>
@@ -28,65 +33,63 @@ p.w{position:fixed;left:32px;bottom:30px;margin:0;font-size:14px;opacity:.7;z-in
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import { stage } from '../round-2/three-kit.js';
-const S = stage({ bg:'#12100E', key:3.2, fill:0.12, exposure:1.05, fov:30, analog:{ mode:'grain', grain:0.11, vignette:0.45 } });
+const S = stage({ bg:'#0E0D0C', key:3.2, fill:0.12, exposure:1.05, fov:30, analog:{ mode:'grain', grain:0.11, vignette:0.45 } });
 const { THREE, scene, camera } = S;
 camera.position.set(0, 2.1, 9.5); camera.lookAt(0, 1.4, 0);
 S.key.position.set(-4, 7, 5);
 S.catcher(0, 30, 0.45);
 
-/* the labels: each bottle printed differently, the picture and the process
-   chosen for the wine, the name set into the print in roman */
+/* the labels: one system for every bottle. The same size and height, white
+   paper, the picture centred in the same window, the name in one face under
+   it. Only the picture and the way it is printed change. */
 const UN = (id, w) => 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&w=' + w + '&q=80';
+const LW = 0.64, LH = 0.8, LY = 0.82, PAPER = '#FFFFFF';
 const LABELS = [
-  { kind:'woodcut', img:'photo-1596363505729-4190a9506133', o:{ ink:'#6E1423', paper:'#F1ECE2', lines:9, contrast:1.7, lift:-0.12 }, paper:'#F1ECE2', ink:'#6E1423', lay:'foot' },
-  { kind:'riso', img:'photo-1567072629554-20e689de2400', o:{ a:'#2E3F8F', b:'#E47937', paper:'#F4F1EA', aLo:0.55 }, paper:'#F4F1EA', ink:'#2E3F8F', lay:'head' },
-  { kind:'bubbles', paper:'#F4F1EA', ink:'#0F6E2B', lay:'across' },
-  { kind:'cyanotype', img:'photo-1780124174184-cc9010541858', o:{ contrast:1.5, lift:0.06, margin:0 }, paper:'#F2EFE6', ink:'#0C2A63', lay:'side' },
-  { kind:'screen', img:'photo-1694591933816-2c743377fdf8', o:{ ink:'#1A1614', paper:'#E9EFC4', cell:9, angle:15 }, paper:'#E9EFC4', ink:'#1A1614', lay:'head' },
-  { kind:'xerox', img:'photo-1558138818-d44c4dea7a6a', o:{ ink:'#1A1614', paper:'#F2D9D2' }, paper:'#F2D9D2', ink:'#1A1614', lay:'foot' },
-  { kind:'tiles', paper:'#F6F3EA', ink:'#1F4FA0', lay:'band' }
+  { kind:'woodcut', img:'photo-1596363505729-4190a9506133', o:{ ink:'#6E1423', paper:PAPER, lines:10, contrast:1.7, lift:-0.12, fx:0.5, fy:0.35 }, ink:'#6E1423' },
+  { kind:'riso', img:'photo-1567072629554-20e689de2400', o:{ a:'#2E3F8F', b:'#E47937', paper:PAPER, aLo:0.55, fx:0.5, fy:0.6 }, ink:'#2E3F8F' },
+  { kind:'bubbles', ink:'#0F6E2B' },
+  { kind:'cyanotype', img:'photo-1780124174184-cc9010541858', o:{ contrast:1.5, lift:0.06, margin:0, paper:PAPER, fx:0.5, fy:0.5 }, ink:'#0C2A63' },
+  { kind:'screen', img:'photo-1694591933816-2c743377fdf8', o:{ ink:'#1A1614', paper:PAPER, cell:10, angle:15, fx:0.5, fy:0.5 }, ink:'#1A1614' },
+  { kind:'xerox', img:'photo-1558138818-d44c4dea7a6a', o:{ ink:'#1A1614', paper:PAPER, fx:0.5, fy:0.55 }, ink:'#1A1614' },
+  { kind:'tiles', ink:'#1F4FA0' }
 ];
-function makeLabel(i, w, pr){
-  const L = LABELS[i], W = 1024, H = Math.round(W * (pr.H * 0.3) / ((pr.R + 0.004) * 2.4));
+function makeLabel(i, w){
+  const L = LABELS[i], W = 1024, H = Math.round(W * LH / LW);
   const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
   const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
-  /* where the picture goes and where the words go, by layout */
-  const R = { foot:[0, 0, W, H * 0.7], head:[0, H * 0.3, W, H * 0.7], side:[0, 0, W * 0.62, H], across:[0, 0, W, H], band:[0, 0, W, H] }[L.lay];
+  /* the window every picture sits in, centred, the same on every label */
+  const ax = Math.round(W * 0.1), ay = Math.round(H * 0.07), aw = W - ax * 2, ah = Math.round(H * 0.6);
   function words(){
-    g.fillStyle = L.ink; g.textAlign = 'center'; g.textBaseline = 'middle';
-    const name = w[0].toUpperCase(), sub = w[1] + ', \u00a3' + w[2];
-    const set = (t, x, y, px, sp) => { g.font = px + 'px "Libre Caslon Text", Georgia, serif'; g.letterSpacing = (sp || 0) + 'px'; g.fillText(t, x, y); };
-    if (L.lay === 'foot'){ set(name, W / 2, H * 0.8, 64, 10); set(sub, W / 2, H * 0.92, 30, 3); }
-    else if (L.lay === 'head'){ set(name, W / 2, H * 0.12, 60, 10); set(sub, W / 2, H * 0.23, 28, 3); }
-    else if (L.lay === 'side'){ g.textAlign = 'left'; set(name, W * 0.66, H * 0.42, 54, 6); set(w[1], W * 0.66, H * 0.56, 30, 2); set('\u00a3' + w[2], W * 0.66, H * 0.66, 30, 2); }
-    else if (L.lay === 'across'){ set(name, W / 2, H * 0.5, 120, 14); set(sub, W / 2, H * 0.68, 30, 3); }
-    else { set(name, W / 2, H * 0.47, 70, 12); set(sub, W / 2, H * 0.6, 30, 3); }
+    g.fillStyle = L.ink; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+    let px = 132; g.font = px + 'px "Rozha One"'; while (g.measureText(w[0]).width > aw && px > 60){ px -= 4; g.font = px + 'px "Rozha One"'; }
+    g.fillText(w[0], W / 2, ay + ah + H * 0.17);
+    g.font = '50px "Rozha One"'; g.fillText(w[1] + ', \u00a3' + w[2], W / 2, ay + ah + H * 0.27);
   }
   function art(){
     let x = 9 + i * 13; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
+    g.save(); g.beginPath(); g.rect(ax, ay, aw, ah); g.clip();
     if (L.kind === 'bubbles'){ /* pet nat: bubbles rising, two drums out of register */
-      for (let k = 0; k < 90; k++){ const bx = r() * W, by = H * (1 - Math.pow(r(), 0.7)), rad = 6 + r() * 34 * (1 - by / H + 0.3);
-        if (Math.abs(by - H * 0.55) < H * 0.18 && Math.abs(bx - W / 2) < W * 0.42) continue;
-        g.globalCompositeOperation = 'multiply';
-        g.strokeStyle = '#F64FB2'; g.lineWidth = 5; g.beginPath(); g.arc(bx, by, rad, 0, 6.283); g.stroke();
-        g.fillStyle = '#0F6E2B'; g.globalAlpha = 0.85; g.beginPath(); g.arc(bx + 6, by + 4, rad * 0.32, 0, 6.283); g.fill(); g.globalAlpha = 1; }
+      g.globalCompositeOperation = 'multiply';
+      for (let k = 0; k < 70; k++){ const bx = ax + r() * aw, by = ay + ah * (1 - Math.pow(r(), 0.6)), rad = 10 + r() * 46 * (1 - (by - ay) / ah + 0.25);
+        g.strokeStyle = '#F64FB2'; g.lineWidth = 7; g.beginPath(); g.arc(bx, by, rad, 0, 6.283); g.stroke();
+        g.fillStyle = '#0F6E2B'; g.globalAlpha = 0.85; g.beginPath(); g.arc(bx + 7, by + 5, rad * 0.32, 0, 6.283); g.fill(); g.globalAlpha = 1; }
       g.globalCompositeOperation = 'source-over';
-    } else if (L.kind === 'tiles'){ /* zibibbo: a stamped band of tiles, lemons on blue, top and bottom */
-      const s = H * 0.3;
-      [0, H - s].forEach((y0) => { for (let tx = 0; tx < W; tx += s){ g.fillStyle = '#1F4FA0'; g.globalAlpha = 0.86 + r() * 0.14; g.fillRect(tx + 3, y0 + 3, s - 6, s - 6);
-        g.fillStyle = '#E8B923'; g.beginPath(); g.ellipse(tx + s / 2, y0 + s / 2, s * 0.24, s * 0.17, 0.5, 0, 6.283); g.fill();
-        g.fillStyle = '#F6F3EA'; [[0,0],[s,0],[0,s],[s,s]].forEach((p) => { g.beginPath(); g.arc(tx + p[0], y0 + p[1], s * 0.16, 0, 6.283); g.fill(); }); } });
-      g.globalAlpha = 1;
+    } else if (L.kind === 'tiles'){ /* zibibbo: lemons stamped on blue tiles, filling the window */
+      const n = 4, s = aw / n;
+      for (let ty = ay; ty < ay + ah; ty += s) for (let tx = ax; tx < ax + aw - 1; tx += s){
+        g.fillStyle = '#1F4FA0'; g.globalAlpha = 0.86 + r() * 0.14; g.fillRect(tx + 4, ty + 4, s - 8, s - 8); g.globalAlpha = 1;
+        g.fillStyle = '#E8B923'; g.beginPath(); g.ellipse(tx + s / 2, ty + s / 2, s * 0.24, s * 0.17, 0.5, 0, 6.283); g.fill();
+        g.fillStyle = PAPER; [[0,0],[s,0],[0,s],[s,s]].forEach((p) => { g.beginPath(); g.arc(tx + p[0], ty + p[1], s * 0.15, 0, 6.283); g.fill(); }); }
     }
+    g.restore();
     /* the paper's grain over everything */
-    const im = g.getImageData(0, 0, W, H), d = im.data; for (let k = 0; k < d.length; k += 4){ const n = (r() - 0.5) * 16; d[k] += n; d[k + 1] += n; d[k + 2] += n; } g.putImageData(im, 0, 0);
+    const im = g.getImageData(0, 0, W, H), d = im.data; for (let k = 0; k < d.length; k += 4){ const n = (r() - 0.5) * 12; d[k] += n; d[k + 1] += n; d[k + 2] += n; } g.putImageData(im, 0, 0);
   }
-  g.fillStyle = L.paper; g.fillRect(0, 0, W, H);
-  const fonts = document.fonts ? document.fonts.load('64px "Libre Caslon Text"') : Promise.resolve();
+  g.fillStyle = PAPER; g.fillRect(0, 0, W, H);
+  const fonts = document.fonts ? document.fonts.load('64px "Rozha One"') : Promise.resolve();
   if (L.img){
     Promise.all([loadImg(UN(L.img, 1200)), fonts]).then(([img]) => {
-      const p = PRINT[L.kind](img, Math.round(R[2]), Math.round(R[3]), L.o);
-      g.fillStyle = L.paper; g.fillRect(0, 0, W, H); g.drawImage(p, R[0], R[1]); art(); words(); tex.needsUpdate = true;
+      g.fillStyle = PAPER; g.fillRect(0, 0, W, H); g.drawImage(PRINT[L.kind](img, aw, ah, L.o), ax, ay); art(); words(); tex.needsUpdate = true;
     }).catch(() => { fonts.then(() => { words(); tex.needsUpdate = true; }); });
   } else fonts.then(() => { art(); words(); tex.needsUpdate = true; });
   return tex;
@@ -108,15 +111,16 @@ const bottles = [];
 WINES.forEach((w, i) => {
   const pr = profile(i + 3), g = new THREE.Group();
   const glass = new THREE.Mesh(new THREE.LatheGeometry(pr.pts, 64), new THREE.MeshPhysicalMaterial({
-    color:w[3], transmission:0.55, thickness:0.6, roughness:0.06, ior:1.5, metalness:0, clearcoat:1, clearcoatRoughness:0.05 }));
+    color:w[3], transmission:w[3] === '#c9d1b0' ? 0.12 : 0.4, thickness:0.6, roughness:0.06, ior:1.5, metalness:0, clearcoat:1, clearcoatRoughness:0.05 }));
   glass.castShadow = true; g.add(glass);
-  const lab = new THREE.Mesh(new THREE.CylinderGeometry(pr.R + 0.004, pr.R + 0.004, pr.H * 0.3, 64, 1, true, -1.2, 2.4),
-    new THREE.MeshStandardMaterial({ map:makeLabel(i, w, pr), roughness:0.85 }));
-  lab.position.y = pr.H * 0.28; g.add(lab);
+  const tl = LW / (pr.R + 0.004);
+  const lab = new THREE.Mesh(new THREE.CylinderGeometry(pr.R + 0.004, pr.R + 0.004, LH, 64, 1, true, -tl / 2, tl),
+    new THREE.MeshStandardMaterial({ map:makeLabel(i, w), roughness:0.85 }));
+  lab.position.y = LY; g.add(lab);
   const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.32, 32), new THREE.MeshStandardMaterial({ color:i % 2 ? '#7a1d18' : '#1A1614', roughness:0.4, metalness:0.3 }));
   cap.position.y = pr.H - 0.12; g.add(cap);
   const home = new THREE.Vector3(-3.9 + i * 1.3, 0, 0);
-  g.position.copy(home); g.rotation.y = (i % 3 - 1) * 0.14;
+  g.position.copy(home); g.rotation.y = 0;
   g.userData = { home, homeRot:g.rotation.y, w, H:pr.H };
   scene.add(g); bottles.push(g);
   /* the note, scratched on the floor in front of the bottle */
