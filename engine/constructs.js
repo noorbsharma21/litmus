@@ -332,7 +332,8 @@ const CRITIQUES = [
       'Before any design: settle the narrative (who comes, what they came to do, the one thing the site states, the peak, the end) and check the page against behavioural science. Both live in engine/people.js: NARRATIVE_QUESTIONS, BEHAVIOUR_SCIENCE b1 to b15, and NARRATIVES for all twenty briefs.',
       'An interaction has to serve the visitor\'s job and show its own purpose. Visitors circling a photographer\'s frames served nobody\'s job and needed a note to explain it (b2, b3).'
     ],
-    applied:'04: the circles became hers, frames open large, the first screen says what she shoots, every page ends on commissioning her.'
+    applied:'04: the circles became hers, frames open large, the first screen says what she shoots, every page ends on commissioning her.',
+    confirmed:'okay this is good. Said of 04 rebuilt from its narrative (11 Nov 2026). The narrative-first method holds on its first instance.'
   }
 ];
 

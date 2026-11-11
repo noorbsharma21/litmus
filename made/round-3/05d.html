@@ -2,7 +2,14 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A Saturday in Porto</title>
 <link href="https://fonts.googleapis.com/css2?family=Sorts+Mill+Goudy:ital@0;1&family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
-<!-- 05d. A weekend guide to a city. Round three, from 05c. cr6 kept the sun,
+<!-- 05d. A weekend guide to a city. Prepared for review against its narrative
+     (engine/people.js, 05): someone planning a weekend in Porto wants a plan
+     they can follow hour by hour; the site states "one weekend, walked the
+     way a local walks it", peaks on dragging the sun through the day, and
+     ends on taking the day's walk with them in Google Maps. So: Saturday and
+     Sunday, each its own day; the sun shows its hour and moves on arrival so
+     it reads as something to move (b2); a white ground, no italics, lines
+     drawn by hand. Round three, from 05c. cr6 kept the sun,
      wanted 05a's journey path in it, a face that does not read as AI, and
      framing and effects past the basics. The photograph sits in a border of
      painted blue and white tiles, the city's own; the day's route is drawn
@@ -10,7 +17,7 @@
      itinerary sits beside the picture, not on it: drag the sun, or pick a
      stop, and the light, the walker and the list all move to that hour. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#F4F5F2;font-family:"Sorts Mill Goudy",Georgia,serif;color:#16305E;user-select:none;-webkit-user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"Sorts Mill Goudy",Georgia,serif;color:#16305E;user-select:none;-webkit-user-select:none}
 #frame{position:fixed;left:30px;top:30px;bottom:30px;width:calc(66vw - 30px);background-size:38px 38px;box-shadow:0 1px 3px rgba(22,48,94,.2)}
 #pic{position:absolute;inset:38px;overflow:hidden;background:#222}
 #ph{position:absolute;inset:0;background-size:cover;background-position:center 60%}
@@ -22,14 +29,22 @@ html,body{margin:0;height:100%;overflow:hidden;background:#F4F5F2;font-family:"S
 #sun:focus-visible{outline:2px solid #fff;outline-offset:4px}
 aside{position:fixed;top:30px;bottom:30px;right:30px;left:calc(66vw + 30px);display:flex;flex-direction:column}
 h1{margin:0;font-weight:normal;font-size:30px;line-height:1.05}
-.sub{margin:8px 0 0;font-size:16px;font-style:italic}
-ol{margin:auto 0 0;padding:0;list-style:none;font-size:17px;line-height:1.35}
-ol li{display:grid;grid-template-columns:3.6em 1fr;padding:6px 0;border-top:1px solid rgba(22,48,94,.2);cursor:pointer;transition:color .3s}
+.sub{margin:8px 0 0;font-size:16px;max-width:34ch;line-height:1.35}
+.days{display:flex;gap:26px;margin-top:22px}
+.days a{position:relative;font-family:"Nothing You Could Do",cursive;font-size:22px;text-decoration:none;color:#16305E;padding:6px 2px;min-height:32px}
+.days a .scrib{position:absolute;left:-6%;bottom:-2px;width:112%;height:12px;opacity:0;overflow:visible}
+.days a.on .scrib{opacity:1}
+.days a:focus-visible,.take:focus-visible{outline:2px solid #16305E;outline-offset:4px}
+.take{position:relative;display:inline-block;align-self:flex-start;margin-top:22px;font-family:"Nothing You Could Do",cursive;font-size:20px;color:#16305E;text-decoration:none;padding:10px 2px;min-height:44px;box-sizing:border-box}
+.take .scrib{position:absolute;left:-4%;bottom:2px;width:108%;height:12px;overflow:visible}
+#sunlab{position:absolute;margin:0;font-family:"Nothing You Could Do",cursive;font-size:20px;color:#fff;pointer-events:none;transform:translate(26px,-14px);text-shadow:0 1px 2px rgba(0,0,0,.4);white-space:nowrap}
+ol{margin:34px 0 0;padding:0;list-style:none;font-size:17px;line-height:1.35}
+ol li{position:relative;display:grid;grid-template-columns:3.6em 1fr;padding:7px 0 8px;cursor:pointer;transition:color .3s}
+ol li .scrib{position:absolute;left:-1%;bottom:-5px;width:102%;height:10px;overflow:visible;opacity:.5}
 ol li b{font-weight:normal;font-variant-numeric:oldstyle-nums}
 ol li.past{color:rgba(22,48,94,.45)}
-ol li.now{font-style:italic}
 ol li.now b::before{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;background:#E4A400;margin:0 6px 1px -15px}
-@media (max-width:860px){ #frame{width:auto;right:16px;left:16px;top:16px;bottom:auto;height:52vh} aside{left:16px;right:16px;top:calc(52vh + 30px);bottom:16px} ol{font-size:15px} }
+@media (max-width:860px){ html,body{height:auto;overflow:auto} #frame{position:relative;width:auto;left:auto;top:auto;bottom:auto;margin:16px;height:52vh} aside{position:static;padding:8px 16px 30px} ol{margin-top:20px;font-size:16px} }
 </style></head><body>
 <div id="frame"><div id="pic">
   <div id="ph" role="img" aria-label="The river and the city of Porto"></div><div id="tint"></div>
@@ -38,17 +53,19 @@ ol li.now b::before{content:'';display:inline-block;width:9px;height:9px;border-
     <path id="rd" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
   </svg>
   <div id="walker"></div>
-  <div id="sun" tabindex="0" role="slider" aria-label="Time of day" aria-valuemin="7" aria-valuemax="24"></div>
+  <div id="sun" tabindex="0" role="slider" aria-label="Time of day" aria-valuemin="7" aria-valuemax="24"></div><p id="sunlab" aria-hidden="true"></p>
 </div></div>
 <aside>
-  <h1>A Saturday in Porto</h1>
-  <p class="sub">from the first coffee to the last tram</p>
+  <h1>A weekend in Porto</h1>
+  <p class="sub">Two days, hour by hour, the way people who live there spend them. Drag the sun or pick an hour.</p>
+  <nav class="days" aria-label="Day"><a href="#saturday">Saturday</a><a href="#sunday">Sunday</a></nav>
   <ol id="list"></ol>
+  <a class="take" id="take" target="_blank" rel="noopener"></a>
 </aside>
 <script src="../round-2/images.js"></script>
 <script src="print.js"></script>
 <script>
-grainOver(0.08, 'multiply');
+/* no grain: the page stays white */
 /* the tiles: cobalt painted on white glaze, by hand, so no two quite agree */
 (function tiles(){
   var c = document.createElement('canvas'), N = 152; c.width = c.height = N; var g = c.getContext('2d'), r = seeded(12);
@@ -66,40 +83,59 @@ grainOver(0.08, 'multiply');
   var d = g.getImageData(0, 0, N, N); for (var k = 0; k < d.data.length; k += 4){ var n = (r() - 0.5) * 14; d.data[k] += n; d.data[k + 1] += n; d.data[k + 2] += n; } g.putImageData(d, 0, 0);
   document.getElementById('frame').style.backgroundImage = 'url(' + c.toDataURL() + ')';
 })();
-document.getElementById('ph').style.backgroundImage = 'url(' + U(IMG.porto[0], 2000) + ')';
-/* the day: hour, place, and where it sits on the picture (0 to 100 across and down) */
-var STOPS = [[7, 'Coffee standing at the counter', 14, 70], [9, 'Bolhão market, before it fills', 30, 58], [11, 'Ribeira, along the river', 44, 80],
-  [14, 'The little ferry to Afurada', 22, 88], [17, 'Serralves, the garden', 62, 62], [19.5, 'Grilled sardines in the street', 74, 74],
-  [22, 'Foz, the sea at dark', 88, 66], [23.5, 'The last tram up the hill', 80, 46]];
-var pic = document.getElementById('pic'), ph = document.getElementById('ph'), tint = document.getElementById('tint'), sun = document.getElementById('sun');
-var walker = document.getElementById('walker'), list = document.getElementById('list'), rp = document.getElementById('rp'), rd = document.getElementById('rd');
-/* the route: a wandering line through the stops, the way a walk goes */
-var R = seeded(5), pts = [];
-STOPS.forEach(function(s, i){
-  if (i){ var p = STOPS[i - 1]; for (var k = 1; k < 6; k++){ var f = k / 6; pts.push([p[2] + (s[2] - p[2]) * f + (R() - 0.5) * 4, p[3] + (s[3] - p[3]) * f + (R() - 0.5) * 4, i - 1 + f]); } }
-  pts.push([s[2], s[3], i]);
-});
-rp.setAttribute('d', pts.map(function(p, i){ return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(''));
-STOPS.forEach(function(s, i){
-  var n = document.createElement('p'); n.className = 'n'; n.textContent = i + 1; n.style.left = s[2] + '%'; n.style.top = s[3] + '%'; pic.appendChild(n);
-  var li = document.createElement('li'); var hh = Math.floor(s[0]), mm = Math.round((s[0] % 1) * 60);
-  li.innerHTML = '<b>' + hh + (mm ? '.' + mm : '') + '</b><span>' + s[1] + '</span>'; li.dataset.i = i; list.appendChild(li);
-});
-var h = 9;
+/* the two days: hour, place, where it sits on the picture (0 to 100), and what to search for in Maps */
+var DAYS = {
+  saturday:{ label:'Saturday', img:IMG.porto[1], stops:[
+    [7, 'Coffee standing at the counter', 14, 70, 'Baixa, Porto'], [9, 'Bolhão market, before it fills', 30, 58, 'Mercado do Bolhão, Porto'], [11, 'Ribeira, along the river', 44, 80, 'Ribeira, Porto'],
+    [14, 'The little ferry to Afurada', 22, 88, 'Afurada, Vila Nova de Gaia'], [17, 'Serralves, the garden', 62, 62, 'Serralves, Porto'], [19.5, 'Grilled sardines in the street', 74, 74, 'Afurada, Vila Nova de Gaia'],
+    [22, 'Foz, the sea at dark', 88, 66, 'Foz do Douro, Porto'], [23.5, 'The last tram along the river', 80, 46, 'Passeio Alegre, Porto'] ] },
+  sunday:{ label:'Sunday', img:IMG.porto[2], stops:[
+    [9, 'Custard tarts, still warm', 18, 62, 'Baixa, Porto'], [10.5, 'Crystal Palace gardens, the river from above', 32, 40, 'Jardins do Palácio de Cristal, Porto'], [13, 'A long fish lunch in Matosinhos', 10, 78, 'Matosinhos'],
+    [15.5, 'The beach walk at Foz', 26, 86, 'Praia do Molhe, Porto'], [18, 'Across the bridge on the top deck', 80, 52, 'Ponte Luís I, Porto'], [19, 'Port in a Gaia lodge', 64, 78, 'Caves do Vinho do Porto, Vila Nova de Gaia'],
+    [20.5, 'Sunset from Serra do Pilar', 52, 30, 'Miradouro da Serra do Pilar'], [22, 'Dinner back in Ribeira', 42, 70, 'Ribeira, Porto'] ] }
+};
+var pic = document.getElementById('pic'), ph = document.getElementById('ph'), tint = document.getElementById('tint'), sun = document.getElementById('sun'), sunlab = document.getElementById('sunlab');
+var walker = document.getElementById('walker'), list = document.getElementById('list'), rp = document.getElementById('rp'), rd = document.getElementById('rd'), take = document.getElementById('take');
+var STOPS = [], pts = [], h = 9, goal = null, day = 'saturday';
+function maps(stops){
+  var q = stops.map(function(s){ return encodeURIComponent(s[4]); });
+  return 'https://www.google.com/maps/dir/?api=1&travelmode=walking&origin=' + q[0] + '&destination=' + q[q.length - 1] + '&waypoints=' + q.slice(1, -1).join('%7C');
+}
+function setDay(name){
+  day = DAYS[name] ? name : 'saturday'; var D = DAYS[day]; STOPS = D.stops;
+  ph.style.backgroundImage = 'url(' + U(D.img, 2000) + ')';
+  /* the route: a wandering line through the stops, the way a walk goes */
+  var R = seeded(day === 'saturday' ? 5 : 9); pts = [];
+  STOPS.forEach(function(s, i){
+    if (i){ var p = STOPS[i - 1]; for (var k = 1; k < 6; k++){ var f = k / 6; pts.push([p[2] + (s[2] - p[2]) * f + (R() - 0.5) * 4, p[3] + (s[3] - p[3]) * f + (R() - 0.5) * 4, i - 1 + f]); } }
+    pts.push([s[2], s[3], i]);
+  });
+  rp.setAttribute('d', pts.map(function(p, i){ return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(''));
+  pic.querySelectorAll('.n').forEach(function(n){ n.remove(); }); list.innerHTML = '';
+  STOPS.forEach(function(s, i){
+    var n = document.createElement('p'); n.className = 'n'; n.textContent = i + 1; n.style.left = s[2] + '%'; n.style.top = s[3] + '%'; pic.appendChild(n);
+    var li = document.createElement('li'); var hh = Math.floor(s[0]), mm = Math.round((s[0] % 1) * 60);
+    li.innerHTML = '<b>' + hh + (mm ? '.' + mm : '') + '</b><span>' + s[1] + '</span>' + scribbleLine({ seed:i + (day === 'saturday' ? 11 : 31), weight:1.6, amp:6, colour:'#16305E' }); li.dataset.i = i; li.tabIndex = 0; list.appendChild(li);
+  });
+  take.href = maps(STOPS); take.innerHTML = 'Walk ' + D.label + ' in Google Maps' + scribbleLine({ seed:day === 'saturday' ? 5 : 6, weight:2.4, amp:7, colour:'#16305E' });
+  document.querySelectorAll('.days a').forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#' + day); });
+  /* on arrival the sun travels from first light to the first stop, so it reads as something you can move */
+  h = 7; goal = STOPS[0][0] + (still ? 0 : 0.01); if (still){ h = goal; goal = null; } render();
+}
+var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function at(hour){ /* how far along the route the walker is at this hour */
   if (hour <= STOPS[0][0]) return 0;
   for (var i = 1; i < STOPS.length; i++) if (hour < STOPS[i][0]) return i - 1 + (hour - STOPS[i - 1][0]) / (STOPS[i][0] - STOPS[i - 1][0]);
   return STOPS.length - 1;
 }
 function render(){
-  var r = pic.getBoundingClientRect(); if (!r.width) return;
+  var r = pic.getBoundingClientRect(); if (!r.width || !STOPS.length) return;
   var t = (h - 7) / 17, sx = 6 + t * 88, sy = 62 - Math.sin(t * Math.PI) * 50;
-  sun.style.left = sx + '%'; sun.style.top = sy + '%';
+  sun.style.left = sx + '%'; sun.style.top = sy + '%'; sunlab.style.left = sx + '%'; sunlab.style.top = sy + '%';
   var noon = Math.sin(t * Math.PI), late = Math.max(0, (h - 20) / 4);
-  ph.style.filter = 'brightness(' + (0.5 + noon * 0.65 - late * 0.3).toFixed(2) + ') saturate(' + (0.7 + noon * 0.5).toFixed(2) + ')';
+  ph.style.filter = 'brightness(' + (0.74 + noon * 0.4 - late * 0.32).toFixed(2) + ') saturate(' + (0.7 + noon * 0.5).toFixed(2) + ')';
   tint.style.background = h < 9 ? 'rgba(238,88,132,' + ((9 - h) / 2 * 0.4).toFixed(2) + ')' : h > 17 ? 'rgba(' + (h > 20 ? '7,36,147' : '228,121,55') + ',' + Math.min(0.7, (h - 17) / 5).toFixed(2) + ')' : 'rgba(0,0,0,0)';
   sun.style.background = h > 21 ? '#C9D8EA' : (h > 18 || h < 8 ? '#F2A33A' : '#FCF02A');
-  /* the walker and the part of the route already walked */
   var a = at(h), done = pts.filter(function(p){ return p[2] <= a; }), last = done[done.length - 1] || pts[0];
   var nx = pts[Math.min(pts.length - 1, done.length)] || last, f = nx === last ? 0 : (a - last[2]) / Math.max(0.001, nx[2] - last[2]);
   var wx = last[0] + (nx[0] - last[0]) * f, wy = last[1] + (nx[1] - last[1]) * f;
@@ -107,18 +143,21 @@ function render(){
   rd.setAttribute('d', done.map(function(p, i){ return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join('') + (done.length ? 'L' + wx.toFixed(1) + ' ' + wy.toFixed(1) : ''));
   var cur = Math.min(STOPS.length - 1, Math.floor(a + 0.25));
   [].forEach.call(list.children, function(li, i){ li.className = i < cur ? 'past' : i === cur ? 'now' : ''; });
-  var hh = Math.floor(h), mm = Math.floor((h % 1) * 4) * 15;
+  var hh = Math.floor(h) % 24, mm = Math.floor((h % 1) * 4) * 15;
+  sunlab.textContent = hh + '.' + (mm < 10 ? '0' : '') + mm;
   sun.setAttribute('aria-valuenow', hh); sun.setAttribute('aria-valuetext', hh + ':' + (mm < 10 ? '0' : '') + mm + ', ' + STOPS[cur][1]);
 }
 var drag = false;
-sun.addEventListener('pointerdown', function(e){ drag = true; sun.setPointerCapture(e.pointerId); sun.style.cursor = 'grabbing'; });
+sun.addEventListener('pointerdown', function(e){ drag = true; goal = null; sun.setPointerCapture(e.pointerId); sun.style.cursor = 'grabbing'; });
 addEventListener('pointermove', function(e){ if (!drag) return; var r = pic.getBoundingClientRect(); h = 7 + 17 * Math.max(0, Math.min(1, ((e.clientX - r.left) / r.width - 0.06) / 0.88)); render(); });
 addEventListener('pointerup', function(){ drag = false; sun.style.cursor = 'grab'; });
 sun.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight') h = Math.min(24, h + 0.5); if (e.key === 'ArrowLeft') h = Math.max(7, h - 0.5); render(); });
 /* pick a stop and the day eases there */
-var goal = null;
 list.addEventListener('click', function(e){ var li = e.target.closest('li'); if (li) goal = STOPS[+li.dataset.i][0] + 0.01; });
-(function loop(){ if (goal !== null){ h += (goal - h) * 0.08; if (Math.abs(goal - h) < 0.02){ h = goal; goal = null; } render(); } requestAnimationFrame(loop); })();
+list.addEventListener('keydown', function(e){ var li = e.target.closest('li'); if (li && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); goal = STOPS[+li.dataset.i][0] + 0.01; } });
+(function loop(){ if (goal !== null){ h += (goal - h) * 0.06; if (Math.abs(goal - h) < 0.02){ h = goal; goal = null; } render(); } requestAnimationFrame(loop); })();
 addEventListener('resize', render);
-(function wait(){ if (pic.getBoundingClientRect().width) render(); else requestAnimationFrame(wait); })();
+document.querySelectorAll('.days a').forEach(function(a, i){ a.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 71, weight:2.6, amp:7, colour:'#16305E' })); });
+addEventListener('hashchange', function(){ setDay(location.hash.slice(1)); });
+(function wait(){ if (pic.getBoundingClientRect().width) setDay(location.hash.slice(1)); else requestAnimationFrame(wait); })();
 </script></body></html>
