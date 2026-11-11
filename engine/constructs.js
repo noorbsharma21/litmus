@@ -325,6 +325,14 @@ const CRITIQUES = [
     ],
     open:['The spot colour: Lust uses green. Halde Duo uses its own pink so it is not a copy of her palette. Not confirmed.'],
     confirmed:'this is coooll / I do enjoy this. Said of the comic version (11 Nov 2026). The traditional-artist direction holds on its first instance.'
+  },
+  { id:'cr13', of:'made/round-3/04d, the contact sheet where visitors circled frames', date:'2026-11-11',
+    said:'what are we selecting for here what is going on / i think you need to understand the context and best deliver tp the prompts tere will be like wat is the narrative we are stating i want you to also understand best [ractices with regards to behavioural science',
+    lessons:[
+      'Before any design: settle the narrative (who comes, what they came to do, the one thing the site states, the peak, the end) and check the page against behavioural science. Both live in engine/people.js: NARRATIVE_QUESTIONS, BEHAVIOUR_SCIENCE b1 to b15, and NARRATIVES for all twenty briefs.',
+      'An interaction has to serve the visitor\'s job and show its own purpose. Visitors circling a photographer\'s frames served nobody\'s job and needed a note to explain it (b2, b3).'
+    ],
+    applied:'04: the circles became hers, frames open large, the first screen says what she shoots, every page ends on commissioning her.'
   }
 ];
 

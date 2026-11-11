@@ -9,10 +9,15 @@
      works. Here that practice is the photographer's own edit: she goes over a
      contact sheet in red grease pencil, and the frames she circles are the
      ones that get printed.
-       Contact sheets  four rolls; a loupe shows any frame up close; click a
-                       frame to circle it or rub the circle out
-       Prints          whatever is circled, enlarged, with its edition and price
+       Contact sheets  four rolls, her picks circled; a loupe shows any frame
+                       up close; click a frame to see it large
+       Prints          the frames she circled, enlarged, with edition and price
        Commissions     what she shoots and how to ask
+     After cr13 (engine/people.js) the site is set by its narrative: the
+     visitor is someone deciding whether to commission her, and the site
+     states "how she sees: the whole roll, and the frames she keeps". So the
+     circles are hers, the first screen says what she shoots, and every page
+     ends on commissioning her.
      The photographs are Unsplash placeholders for hers, printed black and white. -->
 <style>
 :root{--paper:#FFFFFF;--ink:#1A1614;--red:#C2261D;--film:#0E0D0C}
@@ -30,6 +35,9 @@ nav a:focus-visible{outline:2px solid var(--red);outline-offset:4px}
 section{display:none;padding:34px 40px 70px}
 section.on{display:block}
 .typed{font-size:15px;font-weight:800;letter-spacing:.06em;margin:0}
+.who{margin-top:12px;font-size:13px;max-width:52ch;line-height:1.5}
+.act{display:inline-block;margin-top:26px;font-family:"Rock Salt",cursive;font-size:17px;color:var(--red);position:relative;text-decoration:none;padding:6px 2px;min-height:32px}
+.act .scrib{position:absolute;left:-4%;bottom:-8px;width:108%;height:14px;overflow:visible}
 /* contact sheets */
 #sheet{position:relative;margin-left:240px;display:flex;flex-direction:column;gap:46px}
 .strip{position:relative;background:var(--film);padding:20px 0;display:flex;gap:6px}
@@ -61,9 +69,16 @@ body.sheetpage #dot{display:block}
 .comm b{font-weight:800}
 .mail{grid-column:1 / -1;font-family:"Rock Salt",cursive;font-size:18px;color:var(--red);position:relative;display:inline-block;justify-self:start;transform:rotate(-1.5deg)}
 .mail .scrib{position:absolute;left:-4%;bottom:-10px;width:108%;height:14px;overflow:visible}
+#look{position:fixed;inset:0;z-index:20;background:rgba(255,255,255,.97);display:grid;grid-template-rows:minmax(0,1fr) auto;gap:16px;padding:40px 40px 30px;cursor:zoom-out}
+#look[hidden]{display:none}
+#lookimg{background-size:contain;background-repeat:no-repeat;background-position:center}
+#lookcap{display:flex;flex-wrap:wrap;gap:8px 30px;align-items:baseline;justify-content:center}
+#lookcap .act{margin-top:0}
+#look button{position:absolute;right:28px;top:20px;min-width:44px;min-height:44px;border:0;background:none;font-family:"Rock Salt",cursive;font-size:15px;color:var(--red);cursor:pointer}
+body.looking #loupe,body.looking #dot{display:none}
 @media (max-width:860px){
   header,section{padding-left:16px;padding-right:16px}
-  #sheet{margin-left:0;margin-top:44px;gap:64px}.note{margin-left:0}
+  #sheet{margin-left:0;margin-top:44px;gap:64px}.note{margin-left:0}.act{margin-left:0!important}
   .lab{right:auto;left:0;top:-34px;transform:rotate(-2deg);width:auto;text-align:left}
   .print,.print:nth-child(even){grid-template-columns:1fr}.print:nth-child(even) .img{order:0}
   .comm{grid-template-columns:1fr}
@@ -71,15 +86,16 @@ body.sheetpage #dot{display:block}
 }
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wax"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></svg>
-<header><h1>Ines Moreau</h1>
+<header><div><h1>Ines Moreau</h1><p class="typed who">PHOTOGRAPHS KITCHENS, RESTAURANTS AND THE PEOPLE IN THEM. COMMISSIONS OPEN.</p></div>
 <nav aria-label="Pages"><a href="#sheets">Contact sheets</a><a href="#prints">Prints</a><a href="#commissions">Commissions</a></nav></header>
 
 <section id="sheets" aria-label="Contact sheets">
   <div id="sheet"><svg id="marks" aria-hidden="true"></svg></div>
-  <p class="note">circle a frame and it goes to Prints</p>
+  <p class="note">the red circles are the frames I printed. click any frame to see it large.</p>
+  <a class="act" href="#commissions" style="margin-left:240px">commission me</a>
 </section>
 
-<section id="prints" aria-label="Prints"><div class="prints" id="printlist"></div></section>
+<section id="prints" aria-label="Prints"><p class="typed who" style="margin:0 0 40px">THE FRAMES I KEPT FROM THESE ROLLS, PRINTED BY HAND IN SMALL EDITIONS.</p><div class="prints" id="printlist"></div><a class="act" href="#commissions">commission me</a></section>
 
 <section id="commissions" aria-label="Commissions"><div class="comm">
   <h2>Commissions</h2>
@@ -88,6 +104,7 @@ body.sheetpage #dot{display:block}
   <span class="mail">ines@inesmoreau.studio</span>
 </div></section>
 
+<div id="look" hidden role="dialog" aria-label="The frame, large"><div id="lookimg" role="img"></div><div id="lookcap"></div><button type="button">close</button></div>
 <div id="loupe" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>
 <script src="../round-2/images.js"></script>
 <script src="print.js"></script>
@@ -96,10 +113,8 @@ body.sheetpage #dot{display:block}
 var SERIES = [['Low Tide', [0, 1, 6, 0, 1, 6]], ['Night Kitchens', [3, 4, 5, 3, 4, 5]], ['Rooftops in March', [2, 7, 2, 7, 2, 7]], ['Low Tide, again', [6, 0, 1, 6, 1, 0]]];
 var FP = [[0.5, 0.5, 1], [0.32, 0.42, 1.5], [0.68, 0.56, 1.3], [0.45, 0.3, 1.8], [0.6, 0.68, 1.2], [0.38, 0.6, 1.6]];
 function F(id, w, f){ return 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&crop=focalpoint&w=' + w + '&h=' + Math.round(w * 2 / 3) + '&fp-x=' + f[0] + '&fp-y=' + f[1] + '&fp-z=' + f[2] + '&sat=-100&con=18&q=80'; }
-/* her picks, kept in this browser so yours stay circled when you come back */
+/* her picks: the frames she circled and printed */
 var picks = { '0-2':1, '1-1':1, '2-4':1, '3-0':1 };
-try { var saved = JSON.parse(localStorage.getItem('ines-picks') || 'null'); if (saved) picks = saved; } catch(e){}
-function savePicks(){ try { localStorage.setItem('ines-picks', JSON.stringify(picks)); } catch(e){} }
 
 var sheet = document.getElementById('sheet'), marks = document.getElementById('marks'), n = 8, FRAMES = {};
 SERIES.forEach(function(s, si){
@@ -127,9 +142,19 @@ function drawMarks(){
   });
   marks.innerHTML = out;
 }
-function toggle(fr){ var k = fr.dataset.k; if (picks[k]) delete picks[k]; else picks[k] = 1; savePicks(); drawMarks(); buildPrints(); }
-sheet.addEventListener('click', function(e){ var fr = e.target.closest('.fr'); if (fr) toggle(fr); });
-sheet.addEventListener('keydown', function(e){ if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('fr')){ e.preventDefault(); toggle(e.target); } });
+/* a frame, seen large, the way you would hold the sheet up to the light */
+var box = document.getElementById('look'), lookImg = document.getElementById('lookimg'), lookCap = document.getElementById('lookcap'), lastFr = null;
+function openFrame(fr){
+  var f = FRAMES[fr.dataset.k], i = Object.keys(FRAMES).filter(function(k){ return picks[k]; }).indexOf(fr.dataset.k); lastFr = fr;
+  lookImg.style.backgroundImage = 'url(' + F(f.img, 1800, f.f) + ')'; lookImg.setAttribute('aria-label', f.series + ', frame ' + f.frame);
+  lookCap.innerHTML = '<span class="typed">' + f.series.toUpperCase() + ', FRAME ' + f.frame + '</span>' + (i >= 0 ? '<span class="typed" style="font-weight:500">PRINTED. ' + ED[i % ED.length] + '</span><a class="act" href="#commissions">ask for this print</a>' : '<span class="typed" style="font-weight:500">NOT PRINTED</span>');
+  box.hidden = false; document.body.classList.add('looking'); box.querySelector('button').focus();
+}
+function shut(){ box.hidden = true; document.body.classList.remove('looking'); if (lastFr) lastFr.focus(); }
+sheet.addEventListener('click', function(e){ var fr = e.target.closest('.fr'); if (fr) openFrame(fr); });
+sheet.addEventListener('keydown', function(e){ if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('fr')){ e.preventDefault(); openFrame(e.target); } });
+box.addEventListener('click', function(e){ if (!e.target.closest('a')) shut(); });
+addEventListener('keydown', function(e){ if (e.key === 'Escape' && !box.hidden) shut(); });
 
 /* prints: every circled frame, in the order of the rolls */
 var ED = ['Silver gelatin, 30 x 40 cm, edition of 10. &pound;180', 'Silver gelatin, 40 x 50 cm, edition of 5. &pound;420', 'Silver gelatin, 50 x 60 cm, edition of 3. &pound;650'];
@@ -167,6 +192,7 @@ addEventListener('hashchange', route);
 addEventListener('resize', function(){ if (document.body.classList.contains('sheetpage')) drawMarks(); });
 document.querySelectorAll('nav a').forEach(function(a, i){ a.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 61, weight:3.2, amp:7, colour:'#C2261D', filter:'wax' })); });
 document.querySelector('.mail').insertAdjacentHTML('beforeend', scribbleLine({ seed:77, weight:3, amp:7, colour:'#C2261D', filter:'wax' }));
+document.querySelectorAll('.act').forEach(function(a, i){ a.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 88, weight:2.6, amp:7, colour:'#C2261D', filter:'wax' })); });
 buildPrints();
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(route);
 </script></body></html>
