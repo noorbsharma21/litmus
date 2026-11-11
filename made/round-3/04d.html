@@ -1,66 +1,146 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ines Moreau, contact sheets</title>
+<title>Ines Moreau, photographs</title>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@500;800&family=Rock+Salt&display=swap" rel="stylesheet">
-<!-- 04d. A photographer's portfolio. Round three, from 04a, which cr6 preferred
-     to 04c ("the Polaroid looks cheap"), with the font and the images
-     refined. The work is a contact sheet: four strips of film printed on
-     paper, black rebates with the film's own edge numbers, the photographs
-     placeholders for hers. She has gone over it in red grease pencil the way
-     photographers do: each strip named in the margin, a few frames circled.
-     A loupe follows the pointer and shows any frame up close; click a frame
-     to circle it or rub the circle out. -->
+<!-- 04d. A photographer's portfolio. Round three, from 04a (preferred in cr6),
+     prepared for review with every lesson since: a white ground (s5), nothing
+     touching anything else (t12), hand-drawn marks only (t14), more than one
+     page (cr10), and, from cr12, a traditional practice deciding how the site
+     works. Here that practice is the photographer's own edit: she goes over a
+     contact sheet in red grease pencil, and the frames she circles are the
+     ones that get printed.
+       Contact sheets  four rolls; a loupe shows any frame up close; click a
+                       frame to circle it or rub the circle out
+       Prints          whatever is circled, enlarged, with its edition and price
+       Commissions     what she shoots and how to ask
+     The photographs are Unsplash placeholders for hers, printed black and white. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#F3F3F0;font-family:"Doto",monospace;color:#1A1614;cursor:none}
-.top{position:fixed;left:40px;right:40px;top:26px;display:flex;justify-content:space-between;align-items:baseline}
-h1{margin:0;font-family:"Rock Salt",cursive;font-weight:normal;font-size:26px;color:#C2261D;transform:rotate(-2deg);transform-origin:0 50%}
-.top p{margin:0;font-size:15px;font-weight:800;letter-spacing:.06em}
-#sheet{position:fixed;left:250px;right:40px;top:96px;bottom:40px;display:flex;flex-direction:column;justify-content:space-between}
-.strip{position:relative;background:#0E0D0C;padding:20px 0;display:flex;gap:6px;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+:root{--paper:#FFFFFF;--ink:#1A1614;--red:#C2261D;--film:#0E0D0C}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Doto",monospace}
+body.sheetpage{cursor:none}
+a{color:inherit}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:16px 40px;padding:26px 40px 0}
+h1{margin:0;font-family:"Rock Salt",cursive;font-weight:normal;font-size:28px;color:var(--red);transform:rotate(-2deg);transform-origin:0 50%}
+nav{display:flex;gap:34px;flex-wrap:wrap}
+nav a{position:relative;text-decoration:none;font-family:"Rock Salt",cursive;font-size:15px;color:var(--red);padding:4px 2px}
+nav a:nth-child(2){transform:rotate(-2deg)}nav a:nth-child(3){transform:rotate(1.5deg)}
+nav a .scrib{position:absolute;left:-8%;bottom:-8px;width:116%;height:13px;opacity:0;overflow:visible}
+nav a.on .scrib{opacity:1}
+nav a:focus-visible{outline:2px solid var(--red);outline-offset:4px}
+section{display:none;padding:34px 40px 70px}
+section.on{display:block}
+.typed{font-size:15px;font-weight:800;letter-spacing:.06em;margin:0}
+/* contact sheets */
+#sheet{position:relative;margin-left:240px;display:flex;flex-direction:column;gap:46px}
+.strip{position:relative;background:var(--film);padding:20px 0;display:flex;gap:6px}
 .strip .edge{position:absolute;left:0;right:0;height:20px;display:flex;align-items:center;justify-content:space-around;font-size:11px;font-weight:800;color:#E9E2CF;letter-spacing:.08em;pointer-events:none}
 .strip .edge.t{top:0}.strip .edge.b{bottom:0;justify-content:space-between;padding:0 14px}
-.fr{flex:1;aspect-ratio:3/2;background-size:100% 100%;position:relative}
-.fr svg{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);overflow:visible;pointer-events:none;filter:url(#wax)}
-.lab{position:absolute;right:calc(100% + 18px);top:50%;transform:translateY(-50%) rotate(-3deg);margin:0;font-family:"Rock Salt",cursive;font-size:15px;line-height:1.3;color:#C2261D;text-align:right;width:190px}
+.fr{flex:1;aspect-ratio:3/2;background-size:100% 100%;position:relative;cursor:none}
+.fr:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.lab{position:absolute;right:calc(100% + 34px);top:50%;transform:translateY(-50%) rotate(-3deg);margin:0;font-family:"Rock Salt",cursive;font-size:15px;line-height:1.35;color:var(--red);text-align:right;width:180px}
+#marks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:5}
+.note{margin:34px 0 0 240px;font-family:"Rock Salt",cursive;font-size:14px;color:var(--red);transform:rotate(-1deg)}
 #loupe{position:fixed;left:0;top:0;width:230px;height:230px;border-radius:50%;pointer-events:none;z-index:9;background-repeat:no-repeat;box-shadow:0 0 0 7px #151515,0 0 0 8px #444,0 12px 30px rgba(0,0,0,.35);opacity:0;transition:opacity .2s}
-#dot{position:fixed;left:0;top:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#C2261D;pointer-events:none;z-index:10}
-@media (max-width:860px){ #sheet{left:24px;right:24px} .lab{right:auto;left:8px;top:-30px;transform:rotate(-2deg);width:auto;text-align:left} }
+#dot{position:fixed;left:0;top:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--red);pointer-events:none;z-index:10;display:none}
+body.sheetpage #dot{display:block}
+/* prints: one system, each the same width and border, alternating sides */
+.prints{display:flex;flex-direction:column;gap:70px;max-width:1240px;margin:0 auto}
+.print{display:grid;grid-template-columns:minmax(0,62%) minmax(0,1fr);gap:34px;align-items:end}
+.print:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(0,62%)}
+.print:nth-child(even) .img{order:2}
+.print .img{position:relative;padding:3.2%;background:var(--paper);box-shadow:0 1px 2px rgba(26,22,20,.18),0 14px 30px rgba(26,22,20,.10)}
+.print .img div{aspect-ratio:3/2;background-size:cover;background-position:center}
+.print h2{margin:0;font-family:"Rock Salt",cursive;font-weight:normal;font-size:20px;color:var(--red);transform:rotate(-2deg);transform-origin:0 50%}
+.print p{margin:10px 0 0;font-size:14px;font-weight:500;line-height:1.55;letter-spacing:.03em}
+.print a{display:inline-block;margin-top:12px;font-weight:800}
+.empty{font-family:"Rock Salt",cursive;color:var(--red);font-size:16px;max-width:36ch;line-height:1.6}
+/* commissions */
+.comm{max-width:900px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px 60px}
+.comm h2{grid-column:1 / -1;margin:0;font-family:"Rock Salt",cursive;font-weight:normal;font-size:30px;color:var(--red);transform:rotate(-2deg);transform-origin:0 50%}
+.comm p{margin:0;font-size:15px;font-weight:500;line-height:1.7;letter-spacing:.03em}
+.comm b{font-weight:800}
+.mail{grid-column:1 / -1;font-family:"Rock Salt",cursive;font-size:18px;color:var(--red);position:relative;display:inline-block;justify-self:start;transform:rotate(-1.5deg)}
+.mail .scrib{position:absolute;left:-4%;bottom:-10px;width:108%;height:14px;overflow:visible}
+@media (max-width:860px){
+  header,section{padding-left:16px;padding-right:16px}
+  #sheet{margin-left:0;margin-top:44px;gap:64px}.note{margin-left:0}
+  .lab{right:auto;left:0;top:-34px;transform:rotate(-2deg);width:auto;text-align:left}
+  .print,.print:nth-child(even){grid-template-columns:1fr}.print:nth-child(even) .img{order:0}
+  .comm{grid-template-columns:1fr}
+  #loupe{display:none} body.sheetpage{cursor:auto} body.sheetpage #dot{display:none} .fr{cursor:pointer}
+}
 </style></head><body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wax"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg>
-<div class="top"><h1>Ines Moreau</h1><p>CONTACT SHEETS, 2019 TO 2025. COMMISSIONS OPEN</p></div>
-<div id="sheet"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wax"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></svg>
+<header><h1>Ines Moreau</h1>
+<nav aria-label="Pages"><a href="#sheets">Contact sheets</a><a href="#prints">Prints</a><a href="#commissions">Commissions</a></nav></header>
+
+<section id="sheets" aria-label="Contact sheets">
+  <div id="sheet"><svg id="marks" aria-hidden="true"></svg></div>
+  <p class="note">circle a frame and it goes to Prints</p>
+</section>
+
+<section id="prints" aria-label="Prints"><div class="prints" id="printlist"></div></section>
+
+<section id="commissions" aria-label="Commissions"><div class="comm">
+  <h2>Commissions</h2>
+  <p class="typed">WHAT I SHOOT</p><p>Restaurants and kitchens, the people who work in them, rooms before the guests arrive. Black and white on film, colour if you need it.</p>
+  <p class="typed">HOW IT GOES</p><p>One day on site, contact sheets a week later, you circle what you want and I print it. Day rate from &pound;900, prints from &pound;120.</p>
+  <span class="mail">ines@inesmoreau.studio</span>
+</div></section>
+
 <div id="loupe" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>
 <script src="../round-2/images.js"></script>
 <script src="print.js"></script>
 <script>
-grainOver(0.05, 'multiply');
-/* four strips, a series to each, frames re-cropped the way a roll repeats a subject */
+/* four rolls, a series to each, frames re-cropped the way a roll repeats a subject */
 var SERIES = [['Low Tide', [0, 1, 6, 0, 1, 6]], ['Night Kitchens', [3, 4, 5, 3, 4, 5]], ['Rooftops in March', [2, 7, 2, 7, 2, 7]], ['Low Tide, again', [6, 0, 1, 6, 1, 0]]];
-var CIRCLED = { '0-2':1, '1-1':1, '2-4':1, '3-0':1 };
-/* each frame cropped exactly 3 by 2 around its own focal point and zoom, so a
-   repeated subject reads as another exposure on the roll */
 var FP = [[0.5, 0.5, 1], [0.32, 0.42, 1.5], [0.68, 0.56, 1.3], [0.45, 0.3, 1.8], [0.6, 0.68, 1.2], [0.38, 0.6, 1.6]];
 function F(id, w, f){ return 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&crop=focalpoint&w=' + w + '&h=' + Math.round(w * 2 / 3) + '&fp-x=' + f[0] + '&fp-y=' + f[1] + '&fp-z=' + f[2] + '&sat=-100&con=18&q=80'; }
-var sheet = document.getElementById('sheet'), n = 8;
+/* her picks, kept in this browser so yours stay circled when you come back */
+var picks = { '0-2':1, '1-1':1, '2-4':1, '3-0':1 };
+try { var saved = JSON.parse(localStorage.getItem('ines-picks') || 'null'); if (saved) picks = saved; } catch(e){}
+function savePicks(){ try { localStorage.setItem('ines-picks', JSON.stringify(picks)); } catch(e){} }
+
+var sheet = document.getElementById('sheet'), marks = document.getElementById('marks'), n = 8, FRAMES = {};
 SERIES.forEach(function(s, si){
   var st = document.createElement('div'); st.className = 'strip';
-  var top = '<div class="edge t">' + '<span>&#9654; ' + (n) + '</span><span>' + (n + 1) + 'A</span><span>SAFETY FILM 400</span><span>' + (n + 3) + '</span><span>&#9654; ' + (n + 4) + 'A</span>'.repeat(1) + '</div>';
+  var top = '<div class="edge t"><span>&#9654; ' + n + '</span><span>' + (n + 1) + 'A</span><span>SAFETY FILM 400</span><span>' + (n + 3) + '</span><span>&#9654; ' + (n + 4) + 'A</span></div>';
   var bot = '<div class="edge b">' + s[1].map(function(_, k){ return '<span>' + (n + k) + '</span>'; }).join('') + '</div>';
   st.innerHTML = top + s[1].map(function(img, k){
-    return '<div class="fr" data-k="' + si + '-' + k + '" data-big="' + F(IMG.prints[img], 1500, FP[(k + si) % FP.length]) + '" style="background-image:url(' + F(IMG.prints[img], 600, FP[(k + si) % FP.length]) + ')" role="img" aria-label="' + s[0] + ', frame ' + (n + k) + '"></div>';
+    var key = si + '-' + k, f = FP[(k + si) % FP.length]; FRAMES[key] = { series:s[0], frame:n + k, img:IMG.prints[img], f:f };
+    return '<div class="fr" tabindex="0" data-k="' + key + '" data-big="' + F(IMG.prints[img], 1500, f) + '" style="background-image:url(' + F(IMG.prints[img], 600, f) + ')" role="img" aria-label="' + s[0] + ', frame ' + (n + k) + '"></div>';
   }).join('') + bot + '<p class="lab">' + s[0] + '</p>';
   sheet.appendChild(st); n += 6;
 });
-/* the grease pencil circle, drawn a little unevenly, never quite closing */
-function circle(){
-  var p = '', a0 = Math.random() * 6.28, turns = 1.12;
-  for (var i = 0; i <= 48; i++){ var a = a0 + i / 48 * Math.PI * 2 * turns, rx = 50 + Math.sin(i * 0.7) * 2, ry = 48 + Math.cos(i * 0.5) * 2;
-    p += (i ? 'L' : 'M') + (50 + Math.cos(a) * rx).toFixed(1) + ' ' + (50 + Math.sin(a) * ry).toFixed(1); }
-  return '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="' + p + '" fill="none" stroke="#C2261D" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:5px;opacity:.9"/></svg>';
+/* the grease pencil: drawn on one layer above every strip, so no frame cuts it off */
+function loop(cx, cy, rx, ry, r){
+  var pass = function(turns, a0){ var d = '', k = 1; for (var i = 0; i <= 44; i++){ var a = a0 + i / 44 * Math.PI * 2 * turns; k += (r() - .5) * .05; k = Math.max(.93, Math.min(1.07, k));
+    d += (i ? ' L' : 'M') + (cx + Math.cos(a) * rx * k).toFixed(1) + ' ' + (cy + Math.sin(a) * ry * k).toFixed(1); } return d; };
+  return pass(1.14, r() * 6.28);
 }
-function mark(fr, on){ var s = fr.querySelector('svg'); if (on && !s) fr.insertAdjacentHTML('beforeend', circle()); if (!on && s) s.remove(); }
-document.querySelectorAll('.fr').forEach(function(fr){ if (CIRCLED[fr.dataset.k]) mark(fr, true); });
-sheet.addEventListener('click', function(e){ var fr = e.target.closest('.fr'); if (fr) mark(fr, !fr.querySelector('svg')); });
+function drawMarks(){
+  var b = sheet.getBoundingClientRect(); marks.setAttribute('viewBox', '0 0 ' + b.width + ' ' + b.height); var out = '';
+  document.querySelectorAll('.fr').forEach(function(fr){
+    if (!picks[fr.dataset.k]) return;
+    var r = fr.getBoundingClientRect(), rnd = seeded(fr.dataset.k.split('-').reduce(function(a, x){ return a * 7 + +x + 3; }, 5));
+    out += '<path d="' + loop(r.left - b.left + r.width / 2, r.top - b.top + r.height / 2, r.width / 2 + 8, r.height / 2 + 8, rnd) + '" fill="none" stroke="#C2261D" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" opacity=".92" filter="url(#wax)"/>';
+  });
+  marks.innerHTML = out;
+}
+function toggle(fr){ var k = fr.dataset.k; if (picks[k]) delete picks[k]; else picks[k] = 1; savePicks(); drawMarks(); buildPrints(); }
+sheet.addEventListener('click', function(e){ var fr = e.target.closest('.fr'); if (fr) toggle(fr); });
+sheet.addEventListener('keydown', function(e){ if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('fr')){ e.preventDefault(); toggle(e.target); } });
+
+/* prints: every circled frame, in the order of the rolls */
+var ED = ['Silver gelatin, 30 x 40 cm, edition of 10. &pound;180', 'Silver gelatin, 40 x 50 cm, edition of 5. &pound;420', 'Silver gelatin, 50 x 60 cm, edition of 3. &pound;650'];
+function buildPrints(){
+  var keys = Object.keys(FRAMES).filter(function(k){ return picks[k]; }), box = document.getElementById('printlist');
+  if (!keys.length){ box.innerHTML = '<p class="empty">nothing circled yet. go to the contact sheets and circle the frames you want printed.</p>'; return; }
+  box.innerHTML = keys.map(function(k, i){ var f = FRAMES[k];
+    return '<article class="print"><div class="img"><div style="background-image:url(' + F(f.img, 1600, f.f) + ')" role="img" aria-label="' + f.series + ', frame ' + f.frame + '"></div></div>' +
+      '<div><h2>' + f.series + '</h2><p>FRAME ' + f.frame + '<br>' + ED[i % ED.length] + '</p><a href="#commissions">Ask for this print</a></div></article>'; }).join('');
+}
+
 /* the loupe: the frame under the pointer, three times up */
 var loupe = document.getElementById('loupe'), dot = document.getElementById('dot'), Z = 3;
 addEventListener('pointermove', function(e){
@@ -68,12 +148,25 @@ addEventListener('pointermove', function(e){
   var fr = document.elementFromPoint(e.clientX, e.clientY); fr = fr && fr.closest ? fr.closest('.fr') : null;
   if (!fr){ loupe.style.opacity = 0; return; }
   var r = fr.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
-  loupe.style.opacity = 1;
-  loupe.style.transform = 'translate(' + (e.clientX - 115) + 'px,' + (e.clientY - 115) + 'px)';
+  loupe.style.opacity = 1; loupe.style.transform = 'translate(' + (e.clientX - 115) + 'px,' + (e.clientY - 115) + 'px)';
   loupe.style.backgroundImage = 'url(' + fr.dataset.big + ')';
-  var bw = r.width * Z, bh = r.height * Z;
-  loupe.style.backgroundSize = bw + 'px ' + bh + 'px';
+  var bw = r.width * Z, bh = r.height * Z; loupe.style.backgroundSize = bw + 'px ' + bh + 'px';
   loupe.style.backgroundPosition = (115 - fx * bw) + 'px ' + (115 - fy * bh) + 'px';
 });
 addEventListener('pointerleave', function(){ loupe.style.opacity = 0; });
+
+/* pages */
+function route(){
+  var id = (location.hash || '#sheets').slice(1), el = document.getElementById(id), page = el && el.tagName === 'SECTION' ? id : 'sheets';
+  document.querySelectorAll('section').forEach(function(s){ s.classList.toggle('on', s.id === page); });
+  document.querySelectorAll('nav a').forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#' + page); });
+  document.body.classList.toggle('sheetpage', page === 'sheets'); loupe.style.opacity = 0;
+  scrollTo(0, 0); if (page === 'sheets') requestAnimationFrame(drawMarks);
+}
+addEventListener('hashchange', route);
+addEventListener('resize', function(){ if (document.body.classList.contains('sheetpage')) drawMarks(); });
+document.querySelectorAll('nav a').forEach(function(a, i){ a.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 61, weight:3.2, amp:7, colour:'#C2261D', filter:'wax' })); });
+document.querySelector('.mail').insertAdjacentHTML('beforeend', scribbleLine({ seed:77, weight:3, amp:7, colour:'#C2261D', filter:'wax' }));
+buildPrints();
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(route);
 </script></body></html>

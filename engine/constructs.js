@@ -323,7 +323,8 @@ const CRITIQUES = [
       'Photographs can be redrawn as ink in the page (PRINT.ink in made/round-3/print.js): outlines from a difference of blurs, hand-wandering hatching in the mid tones, one spot colour in the darks. A set of drawings gets the same share of spot and hatching (spotShare, hatchShare) so they read as one hand (t13).',
       'Works on photographs of people in daylight or mid-tone light; stage silhouettes and dense foliage come out as noise.'
     ],
-    open:['The spot colour: Lust uses green. Halde Duo uses its own pink so it is not a copy of her palette. Not confirmed.']
+    open:['The spot colour: Lust uses green. Halde Duo uses its own pink so it is not a copy of her palette. Not confirmed.'],
+    confirmed:'this is coooll / I do enjoy this. Said of the comic version (11 Nov 2026). The traditional-artist direction holds on its first instance.'
   }
 ];
 
