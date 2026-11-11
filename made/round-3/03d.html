@@ -1,63 +1,270 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Halde Duo</title>
-<link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Texturina:ital,opsz,wght@0,12..72,400;1,12..72,400&display=swap" rel="stylesheet">
-<!-- 03d. A poster for one night of music. Before review, the lessons from 01
-     and 02 applied (cr7 to cr9): no italics anywhere. Round three: Round three, from 03c. cr6: keep
-     the hold, where the crowd comes up out of the yellow; give it a frame;
-     present the facts more creatively; a gothic or experimental face. The
-     photograph is now a print inside a ruled frame, the four facts run round
-     the frame's four sides, one to a side, and the name sits under it in a
-     woven blackletter. Behaviour as before: press and hold, a low chord swells
-     and the crowd comes up; let go and both fall away. -->
+<link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Texturina:opsz,wght@12..72,400;12..72,600&display=swap" rel="stylesheet">
+<!-- 03d. A site for a cello and synthesizer duo, Halde Duo. Rebuilt after cr10:
+     "This is plain... this can be so much more ambitious. I think there are
+     more pages this will have... more personality... the outline outside of
+     the image doesn't work here at all. This has to be messier, more
+     asymmetric." Kept: Jacquard 24 for the name (liked), Texturina for the
+     words, the highlighter yellow, and the hold: press and hold anywhere and a
+     low chord swells while the photocopies darken, let go and both fall away.
+     Now four pages, each its own idea, all built from one material: photos
+     photocopied onto white, pink or yellow paper, torn, taped and pasted over
+     each other off the square, the way a gig wall gets papered.
+       Next   the next show, pasted up as a poster with a ticket stub
+       Shows  every date as its own flyer on the wall; past ones crossed out
+       Listen the record; hold a track to play it
+       Duo    who they are, and booking
+     Photographs are Unsplash placeholders, hotlinked, nothing downloaded. -->
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#FDFF70;font-family:"Texturina",Georgia,serif;color:#1A1614;user-select:none;-webkit-user-select:none;touch-action:none}
-/* the frame: a double rule, the way a printed poster rules its picture */
-#fr{position:fixed;left:9vw;right:9vw;top:9vh;height:58vh;outline:1px solid #1A1614;outline-offset:7px;border:2px solid #1A1614}
-#ph{position:absolute;inset:0;background-size:cover;background-position:center 30%;filter:grayscale(1) contrast(var(--c,1.9)) brightness(var(--b,1.25));mix-blend-mode:multiply;transition:filter .2s}
-/* one fact to each side of the frame */
-.f{position:fixed;margin:0;font-size:15px;letter-spacing:.04em;white-space:nowrap}
-.f.t{left:50%;top:calc(9vh - 34px);transform:translateX(-50%)}
-.f.b{left:50%;top:calc(67vh + 18px);transform:translateX(-50%)}
-.f.l{left:calc(9vw - 22px);top:38vh;transform:translate(-50%,-50%) rotate(-90deg)}
-.f.r{right:calc(9vw - 22px);top:38vh;transform:translate(50%,-50%) rotate(90deg)}
-/* the name: the one large element, set under the frame like a poster's foot */
-h1{position:fixed;left:0;right:0;bottom:2vh;margin:0;text-align:center;font-family:"Jacquard 24",serif;font-weight:normal;font-size:min(21vh,15vw);line-height:.9;letter-spacing:.01em}
-@media (max-width:700px){ #fr{left:12vw;right:12vw} .f{font-size:13px} }
+:root{--y:#FDFF70;--ink:#141210;--pink:#F64FB2;--white:#FBFBF6}
+html,body{margin:0;min-height:100%;background:var(--y);color:var(--ink);font-family:"Texturina",Georgia,serif;-webkit-user-select:none;user-select:none}
+body{overflow-x:hidden}
+a{color:inherit}
+/* the navigation: four words, not lined up, the current one scribbled under */
+nav{position:fixed;z-index:40;left:0;right:0;top:0;padding:18px 3vw 0;display:flex;gap:4.5vw;align-items:flex-start;pointer-events:none}
+nav a{pointer-events:auto;text-decoration:none;font-size:clamp(16px,1.6vw,22px);font-weight:600;position:relative;padding:4px 2px}
+nav a:nth-child(2){margin-top:14px;transform:rotate(-3deg)}
+nav a:nth-child(3){margin-top:4px;transform:rotate(2deg)}
+nav a:nth-child(4){margin-top:20px;transform:rotate(-1.5deg)}
+nav a svg{position:absolute;left:-6%;bottom:-6px;width:112%;height:12px;opacity:0;overflow:visible}
+nav a.on svg{opacity:1}
+nav a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+section{display:none;position:relative;min-height:100vh}
+section.on{display:block}
+/* the material: paper, torn, with a photocopy on it */
+.paper{position:absolute;filter:drop-shadow(0 1px 1px rgba(20,18,16,.2)) drop-shadow(0 10px 14px rgba(20,18,16,.12))}
+/* the sheet carries the torn edge; the tape sits outside it on the paper so it is not torn too */
+.sheet{position:absolute;inset:0;background:var(--white)}
+.paper.pink .sheet{background:var(--pink)}.paper.yel .sheet{background:#F6F35A}
+.paper .ph{position:absolute;inset:7%;background-size:cover;background-position:center;filter:grayscale(1) contrast(var(--c,1.9)) brightness(var(--b,1.12));mix-blend-mode:multiply}
+.paper .ph.full{inset:0}
+.tape{position:absolute;width:30%;height:9%;min-height:18px;background:rgba(255,255,250,.55);box-shadow:0 1px 2px rgba(20,18,16,.08);z-index:3}
+.name{position:absolute;font-family:"Jacquard 24",serif;font-weight:normal;line-height:.8;margin:0;white-space:nowrap;z-index:5}
+.t{font-size:clamp(15px,1.25vw,18px);line-height:1.45}
+.big{font-family:"Jacquard 24",serif;font-weight:normal;line-height:.85}
+/* ---------- next ---------- */
+#next .name{left:-1.2vw;top:57vh;font-size:min(25vh,19vw);transform:rotate(-5deg)}
+.stub{position:absolute;right:6vw;bottom:9vh;width:min(330px,40vw);padding:18px 22px 20px;background:var(--white);transform:rotate(3deg);z-index:6;box-shadow:0 10px 24px rgba(20,18,16,.16)}
+.stub::before{content:"";position:absolute;left:0;right:0;top:-6px;height:12px;background:radial-gradient(circle at 6px 0,var(--y) 5px,transparent 5.5px) 0 0/14px 12px repeat-x}
+.stub .big{font-size:58px}
+.stub p{margin:6px 0 0}
+.stub .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:10px;border-top:1px dashed rgba(20,18,16,.4)}
+.stub .row b{font-weight:600}
+.ring{position:absolute;left:-14px;top:6px;width:150px;height:76px;pointer-events:none}
+.hold{position:absolute;left:3vw;bottom:4vh;margin:0;font-size:15px;transform:rotate(-2deg);z-index:6}
+/* ---------- shows ---------- */
+#shows{padding:120px 3vw 80px}
+#shows h2,#listen h2,#duo h2{font-family:"Jacquard 24",serif;font-weight:normal;font-size:min(16vw,170px);line-height:.8;margin:0;transform:rotate(-3deg);transform-origin:left}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:34px 26px;margin-top:40px}
+.flyer{position:relative;aspect-ratio:3/4;transition:transform .25s}
+.flyer:hover{z-index:10}
+.flyer .paper{inset:0}
+.flyer .ph{inset:0 0 46% 0}
+.flyer .info{position:absolute;left:8%;right:8%;bottom:6%;z-index:2}
+.flyer .big{font-size:46px;display:block}
+.flyer .where{font-weight:600;margin:4px 0 0}
+.flyer .tix{display:inline-block;margin-top:8px;font-weight:600}
+.flyer.past .cross{position:absolute;inset:6%;z-index:4;pointer-events:none}
+.flyer.past .paper{filter:saturate(.6)}
+/* ---------- listen ---------- */
+#listen{padding:120px 3vw 80px}
+.record{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:5vw;align-items:start;margin-top:30px}
+.cover{position:relative;aspect-ratio:1;max-width:520px}
+.cover .paper{inset:0;transform:rotate(-2.5deg)}
+.cover .lp{position:absolute;left:7%;bottom:6%;font-family:"Jacquard 24",serif;font-size:clamp(40px,5vw,72px);line-height:.85;z-index:4;margin:0;transform:rotate(-2.5deg)}
+.tracks{list-style:none;margin:0;padding:0;counter-reset:n}
+.tracks li{counter-increment:n;display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:14px 4px 12px;border-bottom:1.5px solid var(--ink);cursor:pointer;position:relative}
+.tracks li:nth-child(odd){transform:rotate(-.6deg)}.tracks li:nth-child(even){transform:rotate(.5deg) translateX(10px)}
+.tracks li::before{content:counter(n);font-family:"Jacquard 24",serif;font-size:30px;line-height:.8}
+.tracks li b{font-weight:600;font-size:clamp(18px,1.7vw,24px)}
+.tracks li span{font-size:15px}
+.tracks li.on b{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.tracks li:focus-visible{outline:2px solid var(--ink)}
+#wave{display:block;width:100%;height:90px;margin-top:18px}
+/* ---------- duo ---------- */
+#duo{padding:120px 3vw 80px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6vw;margin-top:40px}
+.who{position:relative}
+.who .pic{position:relative;aspect-ratio:4/5;max-width:440px}
+.who .pic .paper{inset:0}
+.who:nth-child(1) .pic{transform:rotate(-3deg)}
+.who:nth-child(2){margin-top:90px}.who:nth-child(2) .pic{transform:rotate(2.5deg)}
+.who h3{font-family:"Jacquard 24",serif;font-weight:normal;font-size:clamp(40px,4.6vw,64px);margin:22px 0 4px;line-height:.85}
+.who p{margin:0;max-width:34ch}
+.book{margin-top:70px;max-width:520px;transform:rotate(-1.5deg)}
+.book .big{font-size:clamp(40px,5vw,70px)}
+@media (max-width:760px){
+  nav{gap:6vw;padding-top:12px}
+  #next .name{top:52vh;font-size:23vw}
+  .stub{right:4vw;bottom:5vh;width:64vw}
+  .record,.pair{grid-template-columns:1fr}
+  .who:nth-child(2){margin-top:20px}
+  .hold{display:none}
+  /* the papers start below the navigation on a phone, so no link sits on a photograph */
+  #p1{top:13vh!important;width:56vw!important} #p2{top:16vh!important} #p3{top:30vh!important}
+}
 </style></head><body>
-<div id="fr"><div id="ph" role="img" aria-label="A crowd facing a lit stage"></div></div>
-<p class="f t">Friday 21 November</p>
-<p class="f r">The Lantern Room</p>
-<p class="f b">&pound;12 on the door</p>
-<p class="f l">Doors at eight</p>
-<h1>Halde Duo</h1>
-<script src="../round-2/images.js"></script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="marker"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter></svg>
+<nav aria-label="Pages">
+  <a href="#next">Next show<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 7 C 30 2, 60 11, 98 4" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
+  <a href="#shows">Shows<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 5 C 35 10, 65 2, 98 8" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
+  <a href="#listen">Listen<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 8 C 30 3, 70 10, 98 5" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
+  <a href="#duo">The duo<svg viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M2 6 C 40 1, 60 11, 98 6" fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" filter="url(#marker)"/></svg></a>
+</nav>
+
+<section id="next" aria-label="Next show">
+  <div class="paper" id="p1" style="right:4vw;top:7vh;width:min(40vw,520px);aspect-ratio:4/3;transform:rotate(4deg)"><div class="ph full" data-img="photo-1546963128-ce695e989bac" role="img" aria-label="The duo in silhouette, cello and keys"></div></div>
+  <div class="paper pink" id="p2" style="left:7vw;top:11vh;width:min(27vw,340px);aspect-ratio:4/5;transform:rotate(-6deg)"><div class="ph" data-img="photo-1540039155733-5bb30b53aa14" role="img" aria-label="A crowd facing a lit stage"></div></div>
+  <div class="paper yel" id="p3" style="left:35vw;top:22vh;width:min(16vw,210px);aspect-ratio:1;transform:rotate(9deg)"><div class="ph" data-img="photo-1611927264378-faced7a32de9" role="img" aria-label="Hands bowing a cello"></div></div>
+  <h1 class="name">Halde Duo</h1>
+  <div class="stub">
+    <svg class="ring" viewBox="0 0 150 76" aria-hidden="true"><path d="M20 40 C 18 12, 120 6, 136 30 C 150 54, 60 74, 24 58 C 8 50, 14 30, 40 20" fill="none" stroke="#F64FB2" stroke-width="4" stroke-linecap="round" filter="url(#marker)"/></svg>
+    <span class="big">Fri 21 Nov</span>
+    <p class="t">The Lantern Room, Leith Walk</p>
+    <p class="t">Doors at eight, on at nine</p>
+    <div class="row t"><span>&pound;12 on the door</span><a href="#shows"><b>Tickets</b></a></div>
+  </div>
+  <p class="hold">Hold anywhere to turn it up</p>
+</section>
+
+<section id="shows" aria-label="Shows">
+  <h2>Shows</h2>
+  <div class="wall" id="wall"></div>
+</section>
+
+<section id="listen" aria-label="Listen">
+  <h2>Low Water</h2>
+  <div class="record">
+    <div class="cover"><div class="paper"><div class="ph" style="inset:5% 5% 30% 5%" data-img="photo-1497405417022-3fefbce30a70" role="img" aria-label="A cellist, eyes down"></div></div><p class="lp">Low Water</p></div>
+    <div>
+      <p class="t" style="max-width:46ch;margin:0 0 18px">Their first record, six pieces for cello and two old synthesizers, recorded in one night in a church hall with the heating off. Hold a track to hear it.</p>
+      <ol class="tracks" id="tracks"></ol>
+      <canvas id="wave" aria-hidden="true"></canvas>
+    </div>
+  </div>
+</section>
+
+<section id="duo" aria-label="The duo">
+  <h2>The duo</h2>
+  <div class="pair">
+    <div class="who"><div class="pic"><div class="paper pink"><div class="ph" data-img="photo-1611927264378-faced7a32de9" role="img" aria-label="Hands bowing a cello"></div></div></div><h3>Mira Halde</h3><p class="t">Cello. Plays it lying almost flat, bow close to the bridge, so it sounds more like a ship than a cello.</p></div>
+    <div class="who"><div class="pic"><div class="paper"><div class="ph" data-img="photo-1649365810362-a5bf4414f1dc" role="img" aria-label="Hands on a synthesizer"></div></div></div><h3>Ott Varga</h3><p class="t">Synthesizers. Two of them, both older than he is, one held together with gaffer tape.</p></div>
+  </div>
+  <div class="book"><span class="big">Booking</span><p class="t">Clubs, churches, odd rooms. Write to Saar at Lantern Agency, saar@lanternagency.co.uk</p></div>
+</section>
+
 <script src="print.js"></script>
 <script>
-grainOver(0.16, 'overlay');
-var ph = document.getElementById('ph');
-ph.style.backgroundImage = 'url(' + U(IMG.gig[0], 1800) + ')';
-var A = null, gain = null, held = false, level = 0;
-function sound(){
-  if (A) return;
-  A = new (window.AudioContext || window.webkitAudioContext)();
-  gain = A.createGain(); gain.gain.value = 0; gain.connect(A.destination);
-  [55, 82.4, 110, 164.8].forEach(function(f, i){
-    var o = A.createOscillator(); o.type = i % 2 ? 'sawtooth' : 'triangle'; o.frequency.value = f;
-    var lp = A.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 500;
-    var g = A.createGain(); g.gain.value = 0.12; o.connect(lp); lp.connect(g); g.connect(gain); o.start();
+grainOver(0.12, 'overlay');
+const U = (id, w) => 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&w=' + (w || 1200) + '&q=75';
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+/* a torn edge: points walked round the rectangle, each nudged in or out a little */
+function torn(el, amt){
+  const pts = [], step = 3.2, a = amt || 1.6;
+  for (let x = 0; x <= 100; x += step) pts.push([x, rnd() * a]);
+  for (let y = 0; y <= 100; y += step) pts.push([100 - rnd() * a, y]);
+  for (let x = 100; x >= 0; x -= step) pts.push([x, 100 - rnd() * a]);
+  for (let y = 100; y >= 0; y -= step) pts.push([rnd() * a, y]);
+  el.style.clipPath = 'polygon(' + pts.map((p) => p[0].toFixed(1) + '% ' + p[1].toFixed(1) + '%').join(',') + ')';
+}
+function tape(el, n){
+  for (let i = 0; i < (n || 2); i++){
+    const t = document.createElement('span'); t.className = 'tape';
+    const top = i % 2 === 0, left = rnd() < .5;
+    Object.assign(t.style, { [top ? 'top' : 'bottom']:'-3%', [left ? 'left' : 'right']:(4 + rnd() * 18) + '%', transform:'rotate(' + ((rnd() - .5) * 24).toFixed(1) + 'deg)' });
+    el.appendChild(t);
+  }
+}
+/* every paper gets a sheet inside it (torn), and its tape on top (not torn) */
+function prepare(p, tapes){
+  const sh = document.createElement('div'); sh.className = 'sheet';
+  while (p.firstChild) sh.appendChild(p.firstChild);
+  p.appendChild(sh); torn(sh);
+  if (tapes){ const box = document.createElement('div'); box.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:4'; p.appendChild(box); tape(box, tapes); }
+}
+
+/* ---------- shows: each date its own flyer ---------- */
+const SHOWS = [
+  ['14 Sep', 'Glasgow', 'The Hug and Pint', 1, 'photo-1565035010268-a3816f98589a'],
+  ['2 Oct', 'Newcastle', 'Cobalt Studios', 1, 'photo-1541002610386-cbea235ba989'],
+  ['19 Oct', 'Leeds', 'Hyde Park Book Club', 1, 'photo-1522158637959-30385a09e0da'],
+  ['21 Nov', 'Edinburgh', 'The Lantern Room', 0, 'photo-1546963128-ce695e989bac'],
+  ['29 Nov', 'Manchester', 'St Philip’s Church', 0, 'photo-1497405417022-3fefbce30a70'],
+  ['6 Dec', 'Bristol', 'The Cube', 0, 'photo-1733900606117-2522d8ed3a7b'],
+  ['12 Dec', 'London', 'Café Oto', 0, 'photo-1611927264378-faced7a32de9'],
+  ['17 Jan', 'Ghent', 'Kinky Star', 0, 'photo-1594495894542-a46cc73e081a']
+];
+const PAPERS = ['', 'pink', 'yel'];
+document.getElementById('wall').innerHTML = SHOWS.map((s, i) => {
+  const rot = ((i * 37) % 9 - 4) * 1.1, dy = ((i * 53) % 5) * 9;
+  return '<article class="flyer' + (s[3] ? ' past' : '') + '" style="transform:translateY(' + dy + 'px) rotate(' + rot + 'deg)">' +
+    '<div class="paper ' + PAPERS[i % 3] + '"><div class="ph" style="background-image:url(' + U(s[4], 700) + ')"></div>' +
+    '<div class="info"><span class="big">' + s[0] + '</span><p class="where t">' + s[1] + '</p><p class="t" style="margin:0">' + s[2] + '</p>' +
+    (s[3] ? '' : '<a class="tix t" href="#next">Tickets</a>') + '</div></div>' +
+    (s[3] ? '<svg class="cross" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M8 10 L 92 88 M 90 12 L 12 90" stroke="#141210" stroke-width="3.2" stroke-linecap="round" fill="none" filter="url(#marker)"/></svg>' : '') +
+    '</article>';
+}).join('');
+
+/* ---------- listen: hold a track to play it ---------- */
+const TRACKS = [['Harbour at four', '6:12', [55, 82.4, 110, 164.8]], ['Ship’s cello', '7:40', [49, 73.4, 98, 146.8]], ['Heating off', '4:58', [61.7, 92.5, 123.5, 185]],
+  ['Leith Walk, late', '8:03', [52, 78, 104, 155.6]], ['Gaffer tape', '5:21', [58.3, 87.3, 116.5, 174.6]], ['Low water', '9:47', [43.7, 65.4, 87.3, 130.8]]];
+document.getElementById('tracks').innerHTML = TRACKS.map((t, i) => '<li tabindex="0" data-i="' + i + '"><b>' + t[0] + '</b><span>' + t[1] + '</span></li>').join('');
+
+/* ---------- the sound and the darkening, shared by every page ---------- */
+let A = null, master = null, voices = [], held = false, level = 0, chord = TRACKS[0][2], playing = -1;
+function sound(freqs){
+  if (!A){ A = new (window.AudioContext || window.webkitAudioContext)(); master = A.createGain(); master.gain.value = 0; master.connect(A.destination); }
+  A.resume();
+  voices.forEach((v) => { try { v.stop(A.currentTime + 0.05); } catch(e){} }); voices = [];
+  freqs.forEach((f, i) => {
+    const o = A.createOscillator(); o.type = i % 2 ? 'sawtooth' : 'triangle'; o.frequency.value = f; o.detune.value = (i - 1.5) * 4;
+    const lp = A.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
+    const g = A.createGain(); g.gain.value = 0.12; o.connect(lp); lp.connect(g); g.connect(master); o.start(); voices.push(o);
   });
 }
-addEventListener('pointerdown', function(){ sound(); held = true; A.resume(); });
-addEventListener('pointerup', function(){ held = false; });
-addEventListener('keydown', function(e){ if (e.key === ' '){ sound(); held = true; A.resume(); } });
-addEventListener('keyup', function(e){ if (e.key === ' ') held = false; });
+function press(freqs){ sound(freqs || chord); held = true; }
+function release(){ held = false; }
+addEventListener('pointerdown', (e) => {
+  if (e.target.closest('nav a, a')) return;
+  const li = e.target.closest('.tracks li');
+  if (li){ playing = +li.dataset.i; [...li.parentNode.children].forEach((x) => x.classList.toggle('on', x === li)); press(TRACKS[playing][2]); return; }
+  press();
+});
+addEventListener('pointerup', release); addEventListener('pointercancel', release);
+addEventListener('keydown', (e) => { if (e.key === ' ' && !e.repeat){ const li = document.activeElement.closest && document.activeElement.closest('.tracks li'); if (li){ playing = +li.dataset.i; press(TRACKS[playing][2]); } else press(); e.preventDefault(); } });
+addEventListener('keyup', (e) => { if (e.key === ' ') release(); });
+const wave = document.getElementById('wave'), wg = wave.getContext('2d'); let wx = 0, last = [];
 function frame(){
-  level += ((held ? 1 : 0) - level) * (held ? 0.03 : 0.06);
-  ph.style.setProperty('--c', (1.9 + level * 1.6).toFixed(2));
-  ph.style.setProperty('--b', (1.25 - level * 0.55).toFixed(2));
-  if (gain) gain.gain.value = level * 0.5;
+  level += ((held ? 1 : 0) - level) * (held ? 0.035 : 0.06);
+  document.documentElement.style.setProperty('--c', (1.9 + level * 1.7).toFixed(2));
+  document.documentElement.style.setProperty('--b', (1.12 - level * 0.5).toFixed(2));
+  if (master) master.gain.value = level * 0.45;
+  /* on the record page, the held track scratches a line across the yellow */
+  if (document.getElementById('listen').classList.contains('on')){
+    const w = wave.clientWidth, h = wave.clientHeight;
+    if (wave.width !== w * 2){ wave.width = w * 2; wave.height = h * 2; wg.setTransform(2, 0, 0, 2, 0, 0); wx = 0; }
+    if (level > 0.02){
+      const y = h / 2 + (Math.random() - .5) * h * 0.85 * level;
+      wg.strokeStyle = '#141210'; wg.lineWidth = 1.6; wg.beginPath(); wg.moveTo(wx, last[1] || h / 2); wx += 2.2; wg.lineTo(wx, y); wg.stroke(); last = [wx, y];
+      if (wx > w){ wg.clearRect(0, 0, w, h); wx = 0; }
+    }
+  }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+/* ---------- pages ---------- */
+function route(){
+  const id = (location.hash || '#next').slice(1), page = document.getElementById(id) ? id : 'next';
+  document.querySelectorAll('section').forEach((s) => s.classList.toggle('on', s.id === page));
+  document.querySelectorAll('nav a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + page));
+  scrollTo(0, 0);
+}
+addEventListener('hashchange', route);
+document.querySelectorAll('.ph[data-img]').forEach((p) => { p.style.backgroundImage = 'url(' + U(p.dataset.img, 1100) + ')'; });
+document.querySelectorAll('#next .paper, .cover .paper, .who .paper').forEach((p) => prepare(p, 2));
+document.querySelectorAll('.flyer .paper').forEach((p, i) => prepare(p, i % 3 === 1 ? 0 : 1));
+route();
 </script></body></html>

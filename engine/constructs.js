@@ -299,6 +299,15 @@ const CRITIQUES = [
       'A set of photographs is made consistent by taking each subject off its photographed background and setting it on the page\'s own white, cut along the object\'s real edge (a plate\'s rim, a loaf\'s outline), all at one size. Cropping photographs with different tables and lights into the same frame still reads as cut up. See s6.',
       'Method: cutouts are made once and saved with the site, not computed in the visitor\'s browser (a segmentation model took over 45 seconds a picture there). A model alone was inconsistent, keeping some plates and dropping others; for round things the cut follows the measured rim.'
     ]
+  },
+  { id:'cr10', of:'made/round-3/03d, the Halde Duo poster', date:'2026-11-11',
+    said:'This is plain. I think the font is okay, but what are we really doing here? This can be so much more ambitious. I think there are more pages this will have. Generally, I think I like the spacing and design, but I think it could be a bit more. I really like the font for Halde Duo, but I think this needs more personality. The outline outside of the image, for example, doesn\'t work here at all. This has to be messier, more asymmetric, maybe.',
+    keeps:['Jacquard 24 for the name (liked)', 'Texturina for the facts (okay)', 'the spacing'],
+    lessons:[
+      'Ambition: a brief for a band is a site, not one poster. Plan the pages a visitor actually needs (the next show and tickets, the shows, the music, who they are, booking) and give each its own idea. One screen read as plain.',
+      'Neat framing devices (a ruled double frame round a picture, symmetric borders) read as plain. This page wanted mess and asymmetry: torn edges, things pasted over each other, off-axis type.',
+      'Personality over tidiness. Confirmed taste for the blackletter name; the frame around it was the problem.'
+    ]
   }
 ];
 
