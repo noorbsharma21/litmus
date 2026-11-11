@@ -274,6 +274,15 @@ const CRITIQUES = [
       'Whether "Put them all like 3C" means drop the a and b versions from now on (my reading) or make every page like 03c.'
     ]
   }
+  ,{ id:'cr7', of:'made/round-3/01d, reviewed site by site from here on', date:'2026-11-10',
+    said:'fro all the them the itlaicied font tyou fo automatically gives ai / also the text is overlapping / also.i tink the bootles shoud have difeernt prints on it not just text',
+    method:'From this point Noor reviews one site at a time. Each note is recorded here as said, the lesson is named back in one line for correction, the site is fixed, and the lessons so far are applied to the next site before they see it.',
+    lessons:[
+      'All pages: italic used automatically for the second voice (captions, addresses, subtitles, notes) reads as AI. See t11.',
+      'All pages: text must never collide with other text, at any window size. See t12.',
+      'Candidate construct: the objects in a scene carry their own made surfaces, a print or a drawing, not a text label standing in for one. First instance: 01, each bottle its own printed label.'
+    ]
+  }
 ];
 
 /* ---------------------------------------------------------------
@@ -309,5 +318,7 @@ const TYPE = [
   { id:'t7', rule:'One face per page, and no face twice in a batch. The range runs from book serifs to gothic, experimental and hand.', from:['cr6'] },
   { id:'t8', rule:'Type takes its colour from the picture it sits with (a beige from warm stage light), never white by default.', from:['cr6'] },
   { id:'t9', rule:'Information is gathered into one vessel that guides: a ticket, a tag, a frame it runs around, a sleeve. Corners plus a spread line is scattered. This qualifies t5.', from:['cr6'] },
-  { id:'t10', rule:'Type that must stay readable gets space reserved for it in the layout. A canvas sits in a frame beside the type, so no window size can put the object under the words.', from:['cr6'] }
+  { id:'t10', rule:'Type that must stay readable gets space reserved for it in the layout. A canvas sits in a frame beside the type, so no window size can put the object under the words.', from:['cr6'] },
+  { id:'t11', rule:'No automatic italics. Captions, addresses, subtitles and notes are set roman. Italic only where a face was chosen for its italic.', from:['cr7'] },
+  { id:'t12', rule:'Text never collides with text. Anything placed against objects is measured against its neighbours at every window size, and wraps or shrinks before it touches.', from:['cr7'] }
 ];
