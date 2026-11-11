@@ -292,6 +292,13 @@ const CRITIQUES = [
       'The type on 01 was refused (Libre Caslon spaced capitals on the labels and page, Reenie Beanie notes). Which one was meant is not confirmed; both replaced.'
     ],
     confirmed:'see how good is that. Said of the revision: one label system on white, aligned, bottles square, Rozha One with a pencil cursive. t13 and s5 confirmed on their first instance.'
+  },
+  { id:'cr9', of:'made/round-3/02d, the eight course photographs', date:'2026-11-11',
+    said:'it still looks so odd there has to be cohesioon its weirdl cut up they all need to do a white backrgound and that s how you should learn to do that for images to make it consistent',
+    lessons:[
+      'A set of photographs is made consistent by taking each subject off its photographed background and setting it on the page\'s own white, cut along the object\'s real edge (a plate\'s rim, a loaf\'s outline), all at one size. Cropping photographs with different tables and lights into the same frame still reads as cut up. See s6.',
+      'Method: cutouts are made once and saved with the site, not computed in the visitor\'s browser (a segmentation model took over 45 seconds a picture there). A model alone was inconsistent, keeping some plates and dropping others; for round things the cut follows the measured rim.'
+    ]
   }
 ];
 
@@ -304,7 +311,8 @@ const SURFACE = [
   { id:'s2', rule:'Photographs go through a process, not a filter: cyanotype, two colour riso with misregistration, screen print halftone, photocopy. The process is chosen for the brief (cyanotype for a press, riso for a record label), never the same one twice in a batch.' },
   { id:'s3', rule:'3D is either finished to today’s standard or rendered through an analog process (grain, dither, print). Never half realistic.' },
   { id:'s4', rule:'Polish and hand together: a pencil note beside a rendered object, a scratched label on a clean page.' },
-  { id:'s5', rule:'No beige, cream or off white grounds, including paper tones. White, black, or a committed colour. (cr1, cr8)' }
+  { id:'s5', rule:'No beige, cream or off white grounds, including paper tones. White, black, or a committed colour. (cr1, cr8)' },
+  { id:'s6', rule:'Sets of photographs: each subject cut out along its own edge onto the page\'s white, all at one size, made once and saved. (cr9)' }
 ];
 
 /* ---------------------------------------------------------------

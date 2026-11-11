@@ -2,7 +2,9 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Arda</title>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&display=swap" rel="stylesheet">
-<!-- 02d. A chef's eight course tasting menu. Lessons from 01 applied before
+<!-- 02d. A chef's eight course tasting menu. cr9: the photographs still read as
+     cut up; each dish is now taken off its background and set on the page's
+     white at one size, like the others. Lessons from 01 applied before
      review (cr7, cr8): no italics, a white ground, the facts in one block, and
      the eight photographs made one system: all taken from above, each cropped
      to its own plate's rim so every course sits on the same circle. Round
@@ -14,8 +16,9 @@
      arrives on it in turn, its name darkening on the ring. -->
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"Bodoni Moda",Georgia,serif;color:#211A16;user-select:none;-webkit-user-select:none}
-#plate{position:fixed;left:var(--cx,50%);top:var(--cy,50%);width:var(--d);height:var(--d);transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;box-shadow:0 30px 60px rgba(33,26,22,.18),0 4px 10px rgba(33,26,22,.12)}
-#plate img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s}
+#plate{position:fixed;left:var(--cx,50%);top:var(--cy,50%);width:var(--d);height:var(--d);transform:translate(-50%,-50%)}
+/* each dish taken off its photographed table and set on the page's white, all at one size */
+#plate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .7s;filter:drop-shadow(0 22px 22px rgba(33,26,22,.16)) drop-shadow(0 3px 4px rgba(33,26,22,.1))}
 #plate img.on{opacity:1}
 #ring{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
 #ring text{font-size:var(--fs);fill:#211A16;opacity:.32;transition:opacity .4s}
@@ -29,14 +32,16 @@ html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"B
 <script src="../round-2/images.js"></script>
 <script src="print.js"></script>
 <script>
-grainOver(0.06, 'multiply');
-/* each course: its name, and its photograph cropped to the plate's own rim (focus across, down, zoom) */
+/* no grain here: the ground stays true white so the plates sit on it as cutouts */
+/* each course: its name, and the Unsplash photograph its cutout was made from (with the crop used) */
 var C = ['Scallop, citrus, hazelnut', 'Artichoke, lemon, thyme', 'Bitter leaves, grilled cheese', 'Spelt, runner beans', 'Turbot, beetroot, parsnip', 'Lobster, morels', 'Lamb, spinach, ink', 'Chocolate, praline, cream'];
 var PH = [['photo-1698434939525-dd584e446a29',.39,.5,1.37],['photo-1519077336050-4ca5cac9d64f',.49,.5,1.38],['photo-1669472546359-418a98630699',.5,.5,1.33],['photo-1623695540355-0f4193b51441',.5,.53,1.37],
   ['photo-1519233991914-26a44330ccd7',.5,.52,1.25],['photo-1593854989775-ae5e4d9e49e9',.53,.5,1.3],['photo-1616671276441-2f2c277b8bf9',.47,.53,1.14],['photo-1673912402587-57ac40f1b4a5',.49,.56,1.22]];
 function rim(p, w){ return 'https://images.unsplash.com/' + p[0] + '?auto=format&fit=crop&crop=focalpoint&w=' + w + '&h=' + w + '&fp-x=' + p[1] + '&fp-y=' + p[2] + '&fp-z=' + p[3] + '&q=80'; }
 var centre = [innerWidth / 2, innerHeight / 2], plate = document.getElementById('plate'), ring = document.getElementById('ring'), idx = -1, texts = [];
-C.forEach(function(c, i){ var im = document.createElement('img'); im.alt = c; im.src = rim(PH[i], 1100); plate.appendChild(im); });
+/* each dish cut out once along its own plate's rim and saved (img/02), so all eight
+   sit on the page's white as the same clean circle, at the same size */
+C.forEach(function(c, i){ var im = document.createElement('img'); im.alt = c; im.src = 'img/02/course-' + i + '.webp'; plate.appendChild(im); });
 var NS = 'http://www.w3.org/2000/svg';
 function layout(){
   var W = innerWidth, H = innerHeight; if (!W) return;
