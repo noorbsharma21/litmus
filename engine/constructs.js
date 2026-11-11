@@ -290,7 +290,8 @@ const CRITIQUES = [
       'A picture is cropped around its subject and centred in its frame, never cut arbitrarily by a cover crop.',
       'All pages: no beige, cream or off white paper grounds. I kept reaching for warm paper tones (F4F3EF, EFEDE8, ECEBE6 and others) even after cr1 refused beige. Grounds are white, black, or a committed colour. See s5.',
       'The type on 01 was refused (Libre Caslon spaced capitals on the labels and page, Reenie Beanie notes). Which one was meant is not confirmed; both replaced.'
-    ]
+    ],
+    confirmed:'see how good is that. Said of the revision: one label system on white, aligned, bottles square, Rozha One with a pencil cursive. t13 and s5 confirmed on their first instance.'
   }
 ];
 
