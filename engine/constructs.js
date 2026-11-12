@@ -359,6 +359,15 @@ const CRITIQUES = [
       'Every part that moves together shows it: the same numbers on map and cards, the current one lit in both, the control placed where it acts. If someone has to work out how the parts relate, the layout has failed (b2, b6).'
     ],
     applied:'05 rebuilt as a hand-drawn map of Porto with the route stop to stop, a strip of hours the sun moves along, and numbered cards that say what you do at each stop.'
+  },
+  { id:'cr17', of:'made/round-3/05d, the map version', date:'2026-11-12',
+    said:'whiile i like this i laiked the use of image and the lines here are too sharp i think we can do better weith the design here fro sure',
+    keeps:['the map, the route, the strip of hours, the numbered stops (liked)'],
+    lessons:[
+      'Do not lose a liked ingredient when fixing something else. The photographs went when the map came in; the fix keeps both.',
+      'Drawn lines must look drawn: vector-sharp strokes read as diagrams even when the path wobbles. Ink that bleeds a little (displacement and a slight blur), watercolour washes with wandering edges, nothing cut square by the frame. See t14.'
+    ],
+    applied:'05 as a travel sketchbook: a watercolour and ink map, and a photograph of each stop that changes as you walk the day.'
   }
 ];
 
@@ -401,6 +410,6 @@ const TYPE = [
   { id:'t11', rule:'No automatic italics. Captions, addresses, subtitles and notes are set roman. Italic only where a face was chosen for its italic.', from:['cr7'] },
   { id:'t12', rule:'Text never collides with text. Anything placed against objects is measured against its neighbours at every window size, and wraps or shrinks before it touches.', from:['cr7'] },
   { id:'t13', rule:'Repeated elements share one system: same size, same position, same ground, same face, aligned. Variation lives inside the frame, not in the frame.', from:['cr8'] },
-  { id:'t14', rule:'No ruled lines where a line is seen: underlines, dividers, crossings out and circles are drawn by hand, in overlapping strokes with rough edges.', from:['cr11'] },
+  { id:'t14', rule:'No ruled lines where a line is seen: underlines, dividers, crossings out, circles and the lines of drawings are drawn by hand, in overlapping strokes with soft, bled edges, never vector-sharp.', from:['cr11', 'cr17'] },
   { id:'t15', rule:'No effects on letters. No offset or doubled letters, fake misregistration, outlines, drop shadows, glows, gradients or textures on type. Letters are set clean in one colour; any roughness comes from a hand-drawn face or real lettering, never from CSS.', from:['cr15'] }
 ];
