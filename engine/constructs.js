@@ -350,6 +350,15 @@ const CRITIQUES = [
       'The format is a hard constraint stated first and kept throughout: a poster is one fixed sheet with no pages, navigation or scrolling; a deck is slides; an app screen is one screen. Every section of the prompt speaks in that format\'s terms.',
       'No effects on letters (t15). Print processes belong to images, made properly, never imitated in CSS. s1 and s2 rewritten.'
     ]
+  },
+  { id:'cr16', of:'made/round-3/05d, the Porto weekend with its route drawn over a photograph of house fronts', date:'2026-11-12',
+    said:'hi could you please fix this i think currentlu its a bit hard to follow what they are foing  the layout does not seem to work',
+    cause:'The route sat on a picture it had nothing to do with (a ferry stop on a wall), and the picture, the list and the sun did not visibly connect, so nobody could follow the day.',
+    lessons:[
+      'Information sits in a structure that matches what it is: a route goes on a map, drawn where the places are. A photograph is not a ground to put a route on.',
+      'Every part that moves together shows it: the same numbers on map and cards, the current one lit in both, the control placed where it acts. If someone has to work out how the parts relate, the layout has failed (b2, b6).'
+    ],
+    applied:'05 rebuilt as a hand-drawn map of Porto with the route stop to stop, a strip of hours the sun moves along, and numbered cards that say what you do at each stop.'
   }
 ];
 
