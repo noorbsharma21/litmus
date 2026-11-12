@@ -375,7 +375,18 @@ const CRITIQUES = [
       'Sketch work: draw what a sketcher of this subject would draw, not shapes. Landmarks drawn small but recognisable (towers, halls, house fronts, boats, a lighthouse), hatching for slopes, waves and ripples for water, a hand-drawn north. A hierarchy of line weight: heavy for coast and river, medium for buildings, light for hatching. Ellipses and blobs standing for things read as placeholders. See SKETCH.',
       'Photography: treat the photographs as one set an editor has matched. Choose for a single eye (no lone black-and-white frame, no two near-identical shots, the subject large enough to read), measure each and bring them to one exposure and colour with one shared grade, crop each around its subject. Use the photograph to say something: a hand note on the page with an inked arrow to the thing to look at, never words laid over the picture. See PHOTO.'
     ],
-    applied:'05: Clerigos, the cathedral, the market hall, the Ribeira fronts, port lodge roofs, rabelo boats, the Foz lighthouse, waves and ripples drawn in ink; three photographs replaced, all sixteen matched, every stop annotated by hand.'
+    applied:'05: Clerigos, the cathedral, the market hall, the Ribeira fronts, port lodge roofs, rabelo boats, the Foz lighthouse, waves and ripples drawn in ink; three photographs replaced, all sixteen matched, every stop annotated by hand.',
+    confirmed:'yes this is better. Said of the revision (12 Nov 2026). SKETCH and PHOTO hold on their first instance.'
+  },
+  { id:'cr19', of:'a direction, given while 06 was being prepared', date:'2026-11-12',
+    said:'i want you to be able to create styff like death to stcok almsot / innovate frontier designs',
+    reference:'Death to Stock (deathtothestockphoto.com), studied 12 Nov 2026: photographs used as the page\'s material; extreme crops (a fingertip filling the screen, skin, hair, a candle flame) set beside whole objects at a completely different scale; full-bleed sheets stacked and sliding over one another as you scroll until the page is a collage; still life on coloured backdrops; very little type.',
+    lessons:[
+      'Aim at the frontier, not the competent: each piece should do something with its material that a template could not.',
+      'Photographs as material: crop to the extreme, put a detail beside a whole at a different scale, and let sheets build into a collage as the visitor moves. See f5 and f6.',
+      'Take the method, never the look: 06 used it inside the archive\'s own world (models, close-ups of buildings, typed index cards).'
+    ],
+    applied:'06 rebuilt: ten projects as sheets of photographs that land on one another as you scroll, a typed index card on each, the years down the edge to jump to, ending on asking to visit the archive.'
   }
 ];
 
@@ -393,7 +404,9 @@ const PHOTO = [
   { id:'f1', rule:'A set of photographs is chosen by one eye: same kind of light, no lone black and white or near-duplicate frames, the subject big enough to read at the size it is shown.' },
   { id:'f2', rule:'Match the set: measure each photograph and bring them to one exposure and colour with one shared grade (or cut them out onto white, s6). Night stays night.' },
   { id:'f3', rule:'Crop each photograph around its subject on purpose; the same crop logic across the set.' },
-  { id:'f4', rule:'Make the photograph say something: a hand note on the page with an inked arrow to the thing to look at, or a caption like a book. Never words laid over the picture (t1).' }
+  { id:'f4', rule:'Make the photograph say something: a hand note on the page with an inked arrow to the thing to look at, or a caption like a book. Never words laid over the picture (t1).' },
+  { id:'f5', rule:'Crop to the extreme where it helps: a detail filling the frame (an edge, a texture, a hand) set beside the whole thing small, so the scale contrast does the work. (cr19)' },
+  { id:'f6', rule:'Let photographs build: sheets that land on one another as the visitor moves, so the page becomes a collage of what they have seen. (cr19)' }
 ];
 
 const SURFACE = [

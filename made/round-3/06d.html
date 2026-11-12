@@ -1,66 +1,137 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio Halm, 1979 to 2010</title>
+<title>Studio Halm, archive 1979 to 2010</title>
 <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
-<!-- 06d. A studio archive, 1979 to 2010. Round three, from 06c. cr6: too
-     fake, too basic, wants grain, analog, not flat. The same walk down the
-     table of models, but the render is a photocopy: toner on paper, hard
-     contrast, the grain a copier leaves, the way an archive keeps its
-     photographs of models. The type is typed, on a card under the copy, in
-     space of its own. Was: 06c. Round two. Material: real 3D, white
-     card models on a long table, high key like a model shop. Behaviour:
-     scroll as a walk. The table runs away from you, one model per year, and
-     scrolling walks the camera down it from 1979 to 2010. -->
+<!-- 06d. A studio archive, 1979 to 2010. Rebuilt with every lesson so far and
+     the direction from 12 November: "create stuff like Death to Stock, innovate
+     frontier designs". What is taken from Death to Stock is its method, not
+     its look: photographs used as material, extreme crops set beside whole
+     things at a completely different scale, sheets that slide over one
+     another as you scroll until the page is a collage. Kept in the archive's
+     own world: every project is a sheet of photographs (a close-up of the
+     model or the building, and the whole model small beside it) with a typed
+     index card, the way an archive labels what it keeps. The years run down
+     the edge so a project can be found by year (narrative, engine/people.js
+     06), and the page ends on asking to visit the archive. Photographs are
+     Unsplash placeholders, matched as one set. -->
 <style>
-html,body{margin:0;background:#E9E8E3;font-family:"Cutive Mono",monospace;color:#151412}
-body{height:900vh}
-#view{position:fixed;left:30px;right:30px;top:30px;bottom:150px;background:#EDEBE6;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-/* the index card: everything typed, in its own strip under the copy */
-.card{position:fixed;left:30px;right:30px;bottom:22px;height:104px;display:grid;grid-template-columns:auto 1fr auto;column-gap:48px;align-items:end;border-top:1px solid #151412;padding-top:10px;box-sizing:border-box}
-#yr{margin:0;font-size:84px;line-height:.82}
-#pr{margin:0;font-size:15px;line-height:1.55}
-h1{margin:0;font-weight:normal;font-size:15px;line-height:1.55;text-align:right}
-</style></head><body>
-<div id="view"></div>
-<div class="card"><p id="yr" aria-live="polite">1979</p><p id="pr"></p><h1>Studio Halm<br>archive, 1979 to 2010</h1></div>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
-<script type="module">
-import { stage } from '../round-2/three-kit.js';
-const S = stage({ el:document.getElementById('view'), bg:'#FFFFFF', key:2.8, fill:0.45, exposure:1.0, fov:38, analog:{ mode:'xerox', paper:'#EDEBE6', ink:'#151412', lo:0.58, hi:0.86, grain:0.05, vignette:0.1 } });
-const { THREE, scene, camera } = S;
-S.key.position.set(-6, 10, -4);
-S.key.shadow.camera.left = -30; S.key.shadow.camera.right = 30; S.key.shadow.camera.top = 60; S.key.shadow.camera.bottom = -60; S.key.shadow.camera.far = 120;
-S.key.shadow.camera.updateProjectionMatrix();
-const KIND = ['House','School','Bathhouse','Library','Bridge','Market','Chapel','Housing','Studio','Pavilion','Ferry terminal','Garden'];
-const PLACE = ['Porto','Ghent','Bergen','Trieste','Aarhus','Lyon','Cork','Basel','Bilbao','Utrecht','Turku','Ljubljana'];
-let x = 1979; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
-const table = new THREE.Mesh(new THREE.BoxGeometry(5, 0.3, 112), new THREE.MeshStandardMaterial({ color:'#7a6a58', roughness:0.6 }));
-table.position.set(0, -0.15, -54); table.receiveShadow = true; scene.add(table);
-const card = new THREE.MeshStandardMaterial({ color:'#FBFBF8', roughness:0.85 });
-const YEARS = [];
-for (let y = 1979; y <= 2010; y++){
-  const i = y - 1979, z = -i * 3.4, g = new THREE.Group(), kind = Math.floor(r() * 6);
-  const w = 0.8 + r() * 1.4, d = 0.8 + r() * 1.2, h = 0.4 + r() * 2.2;
-  const add = (geo, px, py, pz, ry) => { const m = new THREE.Mesh(geo, card); m.position.set(px, py, pz); m.rotation.y = ry || 0; m.castShadow = m.receiveShadow = true; g.add(m); };
-  if (kind === 0){ add(new THREE.BoxGeometry(w, h, d), 0, h / 2, 0); }
-  else if (kind === 1){ add(new THREE.BoxGeometry(w, h * 0.6, d), 0, h * 0.3, 0); const roof = new THREE.CylinderGeometry(0, w * 0.72, h * 0.45, 4); add(roof, 0, h * 0.6 + h * 0.22, 0, Math.PI / 4); }
-  else if (kind === 2){ add(new THREE.BoxGeometry(w * 0.45, h * 1.6, d * 0.45), 0, h * 0.8, 0); add(new THREE.BoxGeometry(w, h * 0.3, d), 0, h * 0.15, 0); }
-  else if (kind === 3){ for (let k = 0; k < 3; k++) add(new THREE.BoxGeometry(w * 0.3, h * (0.5 + k * 0.3), d), (k - 1) * w * 0.34, h * (0.5 + k * 0.3) / 2, 0); }
-  else if (kind === 4){ add(new THREE.TorusGeometry(w * 0.45, 0.08, 8, 24, Math.PI), 0, 0, 0); add(new THREE.BoxGeometry(w * 1.2, 0.08, d * 0.5), 0, w * 0.45, 0); }
-  else { add(new THREE.CylinderGeometry(w * 0.4, w * 0.4, h, 32), 0, h / 2, 0); }
-  g.position.set((i % 2 ? 1 : -1) * 0.7, 0, z); g.rotation.y = r() * 0.6 - 0.3; scene.add(g);
-  const n = 1 + Math.floor(r() * 3), list = [];
-  for (let k = 0; k < n; k++) list.push(KIND[Math.floor(r() * KIND.length)] + ', ' + PLACE[Math.floor(r() * PLACE.length)]);
-  YEARS.push(list);
+:root{--ink:#151412;--red:#C2261D}
+html,body{margin:0;background:#FFFFFF;color:var(--ink);font-family:"Cutive Mono","Courier New",monospace}
+a{color:inherit}
+.top{position:fixed;z-index:60;left:24px;top:18px;margin:0;font-size:15px;line-height:1.3;background:#fff;padding:8px 12px 9px}
+.top b{font-weight:normal;display:block;font-size:22px}
+/* the years down the edge: every year the studio worked, the ones in the archive can be opened */
+.years{position:fixed;z-index:60;right:18px;top:16px;bottom:16px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;margin:0;padding:6px 8px;list-style:none;background:#fff;font-size:12px}
+.years li{line-height:1}
+.years a{text-decoration:none;display:inline-block;padding:2px 2px;position:relative}
+.years span{opacity:.3}
+.years a.on{color:var(--red)}
+.years a .scrib{position:absolute;left:-10%;bottom:-5px;width:120%;height:8px;opacity:0;overflow:visible}
+.years a.on .scrib{opacity:1}
+.years a:focus-visible,.visit a:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+/* the stack: every sheet sticks at the top, so each new one lands over the ones before */
+.stack{position:relative}
+.sheet{position:sticky;top:0;height:100vh;pointer-events:none}
+.sheet > *{pointer-events:auto}
+.big,.small{position:absolute;background-size:cover;background-color:#eee;box-shadow:0 1px 1px rgba(0,0,0,.12),0 12px 30px rgba(0,0,0,.14)}
+.big{left:var(--bl);top:var(--bt);width:var(--bw);height:var(--bh);background-position:var(--bp,center)}
+.small{left:var(--sl);top:var(--st);width:var(--sw);aspect-ratio:4/5;background-position:center}
+.card{position:absolute;left:var(--cl);top:var(--ct);width:min(300px,70vw);background:#fff;padding:16px 18px 18px;box-shadow:0 1px 1px rgba(0,0,0,.12),0 10px 24px rgba(0,0,0,.12);font-size:15px;line-height:1.45;transform:rotate(var(--cr,0deg))}
+.card .yr{font-size:34px;line-height:1;margin:0 0 4px;position:relative;display:inline-block}
+.card .yr .scrib{position:absolute;left:-4%;bottom:-8px;width:108%;height:10px;overflow:visible}
+.card p{margin:10px 0 0}
+.card .no{float:right;font-size:12px;opacity:.6}
+.lead{position:absolute;left:var(--cl);top:var(--ct);max-width:min(520px,80vw);background:#fff;padding:20px 22px 22px;font-size:17px;line-height:1.5;box-shadow:0 1px 1px rgba(0,0,0,.12),0 10px 24px rgba(0,0,0,.12)}
+.lead b{font-weight:normal;display:block;font-size:clamp(34px,5vw,62px);line-height:.95;margin-bottom:12px}
+.visit{position:relative;z-index:50;min-height:80vh;display:flex;align-items:center;justify-content:center;padding:10vh 24px}
+.visit .card{position:relative;left:auto;top:auto;width:min(440px,86vw);font-size:17px;transform:rotate(-1deg)}
+.visit .card a{display:inline-block;margin-top:14px;font-size:20px;position:relative;text-decoration:none;padding:4px 0}
+.visit .card a .scrib{position:absolute;left:-3%;bottom:-6px;width:106%;height:10px;overflow:visible}
+@media (max-width:760px){
+  .years{top:auto;bottom:0;left:0;right:0;flex-direction:row;justify-content:flex-start;gap:10px;overflow-x:auto;padding:8px 12px;font-size:13px}
+  .years li:has(span){display:none}
+  .big{left:4vw;top:calc(var(--bt) * .5 + 70px);width:92vw;height:52vh}
+  .small{left:auto;right:5vw;top:auto;bottom:22vh;width:38vw}
+  .card,.lead{left:4vw;top:auto;bottom:9vh;width:auto;max-width:56vw}
+  .lead{max-width:88vw}
 }
-const yr = document.getElementById('yr'), pr = document.getElementById('pr');
-let cz = 6, shown = -1;
-S.loop(() => {
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const f = max > 0 ? scrollY / max : 0, target = 6 - f * 31 * 3.4;
-  cz += (target - cz) * 0.08;
-  camera.position.set(2.6, 2.4, cz); camera.lookAt(0, 0.6, cz - 6);
-  const i = Math.max(0, Math.min(31, Math.round((6 - cz) / 3.4)));
-  if (i !== shown){ shown = i; yr.textContent = 1979 + i; pr.innerHTML = YEARS[i].join('<br>'); }
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+html{scroll-behavior:smooth}
+</style></head><body>
+<p class="top"><b>Studio Halm</b>architects, archive 1979 to 2010</p>
+<ol class="years" id="years" aria-label="Years"></ol>
+<div class="stack" id="stack"></div>
+<section class="visit" id="visit"><div class="card">
+  <p class="yr">Visit</p>
+  <p>The models, drawings and photographs are kept in the studio on Rua do Bonjardim. Students, researchers and clients can see any project on a Thursday, by appointment.</p>
+  <a href="mailto:archive@studiohalm.eu">archive@studiohalm.eu</a>
+</div></section>
+<script src="print.js"></script>
+<script>
+var U = function(id, w){ return 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&w=' + w + '&q=78'; };
+/* year, what, where, one line, the detail (close up), the whole model; then where each piece sits on its sheet */
+var WORK = [
+  [1979, 'House on the dunes', 'Bergen', 'The first house. A white box lifted off the sand on four legs.', 'photo-1612538498488-226257115cc4', 'photo-1653164494885-a8526f62678c'],
+  [1983, 'Public bathhouse', 'Trieste', 'Three vaults over three pools, cold, warm and hot.', 'photo-1565768502473-c5dc73b7eb33', 'photo-1653164579768-ea97833b3b03'],
+  [1986, 'Library', 'Aarhus', 'The reading rooms face north; the fins keep the sun off the books.', 'photo-1496236436299-cde70e3587cf', 'photo-1742198526562-5663a82c13b6'],
+  [1990, 'Housing on stilts', 'Cork', 'Forty flats raised over the flood line, gardens underneath.', 'photo-1601883683106-42e49ae6eda0', 'photo-1794209709113-f06d978aeef0'],
+  [1994, 'Ferry terminal', 'Bilbao', 'A roof on leaning columns, open to the river on three sides.', 'photo-1569258592171-357ea26da4df', 'photo-1631454965644-00510875561f'],
+  [1998, 'Chapel', 'Ljubljana', 'One room, one window, light from above the altar.', 'photo-1635074155443-6cbf74711dd2', 'photo-1653164514614-172c46a30984'],
+  [2001, 'Market hall', 'Lyon', 'A long curved roof the stalls set up under every morning.', 'photo-1567201864585-6baec9110dac', 'photo-1661264083807-5e6a54fb12da'],
+  [2005, 'Pavilion', 'Basel', 'Folded from one sheet, for one summer, then taken down.', 'photo-1782879547253-0ccc7193e13f', 'photo-1765162308598-e67b089969c6'],
+  [2008, 'School', 'Ghent', 'Twelve classrooms under a sawtooth roof, every room lit from the north.', 'photo-1787728165633-e7c56bc88623', 'photo-1624066969616-69b0b0301d4d'],
+  [2010, 'Garden house', 'Porto', 'The last project before the studio closed. Built for the founder’s sister.', 'photo-1758800601480-49aa0f18c1f1', 'photo-1789985209005-229117b86ab9']
+];
+/* each sheet lands somewhere different, at its own scale, so the pile reads as a collage */
+var LAY = [
+  { bl:'8vw', bt:'10vh', bw:'58vw', bh:'78vh', sl:'60vw', st:'38vh', sw:'20vw', cl:'4vw', ct:'62vh', cr:'-1.5deg' },
+  { bl:'34vw', bt:'4vh', bw:'54vw', bh:'60vh', sl:'18vw', st:'46vh', sw:'22vw', cl:'52vw', ct:'60vh', cr:'1deg' },
+  { bl:'0vw', bt:'26vh', bw:'70vw', bh:'56vh', sl:'64vw', st:'8vh', sw:'18vw', cl:'8vw', ct:'14vh', cr:'-1deg' },
+  { bl:'22vw', bt:'14vh', bw:'48vw', bh:'82vh', sl:'64vw', st:'52vh', sw:'22vw', cl:'4vw', ct:'40vh', cr:'1.5deg' },
+  { bl:'44vw', bt:'20vh', bw:'48vw', bh:'70vh', sl:'10vw', st:'10vh', sw:'26vw', cl:'30vw', ct:'64vh', cr:'-2deg' },
+  { bl:'6vw', bt:'6vh', bw:'44vw', bh:'64vh', sl:'52vw', st:'30vh', sw:'24vw', cl:'62vw', ct:'8vh', cr:'1deg' },
+  { bl:'28vw', bt:'36vh', bw:'64vw', bh:'54vh', sl:'8vw', st:'26vh', sw:'18vw', cl:'54vw', ct:'12vh', cr:'-1deg' },
+  { bl:'12vw', bt:'18vh', bw:'52vw', bh:'74vh', sl:'60vw', st:'14vh', sw:'22vw', cl:'64vw', ct:'62vh', cr:'2deg' },
+  { bl:'38vw', bt:'8vh', bw:'52vw', bh:'62vh', sl:'14vw', st:'50vh', sw:'20vw', cl:'6vw', ct:'16vh', cr:'-1.5deg' },
+  { bl:'4vw', bt:'30vh', bw:'60vw', bh:'62vh', sl:'66vw', st:'20vh', sw:'22vw', cl:'40vw', ct:'8vh', cr:'1deg' }
+];
+var stack = document.getElementById('stack'), years = document.getElementById('years');
+/* the first sheet: the studio, and a drawing being made */
+stack.insertAdjacentHTML('beforeend', '<section class="sheet" id="start" style="--bl:30vw;--bt:8vh;--bw:62vw;--bh:84vh;--cl:6vw;--ct:22vh">' +
+  '<div class="big" role="img" aria-label="A hand drawing with a scale rule" style="background-image:url(' + U('photo-1503387762-592deb58ef4e', 1700) + ')"></div>' +
+  '<div class="lead"><b>Thirty-one years, ten buildings</b>Studio Halm drew and built from 1979 to 2010. This is what the archive keeps of it: the models, the drawings and the buildings. Scroll through the years, or pick one.</div></section>');
+WORK.forEach(function(w, i){
+  var L = LAY[i], vars = Object.keys(L).map(function(k){ return '--' + k + ':' + L[k]; }).join(';');
+  stack.insertAdjacentHTML('beforeend', '<section class="sheet" id="y' + w[0] + '" style="' + vars + '" aria-label="' + w[0] + ', ' + w[1] + ', ' + w[2] + '">' +
+    '<div class="big" role="img" aria-label="' + w[1] + ', a close view" data-img="' + w[4] + '"></div>' +
+    '<div class="small" role="img" aria-label="' + w[1] + ', the model" data-img="' + w[5] + '"></div>' +
+    '<div class="card"><span class="no">' + String(i + 1).padStart(2, '0') + ' of 10</span><p class="yr">' + w[0] + scribbleLine({ seed:i + 3, weight:2.2, amp:6, colour:'#C2261D' }) + '</p>' +
+    '<p>' + w[1] + ', ' + w[2] + '</p><p>' + w[3] + '</p></div></section>');
 });
+/* every year the studio was open, the archived ones can be opened */
+var done = {}; WORK.forEach(function(w){ done[w[0]] = 1; });
+for (var y = 1979; y <= 2010; y++) years.insertAdjacentHTML('beforeend', done[y] ? '<li><a href="#y' + y + '">' + y + scribbleLine({ seed:y, weight:1.8, amp:5, colour:'#C2261D' }) + '</a></li>' : '<li><span>' + y + '</span></li>');
+/* one set of photographs: measured and brought to the same exposure and colour, one shared grade on top */
+function gradeOf(id){
+  return loadImg(U(id, 160)).then(function(img){
+    var c = document.createElement('canvas'); c.width = 40; c.height = 30; var g = c.getContext('2d'); g.drawImage(img, 0, 0, 40, 30);
+    var d = g.getImageData(0, 0, 40, 30).data, L = 0, n = d.length / 4;
+    for (var i = 0; i < d.length; i += 4) L += (.2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]) / 255; L /= n;
+    var br = Math.max(.86, Math.min(1.2, .58 / Math.max(.05, L)));
+    return 'brightness(' + br.toFixed(2) + ') saturate(.82) contrast(1.04) sepia(.06)';
+  }).catch(function(){ return 'saturate(.82) contrast(1.04) sepia(.06)'; });
+}
+document.querySelectorAll('[data-img]').forEach(function(el){
+  var big = el.classList.contains('big'); el.style.backgroundImage = 'url(' + U(el.dataset.img, big ? 1700 : 800) + ')';
+  gradeOf(el.dataset.img).then(function(f){ el.style.filter = f; });
+});
+document.querySelector('#start .big').style.filter = 'saturate(.82) contrast(1.04) sepia(.06)';
+/* which year you are on: the sheet that has most recently landed */
+var links = [].slice.call(years.querySelectorAll('a'));
+function mark(){
+  var cur = null; WORK.forEach(function(w){ var s = document.getElementById('y' + w[0]); if (s.offsetTop - 2 <= scrollY) cur = w[0]; });
+  links.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#y' + cur); });
+}
+addEventListener('scroll', mark, { passive:true }); mark();
+document.querySelector('.visit a').insertAdjacentHTML('beforeend', scribbleLine({ seed:91, weight:2.4, amp:6, colour:'#C2261D' }));
 </script></body></html>

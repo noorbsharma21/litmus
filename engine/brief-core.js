@@ -77,6 +77,9 @@ const PICKS = [
   { id:'S18', tag:'Almost empty', name:'A nearly empty spread', img:'references/thumb/S18.jpg',
     what:'Tiny figures, scattered dots, three small photographs and one paragraph.',
     takes:'Say very little and give it room. The white space is part of what it says.' },
+  { id:'dts', tag:'Photographs as material', name:'Death to Stock', url:'https://www.deathtothestockphoto.com', img:'references/sites/dts.jpg',
+    what:'Extreme close crops beside whole things, stacked like sheets that slide over each other as you scroll.',
+    takes:'Photographs are the material, not illustrations: crop to the detail, change scale between neighbours, let the page build into a collage as you move.' },
   { id:'P07', tag:'One statement', name:'Red cows in a field', img:'references/thumb/P07.jpg',
     what:'Flat red cow silhouettes over a photograph of a field, script lettering top and bottom.',
     takes:'One surface, one statement: a photograph with flat colour knocked into it and a single line of words.' }
