@@ -255,11 +255,12 @@ function render(){
       '<div class="examples"><span>For example</span><button data-ex="A site for a cello and synth duo">A site for a cello and synth duo</button><button data-ex="A photographer’s portfolio">A photographer’s portfolio</button><button data-ex="A poster for a film night">A poster for a film night</button></div>' +
       '<p class="seen" id="seen"></p>' + foot();
   }
-  if (st === 'who') h = picker('who', 'Who comes to it?', 'The person who actually visits, not the person paying for it.');
-  if (st === 'job') h = picker('job', 'What do they come to do?', 'In their words, the reason they opened it.');
+  const sheet = !(FORMATS[S.kind] || FORMATS.website).web, unit = (FORMATS[S.kind] || FORMATS.website).unit;
+  if (st === 'who') h = sheet ? picker('who', 'Who sees it?', 'The person it has to reach, not the person paying for it.') : picker('who', 'Who comes to it?', 'The person who actually visits, not the person paying for it.');
+  if (st === 'job') h = sheet ? picker('job', 'What do they need from it?', 'In their words, what they look for in it.') : picker('job', 'What do they come to do?', 'In their words, the reason they opened it.');
   if (st === 'says') h = picker('says', 'If they remember one sentence, what is it?', 'Everything else is built around this.');
   if (st === 'end'){ const A = S.actions || [];
-    h = head(at + 1, 'What should they do before they leave?', 'Pick any. The first one you tap is the main one, and every page ends on it.') + '<div class="opts">' + ACTIONS.map((a) => '<button class="opt" data-act="' + a[0] + '" aria-pressed="' + A.includes(a[0]) + '">' + a[1] + '<span class="tick">' + (A[0] === a[0] ? 'the main one' : A.includes(a[0]) ? 'picked' : '') + '</span></button>').join('') + '</div>' + foot(); }
+    h = head(at + 1, sheet ? 'What should they do after seeing it?' : 'What should they do before they leave?', sheet ? 'Pick any. The first one you tap is the main one, and what they need for it goes on the ' + unit + '.' : 'Pick any. The first one you tap is the main one, and every ' + unit + ' ends on it.') + '<div class="opts">' + ACTIONS.map((a) => '<button class="opt" data-act="' + a[0] + '" aria-pressed="' + A.includes(a[0]) + '">' + a[1] + '<span class="tick">' + (A[0] === a[0] ? 'the main one' : A.includes(a[0]) ? 'picked' : '') + '</span></button>').join('') + '</div>' + foot(); }
   if (st === 'peak') h = picker('peak', 'What will they remember?', 'The one moment. Usually the thing they can do on it.');
   if (st === 'have'){
     const H = S.has || {};

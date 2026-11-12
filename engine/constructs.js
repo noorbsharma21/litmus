@@ -341,6 +341,15 @@ const CRITIQUES = [
       'Offer few references, chosen for range: each pulls a different way (material, behaviour, or how the page is built). Similar options make picking meaningless.',
       'Every reference states what it is and, mainly, what Litmus takes from it. The taking is what enters the prompt; a picture alone tells the model nothing. See PICKS in engine/brief-core.js.'
     ]
+  },
+  { id:'cr15', of:'a prompt written by the Litmus front page with Poster chosen, run in Claude Code (Rittenhouse-Brief7/cello-and-synth)', date:'2026-11-12',
+    said:'I chose Poster last time as an experiment, and it made a website. You cannot make errors like this. Also, the website it made had these weird effects. I\'ve put some new pictures, but doing stuff like this is not my taste.',
+    shown:'SMALL RUNS set in a heavy extended face, fluoro orange on federal blue, each letter doubled in pink a few pixels off: CSS imitating a riso misprint.',
+    cause:'Mine, twice. The prompt named the poster in its first line, then spoke in website terms throughout (every page, first screen, phone and desktop widths, files opened in a browser), so the format lost. And s1 and s2 (every page carries grain; riso with misregistration) were taken as licence to fake print effects on the type.',
+    lessons:[
+      'The format is a hard constraint stated first and kept throughout: a poster is one fixed sheet with no pages, navigation or scrolling; a deck is slides; an app screen is one screen. Every section of the prompt speaks in that format\'s terms.',
+      'No effects on letters (t15). Print processes belong to images, made properly, never imitated in CSS. s1 and s2 rewritten.'
+    ]
   }
 ];
 
@@ -349,8 +358,8 @@ const CRITIQUES = [
    screen printing, cyanotype, texturally rich formats; flat looks lame.
    --------------------------------------------------------------- */
 const SURFACE = [
-  { id:'s1', rule:'No clean flat surface. Every page carries a material: paper grain, print texture, film grain, photocopy toner.' },
-  { id:'s2', rule:'Photographs go through a process, not a filter: cyanotype, two colour riso with misregistration, screen print halftone, photocopy. The process is chosen for the brief (cyanotype for a press, riso for a record label), never the same one twice in a batch.' },
+  { id:'s1', rule:'Material comes from the content itself: photographs printed through a real process, drawings, 3D, found material. Never from an effect laid over a flat page or onto letters.', note:'Rewritten after cr15; it used to say every page carries grain, and that was read as permission for overlays.' },
+  { id:'s2', rule:'Photographs and drawings, never type, may go through a print process, made properly rather than faked: cyanotype, two colour riso, screen print halftone, photocopy. The process is chosen for the brief (cyanotype for a press, riso for a record label), never the same one twice in a batch.' },
   { id:'s3', rule:'3D is either finished to today’s standard or rendered through an analog process (grain, dither, print). Never half realistic.' },
   { id:'s4', rule:'Polish and hand together: a pencil note beside a rendered object, a scratched label on a clean page.' },
   { id:'s5', rule:'No beige, cream or off white grounds, including paper tones. White, black, or a committed colour. (cr1, cr8)' },
@@ -383,5 +392,6 @@ const TYPE = [
   { id:'t11', rule:'No automatic italics. Captions, addresses, subtitles and notes are set roman. Italic only where a face was chosen for its italic.', from:['cr7'] },
   { id:'t12', rule:'Text never collides with text. Anything placed against objects is measured against its neighbours at every window size, and wraps or shrinks before it touches.', from:['cr7'] },
   { id:'t13', rule:'Repeated elements share one system: same size, same position, same ground, same face, aligned. Variation lives inside the frame, not in the frame.', from:['cr8'] },
-  { id:'t14', rule:'No ruled lines where a line is seen: underlines, dividers, crossings out and circles are drawn by hand, in overlapping strokes with rough edges.', from:['cr11'] }
+  { id:'t14', rule:'No ruled lines where a line is seen: underlines, dividers, crossings out and circles are drawn by hand, in overlapping strokes with rough edges.', from:['cr11'] },
+  { id:'t15', rule:'No effects on letters. No offset or doubled letters, fake misregistration, outlines, drop shadows, glows, gradients or textures on type. Letters are set clean in one colour; any roughness comes from a hand-drawn face or real lettering, never from CSS.', from:['cr15'] }
 ];

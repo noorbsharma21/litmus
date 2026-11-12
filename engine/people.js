@@ -45,7 +45,7 @@ const BEHAVIOUR_SCIENCE = [
   { id:'b10', name:'Load', src:'Sweller, cognitive load, 1988; Mayer, coherence principle',
     rule:'Every element costs attention. The experimental part has to carry meaning; anything that carries none goes (agrees with t5, say less).' },
   { id:'b11', name:'Story', src:'Green and Brock, narrative transportation, 2000',
-    rule:'People absorbed in a story attend more and remember more. State one narrative and keep every page inside it.' },
+    rule:'People absorbed in a story attend more and remember more. State one narrative and keep every part of it inside that story.' },
   { id:'b12', name:'Progress', src:'Kivetz, Urminsky and Zheng, goal gradient, 2006',
     rule:'In anything with steps, show how far along you are (the florist’s tag filling up).' },
   { id:'b13', name:'Sensible defaults', src:'Johnson and Goldstein, 2003',
