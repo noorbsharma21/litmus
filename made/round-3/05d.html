@@ -111,7 +111,7 @@ function poly(pts){ return 'M' + pts.map(function(p){ return p.join(' '); }).joi
 function handPath(pts, amp, seed){ var r = seeded(seed), d = ''; for (var i = 1; i < pts.length; i++){ var s = scribblePath(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1], amp, r); d += (i === 1 ? s : s.replace(/^M[^Q]*/, '')) + ' '; } return d; }
 var K = 1;
 /* where each place writes its name, relative to its marker: [dx, dy, anchor] */
-var LBL = { tram:[-22, -14, 'end'], cais:[20, 30], bridge:[14, -26], gaia:[-16, 30, 'end'], pilar:[16, 28], ribeira:[22, -14], foz:[20, -16], afurada:[22, 22], molhe:[20, -14], matosinhos:[22, -12] };
+var LBL = { tram:[-18, 30, 'end'], cais:[20, 30], bridge:[14, -26], gaia:[-16, 30, 'end'], pilar:[16, 28], ribeira:[22, -14], foz:[20, -16], afurada:[22, 22], molhe:[20, -14], matosinhos:[22, -12] };
 function label(k, x, y, size, op, g){ var o = LBL[k] || [22, y > 430 ? 22 : -14]; var t = el('text', { x:x + o[0], y:y + o[1], 'text-anchor':o[2] || 'start', 'font-family':'Sorts Mill Goudy', 'font-size':size, fill:'#1B2F57', opacity:op }, g); t.textContent = NAMES[k]; }
 function drawBase(today){
   map.innerHTML = '';
