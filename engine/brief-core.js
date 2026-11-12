@@ -34,6 +34,53 @@ function actionList(){ const a = (S.actions && S.actions.length) ? S.actions : (
 /* pictures of the work, so references are picked by looking */
 const SITE_THUMBS = { bruno:'references/sites/bruno.jpg', raf:'references/sites/raf.jpg', msg:'references/sites/msg.jpg', petra:'references/sites/petra.jpg', igloo:'references/sites/igloo.jpg', olia:'references/sites/olia.jpg', ll:'references/sites/ll.jpg', ulli:'references/sites/ulli.jpg' };
 function refTitle(r){ return r.says.split(/[.:]/)[0]; }
+/* The short list shown when someone picks work they love (cr14: "too many
+   references, a lot of them similar; show variability and explain what's in
+   the image, but more what we derive from it"). Thirteen, each pulling a
+   different way: six named works for material and behaviour, seven from the
+   folder, one per way of building a page. Each says what it is and what
+   Litmus takes from it; the taking is what goes into the prompt. */
+const PICKS = [
+  { id:'bruno', tag:'A world', name:'Bruno Simon', url:'https://bruno-simon.com', img:'references/sites/bruno.jpg',
+    what:'A portfolio you drive a small car around. The projects are places in a 3D world.',
+    takes:'The site is a place you move through, and moving through it is the navigation. Build a world, not a page with a menu.' },
+  { id:'raf', tag:'Made for the screen', name:'Rafaël Rozendaal', url:'https://www.newrafael.com', img:'references/sites/raf.jpg',
+    what:'Single artworks made for the browser, one moving idea filling the whole screen.',
+    takes:'One idea per page, made for the screen it lives on. The page is the work, not a frame around it.' },
+  { id:'petra', tag:'Found digital material', name:'Petra Cortright', url:'https://www.petracortright.com', img:'references/sites/petra.jpg',
+    what:'Her front page is a cross built from old emoji and smileys.',
+    takes:'Make the elements for this site from cheap or found digital material. The front page is a piece in itself.' },
+  { id:'olia', tag:'The early web', name:'Olia Lialina', url:'https://art.teleportacia.org', img:'references/sites/olia.jpg',
+    what:'Net art from the early web: a starfield and a lone home button.',
+    takes:'Use the browser’s own raw parts on purpose: default buttons, plain links, frames. The web before templates.' },
+  { id:'ll', tag:'A system that reacts', name:'Lundgren+Lindqvist', url:'https://www.lundgrenlindqvist.se', img:'references/sites/ll.jpg',
+    what:'A studio site where blocks of image and type divide the screen and answer each other.',
+    takes:'A strict system whose divisions react to one another. The layout itself is the interaction.' },
+  { id:'ulli', tag:'An artist’s method', name:'Ulli Lust', url:'https://www.fantagraphics.com', img:'references/sites/ulli.jpg',
+    what:'A punk memoir drawn in pen and ink with one green.',
+    takes:'A traditional artist’s method decides how the site works: drawn panels, captions, speech balloons, one spot colour.' },
+  { id:'S01', tag:'Cut open', name:'A house cut open', img:'references/thumb/S01.jpg',
+    what:'A building in cross-section, a different scene painted in every room.',
+    takes:'Open the thing up and show what happens in every part at once. Each room is a section of the site.' },
+  { id:'S12', tag:'A map', name:'A hand-drawn city map', img:'references/thumb/S12.jpg',
+    what:'Place names written by hand, routes in blue, a legend in the corner.',
+    takes:'Lay the ground out as itself and put things where they happen. The map is the navigation.' },
+  { id:'P12', tag:'Relations over time', name:'A club’s history, 1979 to 2010', img:'references/thumb/P12.jpg',
+    what:'Thirty years drawn as overlapping fans of fine lines with dated points.',
+    takes:'Draw how things relate and change, and let the items be small. A timeline as a picture, not a list.' },
+  { id:'P13', tag:'The whole set at once', name:'Fifty artworks in a ring', img:'references/thumb/P13.jpg',
+    what:'Every piece arranged in one circle, a single caption alone in the middle.',
+    takes:'Show the whole set at once in one shape. The arrangement says what the set is.' },
+  { id:'P03', tag:'Placed by argument', name:'A Swiss editorial board', img:'references/thumb/P03.jpg',
+    what:'Photographs at angles, wedges of colour cutting across, text at top and bottom.',
+    takes:'Place things by what they say to each other, not into slots. Angles and cuts of colour join them.' },
+  { id:'S18', tag:'Almost empty', name:'A nearly empty spread', img:'references/thumb/S18.jpg',
+    what:'Tiny figures, scattered dots, three small photographs and one paragraph.',
+    takes:'Say very little and give it room. The white space is part of what it says.' },
+  { id:'P07', tag:'One statement', name:'Red cows in a field', img:'references/thumb/P07.jpg',
+    what:'Flat red cow silhouettes over a photograph of a field, script lettering top and bottom.',
+    takes:'One surface, one statement: a photograph with flat colour knocked into it and a single line of words.' }
+];
 /* only the ones Noor has said they like (Lando, Studio Feixen and Teenage Engineering were refused; JODI is contested) */
 const FILE_REFS = ['bruno', 'raf', 'msg', 'petra', 'igloo', 'olia', 'll'].filter((k) => SITES[k]).map((k) => [k, SITES[k].name]).concat([['ulli', 'Ulli Lust, Today Is the Last Day of the Rest of Your Life']]);
 /* ---------- writing it ---------- */
@@ -46,6 +93,7 @@ function compose(){
   const tones = SCALES.filter((s) => s[3] === 'tone' && set(s)).map((s) => s[1] + ' to ' + s[2].toLowerCase() + ': ' + scalePhrase(s, S.scales[s[0]]) + ' (' + S.scales[s[0]] + ' of 100)');
   const acts = actionList().map((a) => (ACTION_LABELS[a] || a).toLowerCase());
   const picked = (S.refPicks || []).map((id) => REFS.find((r) => r.id === id)).filter(Boolean);
+  const chosen = PICKS.filter((p) => (S.picks || []).includes(p.id));
   const ours = S.images.filter((m) => m.role === 'ours'), refs = S.images.filter((m) => m.role === 'ref');
   const fileRefs = FILE_REFS.filter((r) => (S.fileRefs || []).includes(r[0])).map((r) => r[1] + (SITES[r[0]] ? ' (' + SITES[r[0]].url + ')' : ''));
   const T = [];
@@ -59,6 +107,7 @@ function compose(){
   if (scales.length) T.push('\nTHE FEEL\n' + list(scales) + '\nAnything not listed is your call, inside the taste file.');
   if (tones.length) T.push('\nTHE TONE OF THE WORDS\n' + list(tones));
   T.push('\nMUST DO, CAN’T CHANGE\nThe action: ' + (acts.length ? acts[0] : 'get in touch') + (acts.length > 1 ? ', and where it fits, ' + acts.slice(1).join(', ') : '') + '. One primary action per page, one step away, where the eye already is.\n' + (S.device ? 'Design ' + S.device + '.\n' : '') + (S.fixed ? 'Fixed: ' + S.fixed : 'Nothing fixed.'));
+  if (chosen.length) T.push('\nWORK THEY LOVE, AND WHAT TO TAKE FROM EACH (take the method, never copy the work)\n' + list(chosen.map((p) => p.name + (p.url ? ' (' + p.url + ')' : '') + '. ' + p.what + ' Take: ' + p.takes)));
   if (S.ref1 || S.ref2 || S.not || fileRefs.length || picked.length) T.push('\nFOR THIS PROJECT' + (S.ref1 ? '\nExcellent: ' + S.ref1 + (S.ref1why ? '. ' + S.ref1why : '') : '') + (S.ref2 ? '\nExcellent: ' + S.ref2 + (S.ref2why ? '. ' + S.ref2why : '') : '') +
     (S.not ? '\nMust not look like: ' + S.not + (S.notwhy ? '. ' + S.notwhy : '') : '') + (fileRefs.length ? '\nFrom the taste file, these fit: ' + fileRefs.join('; ') + '. Take their method, never their drawings.' : '') +
     (picked.length ? '\nFrom the reference folder, these were picked:\n' + list(picked.map((r) => r.id + ', ' + r.says)) : ''));

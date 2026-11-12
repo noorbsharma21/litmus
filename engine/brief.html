@@ -73,6 +73,17 @@
   .pic span{font-size:12px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .pic[aria-pressed="true"] img{outline:3px solid #FF3E00}
   .pic[aria-pressed="true"]::after{content:"\2713";position:absolute;right:6px;top:6px;width:24px;height:24px;border-radius:50%;background:#FF3E00;color:#fff;font-size:14px;display:grid;place-items:center}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:12px}
+  .card{position:relative;display:flex;flex-direction:column;gap:5px;text-align:left;font:inherit;color:#14130F;background:#fff;border:1px solid #ddd;padding:0 0 12px;cursor:pointer}
+  .card img{width:100%;aspect-ratio:8/5;object-fit:cover;display:block;background:#f2f2f2}
+  .card .ctag,.card b,.card .cwhat,.card .ctake{padding:0 12px}
+  .card .ctag{margin-top:5px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#FF3E00;font-weight:700}
+  .card b{font-size:15px}
+  .card .cwhat{font-size:13px;color:#555;line-height:1.4}
+  .card .ctake{font-size:13px;line-height:1.4}
+  .card .ctake span{display:block;padding:0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#777;font-weight:700;margin:3px 0 1px}
+  .card[aria-pressed="true"]{border-color:#FF3E00;box-shadow:inset 0 0 0 1px #FF3E00}
+  .card[aria-pressed="true"]::after{content:"\2713";position:absolute;right:8px;top:8px;width:24px;height:24px;border-radius:50%;background:#FF3E00;color:#fff;font-size:14px;display:grid;place-items:center}
   /* side */
   aside{position:sticky;top:20px;display:flex;flex-direction:column;gap:14px}
   .bar{height:6px;background:#eee}
@@ -167,8 +178,7 @@
         <div class="f"><label for="ref2">Excellent work, two</label><input type="text" id="ref2" data-k="ref2" placeholder="A site, a book, a poster"><input type="text" data-k="ref2why" placeholder="Why, in one sentence" style="margin-top:8px"></div>
       </div>
       <div class="f"><label for="not">It must not look like</label><input type="text" id="not" data-k="not" placeholder="A festival site with a countdown and a hero video"><input type="text" data-k="notwhy" placeholder="Why, in one sentence" style="margin-top:8px"></div>
-      <div class="f"><span class="lab">From your file, any that fit</span><span class="hint">References you've already named. Tap any.</span><div class="gal big" id="fileRefs"></div></div>
-      <div class="f"><span class="lab">From the reference folder</span><div class="gal" id="refPicks"></div></div>
+      <div class="f"><span class="lab">Work you love</span><span class="hint">Tap any. Each says what Litmus would take from it.</span><div class="cards" id="picks"></div></div>
     </section>
 
     <section>
@@ -217,7 +227,7 @@
 const KEY = 'litmus-brief-v1';
 let S = {};
 try { S = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ S = {}; }
-S.never = S.never || []; S.fileRefs = S.fileRefs || []; S.refPicks = S.refPicks || []; S.shape = S.shape || {}; S.scales = S.scales || {}; S.images = S.images || [];
+S.never = S.never || []; S.fileRefs = S.fileRefs || []; S.refPicks = S.refPicks || []; S.picks = S.picks || []; S.shape = S.shape || {}; S.scales = S.scales || {}; S.images = S.images || [];
 let savedAt = 0;
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); document.getElementById('saved').textContent = 'Saved in this browser, ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) + '.'; } catch(e){ document.getElementById('saved').textContent = 'Could not save in this browser. Save the brief to a file.'; } }
 
@@ -328,13 +338,12 @@ function drawScales(){
 /* ---------- references already in the file ---------- */
 
 function drawRefs(){
-  document.getElementById('fileRefs').innerHTML = FILE_REFS.map((r) => '<button type="button" class="pic" data-fr="' + r[0] + '" aria-pressed="' + (S.fileRefs || []).includes(r[0]) + '"><img loading="lazy" src="../' + SITE_THUMBS[r[0]] + '" alt=""><span>' + r[1] + '</span></button>').join('');
-  document.getElementById('refPicks').innerHTML = REFS.map((r) => '<button type="button" class="pic" data-rp="' + r.id + '" aria-pressed="' + (S.refPicks || []).includes(r.id) + '"><img loading="lazy" src="../references/thumb/' + r.id + '.jpg" alt=""><span>' + refTitle(r) + '</span></button>').join('');
+  document.getElementById('picks').innerHTML = PICKS.map((p) => '<button type="button" class="card" data-pk="' + p.id + '" aria-pressed="' + (S.picks || []).includes(p.id) + '"><img loading="lazy" src="../' + p.img + '" alt="">' +
+    '<span class="ctag">' + p.tag + '</span><b>' + p.name + '</b><span class="cwhat">' + p.what + '</span><span class="ctake"><span>Litmus takes</span>' + p.takes + '</span></button>').join('');
 }
 document.addEventListener('click', (e) => {
-  const b = e.target.closest('[data-fr], [data-rp]'); if (!b) return;
-  const key = b.dataset.fr ? 'fileRefs' : 'refPicks', v = b.dataset.fr || b.dataset.rp, a = S[key] || [];
-  S[key] = a.includes(v) ? a.filter((x) => x !== v) : a.concat(v); save(); b.setAttribute('aria-pressed', S[key].includes(v));
+  const b = e.target.closest('[data-pk]'); if (!b) return;
+  const v = b.dataset.pk, a = S.picks || []; S.picks = a.includes(v) ? a.filter((x) => x !== v) : a.concat(v); save(); b.setAttribute('aria-pressed', S.picks.includes(v));
 });
 drawRefs();
 
@@ -385,7 +394,7 @@ document.getElementById('loadFile').addEventListener('change', (e) => {
 document.getElementById('example').addEventListener('click', () => {
   S = { kind:'website', what:'A site for a cello and synthesizer duo, Halde Duo', who:'Fans and curious locals', job:'When and where is the next show; hear them; get a ticket',
     says:'A duo you have to hear in a room, and this is the next room.', first:'The name, the next date and venue, and the ticket', peak:'Holding anywhere to hear them', end:'Tickets',
-    exists:'8 show dates with venues, 6 tracks with lengths, 2 photos of the band, no copy yet', never:['prices', 'dates', 'names'], neverOther:'', images:[], fileRefs:['ulli'],
+    exists:'8 show dates with venues, 6 tracks with lengths, 2 photos of the band, no copy yet', never:['prices', 'dates', 'names'], neverOther:'', images:[], fileRefs:[], picks:['ulli', 'S12', 'S18'],
     shape:{}, scales:{ order:90, image:95, words:25, colour:30 }, scalesV:2, actions:['tickets', 'listen'], action:'tickets', device:'phone first', fixed:'', ref1:'Ulli Lust, Today Is the Last Day of the Rest of Your Life', ref1why:'Pen and ink from life, one spot colour, hand lettering: the night as she saw it.',
     not:'A festival site with a countdown and a hero video', notwhy:'It sells the event, not the sound.', output:'prompt', tool:'Claude Code' };
   save(); location.reload();

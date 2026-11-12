@@ -334,6 +334,13 @@ const CRITIQUES = [
     ],
     applied:'04: the circles became hers, frames open large, the first screen says what she shoots, every page ends on commissioning her.',
     confirmed:'okay this is good. Said of 04 rebuilt from its narrative (11 Nov 2026). The narrative-first method holds on its first instance.'
+  },
+  { id:'cr14', of:'the reference picker on the Litmus front page (52 pictures)', date:'2026-11-12',
+    said:'that is too many references a lot of them similar you have to show variablituy and explain what\'s in the image, but more about what we\'re going to derive from that if someone shows that. What are the learnings from that?',
+    lessons:[
+      'Offer few references, chosen for range: each pulls a different way (material, behaviour, or how the page is built). Similar options make picking meaningless.',
+      'Every reference states what it is and, mainly, what Litmus takes from it. The taking is what enters the prompt; a picture alone tells the model nothing. See PICKS in engine/brief-core.js.'
+    ]
   }
 ];
 
