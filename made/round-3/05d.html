@@ -23,7 +23,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#FFFFFF;font-family:"S
 #ph{position:absolute;inset:0;background-size:cover;background-position:center 60%}
 #tint{position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none}
 #route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.n{position:absolute;margin:0;font-family:"Nothing You Could Do",cursive;font-size:19px;color:#fff;transform:translate(8px,-26px);pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.n{position:absolute;margin:0;width:26px;height:26px;border-radius:50%;background:#fff;color:#16305E;display:grid;place-items:center;font-family:"Nothing You Could Do",cursive;font-size:17px;line-height:1;transform:translate(6px,-32px);pointer-events:none}
 #walker{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35);pointer-events:none}
 #sun{position:absolute;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:50%;background:#FCF02A;cursor:grab;touch-action:none;box-shadow:0 0 30px 6px rgba(252,240,42,.35)}
 #sun:focus-visible{outline:2px solid #fff;outline-offset:4px}
@@ -37,7 +37,7 @@ h1{margin:0;font-weight:normal;font-size:30px;line-height:1.05}
 .days a:focus-visible,.take:focus-visible{outline:2px solid #16305E;outline-offset:4px}
 .take{position:relative;display:inline-block;align-self:flex-start;margin-top:22px;font-family:"Nothing You Could Do",cursive;font-size:20px;color:#16305E;text-decoration:none;padding:10px 2px;min-height:44px;box-sizing:border-box}
 .take .scrib{position:absolute;left:-4%;bottom:2px;width:108%;height:12px;overflow:visible}
-#sunlab{position:absolute;margin:0;font-family:"Nothing You Could Do",cursive;font-size:20px;color:#fff;pointer-events:none;transform:translate(26px,-14px);text-shadow:0 1px 2px rgba(0,0,0,.4);white-space:nowrap}
+#now{margin:14px 0 0;font-family:"Nothing You Could Do",cursive;font-size:22px;min-height:1.3em}
 ol{margin:34px 0 0;padding:0;list-style:none;font-size:17px;line-height:1.35}
 ol li{position:relative;display:grid;grid-template-columns:3.6em 1fr;padding:7px 0 8px;cursor:pointer;transition:color .3s}
 ol li .scrib{position:absolute;left:-1%;bottom:-5px;width:102%;height:10px;overflow:visible;opacity:.5}
@@ -53,11 +53,12 @@ ol li.now b::before{content:'';display:inline-block;width:9px;height:9px;border-
     <path id="rd" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
   </svg>
   <div id="walker"></div>
-  <div id="sun" tabindex="0" role="slider" aria-label="Time of day" aria-valuemin="7" aria-valuemax="24"></div><p id="sunlab" aria-hidden="true"></p>
+  <div id="sun" tabindex="0" role="slider" aria-label="Time of day" aria-valuemin="7" aria-valuemax="24"></div>
 </div></div>
 <aside>
   <h1>A weekend in Porto</h1>
   <p class="sub">Two days, hour by hour, the way people who live there spend them. Drag the sun or pick an hour.</p>
+  <p id="now" aria-live="polite"></p>
   <nav class="days" aria-label="Day"><a href="#saturday">Saturday</a><a href="#sunday">Sunday</a></nav>
   <ol id="list"></ol>
   <a class="take" id="take" target="_blank" rel="noopener"></a>
@@ -94,7 +95,7 @@ var DAYS = {
     [15.5, 'The beach walk at Foz', 26, 86, 'Praia do Molhe, Porto'], [18, 'Across the bridge on the top deck', 80, 52, 'Ponte Luís I, Porto'], [19, 'Port in a Gaia lodge', 64, 78, 'Caves do Vinho do Porto, Vila Nova de Gaia'],
     [20.5, 'Sunset from Serra do Pilar', 52, 30, 'Miradouro da Serra do Pilar'], [22, 'Dinner back in Ribeira', 42, 70, 'Ribeira, Porto'] ] }
 };
-var pic = document.getElementById('pic'), ph = document.getElementById('ph'), tint = document.getElementById('tint'), sun = document.getElementById('sun'), sunlab = document.getElementById('sunlab');
+var pic = document.getElementById('pic'), ph = document.getElementById('ph'), tint = document.getElementById('tint'), sun = document.getElementById('sun'), sunlab = document.getElementById('now');
 var walker = document.getElementById('walker'), list = document.getElementById('list'), rp = document.getElementById('rp'), rd = document.getElementById('rd'), take = document.getElementById('take');
 var STOPS = [], pts = [], h = 9, goal = null, day = 'saturday';
 function maps(stops){
@@ -131,7 +132,7 @@ function at(hour){ /* how far along the route the walker is at this hour */
 function render(){
   var r = pic.getBoundingClientRect(); if (!r.width || !STOPS.length) return;
   var t = (h - 7) / 17, sx = 6 + t * 88, sy = 62 - Math.sin(t * Math.PI) * 50;
-  sun.style.left = sx + '%'; sun.style.top = sy + '%'; sunlab.style.left = sx + '%'; sunlab.style.top = sy + '%';
+  sun.style.left = sx + '%'; sun.style.top = sy + '%'; 
   var noon = Math.sin(t * Math.PI), late = Math.max(0, (h - 20) / 4);
   ph.style.filter = 'brightness(' + (0.74 + noon * 0.4 - late * 0.32).toFixed(2) + ') saturate(' + (0.7 + noon * 0.5).toFixed(2) + ')';
   tint.style.background = h < 9 ? 'rgba(238,88,132,' + ((9 - h) / 2 * 0.4).toFixed(2) + ')' : h > 17 ? 'rgba(' + (h > 20 ? '7,36,147' : '228,121,55') + ',' + Math.min(0.7, (h - 17) / 5).toFixed(2) + ')' : 'rgba(0,0,0,0)';
@@ -144,7 +145,7 @@ function render(){
   var cur = Math.min(STOPS.length - 1, Math.floor(a + 0.25));
   [].forEach.call(list.children, function(li, i){ li.className = i < cur ? 'past' : i === cur ? 'now' : ''; });
   var hh = Math.floor(h) % 24, mm = Math.floor((h % 1) * 4) * 15;
-  sunlab.textContent = hh + '.' + (mm < 10 ? '0' : '') + mm;
+  sunlab.textContent = hh + '.' + (mm < 10 ? '0' : '') + mm + ', ' + STOPS[cur][1].charAt(0).toLowerCase() + STOPS[cur][1].slice(1);
   sun.setAttribute('aria-valuenow', hh); sun.setAttribute('aria-valuetext', hh + ':' + (mm < 10 ? '0' : '') + mm + ', ' + STOPS[cur][1]);
 }
 var drag = false;
