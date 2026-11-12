@@ -368,6 +368,14 @@ const CRITIQUES = [
       'Drawn lines must look drawn: vector-sharp strokes read as diagrams even when the path wobbles. Ink that bleeds a little (displacement and a slight blur), watercolour washes with wandering edges, nothing cut square by the frame. See t14.'
     ],
     applied:'05 as a travel sketchbook: a watercolour and ink map, and a photograph of each stop that changes as you walk the day.'
+  },
+  { id:'cr18', of:'made/round-3/05d, the sketchbook version', date:'2026-11-12',
+    said:'i like thr picture plus you need ot improve your sketch work and photography use as well',
+    lessons:[
+      'Sketch work: draw what a sketcher of this subject would draw, not shapes. Landmarks drawn small but recognisable (towers, halls, house fronts, boats, a lighthouse), hatching for slopes, waves and ripples for water, a hand-drawn north. A hierarchy of line weight: heavy for coast and river, medium for buildings, light for hatching. Ellipses and blobs standing for things read as placeholders. See SKETCH.',
+      'Photography: treat the photographs as one set an editor has matched. Choose for a single eye (no lone black-and-white frame, no two near-identical shots, the subject large enough to read), measure each and bring them to one exposure and colour with one shared grade, crop each around its subject. Use the photograph to say something: a hand note on the page with an inked arrow to the thing to look at, never words laid over the picture. See PHOTO.'
+    ],
+    applied:'05: Clerigos, the cathedral, the market hall, the Ribeira fronts, port lodge roofs, rabelo boats, the Foz lighthouse, waves and ripples drawn in ink; three photographs replaced, all sixteen matched, every stop annotated by hand.'
   }
 ];
 
@@ -375,6 +383,19 @@ const CRITIQUES = [
    SURFACE. From cr6, 10 November 2026. Their words: grainier, analog,
    screen printing, cyanotype, texturally rich formats; flat looks lame.
    --------------------------------------------------------------- */
+/* From cr18. How drawing and photography are done well, in every piece. */
+const SKETCH = [
+  { id:'k1', rule:'Draw the subject the way someone who knows it would sketch it: its recognisable things, small and true (a tower, a market roof, a boat), never blobs or ellipses standing in for them.' },
+  { id:'k2', rule:'A hierarchy of line weight: the main forms heavy, buildings and objects medium, hatching and texture light. Water gets waves or ripples, slopes get hatching.' },
+  { id:'k3', rule:'Ink that bleeds a little, washes with wandering edges, nothing cut square by a frame (t14, cr17).' }
+];
+const PHOTO = [
+  { id:'f1', rule:'A set of photographs is chosen by one eye: same kind of light, no lone black and white or near-duplicate frames, the subject big enough to read at the size it is shown.' },
+  { id:'f2', rule:'Match the set: measure each photograph and bring them to one exposure and colour with one shared grade (or cut them out onto white, s6). Night stays night.' },
+  { id:'f3', rule:'Crop each photograph around its subject on purpose; the same crop logic across the set.' },
+  { id:'f4', rule:'Make the photograph say something: a hand note on the page with an inked arrow to the thing to look at, or a caption like a book. Never words laid over the picture (t1).' }
+];
+
 const SURFACE = [
   { id:'s1', rule:'Material comes from the content itself: photographs printed through a real process, drawings, 3D, found material. Never from an effect laid over a flat page or onto letters.', note:'Rewritten after cr15; it used to say every page carries grain, and that was read as permission for overlays.' },
   { id:'s2', rule:'Photographs and drawings, never type, may go through a print process, made properly rather than faked: cyanotype, two colour riso, screen print halftone, photocopy. The process is chosen for the brief (cyanotype for a press, riso for a record label), never the same one twice in a batch.' },

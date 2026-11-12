@@ -32,11 +32,14 @@ h1{margin:0;font-weight:normal;font-size:clamp(28px,3vw,42px);line-height:1.05}
 .hours .tick{position:absolute;bottom:2px;transform:translateX(-50%);font-family:"Nothing You Could Do",cursive;font-size:15px;white-space:nowrap}
 .drag{position:absolute;left:0;top:-6px;font-family:"Nothing You Could Do",cursive;font-size:16px;opacity:.7}
 #map{display:block;width:100%;height:auto}
+.snapwrap{position:relative;padding-bottom:62px}
+.note{position:absolute;bottom:14px;left:0;margin:0;font-family:"Nothing You Could Do",cursive;font-size:22px;white-space:nowrap;color:#1B2F57}
+#arrow{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:3}
 .snap{position:relative;aspect-ratio:4/3;overflow:hidden;background:#EEF2F8}
 .snap div{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .7s}
 .snap div.on{opacity:1}
 .snap .light{opacity:1;mix-blend-mode:multiply;pointer-events:none;transition:background .4s}
-.cap{display:flex;gap:16px;align-items:baseline;margin:14px 0 0}
+.cap{display:flex;gap:16px;align-items:baseline;margin:2px 0 0}
 .cap .t{font-family:"Nothing You Could Do",cursive;font-size:30px;line-height:1;flex:none}
 .cap b{font-weight:normal;font-size:24px;line-height:1.15}
 .what{margin:6px 0 0;font-size:17px;line-height:1.45;max-width:40ch}
@@ -70,7 +73,7 @@ ol{list-style:none;margin:26px 0 0;padding:0}
     <svg id="map" viewBox="0 0 1000 680" role="img" aria-label="A watercolour map of Porto with the day's route"></svg>
   </div>
   <div class="right">
-    <div class="snap" id="snap"><div class="light" id="light"></div></div>
+    <div class="snapwrap" id="snapwrap"><div class="snap" id="snap"><div class="light" id="light"></div></div><p class="note" id="note"></p><svg id="arrow" aria-hidden="true"></svg></div>
     <div class="cap"><span class="t" id="capT"></span><b id="capN"></b></div>
     <p class="what" id="capW" aria-live="polite"></p>
     <ol id="list"></ol>
@@ -84,26 +87,26 @@ var P = { baixa:[740, 250], bolhao:[790, 175], ribeira:[750, 372], bridge:[842, 
   tram:[205, 405], palacio:[560, 330], matosinhos:[120, 95], molhe:[118, 290], gaia:[745, 460], pilar:[865, 470] };
 var NAMES = { baixa:'Baixa', bolhao:'Bolhão', ribeira:'Ribeira', bridge:'Luís I bridge', afurada:'Afurada', serralves:'Serralves', foz:'Foz', palacio:'Crystal Palace gardens',
   matosinhos:'Matosinhos', molhe:'Praia do Molhe', gaia:'Port lodges', pilar:'Serra do Pilar', cais:'Cais do Ouro', tram:'Passeio Alegre' };
-/* hour, place, what it is, what you do, where for Maps, the photograph */
+/* hour, place, what it is, what you do, where for Maps, the photograph, and the hand note on it [words, where it points across, where it points down] */
 var DAYS = {
   saturday:{ label:'Saturday', stops:[
-    [7, 'baixa', 'Coffee standing at the counter', 'A bica at the bar and a pastry, out in five minutes.', 'Baixa, Porto', 'photo-1788079584903-96ff38108f31'],
-    [9, 'bolhao', 'Bolhão market, before it fills', 'Fish, flowers and cheese, before the tour groups arrive.', 'Mercado do Bolhão, Porto', 'photo-1686828037623-f336bf2e3f55'],
-    [11, 'ribeira', 'Down to the river', 'Walk the river front east as far as the bridge.', 'Ribeira, Porto', 'photo-1642197288459-a038450c6217'],
-    [13, 'cais', 'The little ferry across', 'Tram 1 along the river to Cais do Ouro, then the small boat to Afurada.', 'Cais do Ouro, Porto', 'photo-1744198014001-ef53b370a6b8'],
-    [13.75, 'afurada', 'Sardines on the quay', 'Lunch in the fishing village, grilled outside on the street.', 'Afurada, Vila Nova de Gaia', 'photo-1556814901-18c866c057da'],
-    [16.5, 'serralves', 'Serralves, the park', 'The gardens and the pink villa. The museum if it rains.', 'Serralves, Porto', 'photo-1652349597652-cdbcb8cf4010'],
-    [19.5, 'foz', 'Foz, the sea at sunset', 'Walk the sea wall while the light goes.', 'Foz do Douro, Porto', 'photo-1721811601346-bad95b0bd0ec'],
-    [23, 'tram', 'The last tram along the river', 'From Passeio Alegre back towards the old town.', 'Passeio Alegre, Porto', 'photo-1684620861684-dadebbdcee52'] ] },
+    [7, 'baixa', 'Coffee standing at the counter', 'A bica at the bar and a pastry, out in five minutes.', 'Baixa, Porto', 'photo-1788079584903-96ff38108f31', ['ask for a bica, their espresso', 78, 52]],
+    [9, 'bolhao', 'Bolhão market, before it fills', 'Fish, flowers and cheese, before the tour groups arrive.', 'Mercado do Bolhão, Porto', 'photo-1651276915874-8a13a95501ea', ['a wedge of Serra cheese for later', 32, 60]],
+    [11, 'ribeira', 'Down to the river', 'Walk the river front east as far as the bridge.', 'Ribeira, Porto', 'photo-1642197288459-a038450c6217', ['walk east along this front', 58, 64]],
+    [13, 'cais', 'The little ferry across', 'Tram 1 along the river to Cais do Ouro, then the small boat to Afurada.', 'Cais do Ouro, Porto', 'photo-1744198014001-ef53b370a6b8', ['the crossing takes five minutes', 42, 76]],
+    [13.75, 'afurada', 'Sardines on the quay', 'Lunch in the fishing village, grilled outside on the street.', 'Afurada, Vila Nova de Gaia', 'photo-1556814901-18c866c057da', ['they come six to a plate', 44, 44]],
+    [16.5, 'serralves', 'Serralves, the park', 'The gardens and the pink villa. The museum if it rains.', 'Serralves, Porto', 'photo-1652349597652-cdbcb8cf4010', ['the pink villa', 50, 42]],
+    [19.5, 'foz', 'Foz, the sea at sunset', 'Walk the sea wall while the light goes.', 'Foz do Douro, Porto', 'photo-1721811601346-bad95b0bd0ec', ['stay until the light goes', 30, 26]],
+    [23, 'tram', 'The last tram along the river', 'From Passeio Alegre back towards the old town.', 'Passeio Alegre, Porto', 'photo-1779607648814-a851e8b8971e', ['tram 1, the old wooden one', 56, 50]] ] },
   sunday:{ label:'Sunday', stops:[
-    [9, 'baixa', 'Custard tarts, still warm', 'Two at the counter, cinnamon on top.', 'Baixa, Porto', 'photo-1716360806681-b4defdfba134'],
-    [10.5, 'palacio', 'Crystal Palace gardens', 'The river from above, between the trees.', 'Jardins do Palácio de Cristal, Porto', 'photo-1635873098036-2e13670b9338'],
-    [13, 'matosinhos', 'A long fish lunch in Matosinhos', 'Pick the fish on the counter and they grill it outside.', 'Matosinhos', 'photo-1600699899970-b1c9fadd8f9e'],
-    [15.5, 'molhe', 'The beach walk back to Foz', 'Along the sand and the sea wall.', 'Praia do Molhe, Porto', 'photo-1589194255218-0fcd180f8c40'],
-    [18, 'bridge', 'Across the bridge on the top deck', 'On foot, high over the river.', 'Ponte Luís I, Porto', 'photo-1584023845099-afa066901992'],
-    [19, 'gaia', 'Port in a lodge', 'A tasting on the Gaia side, looking back at the city.', 'Caves do Vinho do Porto, Vila Nova de Gaia', 'photo-1639757664366-83a495f4a9d9'],
-    [20.5, 'pilar', 'Sunset from Serra do Pilar', 'The whole city across the water.', 'Miradouro da Serra do Pilar', 'photo-1629216408998-52935a2ab2da'],
-    [22, 'ribeira', 'Dinner back across the river', 'Down the steps and over the lower deck.', 'Ribeira, Porto', 'photo-1765101159192-a06d04f6324d'] ] }
+    [9, 'baixa', 'Custard tarts, still warm', 'Two at the counter, cinnamon on top.', 'Baixa, Porto', 'photo-1716360806681-b4defdfba134', ['eat them warm', 32, 70]],
+    [10.5, 'palacio', 'Crystal Palace gardens', 'The river from above, between the trees.', 'Jardins do Palácio de Cristal, Porto', 'photo-1635873098036-2e13670b9338', ['the cathedral on its hill', 86, 24]],
+    [13, 'matosinhos', 'A long fish lunch in Matosinhos', 'Pick the fish on the counter and they grill it outside.', 'Matosinhos', 'photo-1612195596875-af12bf222d23', ['the grills are one street back', 77, 74]],
+    [15.5, 'molhe', 'The beach walk back to Foz', 'Along the sand and the sea wall.', 'Praia do Molhe, Porto', 'photo-1589194255218-0fcd180f8c40', ['walk the promenade south', 36, 62]],
+    [18, 'bridge', 'Across the bridge on the top deck', 'On foot, high over the river.', 'Ponte Luís I, Porto', 'photo-1584023845099-afa066901992', ['the top deck, on foot', 42, 80]],
+    [19, 'gaia', 'Port in a lodge', 'A tasting on the Gaia side, looking back at the city.', 'Caves do Vinho do Porto, Vila Nova de Gaia', 'photo-1639757664366-83a495f4a9d9', ['ask for a twenty year tawny', 74, 64]],
+    [20.5, 'pilar', 'Sunset from Serra do Pilar', 'The whole city across the water.', 'Miradouro da Serra do Pilar', 'photo-1629216408998-52935a2ab2da', ['the bridge you just crossed', 62, 72]],
+    [22, 'ribeira', 'Dinner back across the river', 'Down the steps and over the lower deck.', 'Ribeira, Porto', 'photo-1765101159192-a06d04f6324d', ['dinner along here', 44, 72]] ] }
 };
 var NS = 'http://www.w3.org/2000/svg', map = document.getElementById('map');
 function el(tag, at, parent){ var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); (parent || map).appendChild(e); return e; }
@@ -135,14 +138,87 @@ function drawBase(today){
   el('path', { d:handPath(south, 3, 7), 'stroke-width':2 * K }, ink);
   el('path', { d:scribblePath(842, 384, 842, 456, 1.5, seeded(9)), 'stroke-width':4 * K }, ink);
   el('path', { d:scribblePath(834, 384, 834, 456, 1.5, seeded(10)), 'stroke-width':1.2 * K, opacity:.6 }, ink);
-  for (var y = 50; y < 640; y += 26) el('path', { d:scribblePath(40, y, 78, y + 4, 2, seeded(y)), 'stroke-width':1.1, opacity:.35 }, ink);
-  [['Atlantic', 66, 600, -90, 26], ['Douro', 560, 430, -4, 24], ['Porto', 620, 120, 0, 42], ['Vila Nova de Gaia', 540, 560, 0, 24]].forEach(function(w){
+  /* the city as a sketcher draws it: landmarks in ink, light hatching on the slopes, waves and ripples, boats on the river */
+  var rr = seeded(77), lm = el('g', { filter:'url(#ink)', fill:'none', stroke:'#1B2F57', 'stroke-linecap':'round', 'stroke-linejoin':'round' });
+  var lw = Math.sqrt(K);
+  var cur = lm;
+  /* each drawing is made at its own size around an anchor; the pen keeps its weight whatever the size */
+  function at(ax, ay, k){ cur = el('g', { transform:'translate(' + ax + ' ' + ay + ') scale(' + k + ') translate(' + (-ax) + ' ' + (-ay) + ')' }, lm); }
+  function done(){ cur = lm; }
+  function ln(x1, y1, x2, y2, w, op){ return el('path', { d:scribblePath(x1, y1, x2, y2, .9, rr), 'stroke-width':(w || 1.3) * lw, opacity:op || 1, 'vector-effect':'non-scaling-stroke' }, cur); }
+  function box(x, y, w, h, t){ ln(x, y, x + w, y, t); ln(x + w, y, x + w, y + h, t); ln(x + w, y + h, x, y + h, t); ln(x, y + h, x, y, t); }
+  function curve(d, t, op){ return el('path', { d:d, 'stroke-width':(t || 1.3) * lw, opacity:op || 1, 'vector-effect':'non-scaling-stroke' }, cur); }
+  /* Clerigos: the tall tower over the old town */
+  at(660, 268, 1.45); box(628, 248, 24, 20); ln(652, 268, 652, 214, 1.5); ln(668, 268, 668, 214, 1.5); ln(652, 214, 668, 214); box(655, 196, 10, 18);
+  curve('M655 196 Q660 184 665 196'); ln(660, 186, 660, 174, 1); for (var wy = 230; wy < 262; wy += 10) ln(660, wy, 660, wy + 5, 1, .7); done();
+  /* the cathedral: two square towers and the nave */
+  at(816, 332, 1.45); box(796, 300, 12, 32); box(824, 300, 12, 32); box(808, 312, 16, 20); curve('M813 320 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0', 1);
+  [796, 800, 804, 824, 828, 832].forEach(function(x){ ln(x, 300, x, 296, 1); }); done();
+  /* Bolhao: the market hall with its gabled roof */
+  at(838, 222, 1.35); box(812, 206, 52, 16); for (var i = 0; i < 4; i++){ ln(812 + i * 13, 206, 818.5 + i * 13, 198); ln(818.5 + i * 13, 198, 825 + i * 13, 206); } for (var mw = 818; mw < 862; mw += 8) ln(mw, 211, mw, 217, .9, .7); done();
+  /* Ribeira: the tall narrow house fronts stacked on the bank */
+  at(684, 392, 1.35); var hx = 652; while (hx < 716){ var hw = 9 + rr() * 6, hh = (hx / 9 % 2 < 1 ? 30 : 18) + rr() * 16; box(hx, 390 - hh, hw, hh, 1.1);
+    var roof = rr(); if (roof < .45){ ln(hx, 390 - hh, hx + hw / 2, 383 - hh, 1); ln(hx + hw / 2, 383 - hh, hx + hw, 390 - hh, 1); } else if (roof < .7) ln(hx - 1, 390 - hh, hx + hw + 1, 390 - hh, 1.6);
+    hx += 1.5;
+    for (var fy = 390 - hh + 6; fy < 384; fy += 7){ ln(hx + 2.5, fy, hx + 2.5, fy + 3, .9, .7); if (hw > 10) ln(hx + 6.5, fy, hx + 6.5, fy + 3, .9, .7); } hx += hw; } done();
+  /* the port lodges on the Gaia bank, one long row of roofs */
+  for (var px = 640; px < 724; px += 14){ ln(px, 470, px + 7, 460, 1.1); ln(px + 7, 460, px + 14, 470, 1.1); } ln(640, 470, 724, 471, 1.1);
+  /* Serralves: the flat villa in its park */
+  at(305, 156, 1.6); box(285, 142, 40, 14); box(325, 147, 10, 9); for (var vx = 291; vx < 322; vx += 7) ln(vx, 147, vx, 151, .9, .7); done();
+  /* the Crystal Palace dome */
+  at(520, 306, 1.5); ln(505, 306, 535, 306); curve('M507 306 Q520 282 533 306'); ln(520, 288, 520, 282, .9); done();
+  /* Foz: the lighthouse at the river mouth */
+  at(94, 400, 1.5); ln(90, 400, 92, 370); ln(98, 400, 96, 370); box(91, 362, 6, 8, 1); ln(90, 362, 94, 357, 1); ln(94, 357, 98, 362, 1); ln(86, 364, 80, 360, .9, .7); ln(102, 364, 108, 360, .9, .7); done();
+  /* rabelo boats on the river and a fishing boat off Matosinhos */
+  function boat(x, y, k){ at(x, y, 1.3); curve('M' + (x - 16 * k) + ' ' + y + ' Q' + x + ' ' + (y + 9 * k) + ' ' + (x + 16 * k) + ' ' + (y - 2 * k), 1.4); ln(x - 1, y + 1, x - 2, y - 22 * k, 1.1);
+    ln(x - 12 * k, y - 20 * k, x + 8 * k, y - 21 * k, 1); ln(x + 8 * k, y - 21 * k, x + 7 * k, y - 8 * k, 1); ln(x + 7 * k, y - 8 * k, x - 11 * k, y - 7 * k, 1); ln(x - 11 * k, y - 7 * k, x - 12 * k, y - 20 * k, 1);
+    el('ellipse', { cx:x - 2 * k, cy:y - 14 * k, rx:9 * k, ry:6 * k, fill:'#E0B46A', opacity:.5 }, wash); done(); }
+  boat(420, 436, 1); boat(648, 418, 1); boat(62, 150, .8);
+  /* waves in the sea, ripples on the river */
+  for (var sy = 70; sy < 640; sy += 38){ if (sy > 330 && sy < 420) continue; var sx = 44 + ((sy * 7) % 36); curve('M' + sx + ' ' + sy + ' q4 -4 8 0 t8 0', .9, .5); }
+  var riverMid = function(x){ for (var i = 1; i < north.length; i++) if (x >= north[i][0]){ var a = north[i], b = north[i - 1], c = south[i], d = south[i - 1], t = (x - a[0]) / ((b[0] - a[0]) || 1); return ((a[1] + (b[1] - a[1]) * t) + (c[1] + (d[1] - c[1]) * t)) / 2; } return 420; };
+  for (var rx2 = 170; rx2 < 950; rx2 += 34){ if ((rx2 > 535 && rx2 < 630) || Math.abs(rx2 - 420) < 26 || Math.abs(rx2 - 648) < 26) continue; var my = riverMid(rx2) + ((rx2 / 34) % 2 ? 6 : -6); ln(rx2, my, rx2 + 10, my, .9, .45); }
+  /* the slope down to the river on the Gaia side, hatched */
+  for (var hx2 = 470; hx2 < 632; hx2 += 7){ var by = riverMid(hx2) + 34; ln(hx2, by, hx2 + 6, by + 14, .8, .38); }
+  /* north, by hand */
+  ln(950, 92, 950, 44, 1.5); ln(950, 44, 944, 56, 1.3); ln(950, 44, 956, 56, 1.3);
+  var nN = el('text', { x:943, y:34, 'font-family':'Nothing You Could Do', 'font-size':22, fill:'#1B2F57' }); nN.textContent = 'N';
+  if (K < 1.25) [['Cl\u00e9rigos', 600, 296], ['S\u00e9', 852, 292]].forEach(function(w){ var t = el('text', { x:w[1], y:w[2], 'font-family':'Nothing You Could Do', 'font-size':16, fill:'#1B2F57', opacity:.8 }); t.textContent = w[0]; });
+  [['Atlantic', 66, 600, -90, 26], ['Douro', 560, 430, -4, 24], ['Porto', 430, 262, 0, 42], ['Vila Nova de Gaia', 540, 560, 0, 24]].forEach(function(w){
     var t = el('text', { x:w[1], y:w[2], 'font-family':'Nothing You Could Do', 'font-size':w[4], fill:'#2D5AA8', opacity:.8, transform:'rotate(' + w[3] + ' ' + w[1] + ' ' + w[2] + ')' }); t.textContent = w[0]; });
   if (K < 1.3) Object.keys(P).forEach(function(k){ if (today.indexOf(k) >= 0) return;
     el('circle', { cx:P[k][0], cy:P[k][1], r:3.5, fill:'#1B2F57', opacity:.6, filter:'url(#ink)' }); label(k, P[k][0], P[k][1], 16, .6); });
 }
 var day = 'saturday', STOPS = [], legs = [], h = 9, goal = null, routeDone, routeCur, walker, marks = [], shown = -1, probe = document.createElementNS(NS, 'path');
 var still = matchMedia('(prefers-reduced-motion: reduce)').matches, snap = document.getElementById('snap');
+/* one set of photographs, matched the way an editor matches a set: each is
+   measured, then brought to the same exposure and colour, with one shared
+   grade on top; night stays night */
+var grades = {};
+function gradeOf(id, night){
+  if (grades[id + night]) return grades[id + night];
+  return grades[id + night] = loadImg(U(id, 200)).then(function(img){
+    var c = document.createElement('canvas'); c.width = 48; c.height = 36; var g = c.getContext('2d'); g.drawImage(img, 0, 0, 48, 36);
+    var d = g.getImageData(0, 0, 48, 36).data, L = 0, S = 0, n = d.length / 4;
+    for (var i = 0; i < d.length; i += 4){ var r = d[i] / 255, gg = d[i + 1] / 255, b = d[i + 2] / 255; L += .2126 * r + .7152 * gg + .0722 * b; S += Math.max(r, gg, b) - Math.min(r, gg, b); }
+    L /= n; S /= n;
+    var br = Math.max(.82, Math.min(1.3, (night ? .3 : .5) / Math.max(.05, L))), sa = Math.max(.8, Math.min(1.25, .3 / Math.max(.05, S)));
+    return 'brightness(' + br.toFixed(2) + ') saturate(' + sa.toFixed(2) + ') contrast(.96) sepia(.07)';
+  }).catch(function(){ return 'contrast(.96) sepia(.07)'; });
+}
+/* the hand note: written on the page under the photograph, an inked arrow drawn from it to the thing it means */
+function drawNote(s){
+  var note = document.getElementById('note'), arrow = document.getElementById('arrow'), w = snap.clientWidth, h = snap.clientHeight; if (!w || !s[6]) return;
+  note.textContent = s[6][0]; var nw = note.offsetWidth, tx = w * s[6][1] / 100, ty = h * s[6][2] / 100;
+  var left = Math.max(0, Math.min(w - nw, tx - nw * .35)); note.style.left = left + 'px';
+  var sx = left + Math.min(nw * .35, nw - 10), sy = h + 10, ex = tx, ey = ty + 16, cx = sx + (tx < w / 2 ? 40 : -40), cy = (sy + ey) / 2 + 20;
+  var ang = Math.atan2(ey - cy, ex - cx), hl = 13, d = 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ' Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + ex.toFixed(1) + ' ' + ey.toFixed(1);
+  var head = 'M' + (ex - hl * Math.cos(ang - .45)).toFixed(1) + ' ' + (ey - hl * Math.sin(ang - .45)).toFixed(1) + ' L' + ex.toFixed(1) + ' ' + ey.toFixed(1) + ' L' + (ex - hl * Math.cos(ang + .45)).toFixed(1) + ' ' + (ey - hl * Math.sin(ang + .45)).toFixed(1);
+  arrow.setAttribute('viewBox', '0 0 ' + w + ' ' + (h + 62));
+  arrow.innerHTML = '<g filter="url(#ink)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="' + d + '" stroke="#fff" stroke-width="7" opacity=".85"/><path d="' + head + '" stroke="#fff" stroke-width="7" opacity=".85"/>' +
+    '<path class="draw" d="' + d + '" stroke="#1B2F57" stroke-width="2.6" pathLength="100"/><path class="draw" d="' + head + '" stroke="#1B2F57" stroke-width="2.6" pathLength="100"/></g>';
+  if (!still) arrow.querySelectorAll('.draw').forEach(function(p, i){ p.style.strokeDasharray = '100'; p.style.strokeDashoffset = '100'; p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset .45s ease ' + (i * .4) + 's'; p.style.strokeDashoffset = '0'; });
+}
 function clock(hr){ var m = Math.round((hr % 1) * 60); return Math.floor(hr) + (m ? '.' + (m < 10 ? '0' : '') + m : ''); }
 function xOf(hour){ return 3 + (hour - 7) / 17 * 94; }
 function setDay(name){
@@ -162,7 +238,8 @@ function setDay(name){
   walker = el('circle', { r:8 * K, fill:'#1B2F57', filter:'url(#ink)' });
   /* the photographs, one per stop, all loaded now so they change at once */
   snap.querySelectorAll('div:not(.light)').forEach(function(d){ d.remove(); });
-  STOPS.forEach(function(s){ var d = document.createElement('div'); d.style.backgroundImage = 'url(' + U(s[5], 1100) + ')'; d.setAttribute('role', 'img'); d.setAttribute('aria-label', s[2]); snap.insertBefore(d, document.getElementById('light')); });
+  STOPS.forEach(function(s, i){ var d = document.createElement('div'); d.style.backgroundImage = 'url(' + U(s[5], 1100) + ')'; d.setAttribute('role', 'img'); d.setAttribute('aria-label', s[2]); snap.insertBefore(d, document.getElementById('light'));
+    gradeOf(s[5], s[0] >= 21).then(function(f){ d.style.filter = f; var t = document.querySelectorAll('#list img')[i]; if (t) t.style.filter = f; }); });
   shown = -1;
   var list = document.getElementById('list'); list.innerHTML = '';
   STOPS.forEach(function(s, i){
@@ -197,7 +274,7 @@ function render(){
   marks.forEach(function(m, i){ m.setAttribute('fill', i === cur ? '#FBE38A' : '#fff'); });
   [].forEach.call(document.getElementById('list').children, function(li, i){ li.className = 'stop' + (i < cur ? ' past' : i === cur ? ' on' : ''); });
   if (cur !== shown){ shown = cur; snap.querySelectorAll('div:not(.light)').forEach(function(d, i){ d.classList.toggle('on', i === cur); });
-    document.getElementById('capT').textContent = clock(s[0]); document.getElementById('capN').textContent = s[2]; document.getElementById('capW').textContent = s[3]; }
+    document.getElementById('capT').textContent = clock(s[0]); document.getElementById('capN').textContent = s[2]; document.getElementById('capW').textContent = s[3]; drawNote(s); }
   /* the light on the photograph follows the hour: pink at dawn, plain at noon, gold in the evening, blue at night */
   document.getElementById('light').style.background = h < 9 ? 'rgba(238,150,170,' + ((9 - h) / 2 * .3).toFixed(2) + ')' : h > 17 ? 'rgba(' + (h > 21 ? '70,90,160' : '240,170,90') + ',' + Math.min(.4, (h - 17) / 6 * .4).toFixed(2) + ')' : 'transparent';
   var sun = document.getElementById('sun'); sun.style.background = h > 21 ? 'radial-gradient(circle at 45% 40%,#E3ECF7,#B9CBE6 70%)' : 'radial-gradient(circle at 45% 40%,#FBE38A,#F2B04A 70%)';
@@ -216,6 +293,6 @@ list.addEventListener('keydown', function(e){ var li = e.target.closest('.stop')
 (function loop(){ if (goal !== null){ h += (goal - h) * .07; if (Math.abs(goal - h) < .02){ h = goal; goal = null; } render(); } requestAnimationFrame(loop); })();
 document.querySelectorAll('.days a').forEach(function(a, i){ a.insertAdjacentHTML('beforeend', scribbleLine({ seed:i + 71, weight:2.6, amp:7, colour:'#1B2F57', filter:'ink' })); });
 addEventListener('hashchange', function(){ setDay(location.hash.slice(1)); });
-var lastW = innerWidth; addEventListener('resize', function(){ if (Math.abs(innerWidth - lastW) > 80){ lastW = innerWidth; var keep = h; setDay(day); h = keep; goal = null; render(); } });
+var lastW = innerWidth; addEventListener('resize', function(){ if (STOPS.length && shown >= 0) drawNote(STOPS[shown]); if (Math.abs(innerWidth - lastW) > 80){ lastW = innerWidth; var keep = h; setDay(day); h = keep; goal = null; render(); } });
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(function(){ setDay(location.hash.slice(1)); });
 </script></body></html>

@@ -131,6 +131,8 @@ function compose(){
     'Look to traditional artists (comics artists, printmakers, illustrators) for how a piece works, not only how it looks.');
   T.push('\nTYPE\n' + list(TYPE.map((t) => t.rule)));
   T.push('\nSURFACE\n' + list(SURFACE.map((s) => s.rule)));
+  T.push('\nDRAWING\n' + list(SKETCH.map((s) => s.rule)));
+  T.push('\nPHOTOGRAPHS\n' + list(PHOTO.map((s) => s.rule)));
   T.push('\nNEVER, AND ALWAYS\n' + list(PROFILE.rules.map((r) => r.text)));
   T.push('\nHOW PEOPLE READ AND ACT (check every ' + F.unit + ' against these)\n' + list(BEHAVIOUR_SCIENCE.filter((b) => F.web || !WEB_ONLY.includes(b.id)).map((b) => b.name + ': ' + b.rule)));
   const TOOL = { 'Claude Code':'Write it as files in this folder. Open it in a browser at phone and desktop widths and check every page before calling it done.', 'Claude.ai':'Build it as one HTML artifact. Check it at phone and desktop widths.',
