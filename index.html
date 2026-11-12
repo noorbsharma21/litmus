@@ -50,13 +50,29 @@
   .kinds{display:inline-flex;flex-wrap:wrap;gap:6px;margin-left:6px;vertical-align:middle}
   .tap{font:inherit;font-size:14px;padding:6px 11px;min-height:36px;border:1.5px solid #cfcfcf;background:#fff;cursor:pointer;color:var(--ink)}
   .tap[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:10px}
   .have{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1.5px solid #cfcfcf;min-height:56px;cursor:pointer;font-size:17px;background:#fff;font-family:inherit;color:var(--ink);text-align:left}
   .have[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
   .have input{width:72px;font-size:16px;padding:6px 8px}
   .pair{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch;margin:0 0 10px}
   .pair .opt{justify-content:center;text-align:center;font-size:16px;min-height:52px;padding:10px}
   .pair .mid{font-size:14px;color:var(--quiet)}
+  .opt .tick{font-size:13px;opacity:.7;flex:none}
+  .sl{padding:14px 0 16px;border-bottom:1px solid #eee}
+  .sl .ends{display:flex;justify-content:space-between;gap:12px;font-size:16px;font-weight:700}
+  .sl input[type=range]{width:100%;margin:10px 0 4px;accent-color:var(--ink);height:28px}
+  .sl.unset input[type=range]{opacity:.35}
+  .sl .val{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--quiet)}
+  .sl .val button{font:inherit;font-size:13px;border:0;background:none;color:var(--quiet);text-decoration:underline;cursor:pointer;padding:2px}
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:10px}
+  .gal.big{grid-template-columns:repeat(auto-fill,minmax(min(210px,100%),1fr))}
+  .pic{position:relative;display:flex;flex-direction:column;gap:6px;border:0;background:none;padding:0;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+  .pic img{width:100%;aspect-ratio:8/5;object-fit:cover;display:block;background:#f2f2f2;outline:2px solid transparent;outline-offset:2px}
+  .gal:not(.big) .pic img{aspect-ratio:1}
+  .pic span{font-size:13px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pic[aria-pressed="true"] img{outline:3px solid var(--accent)}
+  .pic[aria-pressed="true"]::after{content:"\2713";position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:15px;display:grid;place-items:center}
+  .pic:focus-visible img{outline:3px solid var(--ink)}
   .drop{border:2px dashed #cfcfcf;padding:20px;text-align:center;color:var(--quiet);cursor:pointer;margin:0 0 12px}
   .drop.over{border-color:var(--ink);color:var(--ink)}
   .thumbs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
@@ -104,7 +120,7 @@ const KEY = 'litmus-brief-v1';
 let S = {};
 try { S = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ S = {}; }
 const fresh = () => ({ never:['prices', 'opening hours', 'names', 'numbers', 'dates', 'addresses', 'quotes or reviews'], fileRefs:[], shape:{}, scales:{}, images:[], output:'prompt', tool:'Claude Code', device:'both equally' });
-S = Object.assign(fresh(), S);
+S = Object.assign(fresh(), S); normalizeScales(); if (S.action && !(S.actions || []).length) S.actions = [S.action];
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
 let db = null;
 const dbReady = new Promise((res) => { try { const r = indexedDB.open('litmus-brief', 1); r.onupgradeneeded = () => r.result.createObjectStore('images'); r.onsuccess = () => { db = r.result; res(); }; r.onerror = () => res(); } catch(e){ res(); } });
@@ -188,11 +204,11 @@ function kindOf(t){ return /\bposter\b|\bflyer\b/i.test(t) ? 'poster' : /\bdeck\
 
 const ACTIONS = [['buy', 'Buy something'], ['book', 'Book a table or a time'], ['tickets', 'Get a ticket'], ['contact', 'Get in touch'], ['visit', 'Come in or visit'], ['listen', 'Listen'], ['read', 'Read it'], ['sign up', 'Sign up']];
 const HAVES = [['photos', 'Photos', true], ['prices', 'Prices'], ['dates', 'Dates or a programme'], ['hours', 'Opening hours'], ['words', 'Words, written already'], ['logo', 'A logo'], ['music', 'Music or sound'], ['products', 'Things to sell', true]];
-const FEEL = [['order', 'Ordered', 'Messy'], ['volume', 'Quiet', 'Loud'], ['image', 'Photographs', 'Drawn by hand'], ['world', 'A page', 'A world'], ['words', 'Few words', 'Lots to read'], ['colour', 'One ink', 'Lots of colour']];
+const FEEL = ['order', 'volume', 'image', 'world', 'surface', 'colour', 'words', 'motion'];
 
 /* ---------- the steps ---------- */
 const STEPS = ['what', 'who', 'job', 'says', 'end', 'peak', 'have', 'show', 'feel', 'review'];
-const REQUIRED = { what:() => (S.what || '').trim().length > 2, who:() => !!(S.who || '').trim(), job:() => !!(S.job || '').trim(), says:() => !!(S.says || '').trim(), end:() => !!S.action, peak:() => !!(S.peak || '').trim() };
+const REQUIRED = { what:() => (S.what || '').trim().length > 2, who:() => !!(S.who || '').trim(), job:() => !!(S.job || '').trim(), says:() => !!(S.says || '').trim(), end:() => !!(S.actions && S.actions.length), peak:() => !!(S.peak || '').trim() };
 let at = Math.min(+(S._step || 0), STEPS.length - 1);
 const main = document.getElementById('main');
 const esc = (t) => String(t || '').replace(/[&<>"]/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' })[c]);
@@ -207,10 +223,14 @@ function foot(opt){
     '<div style="display:flex;gap:18px;align-items:center">' + (opt ? '<button class="skip" data-go="next">Skip</button>' : '') + '<button class="next" data-go="next"' + (REQUIRED[STEPS[at]] && !REQUIRED[STEPS[at]]() ? ' disabled' : '') + '>Next</button></div></div>' +
     '<p class="keys">Press Enter to go on.</p>';
 }
+/* who, what for and the moment take several answers; the sentence takes one */
+const MULTI = { who:1, job:1, peak:1 };
+function joinField(f){ const p = S[f + 'Picks'] || [], o = (S[f + 'Own'] || '').trim(); S[f] = p.concat(o ? [o] : []).join('; '); }
 function picker(field, q, hint){
-  const opts = sugg(field), own = S[field] && !opts.includes(S[field]);
-  return head(at + 1, q, hint) + '<div class="opts">' + opts.map((o) => '<button class="opt" data-pick="' + field + '" data-v="' + esc(o) + '" aria-pressed="' + (S[field] === o) + '">' + esc(o) + '</button>').join('') + '</div>' +
-    '<div class="own"><input type="text" data-own="' + field + '" placeholder="Or say it your way" value="' + (own ? esc(S[field]) : '') + '"></div>' + foot();
+  const opts = sugg(field), multi = !!MULTI[field], picks = multi ? (S[field + 'Picks'] || []) : [S[field]];
+  const own = multi ? (S[field + 'Own'] || '') : (S[field] && !opts.includes(S[field]) ? S[field] : '');
+  return head(at + 1, q, hint + (multi ? ' Pick any that fit.' : '')) + '<div class="opts">' + opts.map((o) => '<button class="opt" data-pick="' + field + '" data-v="' + esc(o) + '" aria-pressed="' + picks.includes(o) + '">' + esc(o) + (multi ? '<span class="tick">' + (picks.includes(o) ? 'picked' : '') + '</span>' : '') + '</button>').join('') + '</div>' +
+    '<div class="own"><input type="text" data-own="' + field + '" placeholder="' + (multi ? 'Add your own' : 'Or say it your way') + '" value="' + esc(own) + '"></div>' + foot();
 }
 function render(){
   S._step = at; save();
@@ -225,7 +245,8 @@ function render(){
   if (st === 'who') h = picker('who', 'Who comes to it?', 'The person who actually visits, not the person paying for it.');
   if (st === 'job') h = picker('job', 'What do they come to do?', 'In their words, the reason they opened it.');
   if (st === 'says') h = picker('says', 'If they remember one sentence, what is it?', 'Everything else is built around this.');
-  if (st === 'end') h = head(at + 1, 'What should they do before they leave?', 'Every page will end on this.') + '<div class="opts">' + ACTIONS.map((a) => '<button class="opt" data-act="' + a[0] + '" aria-pressed="' + (S.action === a[0]) + '">' + a[1] + '</button>').join('') + '</div>' + foot();
+  if (st === 'end'){ const A = S.actions || [];
+    h = head(at + 1, 'What should they do before they leave?', 'Pick any. The first one you tap is the main one, and every page ends on it.') + '<div class="opts">' + ACTIONS.map((a) => '<button class="opt" data-act="' + a[0] + '" aria-pressed="' + A.includes(a[0]) + '">' + a[1] + '<span class="tick">' + (A[0] === a[0] ? 'the main one' : A.includes(a[0]) ? 'picked' : '') + '</span></button>').join('') + '</div>' + foot(); }
   if (st === 'peak') h = picker('peak', 'What will they remember?', 'The one moment. Usually the thing they can do on it.');
   if (st === 'have'){
     const H = S.has || {};
@@ -236,17 +257,23 @@ function render(){
   if (st === 'show'){
     h = head(8, 'Anything to show it?', 'Your own pictures to use, and work you love. Skip if not.') +
       '<div class="drop" id="drop" tabindex="0" role="button">Drop pictures here, or tap to choose</div><input type="file" id="files" accept="image/*" multiple hidden><div class="thumbs" id="thumbs"></div>' +
-      '<p class="sub">Work you love that should rub off on it</p><div class="row">' + FILE_REFS.map((r) => '<button class="tap" data-ref="' + r[0] + '" aria-pressed="' + S.fileRefs.includes(r[0]) + '">' + esc(r[1]) + '</button>').join('') + '</div>' +
+      '<p class="sub">Work you love that should rub off on it. Tap any.</p><div class="gal big">' + FILE_REFS.map((r) => '<button class="pic" data-ref="' + r[0] + '" aria-pressed="' + S.fileRefs.includes(r[0]) + '"><img loading="lazy" src="' + SITE_THUMBS[r[0]] + '" alt=""><span>' + esc(r[1]) + '</span></button>').join('') + '</div>' +
+      '<p class="sub">From the reference folder</p><div class="gal">' + REFS.map((r) => '<button class="pic" data-rp="' + r.id + '" aria-pressed="' + (S.refPicks || []).includes(r.id) + '"><img loading="lazy" src="references/thumb/' + r.id + '.jpg" alt=""><span>' + esc(refTitle(r)) + '</span></button>').join('') + '</div>' +
       '<p class="sub">Or name one, and why</p><input type="text" data-own="ref1" placeholder="A site, a book, a poster" value="' + esc(S.ref1) + '"><input type="text" data-own="ref1why" placeholder="Why, in a sentence" value="' + esc(S.ref1why) + '" style="margin-top:8px">' + foot(true);
   }
   if (st === 'feel'){
-    h = head(9, 'How should it feel?', 'Tap a side only if you mean it. Leave the rest to Litmus.') +
-      FEEL.map((f) => { const v = S.scales[f[0]]; return '<div class="pair"><button class="opt" data-feel="' + f[0] + '" data-v="2" aria-pressed="' + (v === 2) + '">' + f[1] + '</button><button class="opt mid" data-feel="' + f[0] + '" data-v="0" aria-pressed="' + (!v) + '">Either</button><button class="opt" data-feel="' + f[0] + '" data-v="4" aria-pressed="' + (v === 4) + '">' + f[2] + '</button></div>'; }).join('') + foot(true);
+    const row = (s) => { const v = S.scales[s[0]], set = v !== undefined && v !== null;
+      return '<div class="sl' + (set ? '' : ' unset') + '" data-sl="' + s[0] + '"><div class="ends"><span>' + s[1] + '</span><span>' + s[2] + '</span></div>' +
+        '<input type="range" min="0" max="100" step="1" value="' + (set ? v : 50) + '" aria-label="' + esc(s[1] + ' to ' + s[2]) + '" aria-valuetext="' + (set ? esc(scalePhrase(s, v)) : 'Litmus decides') + '">' +
+        '<div class="val"><span>' + (set ? esc(scalePhrase(s, v)) + ', ' + v : 'Litmus decides') + '</span>' + (set ? '<button data-unset="' + s[0] + '">Leave it to Litmus</button>' : '') + '</div></div>'; };
+    h = head(9, 'How should it feel?', 'Drag only the ones you care about. Anything left alone is Litmus\u2019s call.') +
+      FEEL.map((k) => row(SCALES.find((s) => s[0] === k))).join('') +
+      '<p class="sub">How the words should sound</p>' + SCALES.filter((s) => s[3] === 'tone').map(row).join('') + foot(true);
   }
   if (st === 'review'){
     deriveRest();
-    const act = (ACTIONS.find((a) => a[0] === S.action) || [, ''])[1], P = pickStructure();
-    const rows = [['What', S.what, 0], ['Who comes', S.who, 1], ['They come to', S.job, 2], ['It says', S.says, 3], ['Before they leave', act, 4], ['They remember', S.peak, 5], ['You have', S.exists, 6]];
+    const act = (S.actions || []).map((a) => ACTION_LABELS[a]).join(', then '), P = pickStructure(), nScales = Object.keys(S.scales).length, nRefs = (S.fileRefs || []).length + (S.refPicks || []).length;
+    const rows = [['What', S.what, 0], ['Who comes', S.who, 1], ['They come to', S.job, 2], ['It says', S.says, 3], ['Before they leave', act, 4], ['They remember', S.peak, 5], ['You have', S.exists, 6], ['References', nRefs ? nRefs + ' picked' : 'none', 7], ['Feel and tone', nScales ? nScales + ' set, the rest left to Litmus' : 'left to Litmus', 8]];
     h = '<div class="count"><span>Ready</span><div class="bar"><i style="width:100%"></i></div></div><h1>Here’s the brief.</h1><p class="hint">Change anything, then write it.</p><dl>' +
       rows.map((r) => '<div class="rv"><dt>' + r[0] + '</dt><dd>' + esc(r[1] || 'not yet') + '</dd><button data-jump="' + r[2] + '">Change</button></div>').join('') +
       '<div class="rv"><dt>Shape</dt><dd>' + (P ? P.name + ', read from your words' : 'Nothing fits yet') + '</dd><a href="engine/brief.html" style="font-size:14px">Fine-tune</a></div></dl>' +
@@ -271,7 +298,7 @@ function seen(){
 }
 /* everything that can be worked out is worked out, and shown at the review */
 function deriveRest(){
-  const act = (ACTIONS.find((a) => a[0] === S.action) || [, 'get in touch'])[1];
+  const act = ACTION_LABELS[(S.actions || [])[0]] || 'Get in touch';
   S.end = act; S.first = 'What it is, who it is for, and how to ' + act.charAt(0).toLowerCase() + act.slice(1);
   const H = S.has || {}, parts = HAVES.filter((x) => H[x[0]] !== undefined).map((x) => (H[x[0]] ? H[x[0]] + ' ' : '') + x[1].toLowerCase());
   S.exists = S.hasNothing ? 'Nothing yet. Leave marked gaps.' : parts.length ? parts.join(', ') : '';
@@ -282,14 +309,25 @@ function deriveRest(){
 function wire(st){
   main.querySelectorAll('[data-go]').forEach((b) => b.onclick = () => go(b.dataset.go === 'next' ? 1 : -1));
   main.querySelectorAll('[data-own]').forEach((i) => i.oninput = () => {
+    if (MULTI[i.dataset.own]){ S[i.dataset.own + 'Own'] = i.value; joinField(i.dataset.own); save(); refreshNext(); return; }
     S[i.dataset.own] = i.value;
     if (i.dataset.own === 'what' && !S.kindSet) S.kind = kindOf(i.value);
     main.querySelectorAll('[data-pick="' + i.dataset.own + '"]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
     save(); refreshNext(); if (i.dataset.own === 'what') seen();
   });
   main.querySelectorAll('[data-ex]').forEach((b) => b.onclick = () => { S.what = b.dataset.ex; S.kind = kindOf(S.what); save(); render(); });
-  main.querySelectorAll('[data-pick]').forEach((b) => b.onclick = () => { S[b.dataset.pick] = b.dataset.v; save(); go(1); });
-  main.querySelectorAll('[data-act]').forEach((b) => b.onclick = () => { S.action = b.dataset.act; save(); go(1); });
+  main.querySelectorAll('[data-pick]').forEach((b) => b.onclick = () => { const f = b.dataset.pick;
+    if (!MULTI[f]){ S[f] = b.dataset.v; save(); go(1); return; }
+    const p = S[f + 'Picks'] || []; S[f + 'Picks'] = p.includes(b.dataset.v) ? p.filter((x) => x !== b.dataset.v) : p.concat(b.dataset.v); joinField(f); save();
+    b.setAttribute('aria-pressed', S[f + 'Picks'].includes(b.dataset.v)); b.querySelector('.tick').textContent = S[f + 'Picks'].includes(b.dataset.v) ? 'picked' : ''; refreshNext(); });
+  main.querySelectorAll('[data-act]').forEach((b) => b.onclick = () => { const A = S.actions || [], k = b.dataset.act;
+    S.actions = A.includes(k) ? A.filter((x) => x !== k) : A.concat(k); S.action = S.actions[0] || ''; save(); render(); });
+  main.querySelectorAll('[data-rp]').forEach((b) => b.onclick = () => { const k = b.dataset.rp, p = S.refPicks || []; S.refPicks = p.includes(k) ? p.filter((x) => x !== k) : p.concat(k); save(); b.setAttribute('aria-pressed', S.refPicks.includes(k)); });
+  main.querySelectorAll('[data-sl] input').forEach((r) => r.oninput = () => { const box = r.closest('[data-sl]'), s = SCALES.find((x) => x[0] === box.dataset.sl), v = +r.value;
+    S.scales[s[0]] = v; save(); box.classList.remove('unset'); r.setAttribute('aria-valuetext', scalePhrase(s, v));
+    box.querySelector('.val').innerHTML = '<span>' + esc(scalePhrase(s, v)) + ', ' + v + '</span><button data-unset="' + s[0] + '">Leave it to Litmus</button>';
+    box.querySelector('[data-unset]').onclick = () => { delete S.scales[s[0]]; save(); render(); }; });
+  main.querySelectorAll('[data-unset]').forEach((b) => b.onclick = () => { delete S.scales[b.dataset.unset]; save(); render(); });
   main.querySelectorAll('[data-have]').forEach((b) => {
     const toggle = (e) => { if (e && e.target.tagName === 'INPUT') return; S.has = S.has || {};
       if (b.dataset.have === 'none'){ S.hasNothing = !S.hasNothing; if (S.hasNothing) S.has = {}; }
@@ -299,8 +337,6 @@ function wire(st){
   });
   main.querySelectorAll('[data-n]').forEach((i) => i.oninput = () => { S.has = S.has || {}; S.has[i.dataset.n] = i.value.replace(/[^0-9]/g, ''); S.hasNothing = false; i.closest('.have').setAttribute('aria-pressed', 'true'); save(); });
   main.querySelectorAll('[data-ref]').forEach((b) => b.onclick = () => { const k = b.dataset.ref; S.fileRefs = S.fileRefs.includes(k) ? S.fileRefs.filter((x) => x !== k) : S.fileRefs.concat(k); save(); b.setAttribute('aria-pressed', S.fileRefs.includes(k)); });
-  main.querySelectorAll('[data-feel]').forEach((b) => b.onclick = () => { const v = +b.dataset.v; if (v) S.scales[b.dataset.feel] = v; else delete S.scales[b.dataset.feel]; save();
-    main.querySelectorAll('[data-feel="' + b.dataset.feel + '"]').forEach((x) => x.setAttribute('aria-pressed', x === b)); });
   main.querySelectorAll('[data-jump]').forEach((b) => b.onclick = () => { at = +b.dataset.jump; render(); });
   main.querySelectorAll('[data-out]').forEach((b) => b.onclick = () => { S.output = b.dataset.out; save(); main.querySelectorAll('[data-out]').forEach((x) => x.setAttribute('aria-pressed', x === b)); });
   const tool = document.getElementById('tool'); if (tool) tool.onchange = () => { S.tool = tool.value; save(); };
@@ -341,10 +377,12 @@ function write(){
   document.getElementById('rnote').textContent = skill ? 'Unzip it into .claude/skills/ in your project, or upload the zip as a skill in Claude.ai.' : 'Paste it into ' + S.tool + (S.images.length ? ' with the pictures.' : '.');
   document.getElementById('copy').onclick = (e) => { const b = e.currentTarget; navigator.clipboard.writeText(text).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1600); }).catch(() => { const r = document.createRange(); r.selectNodeContents(document.getElementById('text')); getSelection().removeAllRanges(); getSelection().addRange(r); b.textContent = 'Selected, copy it'; }); };
   document.getElementById('dl').onclick = async () => {
-    if (!skill && !S.images.length){ saveAs(new Blob([text], { type:'text/markdown' }), 'litmus-' + slug() + '.md'); return; }
+    if (!skill && !S.images.length && !(S.refPicks || []).length && !(S.fileRefs || []).length){ saveAs(new Blob([text], { type:'text/markdown' }), 'litmus-' + slug() + '.md'); return; }
     const z = new JSZip(), root = skill ? z.folder('litmus-' + slug()) : z;
     root.file(skill ? 'SKILL.md' : 'prompt.md', text); if (skill) root.file('brief.json', JSON.stringify(S, null, 2));
     for (const m of S.images){ const b = await getImg(m.id); if (b) root.folder('assets').file(m.name, b); }
+    for (const id of (S.refPicks || [])){ try { const b = await (await fetch('references/thumb/' + id + '.jpg')).blob(); root.folder('assets').folder('references').file(id + '.jpg', b); } catch(e){} }
+    for (const k of (S.fileRefs || [])){ try { const b = await (await fetch(SITE_THUMBS[k])).blob(); root.folder('assets').folder('references').file(k + '.jpg', b); } catch(e){} }
     saveAs(await z.generateAsync({ type:'blob' }), 'litmus-' + slug() + (skill ? '-skill' : '') + '.zip');
   };
   box.scrollIntoView({ behavior:'smooth', block:'start' });

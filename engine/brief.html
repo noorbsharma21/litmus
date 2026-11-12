@@ -42,7 +42,7 @@
   /* images */
   .drop{border:2px dashed #bbb;padding:22px;text-align:center;color:#666;cursor:pointer}
   .drop.over{border-color:#14130F;color:#14130F}
-  .imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:14px}
+  .imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:14px;margin-top:14px}
   .im{border:1px solid #ddd;padding:8px;display:flex;flex-direction:column;gap:8px}
   .im img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#f2f2f2}
   .im .chips button{font-size:12px;padding:5px 9px;min-height:30px}
@@ -65,6 +65,14 @@
   .sc .val{font-size:13px;color:#777;display:flex;justify-content:space-between;gap:10px}
   .sc.unset input[type=range]{accent-color:#ccc;opacity:.4}
   .sc.unset .val span{color:#bbb}
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(120px,100%),1fr));gap:10px}
+  .gal.big{grid-template-columns:repeat(auto-fill,minmax(min(170px,100%),1fr))}
+  .pic{position:relative;display:flex;flex-direction:column;gap:5px;border:0;background:none;padding:0;cursor:pointer;text-align:left;font:inherit;color:#14130F}
+  .pic img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#f2f2f2;outline:2px solid transparent;outline-offset:2px}
+  .gal.big .pic img{aspect-ratio:8/5}
+  .pic span{font-size:12px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pic[aria-pressed="true"] img{outline:3px solid #FF3E00}
+  .pic[aria-pressed="true"]::after{content:"\2713";position:absolute;right:6px;top:6px;width:24px;height:24px;border-radius:50%;background:#FF3E00;color:#fff;font-size:14px;display:grid;place-items:center}
   /* side */
   aside{position:sticky;top:20px;display:flex;flex-direction:column;gap:14px}
   .bar{height:6px;background:#eee}
@@ -145,8 +153,8 @@
 
     <section>
       <h2>Must do, can't change</h2>
-      <div class="f"><span class="lab">The action</span><div class="chips" data-one="action">
-        <button type="button" data-v="buy">Buy</button><button type="button" data-v="book">Book</button><button type="button" data-v="sign up">Sign up</button><button type="button" data-v="read">Read</button><button type="button" data-v="contact">Contact</button><button type="button" data-v="listen">Listen</button><button type="button" data-v="visit">Visit</button></div></div>
+      <div class="f"><span class="lab">The action</span><span class="hint">Pick any; the first is the main one.</span><div class="chips" data-many="actions">
+        <button type="button" data-v="buy">Buy</button><button type="button" data-v="book">Book</button><button type="button" data-v="tickets">Get a ticket</button><button type="button" data-v="sign up">Sign up</button><button type="button" data-v="read">Read</button><button type="button" data-v="contact">Contact</button><button type="button" data-v="listen">Listen</button><button type="button" data-v="visit">Visit</button></div></div>
       <div class="f"><span class="lab">Phone or desktop first</span><div class="chips" data-one="device">
         <button type="button" data-v="phone first">Phone first</button><button type="button" data-v="desktop first">Desktop first</button><button type="button" data-v="both equally">Both equally</button></div></div>
       <div class="f"><label for="fixed">Fixed</label><span class="hint">Logo, brand colours, typeface, legal text: anything that can't move.</span><textarea id="fixed" data-k="fixed" placeholder="Logo as supplied, the pink #D23A6E, no other fixed type"></textarea></div>
@@ -159,7 +167,8 @@
         <div class="f"><label for="ref2">Excellent work, two</label><input type="text" id="ref2" data-k="ref2" placeholder="A site, a book, a poster"><input type="text" data-k="ref2why" placeholder="Why, in one sentence" style="margin-top:8px"></div>
       </div>
       <div class="f"><label for="not">It must not look like</label><input type="text" id="not" data-k="not" placeholder="A festival site with a countdown and a hero video"><input type="text" data-k="notwhy" placeholder="Why, in one sentence" style="margin-top:8px"></div>
-      <div class="f"><span class="lab">From your file, any that fit</span><span class="hint">References you've already named.</span><div class="chips" data-many="fileRefs" id="fileRefs"></div></div>
+      <div class="f"><span class="lab">From your file, any that fit</span><span class="hint">References you've already named. Tap any.</span><div class="gal big" id="fileRefs"></div></div>
+      <div class="f"><span class="lab">From the reference folder</span><div class="gal" id="refPicks"></div></div>
     </section>
 
     <section>
@@ -208,7 +217,7 @@
 const KEY = 'litmus-brief-v1';
 let S = {};
 try { S = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ S = {}; }
-S.never = S.never || []; S.fileRefs = S.fileRefs || []; S.shape = S.shape || {}; S.scales = S.scales || {}; S.images = S.images || [];
+S.never = S.never || []; S.fileRefs = S.fileRefs || []; S.refPicks = S.refPicks || []; S.shape = S.shape || {}; S.scales = S.scales || {}; S.images = S.images || [];
 let savedAt = 0;
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); document.getElementById('saved').textContent = 'Saved in this browser, ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) + '.'; } catch(e){ document.getElementById('saved').textContent = 'Could not save in this browser. Save the brief to a file.'; } }
 
@@ -306,11 +315,11 @@ function drawShape(){
 function drawScales(){
   const box = document.getElementById('scales'); box.innerHTML = '';
   SCALES.forEach((s) => {
-    const v = S.scales[s[0]], el = document.createElement('div'); el.className = 'sc' + (v ? '' : ' unset');
-    el.innerHTML = '<div class="ends"><b>' + s[1] + '</b><b>' + s[2] + '</b></div><input type="range" min="1" max="5" step="1" aria-label="' + s[1] + ' to ' + s[2] + '"><div class="val"><span></span><button type="button" class="tiny">Leave it to the engine</button></div>';
+    const v = S.scales[s[0]], has = v !== undefined && v !== null, el = document.createElement('div'); el.className = 'sc' + (has ? '' : ' unset');
+    el.innerHTML = '<div class="ends"><b>' + s[1] + '</b><b>' + s[2] + '</b></div><input type="range" min="0" max="100" step="1" aria-label="' + s[1] + ' to ' + s[2] + '"><div class="val"><span></span><button type="button" class="tiny">Leave it to the engine</button></div>';
     const r = el.querySelector('input'), lab = el.querySelector('.val span'), reset = el.querySelector('.tiny');
-    r.value = v || 3; lab.textContent = v ? scalePhrase(s, v) : 'the engine decides'; r.setAttribute('aria-valuetext', lab.textContent); reset.hidden = !v;
-    r.oninput = () => { S.scales[s[0]] = +r.value; save(); el.classList.remove('unset'); lab.textContent = scalePhrase(s, +r.value); r.setAttribute('aria-valuetext', lab.textContent); reset.hidden = false; };
+    r.value = has ? v : 50; lab.textContent = has ? scalePhrase(s, v) + ', ' + v : 'the engine decides'; r.setAttribute('aria-valuetext', lab.textContent); reset.hidden = !has;
+    r.oninput = () => { S.scales[s[0]] = +r.value; save(); el.classList.remove('unset'); lab.textContent = scalePhrase(s, +r.value) + ', ' + r.value; r.setAttribute('aria-valuetext', lab.textContent); reset.hidden = false; };
     reset.onclick = () => { delete S.scales[s[0]]; save(); drawScales(); };
     box.appendChild(el);
   });
@@ -318,10 +327,19 @@ function drawScales(){
 
 /* ---------- references already in the file ---------- */
 
-document.getElementById('fileRefs').innerHTML = FILE_REFS.map((r) => '<button type="button" data-v="' + r[0] + '">' + r[1] + '</button>').join('');
+function drawRefs(){
+  document.getElementById('fileRefs').innerHTML = FILE_REFS.map((r) => '<button type="button" class="pic" data-fr="' + r[0] + '" aria-pressed="' + (S.fileRefs || []).includes(r[0]) + '"><img loading="lazy" src="../' + SITE_THUMBS[r[0]] + '" alt=""><span>' + r[1] + '</span></button>').join('');
+  document.getElementById('refPicks').innerHTML = REFS.map((r) => '<button type="button" class="pic" data-rp="' + r.id + '" aria-pressed="' + (S.refPicks || []).includes(r.id) + '"><img loading="lazy" src="../references/thumb/' + r.id + '.jpg" alt=""><span>' + refTitle(r) + '</span></button>').join('');
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-fr], [data-rp]'); if (!b) return;
+  const key = b.dataset.fr ? 'fileRefs' : 'refPicks', v = b.dataset.fr || b.dataset.rp, a = S[key] || [];
+  S[key] = a.includes(v) ? a.filter((x) => x !== v) : a.concat(v); save(); b.setAttribute('aria-pressed', S[key].includes(v));
+});
+drawRefs();
 
 /* ---------- what is still missing ---------- */
-const NEEDS = [['kind', 'What you’re making'], ['what', 'What it’s for'], ['who', 'Who comes'], ['job', 'What they came to do'], ['says', 'The one sentence'], ['first', 'First screen'], ['peak', 'The peak'], ['end', 'The end'], ['action', 'The action'], ['output', 'Prompt or skill']];
+const NEEDS = [['kind', 'What you’re making'], ['what', 'What it’s for'], ['who', 'Who comes'], ['job', 'What they came to do'], ['says', 'The one sentence'], ['first', 'First screen'], ['peak', 'The peak'], ['end', 'The end'], ['actions', 'The action'], ['output', 'Prompt or skill']];
 function update(){
   const done = NEEDS.filter((n) => (S[n[0]] || '').toString().trim());
   document.getElementById('todo').innerHTML = NEEDS.map((n) => '<li class="' + (done.includes(n) ? 'ok' : '') + '">' + n[1] + '</li>').join('');
@@ -368,7 +386,7 @@ document.getElementById('example').addEventListener('click', () => {
   S = { kind:'website', what:'A site for a cello and synthesizer duo, Halde Duo', who:'Fans and curious locals', job:'When and where is the next show; hear them; get a ticket',
     says:'A duo you have to hear in a room, and this is the next room.', first:'The name, the next date and venue, and the ticket', peak:'Holding anywhere to hear them', end:'Tickets',
     exists:'8 show dates with venues, 6 tracks with lengths, 2 photos of the band, no copy yet', never:['prices', 'dates', 'names'], neverOther:'', images:[], fileRefs:['ulli'],
-    shape:{}, scales:{ order:5, image:5, words:2, colour:2 }, action:'book', device:'phone first', fixed:'', ref1:'Ulli Lust, Today Is the Last Day of the Rest of Your Life', ref1why:'Pen and ink from life, one spot colour, hand lettering: the night as she saw it.',
+    shape:{}, scales:{ order:90, image:95, words:25, colour:30 }, scalesV:2, actions:['tickets', 'listen'], action:'tickets', device:'phone first', fixed:'', ref1:'Ulli Lust, Today Is the Last Day of the Rest of Your Life', ref1why:'Pen and ink from life, one spot colour, hand lettering: the night as she saw it.',
     not:'A festival site with a countdown and a hero video', notwhy:'It sells the event, not the sound.', output:'prompt', tool:'Claude Code' };
   save(); location.reload();
 });
@@ -378,6 +396,7 @@ document.getElementById('clear').addEventListener('click', (e) => {
   S.images.forEach((m) => delImg(m.id)); S = { never:[], fileRefs:[], shape:{}, scales:{}, images:[] }; save(); location.reload();
 });
 
+normalizeScales(); if (S.action && !(S.actions || []).length) S.actions = [S.action]; save();
 syncChips(); drawImages(); drawScales();
 if (!Object.keys(S.shape).length) readShapeIn(); else drawShape();
 update();
